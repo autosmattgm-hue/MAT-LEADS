@@ -126,15 +126,8 @@ export const profileSchema = schema((input) => ({
 export const settingsSchema = schema((input) => ({
   leadAlerts: booleanField(input, "leadAlerts", { default: true }),
   weeklyDigest: booleanField(input, "weeklyDigest", { default: true }),
-  emailNotifications: booleanField(input, "emailNotifications", { default: true }),
-  smsNotifications: booleanField(input, "smsNotifications", { default: false }),
-  browserNotifications: booleanField(input, "browserNotifications", { default: true }),
   defaultCountry: stringField(input, "defaultCountry", { max: 80, truncate: true, default: "United States" }),
   defaultResults: numberField(input, "defaultResults", { int: true, min: 5, max: 200, default: 20, defaultOnInvalid: true, clamp: true }),
-  defaultRadius: numberField(input, "defaultRadius", { int: true, min: 500, max: 50000, default: 15000, defaultOnInvalid: true, clamp: true }),
-  defaultSearchDepth: stringField(input, "defaultSearchDepth", { max: 20, truncate: true, default: "deep" }),
-  defaultSortBy: stringField(input, "defaultSortBy", { max: 30, truncate: true, default: "opportunity" }),
-  defaultLeadQuality: stringField(input, "defaultLeadQuality", { max: 30, truncate: true, default: "all" }),
   brandName: stringField(input, "brandName", { max: 120, truncate: true, default: "MAT Leads AI Pro X" }),
   bookingUrl: stringField(input, "bookingUrl", { max: 400, truncate: true }),
   primaryOffer: stringField(input, "primaryOffer", { max: 180, truncate: true, default: "Website + local lead growth audit" }),
@@ -143,24 +136,7 @@ export const settingsSchema = schema((input) => ({
   noWebsiteWeight: numberField(input, "noWebsiteWeight", { int: true, min: 0, max: 100, default: 50, defaultOnInvalid: true, clamp: true }),
   poorMobileWeight: numberField(input, "poorMobileWeight", { int: true, min: 0, max: 100, default: 20, defaultOnInvalid: true, clamp: true }),
   weakSeoWeight: numberField(input, "weakSeoWeight", { int: true, min: 0, max: 100, default: 20, defaultOnInvalid: true, clamp: true }),
-  noSslWeight: numberField(input, "noSslWeight", { int: true, min: 0, max: 100, default: 10, defaultOnInvalid: true, clamp: true }),
-  socialPresenceWeight: numberField(input, "socialPresenceWeight", { int: true, min: 0, max: 100, default: 15, defaultOnInvalid: true, clamp: true }),
-  lowReviewWeight: numberField(input, "lowReviewWeight", { int: true, min: 0, max: 100, default: 10, defaultOnInvalid: true, clamp: true }),
-  senderName: stringField(input, "senderName", { max: 120, truncate: true }),
-  replyToEmail: stringField(input, "replyToEmail", { max: 255, truncate: true }),
-  bccEmail: stringField(input, "bccEmail", { max: 255, truncate: true }),
-  emailSignature: stringField(input, "emailSignature", { max: 1000, truncate: true }),
-  exportFormat: stringField(input, "exportFormat", { max: 10, truncate: true, default: "csv" }),
-  dateFormat: stringField(input, "dateFormat", { max: 20, truncate: true, default: "MM/DD/YYYY" }),
-  timezone: stringField(input, "timezone", { max: 60, truncate: true, default: "America/Los_Angeles" }),
-  exportHeaders: booleanField(input, "exportHeaders", { default: true }),
-  autoExport: booleanField(input, "autoExport", { default: false }),
-  aiModel: stringField(input, "aiModel", { max: 40, truncate: true, default: "llama-3.1-8b" }),
-  outreachTone: stringField(input, "outreachTone", { max: 30, truncate: true, default: "professional" }),
-  maxFollowUps: numberField(input, "maxFollowUps", { int: true, min: 0, max: 20, default: 3, defaultOnInvalid: true, clamp: true }),
-  autoFollowUp: booleanField(input, "autoFollowUp", { default: false }),
-  aiSuggestions: booleanField(input, "aiSuggestions", { default: true }),
-  autoScore: booleanField(input, "autoScore", { default: true })
+  noSslWeight: numberField(input, "noSslWeight", { int: true, min: 0, max: 100, default: 10, defaultOnInvalid: true, clamp: true })
 }));
 
 export const leadSearchSchema = schema((input) => {

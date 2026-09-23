@@ -15,7 +15,7 @@ function initAiConsole() {
       submit.disabled = true;
       submit.textContent = "Running...";
     }
-    output.textContent = "Typing......";
+    output.textContent = "Running NVIDIA Maverick...";
 
     try {
       const result = await apiFetch("/api/ai/chat", {

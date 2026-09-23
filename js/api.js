@@ -170,21 +170,14 @@ export async function apiFetch(path, options = {}) {
         if (requiresAuth) redirectToLogin();
       }
     }
-    var errors = payload?.error?.details;
-    var fieldMessage = "";
-    if (errors && typeof errors === "object") {
-      if (errors.fieldErrors && typeof errors.fieldErrors === "object") {
-        fieldMessage = Object.entries(errors.fieldErrors)
-          .map(function(entry) {
-            var field = entry[0];
-            var msgs = entry[1];
-            return field + ": " + (Array.isArray(msgs) ? msgs.join(", ") : msgs);
-          })
-          .join(" | ");
-      }
-    }
-    var baseMessage = typeof payload === "object" && payload && payload.error ? payload.error.message : "Request failed";
-    var message = fieldMessage ? baseMessage + " (" + fieldMessage + ")" : baseMessage;
+    const fieldErrors = payload?.error?.details?.fieldErrors || payload?.error?.details;
+    const fieldMessage = fieldErrors && typeof fieldErrors === "object"
+      ? Object.entries(fieldErrors)
+        .map(([field, errors]) => `${field}: ${Array.isArray(errors) ? errors.join(", ") : errors}`)
+        .join(" | ")
+      : "";
+    const baseMessage = typeof payload === "object" && payload?.error ? payload.error.message : "Request failed";
+    const message = fieldMessage ? `${baseMessage} (${fieldMessage})` : baseMessage;
     throw new Error(message);
   }
 

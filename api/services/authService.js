@@ -70,15 +70,8 @@ function defaultSettings(settings = {}) {
   return {
     leadAlerts: settings.leadAlerts ?? true,
     weeklyDigest: settings.weeklyDigest ?? true,
-    emailNotifications: settings.emailNotifications ?? true,
-    smsNotifications: settings.smsNotifications ?? false,
-    browserNotifications: settings.browserNotifications ?? true,
     defaultCountry: settings.defaultCountry || "United States",
     defaultResults: settings.defaultResults || 20,
-    defaultRadius: settings.defaultRadius || 15000,
-    defaultSearchDepth: settings.defaultSearchDepth || "deep",
-    defaultSortBy: settings.defaultSortBy || "opportunity",
-    defaultLeadQuality: settings.defaultLeadQuality || "all",
     brandName: settings.brandName || "MAT Leads AI Pro X",
     bookingUrl: settings.bookingUrl || "",
     primaryOffer: settings.primaryOffer || "Website + local lead growth audit",
@@ -87,24 +80,7 @@ function defaultSettings(settings = {}) {
     noWebsiteWeight: settings.noWebsiteWeight ?? 50,
     poorMobileWeight: settings.poorMobileWeight ?? 20,
     weakSeoWeight: settings.weakSeoWeight ?? 20,
-    noSslWeight: settings.noSslWeight ?? 10,
-    socialPresenceWeight: settings.socialPresenceWeight ?? 15,
-    lowReviewWeight: settings.lowReviewWeight ?? 10,
-    senderName: settings.senderName || "",
-    replyToEmail: settings.replyToEmail || "",
-    bccEmail: settings.bccEmail || "",
-    emailSignature: settings.emailSignature || "",
-    exportFormat: settings.exportFormat || "csv",
-    dateFormat: settings.dateFormat || "MM/DD/YYYY",
-    timezone: settings.timezone || "America/Los_Angeles",
-    exportHeaders: settings.exportHeaders ?? true,
-    autoExport: settings.autoExport ?? false,
-    aiModel: settings.aiModel || "llama-3.1-8b",
-    outreachTone: settings.outreachTone || "professional",
-    maxFollowUps: settings.maxFollowUps ?? 3,
-    autoFollowUp: settings.autoFollowUp ?? false,
-    aiSuggestions: settings.aiSuggestions ?? true,
-    autoScore: settings.autoScore ?? true
+    noSslWeight: settings.noSslWeight ?? 10
   };
 }
 

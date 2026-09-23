@@ -1,11 +1,21 @@
 import crypto from "node:crypto";
 import { env } from "./env.js";
+import { AppError } from "../utils/errors.js";
 import { logger } from "../utils/logger.js";
+
+function isPlaceholderValue(value) {
+  const normalized = String(value || "").trim();
+  if (!normalized) return true;
+  return /^replace-with/i.test(normalized) || normalized.includes("...") || /^your[-_]/i.test(normalized);
+}
 
 const hasFirestoreCredentials = Boolean(
   env.firebase.projectId &&
   env.firebase.clientEmail &&
-  env.firebase.privateKey
+  env.firebase.privateKey &&
+  !isPlaceholderValue(env.firebase.projectId) &&
+  !isPlaceholderValue(env.firebase.clientEmail) &&
+  !isPlaceholderValue(env.firebase.privateKey)
 );
 
 let cachedToken = null;
@@ -24,11 +34,24 @@ function encodeJwt(payload) {
   return `${header}.${body}.${signature}`;
 }
 
+function signAssertion(payload) {
+  try {
+    return encodeJwt(payload);
+  } catch (error) {
+    logger.error("firebase_credentials_invalid", { message: error.message });
+    throw new AppError(
+      "Firebase Admin credentials are invalid. Set FIREBASE_CLIENT_EMAIL and FIREBASE_PRIVATE_KEY to a real service account, or leave them empty to use the local JSON store.",
+      503,
+      "FIREBASE_CREDENTIALS_NOT_CONFIGURED"
+    );
+  }
+}
+
 async function getAccessToken() {
   const now = Math.floor(Date.now() / 1000);
   if (cachedToken && cachedToken.expiresAt - 60 > now) return cachedToken.value;
 
-  const assertion = encodeJwt({
+  const assertion = signAssertion({
     iss: env.firebase.clientEmail,
     scope: "https://www.googleapis.com/auth/datastore",
     aud: "https://oauth2.googleapis.com/token",
