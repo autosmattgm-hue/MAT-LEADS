@@ -45,6 +45,30 @@ New free accounts start on the Free Trial plan. The API allows 2 lead searches t
 6. Configure each hosted PayPal link to redirect successful payments to `https://your-domain.com/billing-success.html`.
 7. Deploy to Vercel and configure your custom domain, TLS, and monitoring.
 
+### Required Vercel Environment Variables
+
+Vercel does not read the local `.env` file. Set these in Vercel > Project > Settings > Environment Variables (Production + Preview), then redeploy.
+
+| Variable | Why it is required |
+| --- | --- |
+| `NODE_ENV=production` | Enables production guards and keeps provider errors explicit |
+| `APP_URL=https://your-domain.com` | Used for URL parsing and same-origin CORS |
+| `CORS_ORIGINS=https://your-domain.com,https://your-app.vercel.app` | Allows browser calls from your deployed origin |
+| `JWT_SECRET`, `JWT_REFRESH_SECRET` | Session tokens; use two different 64-character random strings |
+| `NODE_ENV`, `FIREBASE_PROJECT_ID`, `FIREBASE_CLIENT_EMAIL`, `FIREBASE_PRIVATE_KEY` | Firestore storage for accounts, leads, CRM and reports. Without these, writes return `503 STORAGE_NOT_CONFIGURED` because serverless filesystems are ephemeral |
+| `FIREBASE_WEB_API_KEY` | Firebase Authentication for register/login. Without it, register/login return `503 FIREBASE_AUTH_NOT_CONFIGURED` |
+| `NVIDIA_API_KEY`, `NVIDIA_BASE_URL`, `NVIDIA_MODEL`, `NVIDIA_MODEL_FALLBACKS` | AI analysis and outreach. Use models that are still live for your account |
+| `GOOGLE_PLACES_API_KEY` (optional) | Google Places search. Leave empty to use the OpenStreetMap Overpass fallback |
+| `STRIPE_SECRET_KEY` (optional) | Stripe checkout; without it the endpoint returns `503 STRIPE_NOT_CONFIGURED` |
+| `PAYPAL_CLIENT_ID`, `PAYPAL_CLIENT_SECRET` or the four `PAYPAL_*_PAYMENT_LINK` values | PayPal checkout |
+| `OWNER_EMAIL`, `OWNER_PASSWORD` | Admin account with free enterprise access; change before going public |
+
+Notes:
+
+- Accounts registered on a local machine live in `data/local-store.json`, which is not deployed. Register again on the deployed site once `FIREBASE_WEB_API_KEY` is set so the account exists in Firebase Authentication.
+- `https://your-domain.com/api/health` lists the integrations that are active and the variables that are still missing.
+- The built-in owner account works even before the other variables are set, because it is resolved from `OWNER_EMAIL`/`OWNER_PASSWORD` (defaults: `owner@matleads.local` / `admin2026`).
+
 Complete paid SaaS operation requires Firebase credentials, `NVIDIA_API_KEY`, Stripe credentials, and either PayPal API credentials or hosted PayPal payment links. `GOOGLE_PLACES_API_KEY` is optional because Google Maps links can seed real OpenStreetMap Overpass searches without a Google API key. The app will not fake provider responses.
 
 ## Google Maps Link Search
