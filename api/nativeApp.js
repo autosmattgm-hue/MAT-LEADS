@@ -2,7 +2,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { env } from "./config/env.js";
-import { isFirebaseConfigured } from "./config/firebase.js";
+import { isFirebaseAuthConfigured, isFirebaseConfigured } from "./config/firebase.js";
 import { AdminService } from "./services/adminService.js";
 import { AuthService } from "./services/authService.js";
 import { BillingService } from "./services/billingService.js";
@@ -197,7 +197,14 @@ const routes = [
       status: "ok",
       service: "mat-leads-ai-pro-x",
       environment: env.nodeEnv,
+      deployment: {
+        vercelEnvironment: process.env.VERCEL_ENV || "local",
+        vercelRegion: process.env.VERCEL_REGION || "",
+        production: env.isProduction
+      },
       integrations: {
+        firebaseAuth: isFirebaseAuthConfigured(),
+        firestoreStorage: isFirebaseConfigured(),
         firebase: isFirebaseConfigured(),
         googlePlaces: Boolean(env.google.placesApiKey),
         openStreetMap: Boolean(env.osm.overpassEndpoints.length),
@@ -208,11 +215,23 @@ const routes = [
         paypalHostedLinks: Object.values(env.paypal.paymentLinks).every(Boolean)
       },
       realMode: true,
+      authReady: isFirebaseAuthConfigured() || !env.isProduction,
+      storageReady: isFirebaseConfigured() || !env.isProduction,
       missingRequiredForLiveOperation: [
+        !isFirebaseAuthConfigured() && "FIREBASE_WEB_API_KEY",
+        !env.firebase.projectId && "FIREBASE_PROJECT_ID",
+        !env.firebase.clientEmail && "FIREBASE_CLIENT_EMAIL",
+        !env.firebase.privateKey && "FIREBASE_PRIVATE_KEY",
         !env.nvidia.apiKey && "NVIDIA_API_KEY",
-        !env.firebase.projectId && "........",
-        !env.stripe.secretKey && "........",
+        !env.stripe.secretKey && "STRIPE_SECRET_KEY",
         !(env.paypal.clientId && env.paypal.clientSecret) && !Object.values(env.paypal.paymentLinks).every(Boolean) && "PAYPAL_CLIENT_ID/PAYPAL_CLIENT_SECRET or hosted PayPal payment links"
+      ].filter(Boolean),
+      configurationHelp: [
+        !isFirebaseAuthConfigured() && "Set FIREBASE_WEB_API_KEY (Firebase console > Project settings > General > Web API key) to enable register and login.",
+        !isFirebaseConfigured() && "Set FIREBASE_PROJECT_ID, FIREBASE_CLIENT_EMAIL and FIREBASE_PRIVATE_KEY (Firebase console > Project settings > Service accounts > Generate new private key) for persistent storage.",
+        env.isProduction && String(env.jwtSecret).startsWith("development-") && "Set JWT_SECRET and JWT_REFRESH_SECRET to two unique random values.",
+        env.isProduction && !env.corsOrigins.includes(env.appUrl) && "Add your deployed domain to CORS_ORIGINS (or APP_URL) so browser requests from it are accepted.",
+        "Placeholder values such as replace-with-... or -----BEGIN PRIVATE KEY----- ... are ignored on purpose. Delete them and paste the real values, then redeploy."
       ].filter(Boolean)
     })
   },

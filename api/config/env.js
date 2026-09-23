@@ -35,7 +35,10 @@ function number(value, fallback) {
 const placeholderPattern = /^(replace-with|your[-_]|change[-_]?me|example[-_]|todo)/i;
 
 function secret(value) {
-  const normalized = String(value || "").trim();
+  let normalized = String(value || "").trim();
+  if ((normalized.startsWith('"') && normalized.endsWith('"')) || (normalized.startsWith("'") && normalized.endsWith("'"))) {
+    normalized = normalized.slice(1, -1).trim();
+  }
   if (!normalized) return "";
   if (placeholderPattern.test(normalized) || normalized.includes("...")) return "";
   return normalized;
