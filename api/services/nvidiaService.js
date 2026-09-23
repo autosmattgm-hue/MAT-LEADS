@@ -128,7 +128,11 @@ function modelsToTry() {
 
 function isRetryableNvidiaFailure(error) {
   const status = Number(error?.status || 0);
-  return error?.code === "NVIDIA_TIMEOUT" || status === 400 || status === 404 || status === 408 || status === 409 || status === 429 || status >= 500;
+  const message = String(error?.message || "");
+  if (error?.code === "NVIDIA_TIMEOUT") return true;
+  if (status >= 500) return true;
+  if ([400, 403, 404, 408, 409, 410, 422, 429].includes(status)) return true;
+  return /end of life|no longer available|decommission|deprecated|unavailable|not found/i.test(message);
 }
 
 function coolDownModel(model) {
@@ -230,7 +234,15 @@ export class NvidiaService {
       return result;
     }
 
-    throw lastError || new AppError("NVIDIA AI could not complete the request.", 503, "NVIDIA_UNAVAILABLE");
+    if (lastError) {
+      throw new AppError(
+        `No live NVIDIA model available. ${lastError.message} Update NVIDIA_MODEL and NVIDIA_MODEL_FALLBACKS in .env with a model that is still available on https://build.nvidia.com.`,
+        503,
+        "NVIDIA_MODELS_NOT_CONFIGURED"
+      );
+    }
+
+    throw new AppError("NVIDIA AI could not complete the request.", 503, "NVIDIA_UNAVAILABLE");
   }
 
   chat(prompt) {

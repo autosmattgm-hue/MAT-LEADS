@@ -6,6 +6,7 @@ import { getPlan } from "../config/plans.js";
 import { FirestoreRepository } from "../repositories/firestoreRepository.js";
 import { AppError } from "../utils/errors.js";
 import { applyAdminEntitlements } from "../utils/entitlements.js";
+import { logger } from "../utils/logger.js";
 import { signAccessToken, signRefreshToken, verifyRefreshToken } from "../middleware/auth.js";
 
 const scrypt = promisify(crypto.scrypt);
@@ -22,6 +23,83 @@ async function verifyPassword(password, passwordHash) {
   const derived = await scrypt(password, salt, 64);
   const expected = Buffer.from(key, "hex");
   return expected.length === derived.length && crypto.timingSafeEqual(expected, derived);
+}
+
+const FIREBASE_AUTH_TIMEOUT_MS = 15000;
+
+const firebaseAuthErrors = {
+  EMAIL_EXISTS: ["An account with this email already exists. Log in instead.", 409, "ACCOUNT_EXISTS"],
+  EMAIL_NOT_FOUND: ["Invalid email or password.", 401, "INVALID_CREDENTIALS"],
+  INVALID_LOGIN_CREDENTIALS: ["Invalid email or password.", 401, "INVALID_CREDENTIALS"],
+  INVALID_PASSWORD: ["Invalid email or password.", 401, "INVALID_CREDENTIALS"],
+  USER_DISABLED: ["This account has been disabled in Firebase Authentication.", 403, "ACCOUNT_DISABLED"],
+  INVALID_EMAIL: ["Enter a valid email address.", 422, "INVALID_EMAIL"],
+  MISSING_EMAIL: ["Email is required.", 422, "MISSING_EMAIL"],
+  MISSING_PASSWORD: ["Password is required.", 422, "MISSING_PASSWORD"],
+  WEAK_PASSWORD: ["Password must be at least 8 characters long.", 422, "WEAK_PASSWORD"],
+  TOO_MANY_ATTEMPTS_TRY_LATER: ["Too many attempts. Wait a moment and try again.", 429, "TOO_MANY_ATTEMPTS"],
+  API_KEY_INVALID: ["The Firebase web API key in .env is not valid. Copy the real key from Firebase console > Project settings > Web API key.", 503, "FIREBASE_AUTH_NOT_CONFIGURED"],
+  INVALID_API_KEY: ["The Firebase web API key in .env is not valid. Copy the real key from Firebase console > Project settings > Web API key.", 503, "FIREBASE_AUTH_NOT_CONFIGURED"],
+  PERMISSION_DENIED: ["Firebase Authentication rejected this API key. Enable the Identity Toolkit API and allow the key in Google Cloud.", 503, "FIREBASE_AUTH_NOT_CONFIGURED"],
+  OPERATION_NOT_ALLOWED: ["Email/password sign-in is disabled in Firebase. Enable it in Authentication > Sign-in method.", 503, "FIREBASE_AUTH_NOT_CONFIGURED"],
+  CONFIGURATION_NOT_FOUND: ["Firebase Authentication is not configured for this project.", 503, "FIREBASE_AUTH_NOT_CONFIGURED"]
+};
+
+const firebaseUnavailableCodes = new Set([
+  "API_KEY_INVALID",
+  "INVALID_API_KEY",
+  "PERMISSION_DENIED",
+  "OPERATION_NOT_ALLOWED",
+  "CONFIGURATION_NOT_FOUND",
+  "FIREBASE_TIMEOUT",
+  "FIREBASE_UNREACHABLE",
+  "INTERNAL_ERROR"
+]);
+
+function firebaseErrorReason(payload, status) {
+  const reason = payload?.error?.message || "";
+  const normalized = String(reason || " : ").split(" : ")[0].trim();
+  return normalized || `HTTP_${status}`;
+}
+
+async function firebaseAuthRequest(action, body) {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), FIREBASE_AUTH_TIMEOUT_MS);
+  try {
+    const response = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:${action}?key=${env.firebase.webApiKey}`, {
+      method: "POST",
+      signal: controller.signal,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ...body, returnSecureToken: true })
+    });
+    const payload = await response.json().catch(() => ({}));
+    if (response.ok) return { ok: true, payload, code: "" };
+    const code = firebaseErrorReason(payload, response.status);
+    logger.warn("firebase_auth_rejected", { action, status: response.status, code });
+    return { ok: false, payload, code, status: response.status };
+  } catch (error) {
+    const code = error?.name === "AbortError" ? "FIREBASE_TIMEOUT" : "FIREBASE_UNREACHABLE";
+    logger.warn("firebase_auth_unreachable", { action, code, message: error.message });
+    return { ok: false, payload: {}, code, status: 0 };
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+function isFirebaseAuthUnavailable(code) {
+  return firebaseUnavailableCodes.has(code);
+}
+
+function firebaseAuthError(code, fallbackMessage = "Authentication failed.", fallbackStatus = 400, fallbackCode = "AUTH_FAILED") {
+  const [message, status, appCode] = firebaseAuthErrors[code] || [fallbackMessage, fallbackStatus, fallbackCode];
+  return new AppError(message, status, appCode);
+}
+
+function displayNameFromFirebase(payload, email) {
+  const fromToken = payload?.displayName;
+  if (fromToken) return fromToken;
+  const local = String(email || "").split("@")[0];
+  return local || "Member";
 }
 
 function planFields(planKey = "trial") {
@@ -123,36 +201,38 @@ export class AuthService {
 
   async register({ name, email, password }) {
     const normalizedEmail = email.toLowerCase();
-    let user;
+    let user = null;
+    let authProvider = "local_store";
+    let notice = "";
 
     if (isFirebaseAuthConfigured()) {
-      const response = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${env.firebase.webApiKey}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
+      const result = await firebaseAuthRequest("signUp", { email: normalizedEmail, password });
+      if (result.ok) {
+        authProvider = "firebase_auth";
+        user = {
+          uid: result.payload.localId,
+          name,
           email: normalizedEmail,
-          password,
-          returnSecureToken: true
-        })
-      });
-      if (!response.ok) throw new AppError("Unable to create Firebase account.", 400, "FIREBASE_SIGNUP_FAILED");
-      const payload = await response.json();
-      user = {
-        uid: payload.localId,
-        name,
-        email: normalizedEmail,
-        role: "user",
-        idToken: payload.idToken,
-        firebaseRefreshToken: payload.refreshToken
-      };
-    } else {
+          role: "user",
+          idToken: result.payload.idToken,
+          firebaseRefreshToken: result.payload.refreshToken
+        };
+      } else if (isFirebaseAuthUnavailable(result.code)) {
+        notice = `Firebase Authentication is unavailable (${result.code}), so this account was created in the local store instead.`;
+      } else {
+        throw firebaseAuthError(result.code, "Unable to create the Firebase account.", 400, "FIREBASE_SIGNUP_FAILED");
+      }
+    }
+
+    if (!user) {
       const existing = await this.users.list({
         where: [{ field: "email", op: "==", value: normalizedEmail }],
         limit: 1
       });
-      if (existing.length) throw new AppError("Account already exists.", 409, "ACCOUNT_EXISTS");
+      if (existing.length) throw new AppError("An account with this email already exists. Log in instead.", 409, "ACCOUNT_EXISTS");
       const passwordHash = await hashPassword(password);
-      user = await this.users.create({ name, email: normalizedEmail, passwordHash, role: "user", tokenVersion: 1 });
+      const created = await this.users.create({ name, email: normalizedEmail, passwordHash, role: "user", tokenVersion: 1 });
+      user = { uid: created.id, name, email: normalizedEmail, role: "user", tokenVersion: created.tokenVersion || 1 };
     }
 
     await this.users.upsert(user.uid || user.id, {
@@ -181,6 +261,8 @@ export class AuthService {
 
     return {
       user: sessionUser,
+      authProvider,
+      notice: notice || undefined,
       idToken: user.idToken,
       firebaseRefreshToken: user.firebaseRefreshToken,
       accessToken: signAccessToken(sessionUser),
@@ -195,40 +277,27 @@ export class AuthService {
       return this.ownerSession();
     }
 
-    if (env.firebase.webApiKey) {
-      const response = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${env.firebase.webApiKey}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: normalizedEmail,
-          password,
-          returnSecureToken: true
-        })
-      });
+    if (isFirebaseAuthConfigured()) {
+      const result = await firebaseAuthRequest("signInWithPassword", { email: normalizedEmail, password });
 
-      if (!response.ok) throw new AppError("Invalid email or password.", 401, "INVALID_CREDENTIALS");
-      const payload = await response.json();
-      const storedUser = await this.users.findById(payload.localId);
-      const user = applyAdminEntitlements({
-        uid: payload.localId,
-        name: storedUser?.name || "",
-        email: normalizedEmail,
-        role: storedUser?.role || "user",
-        ...planFields(storedPlanKey(storedUser)),
-        billingStatus: storedBillingStatus(storedUser),
-        trialSearchesUsed: Number(storedUser?.trialSearchesUsed || 0),
-        permissions: storedUser?.permissions || [],
-        entitlements: storedEntitlements(storedUser)
-      });
-      return {
-        user,
-        idToken: payload.idToken,
-        firebaseRefreshToken: payload.refreshToken,
-        accessToken: signAccessToken(user),
-        refreshToken: signRefreshToken(user)
-      };
+      if (result.ok) {
+        return this.firebaseSession(result.payload, normalizedEmail);
+      }
+
+      try {
+        return await this.localLogin(normalizedEmail, password);
+      } catch (localError) {
+        if (isFirebaseAuthUnavailable(result.code)) {
+          throw firebaseAuthError(result.code, "Firebase Authentication is unavailable.", 503, "FIREBASE_AUTH_NOT_CONFIGURED");
+        }
+        throw localError;
+      }
     }
 
+    return this.localLogin(normalizedEmail, password);
+  }
+
+  async localLogin(normalizedEmail, password) {
     const users = await this.users.list({
       where: [{ field: "email", op: "==", value: normalizedEmail }],
       limit: 1
@@ -253,8 +322,49 @@ export class AuthService {
 
     return {
       user: entitledUser,
+      authProvider: "local_store",
       accessToken: signAccessToken(entitledUser),
       refreshToken: signRefreshToken({ uid: user.uid || user.id, email: normalizedEmail, role: user.role || "user", tokenVersion: user.tokenVersion || 1 })
+    };
+  }
+
+  async firebaseSession(payload, normalizedEmail) {
+    const uid = payload.localId;
+    let storedUser = await this.users.findById(uid);
+    if (!storedUser) {
+      storedUser = await this.users.upsert(uid, {
+        uid,
+        name: displayNameFromFirebase(payload, normalizedEmail),
+        email: normalizedEmail,
+        role: "user",
+        ...planFields("trial"),
+        billingStatus: "trial",
+        trialSearchesUsed: 0,
+        entitlements: trialEntitlements(0),
+        emailVerified: Boolean(payload.registered),
+        tokenVersion: 1
+      });
+    }
+
+    const user = applyAdminEntitlements({
+      uid,
+      name: storedUser?.name || displayNameFromFirebase(payload, normalizedEmail),
+      email: normalizedEmail,
+      role: storedUser?.role || "user",
+      ...planFields(storedPlanKey(storedUser)),
+      billingStatus: storedBillingStatus(storedUser),
+      trialSearchesUsed: Number(storedUser?.trialSearchesUsed || 0),
+      permissions: storedUser?.permissions || [],
+      entitlements: storedEntitlements(storedUser)
+    });
+
+    return {
+      user,
+      authProvider: "firebase_auth",
+      idToken: payload.idToken,
+      firebaseRefreshToken: payload.refreshToken,
+      accessToken: signAccessToken(user),
+      refreshToken: signRefreshToken(user)
     };
   }
 

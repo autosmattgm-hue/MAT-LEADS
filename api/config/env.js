@@ -32,17 +32,26 @@ function number(value, fallback) {
   return Number.isFinite(parsed) ? parsed : fallback;
 }
 
+const placeholderPattern = /^(replace-with|your[-_]|change[-_]?me|example[-_]|todo)/i;
+
+function secret(value) {
+  const normalized = String(value || "").trim();
+  if (!normalized) return "";
+  if (placeholderPattern.test(normalized) || normalized.includes("...")) return "";
+  return normalized;
+}
+
 export const env = {
   nodeEnv: process.env.NODE_ENV || "development",
   isProduction: process.env.NODE_ENV === "production",
   port: number(process.env.PORT, 3000),
   appUrl: process.env.APP_URL || "http://localhost:3000",
   corsOrigins: list(process.env.CORS_ORIGINS, ["http://localhost:3000"]),
-  jwtSecret: process.env.JWT_SECRET || "development-jwt-secret-replace-before-production",
-  jwtRefreshSecret: process.env.JWT_REFRESH_SECRET || "development-refresh-secret-replace-before-production",
+  jwtSecret: secret(process.env.JWT_SECRET) || "development-jwt-secret-replace-before-production",
+  jwtRefreshSecret: secret(process.env.JWT_REFRESH_SECRET) || "development-refresh-secret-replace-before-production",
   google: {
-    mapsApiKey: process.env.GOOGLE_MAPS_API_KEY || "",
-    placesApiKey: process.env.GOOGLE_PLACES_API_KEY || process.env.GOOGLE_MAPS_API_KEY || ""
+    mapsApiKey: secret(process.env.GOOGLE_MAPS_API_KEY),
+    placesApiKey: secret(process.env.GOOGLE_PLACES_API_KEY) || secret(process.env.GOOGLE_MAPS_API_KEY)
   },
   osm: {
     overpassEndpoints: list(process.env.OVERPASS_ENDPOINTS, [
@@ -52,13 +61,13 @@ export const env = {
     ])
   },
   firebase: {
-    projectId: process.env.FIREBASE_PROJECT_ID || "",
-    clientEmail: process.env.FIREBASE_CLIENT_EMAIL || "",
-    privateKey: (process.env.FIREBASE_PRIVATE_KEY || "").replace(/\\n/g, "\n"),
-    webApiKey: process.env.FIREBASE_WEB_API_KEY || ""
+    projectId: secret(process.env.FIREBASE_PROJECT_ID),
+    clientEmail: secret(process.env.FIREBASE_CLIENT_EMAIL),
+    privateKey: secret(process.env.FIREBASE_PRIVATE_KEY).replace(/\\n/g, "\n"),
+    webApiKey: secret(process.env.FIREBASE_WEB_API_KEY)
   },
   nvidia: {
-    apiKey: process.env.NVIDIA_API_KEY || "",
+    apiKey: secret(process.env.NVIDIA_API_KEY),
     baseUrl: process.env.NVIDIA_BASE_URL || "https://integrate.api.nvidia.com/v1",
     model: process.env.NVIDIA_MODEL || "meta/llama-3.1-8b-instruct",
     modelFallbacks: list(process.env.NVIDIA_MODEL_FALLBACKS, ["meta/llama-4-maverick-17b-128e-instruct"]),
@@ -67,13 +76,13 @@ export const env = {
     maxTokens: number(process.env.NVIDIA_MAX_TOKENS, 240)
   },
   stripe: {
-    secretKey: process.env.STRIPE_SECRET_KEY || "",
-    webhookSecret: process.env.STRIPE_WEBHOOK_SECRET || ""
+    secretKey: secret(process.env.STRIPE_SECRET_KEY),
+    webhookSecret: secret(process.env.STRIPE_WEBHOOK_SECRET)
   },
   paypal: {
     env: process.env.PAYPAL_ENV || "sandbox",
-    clientId: process.env.PAYPAL_CLIENT_ID || "",
-    clientSecret: process.env.PAYPAL_CLIENT_SECRET || "",
+    clientId: secret(process.env.PAYPAL_CLIENT_ID),
+    clientSecret: secret(process.env.PAYPAL_CLIENT_SECRET),
     paymentLinks: {
       starter: process.env.PAYPAL_STARTER_PAYMENT_LINK || "https://www.paypal.com/ncp/payment/39W6KNEUB23KN",
       professional: process.env.PAYPAL_PROFESSIONAL_PAYMENT_LINK || "https://www.paypal.com/ncp/payment/9EVHZMVYV7A52",

@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-23T08:15:39.214Z",
+  "updatedAt": "2026-09-23T19:53:22.133Z",
   "collections": {
     "leads": [
       {
@@ -17811,6 +17811,843 @@
         "discoveredAt": "2026-07-06T20:52:24.102Z",
         "updatedAt": "2026-07-06T20:52:24.102Z",
         "createdAt": "2026-07-06T20:52:24.102Z"
+      },
+      {
+        "id": "osm-node-9080250962",
+        "name": "Ashu's Restaurant",
+        "category": "Restaurant",
+        "businessType": "Restaurant",
+        "address": "",
+        "phone": "220 223 5254",
+        "rating": null,
+        "reviewsCount": 0,
+        "websiteUrl": "",
+        "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=Ashu's%20Restaurant",
+        "latitude": 13.4676866,
+        "longitude": -16.6880607,
+        "country": "",
+        "countryCode": "",
+        "email": "",
+        "social": "",
+        "openingHours": "Mo-Su 13:00-25:00",
+        "details": {
+          "ownerContact": {
+            "publicContactNote": "Owner or direct contact person was not listed in the public map data."
+          },
+          "contact": {
+            "phone": "220 223 5254"
+          },
+          "social": {},
+          "location": {
+            "latitude": 13.4676866,
+            "longitude": -16.6880607,
+            "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=Ashu's%20Restaurant"
+          },
+          "business": {},
+          "operations": {
+            "openingHours": "Mo-Su 13:00-25:00"
+          },
+          "payments": {},
+          "source": {
+            "provider": "OpenStreetMap Overpass",
+            "osmType": "node",
+            "osmId": 9080250962,
+            "osmUrl": "https://www.openstreetmap.org/node/9080250962",
+            "rawTags": {
+              "amenity": "restaurant",
+              "name": "Ashu's Restaurant",
+              "opening_hours": "Mo-Su 13:00-25:00",
+              "phone": "220 223 5254"
+            }
+          }
+        },
+        "source": "openstreetmap_overpass",
+        "raw": {
+          "osmType": "node",
+          "osmId": 9080250962,
+          "tags": {
+            "amenity": "restaurant",
+            "name": "Ashu's Restaurant",
+            "opening_hours": "Mo-Su 13:00-25:00",
+            "phone": "220 223 5254"
+          }
+        },
+        "searchRelevance": 92,
+        "audit": {
+          "score": 100,
+          "category": "Very High Opportunity",
+          "checks": {
+            "websiteExists": false,
+            "https": false,
+            "mobileFriendly": false,
+            "seoMetadata": false,
+            "contactForm": false,
+            "socialLinksFound": false,
+            "businessEmailDetected": false,
+            "bookingSystem": false,
+            "outdatedDesign": true
+          },
+          "elapsedMs": 0
+        },
+        "opportunityScore": 100,
+        "opportunityCategory": "Very High Opportunity",
+        "discoveredBy": "duCar2pZVXWKFBO3BqswSpTDVH33",
+        "discoveredAt": "2026-09-23T19:46:05.868Z",
+        "updatedAt": "2026-09-23T19:47:04.356Z",
+        "createdAt": "2026-09-23T19:46:05.868Z",
+        "ownerId": "EHCtFMXNCdWUeo7eL9p6sQMin5R2",
+        "stage": "Contacted",
+        "savedAt": "2026-09-23T19:47:02.879Z"
+      },
+      {
+        "id": "osm-node-9080250963",
+        "name": "Ashu's Restaurant",
+        "category": "Restaurant",
+        "businessType": "Restaurant",
+        "address": "",
+        "phone": "220 2235254",
+        "rating": null,
+        "reviewsCount": 0,
+        "websiteUrl": "",
+        "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=Ashu's%20Restaurant",
+        "latitude": 13.4503885,
+        "longitude": -16.704518,
+        "country": "",
+        "countryCode": "",
+        "email": "",
+        "social": "",
+        "openingHours": "Mo-Su 13:00-01:00",
+        "details": {
+          "ownerContact": {
+            "publicContactNote": "Owner or direct contact person was not listed in the public map data."
+          },
+          "contact": {
+            "phone": "220 2235254"
+          },
+          "social": {},
+          "location": {
+            "latitude": 13.4503885,
+            "longitude": -16.704518,
+            "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=Ashu's%20Restaurant"
+          },
+          "business": {},
+          "operations": {
+            "openingHours": "Mo-Su 13:00-01:00"
+          },
+          "payments": {},
+          "source": {
+            "provider": "OpenStreetMap Overpass",
+            "osmType": "node",
+            "osmId": 9080250963,
+            "osmUrl": "https://www.openstreetmap.org/node/9080250963",
+            "rawTags": {
+              "amenity": "restaurant",
+              "name": "Ashu's Restaurant",
+              "opening_hours": "Mo-Su 13:00-01:00",
+              "phone": "220 2235254"
+            }
+          }
+        },
+        "source": "openstreetmap_overpass",
+        "raw": {
+          "osmType": "node",
+          "osmId": 9080250963,
+          "tags": {
+            "amenity": "restaurant",
+            "name": "Ashu's Restaurant",
+            "opening_hours": "Mo-Su 13:00-01:00",
+            "phone": "220 2235254"
+          }
+        },
+        "searchRelevance": 92,
+        "audit": {
+          "score": 100,
+          "category": "Very High Opportunity",
+          "checks": {
+            "websiteExists": false,
+            "https": false,
+            "mobileFriendly": false,
+            "seoMetadata": false,
+            "contactForm": false,
+            "socialLinksFound": false,
+            "businessEmailDetected": false,
+            "bookingSystem": false,
+            "outdatedDesign": true
+          },
+          "elapsedMs": 0
+        },
+        "opportunityScore": 100,
+        "opportunityCategory": "Very High Opportunity",
+        "discoveredBy": "duCar2pZVXWKFBO3BqswSpTDVH33",
+        "discoveredAt": "2026-09-23T19:46:05.868Z",
+        "updatedAt": "2026-09-23T19:46:05.868Z",
+        "createdAt": "2026-09-23T19:46:05.868Z"
+      },
+      {
+        "id": "osm-node-6866326494",
+        "name": "Chil zone",
+        "category": "Restaurant",
+        "businessType": "Restaurant",
+        "address": "Pipeline Rd, Serre kunda",
+        "phone": "2224499",
+        "rating": null,
+        "reviewsCount": 0,
+        "websiteUrl": "",
+        "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=Chil%20zone%20Pipeline%20Rd%2C%20Serre%20kunda",
+        "latitude": 13.4584747,
+        "longitude": -16.6842571,
+        "country": "",
+        "countryCode": "",
+        "email": "",
+        "social": "",
+        "openingHours": "Mo-Su 09:00-23:00",
+        "details": {
+          "ownerContact": {
+            "publicContactNote": "Owner or direct contact person was not listed in the public map data."
+          },
+          "contact": {
+            "phone": "2224499"
+          },
+          "social": {},
+          "location": {
+            "latitude": 13.4584747,
+            "longitude": -16.6842571,
+            "address": "Pipeline Rd, Serre kunda",
+            "street": "Pipeline Rd",
+            "city": "Serre kunda",
+            "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=Chil%20zone%20Pipeline%20Rd%2C%20Serre%20kunda"
+          },
+          "business": {},
+          "operations": {
+            "openingHours": "Mo-Su 09:00-23:00"
+          },
+          "payments": {},
+          "source": {
+            "provider": "OpenStreetMap Overpass",
+            "osmType": "node",
+            "osmId": 6866326494,
+            "osmUrl": "https://www.openstreetmap.org/node/6866326494",
+            "rawTags": {
+              "addr:city": "Serre kunda",
+              "addr:street": "Pipeline Rd",
+              "air_conditioning": "yes",
+              "amenity": "restaurant",
+              "name": "Chil zone",
+              "opening_hours": "Mo-Su 09:00-23:00",
+              "phone": "2224499"
+            }
+          }
+        },
+        "source": "openstreetmap_overpass",
+        "raw": {
+          "osmType": "node",
+          "osmId": 6866326494,
+          "tags": {
+            "addr:city": "Serre kunda",
+            "addr:street": "Pipeline Rd",
+            "air_conditioning": "yes",
+            "amenity": "restaurant",
+            "name": "Chil zone",
+            "opening_hours": "Mo-Su 09:00-23:00",
+            "phone": "2224499"
+          }
+        },
+        "searchRelevance": 97,
+        "audit": {
+          "score": 100,
+          "category": "Very High Opportunity",
+          "checks": {
+            "websiteExists": false,
+            "https": false,
+            "mobileFriendly": false,
+            "seoMetadata": false,
+            "contactForm": false,
+            "socialLinksFound": false,
+            "businessEmailDetected": false,
+            "bookingSystem": false,
+            "outdatedDesign": true
+          },
+          "elapsedMs": 0
+        },
+        "opportunityScore": 100,
+        "opportunityCategory": "Very High Opportunity",
+        "discoveredBy": "duCar2pZVXWKFBO3BqswSpTDVH33",
+        "discoveredAt": "2026-09-23T19:46:05.868Z",
+        "updatedAt": "2026-09-23T19:46:05.868Z",
+        "createdAt": "2026-09-23T19:46:05.868Z"
+      },
+      {
+        "id": "osm-node-9080250969",
+        "name": "Cocoa Cabana",
+        "category": "Restaurant",
+        "businessType": "Restaurant",
+        "address": "",
+        "phone": "+2207706877",
+        "rating": null,
+        "reviewsCount": 0,
+        "websiteUrl": "",
+        "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=Cocoa%20Cabana",
+        "latitude": 13.4033,
+        "longitude": -16.748865,
+        "country": "",
+        "countryCode": "",
+        "email": "",
+        "social": "",
+        "openingHours": "-23:00",
+        "details": {
+          "ownerContact": {
+            "publicContactNote": "Owner or direct contact person was not listed in the public map data."
+          },
+          "contact": {
+            "phone": "+2207706877"
+          },
+          "social": {},
+          "location": {
+            "latitude": 13.4033,
+            "longitude": -16.748865,
+            "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=Cocoa%20Cabana"
+          },
+          "business": {},
+          "operations": {
+            "openingHours": "-23:00"
+          },
+          "payments": {},
+          "source": {
+            "provider": "OpenStreetMap Overpass",
+            "osmType": "node",
+            "osmId": 9080250969,
+            "osmUrl": "https://www.openstreetmap.org/node/9080250969",
+            "rawTags": {
+              "amenity": "restaurant",
+              "name": "Cocoa Cabana",
+              "opening_hours": "-23:00",
+              "phone": "+2207706877"
+            }
+          }
+        },
+        "source": "openstreetmap_overpass",
+        "raw": {
+          "osmType": "node",
+          "osmId": 9080250969,
+          "tags": {
+            "amenity": "restaurant",
+            "name": "Cocoa Cabana",
+            "opening_hours": "-23:00",
+            "phone": "+2207706877"
+          }
+        },
+        "searchRelevance": 92,
+        "audit": {
+          "score": 100,
+          "category": "Very High Opportunity",
+          "checks": {
+            "websiteExists": false,
+            "https": false,
+            "mobileFriendly": false,
+            "seoMetadata": false,
+            "contactForm": false,
+            "socialLinksFound": false,
+            "businessEmailDetected": false,
+            "bookingSystem": false,
+            "outdatedDesign": true
+          },
+          "elapsedMs": 0
+        },
+        "opportunityScore": 100,
+        "opportunityCategory": "Very High Opportunity",
+        "discoveredBy": "duCar2pZVXWKFBO3BqswSpTDVH33",
+        "discoveredAt": "2026-09-23T19:46:05.868Z",
+        "updatedAt": "2026-09-23T19:46:05.868Z",
+        "createdAt": "2026-09-23T19:46:05.868Z"
+      },
+      {
+        "id": "osm-node-619473192",
+        "name": "Darboe",
+        "category": "Restaurant",
+        "businessType": "Restaurant",
+        "address": "Senegambia Strip",
+        "phone": "+220 771 9833",
+        "rating": null,
+        "reviewsCount": 0,
+        "websiteUrl": "",
+        "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=Darboe%20Senegambia%20Strip",
+        "latitude": 13.4410826,
+        "longitude": -16.72142,
+        "country": "",
+        "countryCode": "",
+        "email": "",
+        "social": "",
+        "openingHours": "Mo-Su 08:00-23:00",
+        "details": {
+          "ownerContact": {
+            "publicContactNote": "Owner or direct contact person was not listed in the public map data."
+          },
+          "contact": {
+            "phone": "+220 771 9833"
+          },
+          "social": {},
+          "location": {
+            "latitude": 13.4410826,
+            "longitude": -16.72142,
+            "address": "Senegambia Strip",
+            "street": "Senegambia Strip",
+            "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=Darboe%20Senegambia%20Strip"
+          },
+          "business": {
+            "cuisine": "african"
+          },
+          "operations": {
+            "openingHours": "Mo-Su 08:00-23:00",
+            "takeaway": "yes",
+            "outdoorSeating": "yes"
+          },
+          "payments": {},
+          "source": {
+            "provider": "OpenStreetMap Overpass",
+            "osmType": "node",
+            "osmId": 619473192,
+            "osmUrl": "https://www.openstreetmap.org/node/619473192",
+            "rawTags": {
+              "addr:street": "Senegambia Strip",
+              "amenity": "restaurant",
+              "capacity": "200",
+              "cuisine": "african",
+              "name": "Darboe",
+              "note": "Night club,African dance, Live Band, Karoke,DJ,",
+              "opening_hours": "Mo-Su 08:00-23:00",
+              "outdoor_seating": "yes",
+              "phone": "+220 771 9833",
+              "smoking": "outside",
+              "takeaway": "yes"
+            }
+          }
+        },
+        "source": "openstreetmap_overpass",
+        "raw": {
+          "osmType": "node",
+          "osmId": 619473192,
+          "tags": {
+            "addr:street": "Senegambia Strip",
+            "amenity": "restaurant",
+            "capacity": "200",
+            "cuisine": "african",
+            "name": "Darboe",
+            "note": "Night club,African dance, Live Band, Karoke,DJ,",
+            "opening_hours": "Mo-Su 08:00-23:00",
+            "outdoor_seating": "yes",
+            "phone": "+220 771 9833",
+            "smoking": "outside",
+            "takeaway": "yes"
+          }
+        },
+        "searchRelevance": 97,
+        "audit": {
+          "score": 100,
+          "category": "Very High Opportunity",
+          "checks": {
+            "websiteExists": false,
+            "https": false,
+            "mobileFriendly": false,
+            "seoMetadata": false,
+            "contactForm": false,
+            "socialLinksFound": false,
+            "businessEmailDetected": false,
+            "bookingSystem": false,
+            "outdatedDesign": true
+          },
+          "elapsedMs": 0
+        },
+        "opportunityScore": 100,
+        "opportunityCategory": "Very High Opportunity",
+        "discoveredBy": "duCar2pZVXWKFBO3BqswSpTDVH33",
+        "discoveredAt": "2026-09-23T19:46:05.868Z",
+        "updatedAt": "2026-09-23T19:46:05.868Z",
+        "createdAt": "2026-09-23T19:46:05.868Z"
+      },
+      {
+        "id": "photon-node-11508344011",
+        "name": "Restaurant",
+        "category": "Restaurant",
+        "businessType": "Restaurant",
+        "address": "Niodior, 23020, SN",
+        "phone": "",
+        "rating": null,
+        "reviewsCount": 0,
+        "websiteUrl": "",
+        "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=Restaurant%20Niodior%2C%2023020%2C%20SN",
+        "latitude": 13.8572762,
+        "longitude": -16.7230261,
+        "country": "Senegal",
+        "countryCode": "SN",
+        "email": "",
+        "social": "",
+        "openingHours": "",
+        "details": {
+          "ownerContact": {
+            "publicContactNote": "Owner or direct contact person was not listed in the public map data."
+          },
+          "contact": {},
+          "social": {},
+          "location": {
+            "latitude": 13.8572762,
+            "longitude": -16.7230261,
+            "address": "Niodior, 23020, SN",
+            "city": "Niodior",
+            "postcode": "23020",
+            "country": "Senegal",
+            "countryCode": "SN",
+            "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=Restaurant%20Niodior%2C%2023020%2C%20SN"
+          },
+          "business": {},
+          "operations": {},
+          "payments": {},
+          "source": {
+            "provider": "OpenStreetMap Photon",
+            "osmType": "node",
+            "osmId": 11508344011,
+            "osmUrl": "https://www.openstreetmap.org/node/11508344011",
+            "rawTags": {
+              "name": "Restaurant",
+              "amenity": "restaurant",
+              "addr:city": "Niodior",
+              "addr:postcode": "23020",
+              "addr:country": "SN",
+              "is_in:country": "Senegal"
+            },
+            "photonProperties": {
+              "osm_type": "N",
+              "osm_id": 11508344011,
+              "osm_key": "amenity",
+              "osm_value": "restaurant",
+              "type": "house",
+              "name": "Restaurant",
+              "city": "Niodior",
+              "county": "Département de Foundiougne",
+              "state": "Fatick Region",
+              "country": "Senegal",
+              "postcode": "23020",
+              "countrycode": "SN"
+            }
+          }
+        },
+        "source": "openstreetmap_photon",
+        "raw": {
+          "osmType": "node",
+          "osmId": 11508344011,
+          "tags": {
+            "name": "Restaurant",
+            "amenity": "restaurant",
+            "addr:city": "Niodior",
+            "addr:postcode": "23020",
+            "addr:country": "SN",
+            "is_in:country": "Senegal"
+          },
+          "photon": {
+            "type": "Feature",
+            "properties": {
+              "osm_type": "N",
+              "osm_id": 11508344011,
+              "osm_key": "amenity",
+              "osm_value": "restaurant",
+              "type": "house",
+              "name": "Restaurant",
+              "city": "Niodior",
+              "county": "Département de Foundiougne",
+              "state": "Fatick Region",
+              "country": "Senegal",
+              "postcode": "23020",
+              "countrycode": "SN"
+            },
+            "geometry": {
+              "type": "Point",
+              "coordinates": [
+                -16.7230261,
+                13.8572762
+              ]
+            }
+          }
+        },
+        "searchRelevance": 77,
+        "audit": {
+          "score": 100,
+          "category": "Very High Opportunity",
+          "checks": {
+            "websiteExists": false,
+            "https": false,
+            "mobileFriendly": false,
+            "seoMetadata": false,
+            "contactForm": false,
+            "socialLinksFound": false,
+            "businessEmailDetected": false,
+            "bookingSystem": false,
+            "outdatedDesign": true
+          },
+          "elapsedMs": 0
+        },
+        "opportunityScore": 100,
+        "opportunityCategory": "Very High Opportunity",
+        "discoveredBy": "owner",
+        "discoveredAt": "2026-09-23T19:50:36.185Z",
+        "updatedAt": "2026-09-23T19:50:36.185Z",
+        "createdAt": "2026-09-23T19:50:36.185Z"
+      },
+      {
+        "id": "photon-node-11508327499",
+        "name": "Restaurant",
+        "category": "Restaurant",
+        "businessType": "Restaurant",
+        "address": "Route bitumée Joal-Samba Dia- Djifer, Communauté rurale de Palmarin Facao, SN",
+        "phone": "",
+        "rating": null,
+        "reviewsCount": 0,
+        "websiteUrl": "",
+        "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=Restaurant%20Route%20bitum%C3%A9e%20Joal-Samba%20Dia-%20Djifer%2C%20Communaut%C3%A9%20rurale%20de%20Palmarin%20Facao%2C%20SN",
+        "latitude": 13.9352756,
+        "longitude": -16.7630615,
+        "country": "Senegal",
+        "countryCode": "SN",
+        "email": "",
+        "social": "",
+        "openingHours": "",
+        "details": {
+          "ownerContact": {
+            "publicContactNote": "Owner or direct contact person was not listed in the public map data."
+          },
+          "contact": {},
+          "social": {},
+          "location": {
+            "latitude": 13.9352756,
+            "longitude": -16.7630615,
+            "address": "Route bitumée Joal-Samba Dia- Djifer, Communauté rurale de Palmarin Facao, SN",
+            "street": "Route bitumée Joal-Samba Dia- Djifer",
+            "city": "Communauté rurale de Palmarin Facao",
+            "country": "Senegal",
+            "countryCode": "SN",
+            "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=Restaurant%20Route%20bitum%C3%A9e%20Joal-Samba%20Dia-%20Djifer%2C%20Communaut%C3%A9%20rurale%20de%20Palmarin%20Facao%2C%20SN"
+          },
+          "business": {},
+          "operations": {},
+          "payments": {},
+          "source": {
+            "provider": "OpenStreetMap Photon",
+            "osmType": "node",
+            "osmId": 11508327499,
+            "osmUrl": "https://www.openstreetmap.org/node/11508327499",
+            "rawTags": {
+              "name": "Restaurant",
+              "amenity": "restaurant",
+              "addr:street": "Route bitumée Joal-Samba Dia- Djifer",
+              "addr:city": "Communauté rurale de Palmarin Facao",
+              "addr:country": "SN",
+              "is_in:country": "Senegal"
+            },
+            "photonProperties": {
+              "osm_type": "N",
+              "osm_id": 11508327499,
+              "osm_key": "amenity",
+              "osm_value": "restaurant",
+              "type": "house",
+              "name": "Restaurant",
+              "street": "Route bitumée Joal-Samba Dia- Djifer",
+              "district": "Djifer",
+              "city": "Communauté rurale de Palmarin Facao",
+              "county": "Département de Fatick",
+              "state": "Fatick Region",
+              "country": "Senegal",
+              "countrycode": "SN"
+            }
+          }
+        },
+        "source": "openstreetmap_photon",
+        "raw": {
+          "osmType": "node",
+          "osmId": 11508327499,
+          "tags": {
+            "name": "Restaurant",
+            "amenity": "restaurant",
+            "addr:street": "Route bitumée Joal-Samba Dia- Djifer",
+            "addr:city": "Communauté rurale de Palmarin Facao",
+            "addr:country": "SN",
+            "is_in:country": "Senegal"
+          },
+          "photon": {
+            "type": "Feature",
+            "properties": {
+              "osm_type": "N",
+              "osm_id": 11508327499,
+              "osm_key": "amenity",
+              "osm_value": "restaurant",
+              "type": "house",
+              "name": "Restaurant",
+              "street": "Route bitumée Joal-Samba Dia- Djifer",
+              "district": "Djifer",
+              "city": "Communauté rurale de Palmarin Facao",
+              "county": "Département de Fatick",
+              "state": "Fatick Region",
+              "country": "Senegal",
+              "countrycode": "SN"
+            },
+            "geometry": {
+              "type": "Point",
+              "coordinates": [
+                -16.7630615,
+                13.9352756
+              ]
+            }
+          }
+        },
+        "searchRelevance": 77,
+        "audit": {
+          "score": 100,
+          "category": "Very High Opportunity",
+          "checks": {
+            "websiteExists": false,
+            "https": false,
+            "mobileFriendly": false,
+            "seoMetadata": false,
+            "contactForm": false,
+            "socialLinksFound": false,
+            "businessEmailDetected": false,
+            "bookingSystem": false,
+            "outdatedDesign": true
+          },
+          "elapsedMs": 0
+        },
+        "opportunityScore": 100,
+        "opportunityCategory": "Very High Opportunity",
+        "discoveredBy": "owner",
+        "discoveredAt": "2026-09-23T19:50:36.185Z",
+        "updatedAt": "2026-09-23T19:50:36.185Z",
+        "createdAt": "2026-09-23T19:50:36.185Z"
+      },
+      {
+        "id": "photon-node-11508363861",
+        "name": "Restaurant",
+        "category": "Restaurant",
+        "businessType": "Restaurant",
+        "address": "Route bitumée Joal-Samba Dia- Djifer, Communauté rurale de Palmarin Facao, SN",
+        "phone": "",
+        "rating": null,
+        "reviewsCount": 0,
+        "websiteUrl": "",
+        "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=Restaurant%20Route%20bitum%C3%A9e%20Joal-Samba%20Dia-%20Djifer%2C%20Communaut%C3%A9%20rurale%20de%20Palmarin%20Facao%2C%20SN",
+        "latitude": 13.9346116,
+        "longitude": -16.7616987,
+        "country": "Senegal",
+        "countryCode": "SN",
+        "email": "",
+        "social": "",
+        "openingHours": "",
+        "details": {
+          "ownerContact": {
+            "publicContactNote": "Owner or direct contact person was not listed in the public map data."
+          },
+          "contact": {},
+          "social": {},
+          "location": {
+            "latitude": 13.9346116,
+            "longitude": -16.7616987,
+            "address": "Route bitumée Joal-Samba Dia- Djifer, Communauté rurale de Palmarin Facao, SN",
+            "street": "Route bitumée Joal-Samba Dia- Djifer",
+            "city": "Communauté rurale de Palmarin Facao",
+            "country": "Senegal",
+            "countryCode": "SN",
+            "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=Restaurant%20Route%20bitum%C3%A9e%20Joal-Samba%20Dia-%20Djifer%2C%20Communaut%C3%A9%20rurale%20de%20Palmarin%20Facao%2C%20SN"
+          },
+          "business": {},
+          "operations": {},
+          "payments": {},
+          "source": {
+            "provider": "OpenStreetMap Photon",
+            "osmType": "node",
+            "osmId": 11508363861,
+            "osmUrl": "https://www.openstreetmap.org/node/11508363861",
+            "rawTags": {
+              "name": "Restaurant",
+              "amenity": "restaurant",
+              "addr:street": "Route bitumée Joal-Samba Dia- Djifer",
+              "addr:city": "Communauté rurale de Palmarin Facao",
+              "addr:country": "SN",
+              "is_in:country": "Senegal"
+            },
+            "photonProperties": {
+              "osm_type": "N",
+              "osm_id": 11508363861,
+              "osm_key": "amenity",
+              "osm_value": "restaurant",
+              "type": "house",
+              "name": "Restaurant",
+              "street": "Route bitumée Joal-Samba Dia- Djifer",
+              "district": "Djifer",
+              "city": "Communauté rurale de Palmarin Facao",
+              "county": "Département de Fatick",
+              "state": "Fatick Region",
+              "country": "Senegal",
+              "countrycode": "SN"
+            }
+          }
+        },
+        "source": "openstreetmap_photon",
+        "raw": {
+          "osmType": "node",
+          "osmId": 11508363861,
+          "tags": {
+            "name": "Restaurant",
+            "amenity": "restaurant",
+            "addr:street": "Route bitumée Joal-Samba Dia- Djifer",
+            "addr:city": "Communauté rurale de Palmarin Facao",
+            "addr:country": "SN",
+            "is_in:country": "Senegal"
+          },
+          "photon": {
+            "type": "Feature",
+            "properties": {
+              "osm_type": "N",
+              "osm_id": 11508363861,
+              "osm_key": "amenity",
+              "osm_value": "restaurant",
+              "type": "house",
+              "name": "Restaurant",
+              "street": "Route bitumée Joal-Samba Dia- Djifer",
+              "district": "Djifer",
+              "city": "Communauté rurale de Palmarin Facao",
+              "county": "Département de Fatick",
+              "state": "Fatick Region",
+              "country": "Senegal",
+              "countrycode": "SN"
+            },
+            "geometry": {
+              "type": "Point",
+              "coordinates": [
+                -16.7616987,
+                13.9346116
+              ]
+            }
+          }
+        },
+        "searchRelevance": 77,
+        "audit": {
+          "score": 100,
+          "category": "Very High Opportunity",
+          "checks": {
+            "websiteExists": false,
+            "https": false,
+            "mobileFriendly": false,
+            "seoMetadata": false,
+            "contactForm": false,
+            "socialLinksFound": false,
+            "businessEmailDetected": false,
+            "bookingSystem": false,
+            "outdatedDesign": true
+          },
+          "elapsedMs": 0
+        },
+        "opportunityScore": 100,
+        "opportunityCategory": "Very High Opportunity",
+        "discoveredBy": "owner",
+        "discoveredAt": "2026-09-23T19:50:36.185Z",
+        "updatedAt": "2026-09-23T19:50:36.185Z",
+        "createdAt": "2026-09-23T19:50:36.185Z"
       }
     ],
     "users": [
@@ -17866,6 +18703,138 @@
         "id": "1zgZR3c2aaf0zEe1x3ek1RP3S2s2",
         "updatedAt": "2026-09-23T08:15:39.213Z",
         "createdAt": "2026-09-23T08:15:39.213Z"
+      },
+      {
+        "uid": "KKS9Py6uS8N9OpLGgaiWjZakBlu2",
+        "name": "danny daniel",
+        "email": "dannydanielzzg111@gmail.com",
+        "role": "user",
+        "subscription": "trial",
+        "planName": "Free Trial",
+        "monthlyLeadLimit": 5,
+        "trialSearchLimit": 2,
+        "trialLeadLimit": 5,
+        "billingStatus": "trial",
+        "trialSearchesUsed": 0,
+        "entitlements": {
+          "billingRequired": true,
+          "trial": true,
+          "trialSearchesUsed": 0,
+          "trialSearchLimit": 2,
+          "trialLeadLimit": 5,
+          "upgradeRequiredAfterTrial": true
+        },
+        "emailVerified": false,
+        "tokenVersion": 1,
+        "id": "KKS9Py6uS8N9OpLGgaiWjZakBlu2",
+        "updatedAt": "2026-09-23T08:31:04.987Z",
+        "createdAt": "2026-09-23T08:31:04.987Z"
+      },
+      {
+        "uid": "1tpDwbCEpKUX67r2Hm9iOaG18In2",
+        "name": "Tester",
+        "email": "tester-1790152528658@example.com",
+        "role": "user",
+        "subscription": "trial",
+        "planName": "Free Trial",
+        "monthlyLeadLimit": 5,
+        "trialSearchLimit": 2,
+        "trialLeadLimit": 5,
+        "billingStatus": "trial",
+        "trialSearchesUsed": 0,
+        "entitlements": {
+          "billingRequired": true,
+          "trial": true,
+          "trialSearchesUsed": 0,
+          "trialSearchLimit": 2,
+          "trialLeadLimit": 5,
+          "upgradeRequiredAfterTrial": true
+        },
+        "emailVerified": false,
+        "tokenVersion": 1,
+        "id": "1tpDwbCEpKUX67r2Hm9iOaG18In2",
+        "updatedAt": "2026-09-23T08:35:30.956Z",
+        "createdAt": "2026-09-23T08:35:30.956Z"
+      },
+      {
+        "uid": "duCar2pZVXWKFBO3BqswSpTDVH33",
+        "name": "Tester",
+        "email": "tester-1790192758724@example.com",
+        "role": "user",
+        "subscription": "trial",
+        "planName": "Free Trial",
+        "monthlyLeadLimit": 5,
+        "trialSearchLimit": 2,
+        "trialLeadLimit": 5,
+        "billingStatus": "trial",
+        "trialSearchesUsed": 1,
+        "entitlements": {
+          "billingRequired": true,
+          "trial": true,
+          "trialSearchesUsed": 1,
+          "trialSearchLimit": 2,
+          "trialLeadLimit": 5,
+          "upgradeRequiredAfterTrial": true
+        },
+        "emailVerified": false,
+        "tokenVersion": 1,
+        "id": "duCar2pZVXWKFBO3BqswSpTDVH33",
+        "updatedAt": "2026-09-23T19:46:08.557Z",
+        "createdAt": "2026-09-23T19:46:00.555Z"
+      },
+      {
+        "uid": "EHCtFMXNCdWUeo7eL9p6sQMin5R2",
+        "name": "Verify User",
+        "email": "verify-1790192814680@example.com",
+        "role": "user",
+        "subscription": "trial",
+        "planName": "Free Trial",
+        "monthlyLeadLimit": 5,
+        "trialSearchLimit": 2,
+        "trialLeadLimit": 5,
+        "billingStatus": "trial",
+        "trialSearchesUsed": 1,
+        "entitlements": {
+          "billingRequired": true,
+          "trial": true,
+          "trialSearchesUsed": 1,
+          "trialSearchLimit": 2,
+          "trialLeadLimit": 5,
+          "upgradeRequiredAfterTrial": true
+        },
+        "emailVerified": false,
+        "tokenVersion": 1,
+        "id": "EHCtFMXNCdWUeo7eL9p6sQMin5R2",
+        "updatedAt": "2026-09-23T19:47:01.966Z",
+        "createdAt": "2026-09-23T19:46:56.239Z",
+        "company": "Verify Co",
+        "signature": "Regards"
+      },
+      {
+        "uid": "FPM77LTlJYYkqqovKowxteMVmKM2",
+        "name": "mat autos",
+        "email": "autosmattgm@gmail.com",
+        "role": "user",
+        "subscription": "trial",
+        "planName": "Free Trial",
+        "monthlyLeadLimit": 5,
+        "trialSearchLimit": 2,
+        "trialLeadLimit": 5,
+        "billingStatus": "trial",
+        "trialSearchesUsed": 0,
+        "entitlements": {
+          "billingRequired": true,
+          "trial": true,
+          "trialSearchesUsed": 0,
+          "trialSearchLimit": 2,
+          "trialLeadLimit": 5,
+          "upgradeRequiredAfterTrial": true
+        },
+        "emailVerified": false,
+        "tokenVersion": 1,
+        "id": "FPM77LTlJYYkqqovKowxteMVmKM2",
+        "updatedAt": "2026-09-23T19:53:22.133Z",
+        "createdAt": "2026-09-23T19:53:22.133Z"
       }
     ],
     "auditLogs": [
@@ -18666,8 +19635,111 @@
         "id": "62dec120-8617-47b6-a6bf-50e4f3481483",
         "createdAt": "2026-07-06T20:54:17.306Z",
         "updatedAt": "2026-07-06T20:54:17.306Z"
+      },
+      {
+        "actor": "tester-1790192758724@example.com",
+        "action": "lead_search",
+        "query": {
+          "country": "",
+          "countries": [],
+          "state": "",
+          "city": "",
+          "zip": "",
+          "industry": "",
+          "keyword": "restaurants",
+          "businessTypes": [],
+          "mapLink": "https://www.google.com/maps/@13.4053888,-16.6887424,11z",
+          "latitude": null,
+          "longitude": null,
+          "radiusMeters": 15000,
+          "limit": 5,
+          "searchDepth": "deep",
+          "leadQuality": "all",
+          "sortBy": "opportunity",
+          "minOpportunityScore": 0,
+          "requireContact": false,
+          "missingWebsiteOnly": false,
+          "bypassCache": false,
+          "refreshSeed": ""
+        },
+        "count": 5,
+        "id": "6dcd819f-91dc-4ce9-9455-3093d8cb9ed5",
+        "createdAt": "2026-09-23T19:46:09.149Z",
+        "updatedAt": "2026-09-23T19:46:09.149Z"
+      },
+      {
+        "actor": "verify-1790192814680@example.com",
+        "action": "lead_search_cached",
+        "query": {
+          "country": "",
+          "countries": [],
+          "state": "",
+          "city": "",
+          "zip": "",
+          "industry": "",
+          "keyword": "restaurants",
+          "businessTypes": [],
+          "mapLink": "https://www.google.com/maps/@13.4053888,-16.6887424,11z",
+          "latitude": null,
+          "longitude": null,
+          "radiusMeters": 15000,
+          "limit": 5,
+          "searchDepth": "deep",
+          "leadQuality": "all",
+          "sortBy": "opportunity",
+          "minOpportunityScore": 0,
+          "requireContact": false,
+          "missingWebsiteOnly": false,
+          "bypassCache": false,
+          "refreshSeed": ""
+        },
+        "count": 5,
+        "id": "81315102-8a2f-4c0a-89ee-f1cd4f760385",
+        "createdAt": "2026-09-23T19:47:02.120Z",
+        "updatedAt": "2026-09-23T19:47:02.120Z"
+      },
+      {
+        "actor": "owner@matleads.local",
+        "action": "lead_search",
+        "query": {
+          "country": "",
+          "countries": [],
+          "state": "",
+          "city": "",
+          "zip": "",
+          "industry": "",
+          "keyword": "restaurants",
+          "businessTypes": [],
+          "mapLink": "https://www.google.com/maps/@13.4053888,-16.6887424,11z",
+          "latitude": null,
+          "longitude": null,
+          "radiusMeters": 15000,
+          "limit": 3,
+          "searchDepth": "deep",
+          "leadQuality": "all",
+          "sortBy": "opportunity",
+          "minOpportunityScore": 0,
+          "requireContact": false,
+          "missingWebsiteOnly": false,
+          "bypassCache": false,
+          "refreshSeed": ""
+        },
+        "count": 3,
+        "id": "c69c9688-cce3-4bc1-9e75-42bd4fde0467",
+        "createdAt": "2026-09-23T19:50:39.079Z",
+        "updatedAt": "2026-09-23T19:50:39.079Z"
       }
     ],
-    "activities": []
+    "activities": [
+      {
+        "leadId": "osm-node-9080250962",
+        "actor": "verify-1790192814680@example.com",
+        "action": "stage_updated",
+        "stage": "Contacted",
+        "id": "aafac53f-de44-4f03-b5ee-06e17065ec4d",
+        "createdAt": "2026-09-23T19:47:04.679Z",
+        "updatedAt": "2026-09-23T19:47:04.679Z"
+      }
+    ]
   }
 }
