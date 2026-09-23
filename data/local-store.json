@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-23T19:53:22.133Z",
+  "updatedAt": "2026-09-23T20:36:37.436Z",
   "collections": {
     "leads": [
       {
@@ -18835,6 +18835,32 @@
         "id": "FPM77LTlJYYkqqovKowxteMVmKM2",
         "updatedAt": "2026-09-23T19:53:22.133Z",
         "createdAt": "2026-09-23T19:53:22.133Z"
+      },
+      {
+        "uid": "fX2xDLbPIggDSjX9uErGzGKQbOR2",
+        "name": "Local Check",
+        "email": "local-1790195796051@example.com",
+        "role": "user",
+        "subscription": "trial",
+        "planName": "Free Trial",
+        "monthlyLeadLimit": 5,
+        "trialSearchLimit": 2,
+        "trialLeadLimit": 5,
+        "billingStatus": "trial",
+        "trialSearchesUsed": 0,
+        "entitlements": {
+          "billingRequired": true,
+          "trial": true,
+          "trialSearchesUsed": 0,
+          "trialSearchLimit": 2,
+          "trialLeadLimit": 5,
+          "upgradeRequiredAfterTrial": true
+        },
+        "emailVerified": false,
+        "tokenVersion": 1,
+        "id": "fX2xDLbPIggDSjX9uErGzGKQbOR2",
+        "updatedAt": "2026-09-23T20:36:37.356Z",
+        "createdAt": "2026-09-23T20:36:37.356Z"
       }
     ],
     "auditLogs": [

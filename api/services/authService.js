@@ -102,6 +102,14 @@ function displayNameFromFirebase(payload, email) {
   return local || "Member";
 }
 
+function firebaseAuthNotConfiguredError() {
+  return new AppError(
+    "Firebase Authentication is not configured on this deployment. Add FIREBASE_WEB_API_KEY, FIREBASE_PROJECT_ID, FIREBASE_CLIENT_EMAIL and FIREBASE_PRIVATE_KEY to the deployment environment variables (Vercel > Project > Settings > Environment Variables). The built-in owner account still works.",
+    503,
+    "FIREBASE_AUTH_NOT_CONFIGURED"
+  );
+}
+
 function planFields(planKey = "trial") {
   const plan = getPlan(planKey) || getPlan("trial");
   return {
@@ -225,6 +233,7 @@ export class AuthService {
     }
 
     if (!user) {
+      if (env.isProduction && !isFirebaseAuthConfigured()) throw firebaseAuthNotConfiguredError();
       const existing = await this.users.list({
         where: [{ field: "email", op: "==", value: normalizedEmail }],
         limit: 1
@@ -293,6 +302,8 @@ export class AuthService {
         throw localError;
       }
     }
+
+    if (env.isProduction && !isFirebaseAuthConfigured()) throw firebaseAuthNotConfiguredError();
 
     return this.localLogin(normalizedEmail, password);
   }
