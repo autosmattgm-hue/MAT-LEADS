@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-08T23:19:40.076Z",
+  "updatedAt": "2026-09-23T07:14:02.368Z",
   "collections": {
     "leads": [
       {
@@ -138,9 +138,9 @@
         },
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
-        "discoveredBy": "dd2b498f-35f2-4846-9211-60465a60b59a",
-        "discoveredAt": "2026-07-08T23:15:37.081Z",
-        "updatedAt": "2026-07-08T23:15:37.081Z",
+        "discoveredBy": "owner",
+        "discoveredAt": "2026-07-05T22:05:52.296Z",
+        "updatedAt": "2026-07-05T22:05:52.296Z",
         "createdAt": "2026-07-05T20:50:35.805Z"
       },
       {
@@ -274,9 +274,9 @@
         },
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
-        "discoveredBy": "dd2b498f-35f2-4846-9211-60465a60b59a",
-        "discoveredAt": "2026-07-08T23:15:37.081Z",
-        "updatedAt": "2026-07-08T23:15:37.081Z",
+        "discoveredBy": "owner",
+        "discoveredAt": "2026-07-05T22:05:52.296Z",
+        "updatedAt": "2026-07-05T22:05:52.296Z",
         "createdAt": "2026-07-05T20:50:35.805Z"
       },
       {
@@ -561,9 +561,9 @@
         },
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
-        "discoveredBy": "dd2b498f-35f2-4846-9211-60465a60b59a",
-        "discoveredAt": "2026-07-08T23:15:37.081Z",
-        "updatedAt": "2026-07-08T23:15:37.081Z",
+        "discoveredBy": "owner",
+        "discoveredAt": "2026-07-05T22:05:52.296Z",
+        "updatedAt": "2026-07-05T22:05:52.296Z",
         "createdAt": "2026-07-05T20:50:35.805Z"
       },
       {
@@ -837,9 +837,9 @@
         },
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
-        "discoveredBy": "dd2b498f-35f2-4846-9211-60465a60b59a",
-        "discoveredAt": "2026-07-08T23:15:37.081Z",
-        "updatedAt": "2026-07-08T23:15:37.081Z",
+        "discoveredBy": "owner",
+        "discoveredAt": "2026-07-05T22:05:52.296Z",
+        "updatedAt": "2026-07-05T22:05:52.296Z",
         "createdAt": "2026-07-05T20:52:47.394Z"
       },
       {
@@ -973,9 +973,9 @@
         },
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
-        "discoveredBy": "dd2b498f-35f2-4846-9211-60465a60b59a",
-        "discoveredAt": "2026-07-08T23:15:37.081Z",
-        "updatedAt": "2026-07-08T23:15:37.081Z",
+        "discoveredBy": "owner",
+        "discoveredAt": "2026-07-05T22:05:52.296Z",
+        "updatedAt": "2026-07-05T22:05:52.296Z",
         "createdAt": "2026-07-05T20:52:47.394Z"
       },
       {
@@ -1116,9 +1116,9 @@
         },
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
-        "discoveredBy": "dd2b498f-35f2-4846-9211-60465a60b59a",
-        "discoveredAt": "2026-07-08T23:15:37.081Z",
-        "updatedAt": "2026-07-08T23:15:37.081Z",
+        "discoveredBy": "owner",
+        "discoveredAt": "2026-07-05T22:05:52.296Z",
+        "updatedAt": "2026-07-05T22:05:52.296Z",
         "createdAt": "2026-07-05T20:52:47.394Z"
       },
       {
@@ -1255,9 +1255,9 @@
         },
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
-        "discoveredBy": "dd2b498f-35f2-4846-9211-60465a60b59a",
-        "discoveredAt": "2026-07-08T23:15:37.081Z",
-        "updatedAt": "2026-07-08T23:15:37.081Z",
+        "discoveredBy": "owner",
+        "discoveredAt": "2026-07-05T22:05:52.296Z",
+        "updatedAt": "2026-07-05T22:05:52.296Z",
         "createdAt": "2026-07-05T20:52:47.394Z"
       },
       {
@@ -1396,9 +1396,9 @@
         },
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
-        "discoveredBy": "dd2b498f-35f2-4846-9211-60465a60b59a",
-        "discoveredAt": "2026-07-08T23:15:37.082Z",
-        "updatedAt": "2026-07-08T23:15:37.082Z",
+        "discoveredBy": "owner",
+        "discoveredAt": "2026-07-05T22:05:52.296Z",
+        "updatedAt": "2026-07-05T22:05:52.296Z",
         "createdAt": "2026-07-05T20:52:47.394Z"
       },
       {
@@ -1533,9 +1533,9 @@
         },
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
-        "discoveredBy": "dd2b498f-35f2-4846-9211-60465a60b59a",
-        "discoveredAt": "2026-07-08T23:15:37.082Z",
-        "updatedAt": "2026-07-08T23:15:37.082Z",
+        "discoveredBy": "owner",
+        "discoveredAt": "2026-07-05T22:05:52.296Z",
+        "updatedAt": "2026-07-05T22:05:52.296Z",
         "createdAt": "2026-07-05T20:52:47.394Z"
       },
       {
@@ -10784,9 +10784,9 @@
         },
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
-        "discoveredBy": "dd2b498f-35f2-4846-9211-60465a60b59a",
-        "discoveredAt": "2026-07-08T23:15:37.081Z",
-        "updatedAt": "2026-07-08T23:15:37.081Z",
+        "discoveredBy": "29ff1e1b-8bde-4e5e-b24e-eeae455a1b48",
+        "discoveredAt": "2026-07-06T22:42:12.853Z",
+        "updatedAt": "2026-07-06T22:42:12.853Z",
         "createdAt": "2026-07-06T22:42:12.853Z"
       },
       {
@@ -11150,9 +11150,9 @@
         },
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
-        "discoveredBy": "dd2b498f-35f2-4846-9211-60465a60b59a",
-        "discoveredAt": "2026-07-08T23:15:37.081Z",
-        "updatedAt": "2026-07-08T23:15:37.081Z",
+        "discoveredBy": "29ff1e1b-8bde-4e5e-b24e-eeae455a1b48",
+        "discoveredAt": "2026-07-06T22:42:12.853Z",
+        "updatedAt": "2026-07-06T22:42:12.853Z",
         "createdAt": "2026-07-06T22:42:12.853Z"
       },
       {
@@ -11273,9 +11273,9 @@
         },
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
-        "discoveredBy": "dd2b498f-35f2-4846-9211-60465a60b59a",
-        "discoveredAt": "2026-07-08T23:15:37.081Z",
-        "updatedAt": "2026-07-08T23:15:37.081Z",
+        "discoveredBy": "29ff1e1b-8bde-4e5e-b24e-eeae455a1b48",
+        "discoveredAt": "2026-07-06T22:42:12.853Z",
+        "updatedAt": "2026-07-06T22:42:12.853Z",
         "createdAt": "2026-07-06T22:42:12.853Z"
       },
       {
@@ -11826,995 +11826,6 @@
         "discoveredAt": "2026-07-07T14:12:15.343Z",
         "updatedAt": "2026-07-07T14:12:15.343Z",
         "createdAt": "2026-07-07T14:12:15.343Z"
-      },
-      {
-        "id": "osm-node-246707193",
-        "name": "Dalmatien",
-        "category": "Restaurant",
-        "businessType": "Restaurant",
-        "address": "",
-        "phone": "+49 221 5991781",
-        "rating": null,
-        "reviewsCount": 0,
-        "websiteUrl": "",
-        "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=Dalmatien",
-        "latitude": 50.9965749,
-        "longitude": 6.9146604,
-        "country": "Germany",
-        "countryCode": "DE",
-        "email": "",
-        "social": "",
-        "openingHours": "Mo-Su 11:30-15:00,17:00-23:00",
-        "details": {
-          "ownerContact": {
-            "publicContactNote": "Owner or direct contact person was not listed in the public map data."
-          },
-          "contact": {
-            "phone": "+49 221 5991781",
-            "fax": "+49 221 5349580"
-          },
-          "social": {},
-          "location": {
-            "latitude": 50.9965749,
-            "longitude": 6.9146604,
-            "country": "Germany",
-            "countryCode": "DE",
-            "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=Dalmatien"
-          },
-          "business": {},
-          "operations": {
-            "openingHours": "Mo-Su 11:30-15:00,17:00-23:00"
-          },
-          "payments": {},
-          "source": {
-            "provider": "OpenStreetMap Overpass",
-            "osmType": "node",
-            "osmId": 246707193,
-            "osmUrl": "https://www.openstreetmap.org/node/246707193",
-            "rawTags": {
-              "amenity": "restaurant",
-              "check_date": "2026-06-16",
-              "fax": "+49 221 5349580",
-              "name": "Dalmatien",
-              "opening_hours": "Mo-Su 11:30-15:00,17:00-23:00",
-              "phone": "+49 221 5991781",
-              "source": "survey"
-            }
-          }
-        },
-        "source": "openstreetmap_photon",
-        "raw": {
-          "osmType": "node",
-          "osmId": 246707193,
-          "tags": {
-            "amenity": "restaurant",
-            "check_date": "2026-06-16",
-            "fax": "+49 221 5349580",
-            "name": "Dalmatien",
-            "opening_hours": "Mo-Su 11:30-15:00,17:00-23:00",
-            "phone": "+49 221 5991781",
-            "source": "survey"
-          }
-        },
-        "searchRelevance": 92,
-        "marketName": "Cologne",
-        "countryName": "Germany",
-        "audit": {
-          "score": 100,
-          "category": "Very High Opportunity",
-          "checks": {
-            "websiteExists": false,
-            "https": false,
-            "mobileFriendly": false,
-            "seoMetadata": false,
-            "contactForm": false,
-            "socialLinksFound": false,
-            "businessEmailDetected": false,
-            "bookingSystem": false,
-            "outdatedDesign": true
-          },
-          "elapsedMs": 0
-        },
-        "opportunityScore": 100,
-        "opportunityCategory": "Very High Opportunity",
-        "discoveredBy": "dd2b498f-35f2-4846-9211-60465a60b59a",
-        "discoveredAt": "2026-07-08T23:15:37.081Z",
-        "updatedAt": "2026-07-08T23:15:37.081Z",
-        "createdAt": "2026-07-08T23:15:37.081Z"
-      },
-      {
-        "id": "osm-node-243365013",
-        "name": "Heinemann",
-        "category": "Restaurant",
-        "businessType": "Restaurant",
-        "address": "",
-        "phone": "+49 221 5992976",
-        "rating": null,
-        "reviewsCount": 0,
-        "websiteUrl": "",
-        "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=Heinemann",
-        "latitude": 50.9968837,
-        "longitude": 6.914581,
-        "country": "Germany",
-        "countryCode": "DE",
-        "email": "",
-        "social": "",
-        "openingHours": "Mo 06:30-18:30; Tu-Fr 06:30-19:00; Sa 06:30-14:00; Su 07:00-12:00",
-        "details": {
-          "ownerContact": {
-            "publicContactNote": "Owner or direct contact person was not listed in the public map data."
-          },
-          "contact": {
-            "phone": "+49 221 5992976"
-          },
-          "social": {},
-          "location": {
-            "latitude": 50.9968837,
-            "longitude": 6.914581,
-            "country": "Germany",
-            "countryCode": "DE",
-            "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=Heinemann"
-          },
-          "business": {},
-          "operations": {
-            "openingHours": "Mo 06:30-18:30; Tu-Fr 06:30-19:00; Sa 06:30-14:00; Su 07:00-12:00",
-            "wheelchair": "yes"
-          },
-          "payments": {},
-          "source": {
-            "provider": "OpenStreetMap Overpass",
-            "osmType": "node",
-            "osmId": 243365013,
-            "osmUrl": "https://www.openstreetmap.org/node/243365013",
-            "rawTags": {
-              "amenity": "cafe",
-              "check_date": "2026-06-16",
-              "name": "Heinemann",
-              "opening_hours": "Mo 06:30-18:30; Tu-Fr 06:30-19:00; Sa 06:30-14:00; Su 07:00-12:00",
-              "phone": "+49 221 5992976",
-              "shop": "bakery",
-              "source": "survey",
-              "wheelchair": "yes"
-            }
-          }
-        },
-        "source": "openstreetmap_photon",
-        "raw": {
-          "osmType": "node",
-          "osmId": 243365013,
-          "tags": {
-            "amenity": "cafe",
-            "check_date": "2026-06-16",
-            "name": "Heinemann",
-            "opening_hours": "Mo 06:30-18:30; Tu-Fr 06:30-19:00; Sa 06:30-14:00; Su 07:00-12:00",
-            "phone": "+49 221 5992976",
-            "shop": "bakery",
-            "source": "survey",
-            "wheelchair": "yes"
-          }
-        },
-        "searchRelevance": 92,
-        "marketName": "Cologne",
-        "countryName": "Germany",
-        "audit": {
-          "score": 100,
-          "category": "Very High Opportunity",
-          "checks": {
-            "websiteExists": false,
-            "https": false,
-            "mobileFriendly": false,
-            "seoMetadata": false,
-            "contactForm": false,
-            "socialLinksFound": false,
-            "businessEmailDetected": false,
-            "bookingSystem": false,
-            "outdatedDesign": true
-          },
-          "elapsedMs": 0
-        },
-        "opportunityScore": 100,
-        "opportunityCategory": "Very High Opportunity",
-        "discoveredBy": "dd2b498f-35f2-4846-9211-60465a60b59a",
-        "discoveredAt": "2026-07-08T23:15:37.081Z",
-        "updatedAt": "2026-07-08T23:15:37.081Z",
-        "createdAt": "2026-07-08T23:15:37.081Z"
-      },
-      {
-        "id": "osm-node-248283815",
-        "name": "McDonald's",
-        "category": "Restaurant",
-        "businessType": "Restaurant",
-        "address": "2-8, Marzellenstraße, Köln, 50667",
-        "phone": "+49 221 1136667",
-        "rating": null,
-        "reviewsCount": 0,
-        "websiteUrl": "",
-        "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=McDonald's%202-8%2C%20Marzellenstra%C3%9Fe%2C%20K%C3%B6ln%2C%2050667",
-        "latitude": 50.9418739,
-        "longitude": 6.9562012,
-        "country": "Germany",
-        "countryCode": "DE",
-        "email": "",
-        "social": "",
-        "openingHours": "Mo-Th 07:00-02:00; Fr,Sa 07:00-05:00; Su,PH 08:00-02:00",
-        "details": {
-          "ownerContact": {
-            "operator": "Tolan Restaurants GmbH & Co. KG",
-            "publicContactNote": "Owner/operator/contact fields were found in public map data."
-          },
-          "contact": {
-            "phone": "+49 221 1136667"
-          },
-          "social": {},
-          "location": {
-            "latitude": 50.9418739,
-            "longitude": 6.9562012,
-            "address": "2-8, Marzellenstraße, Köln, 50667",
-            "houseNumber": "2-8",
-            "street": "Marzellenstraße",
-            "city": "Köln",
-            "postcode": "50667",
-            "country": "Germany",
-            "countryCode": "DE",
-            "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=McDonald's%202-8%2C%20Marzellenstra%C3%9Fe%2C%20K%C3%B6ln%2C%2050667"
-          },
-          "business": {
-            "brand": "McDonald's",
-            "operator": "Tolan Restaurants GmbH & Co. KG",
-            "cuisine": "burger"
-          },
-          "operations": {
-            "openingHours": "Mo-Th 07:00-02:00; Fr,Sa 07:00-05:00; Su,PH 08:00-02:00",
-            "delivery": "yes",
-            "takeaway": "yes",
-            "outdoorSeating": "no",
-            "wheelchair": "limited"
-          },
-          "payments": {
-            "cash": "yes",
-            "visa": "yes",
-            "mastercard": "yes"
-          },
-          "source": {
-            "provider": "OpenStreetMap Overpass",
-            "osmType": "node",
-            "osmId": 248283815,
-            "osmUrl": "https://www.openstreetmap.org/node/248283815",
-            "rawTags": {
-              "addr:city": "Köln",
-              "addr:housenumber": "2-8",
-              "addr:postcode": "50667",
-              "addr:street": "Marzellenstraße",
-              "amenity": "fast_food",
-              "brand": "McDonald's",
-              "brand:wikidata": "Q38076",
-              "brand:wikipedia": "en:McDonald's",
-              "check_date:opening_hours": "2025-10-23",
-              "cuisine": "burger",
-              "delivery": "yes",
-              "diet:vegan": "yes",
-              "diet:vegetarian": "yes",
-              "drive_through": "no",
-              "layer": "1",
-              "name": "McDonald's",
-              "opening_hours": "Mo-Th 07:00-02:00; Fr,Sa 07:00-05:00; Su,PH 08:00-02:00",
-              "operator": "Tolan Restaurants GmbH & Co. KG",
-              "outdoor_seating": "no",
-              "payment:cash": "yes",
-              "payment:girocard": "yes",
-              "payment:maestro": "yes",
-              "payment:mastercard": "yes",
-              "payment:v_pay": "yes",
-              "payment:visa": "yes",
-              "phone": "+49 221 1136667",
-              "source": "survey",
-              "takeaway": "yes",
-              "toilets": "yes",
-              "wheelchair": "limited"
-            }
-          }
-        },
-        "source": "openstreetmap_photon",
-        "raw": {
-          "osmType": "node",
-          "osmId": 248283815,
-          "tags": {
-            "addr:city": "Köln",
-            "addr:housenumber": "2-8",
-            "addr:postcode": "50667",
-            "addr:street": "Marzellenstraße",
-            "amenity": "fast_food",
-            "brand": "McDonald's",
-            "brand:wikidata": "Q38076",
-            "brand:wikipedia": "en:McDonald's",
-            "check_date:opening_hours": "2025-10-23",
-            "cuisine": "burger",
-            "delivery": "yes",
-            "diet:vegan": "yes",
-            "diet:vegetarian": "yes",
-            "drive_through": "no",
-            "layer": "1",
-            "name": "McDonald's",
-            "opening_hours": "Mo-Th 07:00-02:00; Fr,Sa 07:00-05:00; Su,PH 08:00-02:00",
-            "operator": "Tolan Restaurants GmbH & Co. KG",
-            "outdoor_seating": "no",
-            "payment:cash": "yes",
-            "payment:girocard": "yes",
-            "payment:maestro": "yes",
-            "payment:mastercard": "yes",
-            "payment:v_pay": "yes",
-            "payment:visa": "yes",
-            "phone": "+49 221 1136667",
-            "source": "survey",
-            "takeaway": "yes",
-            "toilets": "yes",
-            "wheelchair": "limited"
-          }
-        },
-        "searchRelevance": 97,
-        "marketName": "Cologne",
-        "countryName": "Germany",
-        "audit": {
-          "score": 100,
-          "category": "Very High Opportunity",
-          "checks": {
-            "websiteExists": false,
-            "https": false,
-            "mobileFriendly": false,
-            "seoMetadata": false,
-            "contactForm": false,
-            "socialLinksFound": false,
-            "businessEmailDetected": false,
-            "bookingSystem": false,
-            "outdatedDesign": true
-          },
-          "elapsedMs": 0
-        },
-        "opportunityScore": 100,
-        "opportunityCategory": "Very High Opportunity",
-        "discoveredBy": "dd2b498f-35f2-4846-9211-60465a60b59a",
-        "discoveredAt": "2026-07-08T23:15:37.081Z",
-        "updatedAt": "2026-07-08T23:15:37.081Z",
-        "createdAt": "2026-07-08T23:15:37.081Z"
-      },
-      {
-        "id": "osm-node-246770151",
-        "name": "Olympia Grill Gyros Haus",
-        "category": "Restaurant",
-        "businessType": "Restaurant",
-        "address": "30, Friedrich-Karl-Straße, Köln, 50739, DE",
-        "phone": "+49 221 7407447",
-        "rating": null,
-        "reviewsCount": 0,
-        "websiteUrl": "",
-        "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=Olympia%20Grill%20Gyros%20Haus%2030%2C%20Friedrich-Karl-Stra%C3%9Fe%2C%20K%C3%B6ln%2C%2050739%2C%20DE",
-        "latitude": 50.9750511,
-        "longitude": 6.9498106,
-        "country": "Germany",
-        "countryCode": "DE",
-        "email": "",
-        "social": "",
-        "openingHours": "PH,Tu-Su 11:00-21:00; Mo off",
-        "details": {
-          "ownerContact": {
-            "publicContactNote": "Owner or direct contact person was not listed in the public map data."
-          },
-          "contact": {
-            "phone": "+49 221 7407447"
-          },
-          "social": {},
-          "location": {
-            "latitude": 50.9750511,
-            "longitude": 6.9498106,
-            "address": "30, Friedrich-Karl-Straße, Köln, 50739, DE",
-            "houseNumber": "30",
-            "street": "Friedrich-Karl-Straße",
-            "city": "Köln",
-            "postcode": "50739",
-            "country": "Germany",
-            "countryCode": "DE",
-            "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=Olympia%20Grill%20Gyros%20Haus%2030%2C%20Friedrich-Karl-Stra%C3%9Fe%2C%20K%C3%B6ln%2C%2050739%2C%20DE"
-          },
-          "business": {
-            "cuisine": "greek"
-          },
-          "operations": {
-            "openingHours": "PH,Tu-Su 11:00-21:00; Mo off",
-            "outdoorSeating": "no",
-            "wheelchair": "yes"
-          },
-          "payments": {},
-          "source": {
-            "provider": "OpenStreetMap Overpass",
-            "osmType": "node",
-            "osmId": 246770151,
-            "osmUrl": "https://www.openstreetmap.org/node/246770151",
-            "rawTags": {
-              "addr:city": "Köln",
-              "addr:country": "DE",
-              "addr:housenumber": "30",
-              "addr:postcode": "50739",
-              "addr:street": "Friedrich-Karl-Straße",
-              "amenity": "fast_food",
-              "contact:phone": "+49 221 7407447",
-              "cuisine": "greek",
-              "indoor_seating": "yes",
-              "name": "Olympia Grill Gyros Haus",
-              "opening_hours": "PH,Tu-Su 11:00-21:00; Mo off",
-              "outdoor_seating": "no",
-              "source": "knowledge",
-              "toilets:wheelchair": "no",
-              "wheelchair": "yes"
-            }
-          }
-        },
-        "source": "openstreetmap_photon",
-        "raw": {
-          "osmType": "node",
-          "osmId": 246770151,
-          "tags": {
-            "addr:city": "Köln",
-            "addr:country": "DE",
-            "addr:housenumber": "30",
-            "addr:postcode": "50739",
-            "addr:street": "Friedrich-Karl-Straße",
-            "amenity": "fast_food",
-            "contact:phone": "+49 221 7407447",
-            "cuisine": "greek",
-            "indoor_seating": "yes",
-            "name": "Olympia Grill Gyros Haus",
-            "opening_hours": "PH,Tu-Su 11:00-21:00; Mo off",
-            "outdoor_seating": "no",
-            "source": "knowledge",
-            "toilets:wheelchair": "no",
-            "wheelchair": "yes"
-          }
-        },
-        "searchRelevance": 97,
-        "marketName": "Cologne",
-        "countryName": "Germany",
-        "audit": {
-          "score": 100,
-          "category": "Very High Opportunity",
-          "checks": {
-            "websiteExists": false,
-            "https": false,
-            "mobileFriendly": false,
-            "seoMetadata": false,
-            "contactForm": false,
-            "socialLinksFound": false,
-            "businessEmailDetected": false,
-            "bookingSystem": false,
-            "outdatedDesign": true
-          },
-          "elapsedMs": 0
-        },
-        "opportunityScore": 100,
-        "opportunityCategory": "Very High Opportunity",
-        "discoveredBy": "dd2b498f-35f2-4846-9211-60465a60b59a",
-        "discoveredAt": "2026-07-08T23:15:37.081Z",
-        "updatedAt": "2026-07-08T23:15:37.081Z",
-        "createdAt": "2026-07-08T23:15:37.081Z"
-      },
-      {
-        "id": "osm-node-243934863",
-        "name": "op d'r Höh",
-        "category": "Restaurant",
-        "businessType": "Restaurant",
-        "address": "112, Sandweg, Köln, 50827, DE",
-        "phone": "+49 174 4052615",
-        "rating": null,
-        "reviewsCount": 0,
-        "websiteUrl": "",
-        "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=op%20d'r%20H%C3%B6h%20112%2C%20Sandweg%2C%20K%C3%B6ln%2C%2050827%2C%20DE",
-        "latitude": 50.9665163,
-        "longitude": 6.897945,
-        "country": "Germany",
-        "countryCode": "DE",
-        "email": "",
-        "social": "",
-        "openingHours": "Su off; Mo-Fr 07:00-18:00; Sa 09:00-14:00",
-        "details": {
-          "ownerContact": {
-            "publicContactNote": "Owner or direct contact person was not listed in the public map data."
-          },
-          "contact": {
-            "phone": "+49 174 4052615"
-          },
-          "social": {},
-          "location": {
-            "latitude": 50.9665163,
-            "longitude": 6.897945,
-            "address": "112, Sandweg, Köln, 50827, DE",
-            "houseNumber": "112",
-            "street": "Sandweg",
-            "city": "Köln",
-            "postcode": "50827",
-            "country": "Germany",
-            "countryCode": "DE",
-            "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=op%20d'r%20H%C3%B6h%20112%2C%20Sandweg%2C%20K%C3%B6ln%2C%2050827%2C%20DE"
-          },
-          "business": {},
-          "operations": {
-            "openingHours": "Su off; Mo-Fr 07:00-18:00; Sa 09:00-14:00"
-          },
-          "payments": {},
-          "source": {
-            "provider": "OpenStreetMap Overpass",
-            "osmType": "node",
-            "osmId": 243934863,
-            "osmUrl": "https://www.openstreetmap.org/node/243934863",
-            "rawTags": {
-              "addr:city": "Köln",
-              "addr:country": "DE",
-              "addr:housenumber": "112",
-              "addr:postcode": "50827",
-              "addr:street": "Sandweg",
-              "amenity": "pub",
-              "name": "op d'r Höh",
-              "opening_hours": "Su off; Mo-Fr 07:00-18:00; Sa 09:00-14:00",
-              "phone": "+49 174 4052615",
-              "source": "survey"
-            }
-          }
-        },
-        "source": "openstreetmap_photon",
-        "raw": {
-          "osmType": "node",
-          "osmId": 243934863,
-          "tags": {
-            "addr:city": "Köln",
-            "addr:country": "DE",
-            "addr:housenumber": "112",
-            "addr:postcode": "50827",
-            "addr:street": "Sandweg",
-            "amenity": "pub",
-            "name": "op d'r Höh",
-            "opening_hours": "Su off; Mo-Fr 07:00-18:00; Sa 09:00-14:00",
-            "phone": "+49 174 4052615",
-            "source": "survey"
-          }
-        },
-        "searchRelevance": 97,
-        "marketName": "Cologne",
-        "countryName": "Germany",
-        "audit": {
-          "score": 100,
-          "category": "Very High Opportunity",
-          "checks": {
-            "websiteExists": false,
-            "https": false,
-            "mobileFriendly": false,
-            "seoMetadata": false,
-            "contactForm": false,
-            "socialLinksFound": false,
-            "businessEmailDetected": false,
-            "bookingSystem": false,
-            "outdatedDesign": true
-          },
-          "elapsedMs": 0
-        },
-        "opportunityScore": 100,
-        "opportunityCategory": "Very High Opportunity",
-        "discoveredBy": "dd2b498f-35f2-4846-9211-60465a60b59a",
-        "discoveredAt": "2026-07-08T23:15:37.081Z",
-        "updatedAt": "2026-07-08T23:15:37.081Z",
-        "createdAt": "2026-07-08T23:15:37.081Z"
-      },
-      {
-        "id": "photon-node-13972155637",
-        "name": "Restaurant",
-        "category": "Restaurant",
-        "businessType": "Restaurant",
-        "address": "49, Zentralländstraße, Munich, 81379, DE",
-        "phone": "",
-        "rating": null,
-        "reviewsCount": 0,
-        "websiteUrl": "",
-        "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=Restaurant%2049%2C%20Zentrall%C3%A4ndstra%C3%9Fe%2C%20Munich%2C%2081379%2C%20DE",
-        "latitude": 48.0913071,
-        "longitude": 11.5444857,
-        "country": "Germany",
-        "countryCode": "DE",
-        "email": "",
-        "social": "",
-        "openingHours": "",
-        "details": {
-          "ownerContact": {
-            "publicContactNote": "Owner or direct contact person was not listed in the public map data."
-          },
-          "contact": {},
-          "social": {},
-          "location": {
-            "latitude": 48.0913071,
-            "longitude": 11.5444857,
-            "address": "49, Zentralländstraße, Munich, 81379, DE",
-            "houseNumber": "49",
-            "street": "Zentralländstraße",
-            "city": "Munich",
-            "postcode": "81379",
-            "country": "Germany",
-            "countryCode": "DE",
-            "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=Restaurant%2049%2C%20Zentrall%C3%A4ndstra%C3%9Fe%2C%20Munich%2C%2081379%2C%20DE"
-          },
-          "business": {},
-          "operations": {},
-          "payments": {},
-          "source": {
-            "provider": "OpenStreetMap Photon",
-            "osmType": "node",
-            "osmId": 13972155637,
-            "osmUrl": "https://www.openstreetmap.org/node/13972155637",
-            "rawTags": {
-              "name": "Restaurant",
-              "amenity": "restaurant",
-              "addr:housenumber": "49",
-              "addr:street": "Zentralländstraße",
-              "addr:city": "Munich",
-              "addr:postcode": "81379",
-              "addr:country": "DE",
-              "is_in:country": "Germany"
-            },
-            "photonProperties": {
-              "osm_type": "N",
-              "osm_id": 13972155637,
-              "osm_key": "amenity",
-              "osm_value": "restaurant",
-              "type": "house",
-              "housenumber": "49",
-              "name": "Restaurant",
-              "street": "Zentralländstraße",
-              "locality": "Maria Einsiedel",
-              "district": "Thalkirchen",
-              "city": "Munich",
-              "state": "Bavaria",
-              "country": "Germany",
-              "postcode": "81379",
-              "countrycode": "DE"
-            }
-          }
-        },
-        "source": "openstreetmap_photon",
-        "raw": {
-          "osmType": "node",
-          "osmId": 13972155637,
-          "tags": {
-            "name": "Restaurant",
-            "amenity": "restaurant",
-            "addr:housenumber": "49",
-            "addr:street": "Zentralländstraße",
-            "addr:city": "Munich",
-            "addr:postcode": "81379",
-            "addr:country": "DE",
-            "is_in:country": "Germany"
-          },
-          "photon": {
-            "type": "Feature",
-            "properties": {
-              "osm_type": "N",
-              "osm_id": 13972155637,
-              "osm_key": "amenity",
-              "osm_value": "restaurant",
-              "type": "house",
-              "housenumber": "49",
-              "name": "Restaurant",
-              "street": "Zentralländstraße",
-              "locality": "Maria Einsiedel",
-              "district": "Thalkirchen",
-              "city": "Munich",
-              "state": "Bavaria",
-              "country": "Germany",
-              "postcode": "81379",
-              "countrycode": "DE"
-            },
-            "geometry": {
-              "type": "Point",
-              "coordinates": [
-                11.5444857,
-                48.0913071
-              ]
-            }
-          }
-        },
-        "searchRelevance": 77,
-        "marketName": "Munich",
-        "countryName": "Germany",
-        "audit": {
-          "score": 100,
-          "category": "Very High Opportunity",
-          "checks": {
-            "websiteExists": false,
-            "https": false,
-            "mobileFriendly": false,
-            "seoMetadata": false,
-            "contactForm": false,
-            "socialLinksFound": false,
-            "businessEmailDetected": false,
-            "bookingSystem": false,
-            "outdatedDesign": true
-          },
-          "elapsedMs": 0
-        },
-        "opportunityScore": 100,
-        "opportunityCategory": "Very High Opportunity",
-        "discoveredBy": "dd2b498f-35f2-4846-9211-60465a60b59a",
-        "discoveredAt": "2026-07-08T23:15:37.081Z",
-        "updatedAt": "2026-07-08T23:15:37.081Z",
-        "createdAt": "2026-07-08T23:15:37.081Z"
-      },
-      {
-        "id": "photon-node-277504583",
-        "name": "Restaurant Adria",
-        "category": "Restaurant",
-        "businessType": "Restaurant",
-        "address": "21, Letzter Heller, Hamburg, 22111, DE",
-        "phone": "",
-        "rating": null,
-        "reviewsCount": 0,
-        "websiteUrl": "",
-        "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=Restaurant%20Adria%2021%2C%20Letzter%20Heller%2C%20Hamburg%2C%2022111%2C%20DE",
-        "latitude": 53.5447491,
-        "longitude": 10.0895845,
-        "country": "Germany",
-        "countryCode": "DE",
-        "email": "",
-        "social": "",
-        "openingHours": "",
-        "details": {
-          "ownerContact": {
-            "publicContactNote": "Owner or direct contact person was not listed in the public map data."
-          },
-          "contact": {},
-          "social": {},
-          "location": {
-            "latitude": 53.5447491,
-            "longitude": 10.0895845,
-            "address": "21, Letzter Heller, Hamburg, 22111, DE",
-            "houseNumber": "21",
-            "street": "Letzter Heller",
-            "city": "Hamburg",
-            "postcode": "22111",
-            "country": "Germany",
-            "countryCode": "DE",
-            "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=Restaurant%20Adria%2021%2C%20Letzter%20Heller%2C%20Hamburg%2C%2022111%2C%20DE"
-          },
-          "business": {},
-          "operations": {},
-          "payments": {},
-          "source": {
-            "provider": "OpenStreetMap Photon",
-            "osmType": "node",
-            "osmId": 277504583,
-            "osmUrl": "https://www.openstreetmap.org/node/277504583",
-            "rawTags": {
-              "name": "Restaurant Adria",
-              "amenity": "restaurant",
-              "addr:housenumber": "21",
-              "addr:street": "Letzter Heller",
-              "addr:city": "Hamburg",
-              "addr:postcode": "22111",
-              "addr:country": "DE",
-              "is_in:country": "Germany"
-            },
-            "photonProperties": {
-              "osm_type": "N",
-              "osm_id": 277504583,
-              "osm_key": "amenity",
-              "osm_value": "restaurant",
-              "type": "house",
-              "housenumber": "21",
-              "name": "Restaurant Adria",
-              "street": "Letzter Heller",
-              "district": "Horn",
-              "city": "Hamburg",
-              "country": "Germany",
-              "postcode": "22111",
-              "countrycode": "DE"
-            }
-          }
-        },
-        "source": "openstreetmap_photon",
-        "raw": {
-          "osmType": "node",
-          "osmId": 277504583,
-          "tags": {
-            "name": "Restaurant Adria",
-            "amenity": "restaurant",
-            "addr:housenumber": "21",
-            "addr:street": "Letzter Heller",
-            "addr:city": "Hamburg",
-            "addr:postcode": "22111",
-            "addr:country": "DE",
-            "is_in:country": "Germany"
-          },
-          "photon": {
-            "type": "Feature",
-            "properties": {
-              "osm_type": "N",
-              "osm_id": 277504583,
-              "osm_key": "amenity",
-              "osm_value": "restaurant",
-              "type": "house",
-              "housenumber": "21",
-              "name": "Restaurant Adria",
-              "street": "Letzter Heller",
-              "district": "Horn",
-              "city": "Hamburg",
-              "country": "Germany",
-              "postcode": "22111",
-              "countrycode": "DE"
-            },
-            "geometry": {
-              "type": "Point",
-              "coordinates": [
-                10.0895845,
-                53.5447491
-              ]
-            }
-          }
-        },
-        "searchRelevance": 77,
-        "marketName": "Hamburg",
-        "countryName": "Germany",
-        "audit": {
-          "score": 100,
-          "category": "Very High Opportunity",
-          "checks": {
-            "websiteExists": false,
-            "https": false,
-            "mobileFriendly": false,
-            "seoMetadata": false,
-            "contactForm": false,
-            "socialLinksFound": false,
-            "businessEmailDetected": false,
-            "bookingSystem": false,
-            "outdatedDesign": true
-          },
-          "elapsedMs": 0
-        },
-        "opportunityScore": 100,
-        "opportunityCategory": "Very High Opportunity",
-        "discoveredBy": "dd2b498f-35f2-4846-9211-60465a60b59a",
-        "discoveredAt": "2026-07-08T23:15:37.081Z",
-        "updatedAt": "2026-07-08T23:15:37.082Z",
-        "createdAt": "2026-07-08T23:15:37.082Z"
-      },
-      {
-        "id": "photon-node-711911678",
-        "name": "Restaurant am Fleet",
-        "category": "Restaurant",
-        "businessType": "Restaurant",
-        "address": "4, Heiligengeistbrücke, Hamburg, 20459, DE",
-        "phone": "",
-        "rating": null,
-        "reviewsCount": 0,
-        "websiteUrl": "",
-        "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=Restaurant%20am%20Fleet%204%2C%20Heiligengeistbr%C3%BCcke%2C%20Hamburg%2C%2020459%2C%20DE",
-        "latitude": 53.5494206,
-        "longitude": 9.9862078,
-        "country": "Germany",
-        "countryCode": "DE",
-        "email": "",
-        "social": "",
-        "openingHours": "",
-        "details": {
-          "ownerContact": {
-            "publicContactNote": "Owner or direct contact person was not listed in the public map data."
-          },
-          "contact": {},
-          "social": {},
-          "location": {
-            "latitude": 53.5494206,
-            "longitude": 9.9862078,
-            "address": "4, Heiligengeistbrücke, Hamburg, 20459, DE",
-            "houseNumber": "4",
-            "street": "Heiligengeistbrücke",
-            "city": "Hamburg",
-            "postcode": "20459",
-            "country": "Germany",
-            "countryCode": "DE",
-            "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=Restaurant%20am%20Fleet%204%2C%20Heiligengeistbr%C3%BCcke%2C%20Hamburg%2C%2020459%2C%20DE"
-          },
-          "business": {},
-          "operations": {},
-          "payments": {},
-          "source": {
-            "provider": "OpenStreetMap Photon",
-            "osmType": "node",
-            "osmId": 711911678,
-            "osmUrl": "https://www.openstreetmap.org/node/711911678",
-            "rawTags": {
-              "name": "Restaurant am Fleet",
-              "amenity": "restaurant",
-              "addr:housenumber": "4",
-              "addr:street": "Heiligengeistbrücke",
-              "addr:city": "Hamburg",
-              "addr:postcode": "20459",
-              "addr:country": "DE",
-              "is_in:country": "Germany"
-            },
-            "photonProperties": {
-              "osm_type": "N",
-              "osm_id": 711911678,
-              "osm_key": "amenity",
-              "osm_value": "restaurant",
-              "type": "house",
-              "housenumber": "4",
-              "name": "Restaurant am Fleet",
-              "street": "Heiligengeistbrücke",
-              "district": "Neustadt",
-              "city": "Hamburg",
-              "country": "Germany",
-              "postcode": "20459",
-              "countrycode": "DE"
-            }
-          }
-        },
-        "source": "openstreetmap_photon",
-        "raw": {
-          "osmType": "node",
-          "osmId": 711911678,
-          "tags": {
-            "name": "Restaurant am Fleet",
-            "amenity": "restaurant",
-            "addr:housenumber": "4",
-            "addr:street": "Heiligengeistbrücke",
-            "addr:city": "Hamburg",
-            "addr:postcode": "20459",
-            "addr:country": "DE",
-            "is_in:country": "Germany"
-          },
-          "photon": {
-            "type": "Feature",
-            "properties": {
-              "osm_type": "N",
-              "osm_id": 711911678,
-              "osm_key": "amenity",
-              "osm_value": "restaurant",
-              "type": "house",
-              "housenumber": "4",
-              "name": "Restaurant am Fleet",
-              "street": "Heiligengeistbrücke",
-              "district": "Neustadt",
-              "city": "Hamburg",
-              "country": "Germany",
-              "postcode": "20459",
-              "countrycode": "DE"
-            },
-            "geometry": {
-              "type": "Point",
-              "coordinates": [
-                9.9862078,
-                53.5494206
-              ]
-            }
-          }
-        },
-        "searchRelevance": 77,
-        "marketName": "Hamburg",
-        "countryName": "Germany",
-        "audit": {
-          "score": 100,
-          "category": "Very High Opportunity",
-          "checks": {
-            "websiteExists": false,
-            "https": false,
-            "mobileFriendly": false,
-            "seoMetadata": false,
-            "contactForm": false,
-            "socialLinksFound": false,
-            "businessEmailDetected": false,
-            "bookingSystem": false,
-            "outdatedDesign": true
-          },
-          "elapsedMs": 0
-        },
-        "opportunityScore": 100,
-        "opportunityCategory": "Very High Opportunity",
-        "discoveredBy": "dd2b498f-35f2-4846-9211-60465a60b59a",
-        "discoveredAt": "2026-07-08T23:15:37.082Z",
-        "updatedAt": "2026-07-08T23:15:37.082Z",
-        "createdAt": "2026-07-08T23:15:37.082Z"
       }
     ],
     "users": [
@@ -12826,7 +11837,7 @@
         "tokenVersion": 1,
         "id": "dd2b498f-35f2-4846-9211-60465a60b59a",
         "createdAt": "2026-07-05T20:50:28.983Z",
-        "updatedAt": "2026-07-08T23:17:42.031Z",
+        "updatedAt": "2026-07-05T20:52:13.800Z",
         "uid": "dd2b498f-35f2-4846-9211-60465a60b59a",
         "subscription": "trial",
         "planName": "Free Trial",
@@ -12843,35 +11854,7 @@
           "trialLeadLimit": 5,
           "upgradeRequiredAfterTrial": true
         },
-        "emailVerified": false,
-        "promoGrants": [
-          {
-            "userId": "dd2b498f-35f2-4846-9211-60465a60b59a",
-            "code": "freematcode20",
-            "type": "limited",
-            "redeemedAt": "2026-07-08T23:14:42.290Z",
-            "searchesUsedToday": 1,
-            "lastSearchDate": "2026-07-08",
-            "searchesPerDay": 20,
-            "resultsPerSearch": 20,
-            "durationDays": 2,
-            "expiresAt": "2026-07-10T23:14:42.290Z",
-            "id": "8b80013c-c67e-4c38-98bc-13d066ee7178",
-            "createdAt": "2026-07-08T23:14:42.294Z",
-            "updatedAt": "2026-07-08T23:14:42.294Z"
-          },
-          {
-            "userId": "dd2b498f-35f2-4846-9211-60465a60b59a",
-            "code": "freematpass2026",
-            "type": "unlimited",
-            "redeemedAt": "2026-07-08T23:17:41.846Z",
-            "searchesUsedToday": 0,
-            "lastSearchDate": "2026-07-08",
-            "id": "d3f3fb85-ec86-4117-8f13-2953ab649c59",
-            "createdAt": "2026-07-08T23:17:41.846Z",
-            "updatedAt": "2026-07-08T23:17:41.846Z"
-          }
-        ]
+        "emailVerified": false
       },
       {
         "name": "danny daniel",
@@ -12894,6 +11877,33 @@
           "billingRequired": true,
           "trial": true,
           "trialSearchesUsed": 2,
+          "trialSearchLimit": 2,
+          "trialLeadLimit": 5,
+          "upgradeRequiredAfterTrial": true
+        },
+        "emailVerified": false
+      },
+      {
+        "name": "danny daniel",
+        "email": "dannydanielzzg11@gmail.com",
+        "passwordHash": "scrypt$90744dabc268cb12f500e58f2b1681e7$d383631f997057a919992a23ffaec796e21c5ecd0a0f9fcd1dc8df2de7622469aa4fae3d3d3f13bef53c883d09f560a0532420cf49e7a0f4fa799bef1edc53cf",
+        "role": "user",
+        "tokenVersion": 1,
+        "id": "0298ce7b-3a5f-478a-b880-d05487802b38",
+        "createdAt": "2026-09-23T07:14:01.095Z",
+        "updatedAt": "2026-09-23T07:14:02.368Z",
+        "uid": "0298ce7b-3a5f-478a-b880-d05487802b38",
+        "subscription": "trial",
+        "planName": "Free Trial",
+        "monthlyLeadLimit": 5,
+        "trialSearchLimit": 2,
+        "trialLeadLimit": 5,
+        "billingStatus": "trial",
+        "trialSearchesUsed": 0,
+        "entitlements": {
+          "billingRequired": true,
+          "trial": true,
+          "trialSearchesUsed": 0,
           "trialSearchLimit": 2,
           "trialLeadLimit": 5,
           "upgradeRequiredAfterTrial": true
@@ -13428,44 +12438,6 @@
         "id": "7d009c02-6753-4f2b-b450-469dc2211453",
         "createdAt": "2026-07-07T14:12:22.317Z",
         "updatedAt": "2026-07-07T14:12:22.317Z"
-      },
-      {
-        "actor": "autosmattgm@gmail.com",
-        "action": "lead_search",
-        "query": {
-          "country": "Germany",
-          "countries": [
-            "Germany"
-          ],
-          "state": "",
-          "city": "",
-          "zip": "",
-          "industry": "restaurants, hotels, boutiques, car_dealers",
-          "keyword": "",
-          "businessTypes": [
-            "restaurants",
-            "hotels",
-            "boutiques",
-            "car_dealers"
-          ],
-          "mapLink": "",
-          "latitude": null,
-          "longitude": null,
-          "radiusMeters": 15000,
-          "limit": 20,
-          "searchDepth": "deep",
-          "leadQuality": "all",
-          "sortBy": "opportunity",
-          "minOpportunityScore": 0,
-          "requireContact": false,
-          "missingWebsiteOnly": false,
-          "bypassCache": false,
-          "refreshSeed": ""
-        },
-        "count": 20,
-        "id": "67eb2257-a912-4bde-a9bf-0bf0fb582bdc",
-        "createdAt": "2026-07-08T23:15:40.172Z",
-        "updatedAt": "2026-07-08T23:15:40.172Z"
       }
     ],
     "activities": [],
@@ -13482,47 +12454,6 @@
         "createdAt": "2026-07-07T14:20:58.568Z",
         "updatedAt": "2026-07-07T14:20:59.126Z",
         "returnUrl": "http://localhost:3000/billing-success.html?provider=paypal&plan=growth_plus&session=ada472dd-6e04-44b0-8356-3aa8c03c92d2"
-      },
-      {
-        "userId": "dd2b498f-35f2-4846-9211-60465a60b59a",
-        "email": "autosmattgm@gmail.com",
-        "provider": "paypal",
-        "plan": "growth_plus",
-        "status": "pending",
-        "paymentLink": "https://www.paypal.com/ncp/payment/YVE74UL365V8W",
-        "cancelUrl": "http://localhost:3000/pricing.html?checkout=cancelled&plan=growth_plus",
-        "id": "7ace95c2-626b-4ecc-af1f-841159570a18",
-        "createdAt": "2026-07-08T23:19:39.669Z",
-        "updatedAt": "2026-07-08T23:19:40.076Z",
-        "returnUrl": "http://localhost:3000/billing-success.html?provider=paypal&plan=growth_plus&session=7ace95c2-626b-4ecc-af1f-841159570a18"
-      }
-    ],
-    "promoUsages": [
-      {
-        "userId": "dd2b498f-35f2-4846-9211-60465a60b59a",
-        "code": "freematcode20",
-        "type": "limited",
-        "redeemedAt": "2026-07-08T23:14:42.290Z",
-        "searchesUsedToday": 1,
-        "lastSearchDate": "2026-07-08",
-        "searchesPerDay": 20,
-        "resultsPerSearch": 20,
-        "durationDays": 2,
-        "expiresAt": "2026-07-10T23:14:42.290Z",
-        "id": "8b80013c-c67e-4c38-98bc-13d066ee7178",
-        "createdAt": "2026-07-08T23:14:42.294Z",
-        "updatedAt": "2026-07-08T23:14:42.294Z"
-      },
-      {
-        "userId": "dd2b498f-35f2-4846-9211-60465a60b59a",
-        "code": "freematpass2026",
-        "type": "unlimited",
-        "redeemedAt": "2026-07-08T23:17:41.846Z",
-        "searchesUsedToday": 0,
-        "lastSearchDate": "2026-07-08",
-        "id": "d3f3fb85-ec86-4117-8f13-2953ab649c59",
-        "createdAt": "2026-07-08T23:17:41.846Z",
-        "updatedAt": "2026-07-08T23:17:41.846Z"
       }
     ]
   }

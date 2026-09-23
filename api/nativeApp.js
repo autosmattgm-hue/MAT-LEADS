@@ -10,7 +10,6 @@ import { CrmService } from "./services/crmService.js";
 import { DashboardService } from "./services/dashboardService.js";
 import { LeadService } from "./services/leadService.js";
 import { NvidiaService } from "./services/nvidiaService.js";
-import { PromoService } from "./services/promoService.js";
 import { AppError } from "./utils/errors.js";
 import { aiSchemas, authSchemas, billingSchema, crmSchemas, leadSearchSchema, paypalConfirmationSchema, profileSchema, settingsSchema } from "./utils/schemas.js";
 import { verifyAccessToken } from "./middleware/auth.js";
@@ -26,7 +25,6 @@ const dashboardService = new DashboardService();
 const billingService = new BillingService();
 const adminService = new AdminService();
 const nvidiaService = new NvidiaService();
-const promoService = new PromoService();
 
 const mimeTypes = new Map([
   [".html", "text/html; charset=utf-8"],
@@ -385,29 +383,6 @@ const routes = [
     regex: /^\/api\/billing\/paypal\/confirm$/,
     keys: [],
     handler: async ({ req, body }) => billingService.confirmPaypalPayment(validate(paypalConfirmationSchema, body), await getUser(req))
-  },
-  {
-    method: "POST",
-    regex: /^\/api\/auth\/promo\/redeem$/,
-    keys: [],
-    handler: async ({ req, body }) => {
-      const user = await getUser(req);
-      const { code } = body;
-      if (!code || typeof code !== "string") throw new AppError("Promo code is required.", 422, "PROMO_CODE_REQUIRED");
-      const promo = await promoService.redeemCode(user.uid, code);
-      const updatedUser = await authService.currentUser(user);
-      return { promo, user: updatedUser };
-    }
-  },
-  {
-    method: "GET",
-    regex: /^\/api\/auth\/promo\/active$/,
-    keys: [],
-    handler: async ({ req }) => {
-      const user = await getUser(req);
-      const promo = await promoService.getActivePromo(user.uid);
-      return { promo };
-    }
   },
   {
     method: "GET",

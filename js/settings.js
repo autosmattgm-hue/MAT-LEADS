@@ -130,62 +130,6 @@ function populateSettings(settings) {
   setVal("autoScore", settings.autoScore, true);
 }
 
-function renderActivePromo(promo) {
-  var target = byId("activePromoInfo");
-  if (!target) return;
-  if (!promo) {
-    target.innerHTML = "";
-    return;
-  }
-  if (promo.type === "unlimited") {
-    target.innerHTML = '<div class="audit-item"><span class="status-pill success" style="display:inline-flex;">Active</span><strong>Unlimited Access - Free MAT Pass</strong></div>';
-  } else if (promo.type === "limited") {
-    var expires = promo.expiresAt ? new Date(promo.expiresAt).toLocaleDateString() : "N/A";
-    var used = promo.searchesUsedToday || 0;
-    var limit = promo.searchesPerDay || 20;
-    target.innerHTML = [
-      '<div class="audit-item"><span class="status-pill success" style="display:inline-flex;">Active</span><strong>Free MAT Code 20 - Expires ' + escapeHtml(expires) + '</strong></div>',
-      '<div class="audit-item"><span>Searches today</span><strong>' + used + ' / ' + limit + '</strong></div>',
-      '<div class="audit-item"><span>Results per search</span><strong>' + (promo.resultsPerSearch || 20) + '</strong></div>'
-    ].join("");
-  }
-}
-
-function initPromoCode() {
-  var btn = byId("redeemPromoBtn");
-  var input = byId("promoCode");
-  var status = byId("promoStatus");
-  if (!btn || !input || !status) return;
-
-  btn.addEventListener("click", async function() {
-    var code = String(input.value || "").trim();
-    if (!code) {
-      status.innerHTML = '<span style="color:var(--warning);">Please enter a promo code.</span>';
-      return;
-    }
-
-    btn.disabled = true;
-    btn.textContent = "Redeeming...";
-    status.innerHTML = "";
-
-    try {
-      var result = await apiFetch("/api/auth/promo/redeem", {
-        method: "POST",
-        body: JSON.stringify({ code: code })
-      });
-      status.innerHTML = '<span style="color:var(--accent-2);font-weight:750;">Promo code redeemed successfully!</span>';
-      input.value = "";
-      renderActivePromo(result.promo);
-      if (result.user) setCurrentUser(result.user);
-    } catch (error) {
-      status.innerHTML = '<span style="color:var(--danger);">' + escapeHtml(error.message) + '</span>';
-    } finally {
-      btn.disabled = false;
-      btn.textContent = "Redeem";
-    }
-  });
-}
-
 function renderSettingsSummary(user, settings) {
   user = user || {};
   settings = settings || {};
@@ -211,15 +155,6 @@ function renderSettingsSummary(user, settings) {
   ].join("\n    ");
 }
 
-async function loadActivePromoCode() {
-  try {
-    var result = await apiFetch("/api/auth/promo/active");
-    renderActivePromo(result.promo);
-  } catch (e) {
-    // Promo endpoint may not exist yet, ignore
-  }
-}
-
 async function loadSettings() {
   if (!requireAuth()) return;
   try {
@@ -229,7 +164,6 @@ async function loadSettings() {
     if (result.user) setCurrentUser(result.user);
     renderSettingsSummary(result.user || {}, settings);
     setSettingsStatus("Settings loaded.");
-    loadActivePromoCode();
   } catch (error) {
     setSettingsStatus(error.message, "error");
   }
@@ -273,6 +207,5 @@ function initSettingsForm() {
 
 document.addEventListener("DOMContentLoaded", function () {
   initSettingsForm();
-  initPromoCode();
   loadSettings();
 });

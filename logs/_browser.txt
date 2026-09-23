@@ -1,0 +1,17 @@
+﻿--- browsers before ---
+
+ProcessName   Id MainWindowTitle                                         
+-----------   -- ---------------                                         
+chrome      9200 Upload files · autosmattgm-hue/MAT-LEADS - Google Chrome
+
+
+
+--- launching http://localhost:3002 ---
+--- browsers after ---
+
+ProcessName   Id MainWindowTitle                                                      
+-----------   -- ---------------                                                      
+chrome      9200 MAT LEADS AI PRO X | Google Maps Lead Generation SaaS - Google Chrome
+
+
+

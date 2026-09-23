@@ -3,7 +3,6 @@ import { env } from "../config/env.js";
 import { getPlan } from "../config/plans.js";
 import { GooglePlacesService } from "./googlePlacesService.js";
 import { WebsiteAuditService } from "./websiteAuditService.js";
-import { PromoService } from "./promoService.js";
 import { AppError } from "../utils/errors.js";
 import { isAdminUser } from "../utils/entitlements.js";
 
@@ -980,7 +979,6 @@ export class LeadService {
     this.leads = new FirestoreRepository("leads");
     this.auditLogs = new FirestoreRepository("auditLogs");
     this.users = new FirestoreRepository("users");
-    this.promoService = new PromoService();
   }
 
   async currentAccessUser(user) {
@@ -1032,11 +1030,8 @@ export class LeadService {
 
   async search(search, user) {
     const accessUser = await this.currentAccessUser(user);
-    const activePromo = await this.promoService.getActivePromo(accessUser?.uid);
-    const hasPromoUnlimited = activePromo?.type === "unlimited";
-    const hasPromoLimited = activePromo?.type === "limited";
-    const startingTrialUsage = (hasPromoUnlimited || hasPromoLimited) ? null : await this.assertTrialAccess(accessUser);
-    const admin = isAdminUser(accessUser) || accessUser?.entitlements?.unlimitedAccess || accessUser?.permissions?.includes?.("unlimited") || hasPromoUnlimited;
+    const startingTrialUsage = await this.assertTrialAccess(accessUser);
+    const admin = isAdminUser(accessUser) || accessUser?.entitlements?.unlimitedAccess || accessUser?.permissions?.includes?.("unlimited");
     const effectiveSearch = normalizeSearchForUser(search, accessUser);
     const bypassCache = Boolean(effectiveSearch.bypassCache || effectiveSearch.refreshSeed);
     const refreshSeed = effectiveSearch.refreshSeed || (bypassCache ? String(Date.now()) : "");
@@ -1045,15 +1040,11 @@ export class LeadService {
       refreshSeed,
       limit: candidateLimitForSearch(effectiveSearch, admin)
     };
-    const resultLimit = hasPromoLimited
-      ? Math.min(effectiveSearch.limit, activePromo.resultsPerSearch || 20)
-      : returnLimitForUser(effectiveSearch, accessUser);
+    const resultLimit = returnLimitForUser(effectiveSearch, accessUser);
     const cacheKey = cacheKeyForSearch(providerSearch, accessUser);
     const cached = bypassCache ? null : getCachedSearch(cacheKey);
     if (cached) {
-      const updatedTrialUsage = hasPromoUnlimited || hasPromoLimited
-      ? await this.promoService.trackSearch(accessUser?.uid)
-      : await this.recordTrialSearch(accessUser, startingTrialUsage);
+      const updatedTrialUsage = await this.recordTrialSearch(accessUser, startingTrialUsage);
       await this.auditLogs.create({
         actor: accessUser?.email || "guest",
         action: "lead_search_cached",
@@ -1097,9 +1088,7 @@ export class LeadService {
       discoveredAt: new Date().toISOString()
     })));
 
-    const updatedTrialUsage = hasPromoUnlimited || hasPromoLimited
-      ? await this.promoService.trackSearch(accessUser?.uid)
-      : await this.recordTrialSearch(accessUser, startingTrialUsage);
+    const updatedTrialUsage = await this.recordTrialSearch(accessUser, startingTrialUsage);
 
     await this.auditLogs.create({
       actor: accessUser?.email || "guest",

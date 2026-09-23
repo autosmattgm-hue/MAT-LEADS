@@ -1,0 +1,26 @@
+﻿--- listener on 3002 ---
+
+LocalAddress LocalPort OwningProcess
+------------ --------- -------------
+::                3002          9532
+
+
+
+--- /api/health ---
+STATUS=200
+{"status":"ok","service":"mat-leads-ai-pro-x","environment":"development","integrations":{"firebase":false,"googlePlaces":false,"openStreetMap":true,"nvidia":true,"stripe":false,"paypal":true,"paypalApi":false,"paypalHostedLinks":true},"realMode":true,"missingRequiredForLiveOperation":["........","........"]}
+--- static assets ---
+ERR /css/styles.css  The remote server returned an error: (404) Not Found.
+OK  /js/app.js  200  text/javascript; charset=utf-8
+OK  /js/api.js  200  text/javascript; charset=utf-8
+OK  /sw.js  200  text/javascript; charset=utf-8
+OK  /manifest.webmanifest  200  application/manifest+json; charset=utf-8
+OK  /robots.txt  200  text/plain; charset=utf-8
+OK  /sitemap.xml  200  application/xml; charset=utf-8
+--- css folder contents (actual filenames) ---
+style.css
+--- owner login ---
+STATUS=200
+{"user":{"uid":"owner","name":"Owner","email":"owner@matleads.local","role":"admin","subscription":"enterprise","billingStatus":"owner_free","monthlyLeadLimit":null,"permissions":["owner","admin","billing","crm","ai","reports","analytics","settings","lead_search","lead_export","website_audit","outreach","team","unlimited"],"leadLimit":null,"entitlements":{"unlimitedAccess":true,"unlimitedLeads":true,"billingRequired":false,"allFeatures":true}},"accessToken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiJvd25lciIsImVtYWlsIjoib3duZXJAbWF0bGVhZHMubG9jYWwiLCJyb2xlIjoiYWRtaW4iLCJzdWJzY3JpcHRpb24iOiJlbnRlcnByaXNlIiwicGxhbk5hbWUiOiIiLCJiaWxsaW5nU3RhdHVzIjoib3duZXJfZnJlZSIsIm1vbnRobHlMZWFkTGltaXQiOm51bGwsInRyaWFsU2VhcmNoZXNVc2VkIjowLCJ0cmlhbFNlYXJjaExpbWl0IjpudWxsLCJ0cmlhbExlYWRMaW1pdCI6bnVsbCwicGVybWlzc2lvbnMiOlsib3duZXIiLCJhZG1pbiIsImJpbGxpbmciLCJjcm0iLCJhaSIsInJlcG9ydHMiLCJhbmFseXRpY3MiLCJzZXR0aW5ncyIsImxlYWRfc2VhcmNoIiwibGVhZF9leHBvcnQiLCJ3ZWJzaXRlX2F1ZGl0Iiwib3V0cmVhY2giLCJ0ZWFtIiwidW5saW1pdGVkIl0sImVudGl0bGVtZW50cyI6eyJ1bmxpbWl0ZWRBY2Nlc3MiOnRydWUsInVubGltaXRlZExlYWRzIjp0cnVlLCJiaWxsaW5nUmVxdWlyZWQiOmZhbHNlLCJhbGxGZWF0dXJlcyI6dHJ1ZX0sImlzcyI6Im1hdC1sZWFkcy1haS1wcm8teCIsImF1ZCI6Im1hdC1sZWFkcy11c2VycyIsImlhdCI6MTc5MDE0NzcxOSwiZXhwIjoxNzkwMTQ5NTE5fQ.H8xaTwwoBBtog6M4n8CFB218nVIIXr1pFeEDk9Y7XfY","refreshToken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiJvd25lciIsImVtYWlsIjoib3duZXJAbWF0bGVhZHMubG9jYWwiLCJyb2xlIjoiYWRtaW4iLCJ0b2tlblZlcnNpb24iOjEsImlzcyI6Im1hdC1sZWFkcy1haS1wcm8teCIsImF1ZCI6Im1hdC1sZWFkcy11c2VycyIsImlhdCI6MTc5MDE0NzcxOSwiZXhwIjoxNzkyNzM5NzE5fQ.gp5zxXDEBTYuCg72JMxaSohFeSwlDGcP3TsFDbLml5I"}
+--- browser windows holding the URL ---
+no browser process found with the URL on its command line

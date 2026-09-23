@@ -1,0 +1,23 @@
+﻿removed _diag_node.txt
+removed _diag_pid.txt
+removed _diag_http.txt
+removed _diag_routes.txt
+removed _diag_cors.txt
+removed _diag_ports.txt
+removed _diag_ports2.txt
+removed _diag_ports3.txt
+removed _verify_launch.txt
+removed _verifyA.txt
+--- listeners 3000-3002 ---
+3002  pid=9532  name=node
+3001  pid=6312  name=Code
+3000  pid=6312  name=Code
+--- site health ---
+STATUS=200
+
+status service            realMode
+------ -------            --------
+ok     mat-leads-ai-pro-x     True
+
+
+

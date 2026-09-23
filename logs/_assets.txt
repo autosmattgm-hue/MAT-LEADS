@@ -1,0 +1,14 @@
+﻿OK  /css/style.css  200  len=22834  text/css; charset=utf-8  
+OK  /assets/logo-mark.svg  200  len=371  image/svg+xml  MAT Leads AI Pro X mark
+OK  /  200  len=6784  text/html; charset=utf-8  MAT LEADS AI PRO X | Google Maps Lead Generation SaaS
+OK  /login.html  200  len=1806  text/html; charset=utf-8  Login | MAT LEADS AI PRO X
+OK  /dashboard.html  200  len=12298  text/html; charset=utf-8  Dashboard | MAT LEADS AI PRO X
+OK  /crm.html  200  len=1046  text/html; charset=utf-8  CRM | MAT LEADS AI PRO X
+OK  /reports.html  200  len=3401  text/html; charset=utf-8  Reports | MAT LEADS AI PRO X
+OK  /analytics.html  200  len=2085  text/html; charset=utf-8  Analytics | MAT LEADS AI PRO X
+OK  /admin.html  200  len=1757  text/html; charset=utf-8  Admin | MAT LEADS AI PRO X
+OK  /profile.html  200  len=2147  text/html; charset=utf-8  Profile | MAT LEADS AI PRO X
+OK  /settings.html  200  len=11006  text/html; charset=utf-8  Settings | MAT LEADS AI PRO X
+OK  /lead-details.html  200  len=1107  text/html; charset=utf-8  Lead Details | MAT LEADS AI PRO X
+OK  /client-report.html  200  len=1355  text/html; charset=utf-8  Client Report | MAT LEADS AI PRO X
+OK  /billing-success.html  200  len=1321  text/html; charset=utf-8  Payment Complete | MAT LEADS AI PRO X

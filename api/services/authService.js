@@ -184,7 +184,6 @@ export class AuthService {
       name,
       email: normalizedEmail,
       role: user.role,
-      passwordHash: user.passwordHash,
       ...planFields("trial"),
       billingStatus: "trial",
       trialSearchesUsed: 0,

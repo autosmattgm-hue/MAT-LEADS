@@ -1,0 +1,10 @@
+﻿STARTED_AT=2026-09-23T07:12:27.6194424+00:00
+PORT=3002
+PID=9532
+HEALTH_READY=True
+PROCESS_EXITED=False
+PAGE / -> 200
+PAGE /login.html -> 200
+PAGE /signup.html -> 200
+PAGE /pricing.html -> 200
+BROWSER_OPENED=http://localhost:3002
