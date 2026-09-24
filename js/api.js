@@ -1,6 +1,7 @@
 const TOKEN_KEY = "mat_access_token";
 const REFRESH_KEY = "mat_refresh_token";
 const USER_KEY = "mat_user";
+const SESSION_NOTICE_KEY = "mat_session_notice";
 const PUBLIC_API_PATHS = new Set([
   "/api/auth/login",
   "/api/auth/register",
@@ -43,6 +44,8 @@ export function setSession(session = {}) {
   setToken(session.accessToken || session.idToken);
   setRefreshToken(session.refreshToken);
   setCurrentUser(session.user);
+  if (session.notice) localStorage.setItem(SESSION_NOTICE_KEY, session.notice);
+  else localStorage.removeItem(SESSION_NOTICE_KEY);
 }
 
 export function getCurrentUser() {
@@ -57,6 +60,7 @@ export function clearToken() {
   localStorage.removeItem(TOKEN_KEY);
   localStorage.removeItem(REFRESH_KEY);
   localStorage.removeItem(USER_KEY);
+  localStorage.removeItem(SESSION_NOTICE_KEY);
 }
 
 function decodeJwtPayload(token) {

@@ -20,9 +20,12 @@ function initAuthForm() {
         body: JSON.stringify(payload)
       });
       setSession(result);
-      status.textContent = "Success. Redirecting...";
+      status.textContent = result.notice || "Success. Redirecting...";
       const next = new URLSearchParams(window.location.search).get("next");
-      window.location.href = next && next.startsWith("/") ? next : "/dashboard.html";
+      const target = next && next.startsWith("/") ? next : "/dashboard.html";
+      window.setTimeout(() => {
+        window.location.href = target;
+      }, result.notice ? 1400 : 0);
     } catch (error) {
       status.textContent = error.message;
     }

@@ -1,7 +1,7 @@
 import crypto from "node:crypto";
 import { promisify } from "node:util";
 import { env } from "../config/env.js";
-import { isFirebaseAuthConfigured } from "../config/firebase.js";
+import { isFirebaseAuthConfigured, isFirebaseConfigured } from "../config/firebase.js";
 import { getPlan } from "../config/plans.js";
 import { FirestoreRepository } from "../repositories/firestoreRepository.js";
 import { AppError } from "../utils/errors.js";
@@ -102,12 +102,12 @@ function displayNameFromFirebase(payload, email) {
   return local || "Member";
 }
 
-function firebaseAuthNotConfiguredError() {
-  return new AppError(
-    "Firebase Authentication is not configured on this deployment. Add FIREBASE_WEB_API_KEY, FIREBASE_PROJECT_ID, FIREBASE_CLIENT_EMAIL and FIREBASE_PRIVATE_KEY to the deployment environment variables (Vercel > Project > Settings > Environment Variables). The built-in owner account still works.",
-    503,
-    "FIREBASE_AUTH_NOT_CONFIGURED"
-  );
+function canPersistUserProfiles() {
+  return isFirebaseConfigured() || !env.isProduction;
+}
+
+function storageDegradedNotice() {
+  return "Login is active, but persistent storage is not configured. Add FIREBASE_PROJECT_ID, FIREBASE_CLIENT_EMAIL and FIREBASE_PRIVATE_KEY in Vercel before saving accounts, leads, billing, or CRM changes.";
 }
 
 function planFields(planKey = "trial") {
@@ -147,9 +147,10 @@ function storedBillingStatus(user = {}) {
 }
 
 function storedEntitlements(user = {}) {
-  return storedPlanKey(user) === "trial"
-    ? trialEntitlements(Number(user.trialSearchesUsed || 0))
-    : user.entitlements || {};
+  const source = user || {};
+  return storedPlanKey(source) === "trial"
+    ? trialEntitlements(Number(source.trialSearchesUsed || 0))
+    : source.entitlements || {};
 }
 
 function defaultSettings(settings = {}) {
@@ -233,7 +234,9 @@ export class AuthService {
     }
 
     if (!user) {
-      if (env.isProduction && !isFirebaseAuthConfigured()) throw firebaseAuthNotConfiguredError();
+      if (env.isProduction && !isFirebaseAuthConfigured()) {
+        notice = "Firebase Authentication is not configured on this deployment, so this account was created in the local store. Add FIREBASE_WEB_API_KEY to keep new accounts in Firebase Authentication.";
+      }
       const existing = await this.users.list({
         where: [{ field: "email", op: "==", value: normalizedEmail }],
         limit: 1
@@ -244,18 +247,22 @@ export class AuthService {
       user = { uid: created.id, name, email: normalizedEmail, role: "user", tokenVersion: created.tokenVersion || 1 };
     }
 
-    await this.users.upsert(user.uid || user.id, {
-      uid: user.uid || user.id,
-      name,
-      email: normalizedEmail,
-      role: user.role,
-      ...planFields("trial"),
-      billingStatus: "trial",
-      trialSearchesUsed: 0,
-      entitlements: trialEntitlements(0),
-      emailVerified: false,
-      tokenVersion: user.tokenVersion || 1
-    });
+    if (canPersistUserProfiles()) {
+      await this.users.upsert(user.uid || user.id, {
+        uid: user.uid || user.id,
+        name,
+        email: normalizedEmail,
+        role: user.role,
+        ...planFields("trial"),
+        billingStatus: "trial",
+        trialSearchesUsed: 0,
+        entitlements: trialEntitlements(0),
+        emailVerified: false,
+        tokenVersion: user.tokenVersion || 1
+      });
+    } else if (authProvider === "firebase_auth") {
+      notice = storageDegradedNotice();
+    }
 
     const sessionUser = applyAdminEntitlements({
       uid: user.uid || user.id,
@@ -303,8 +310,6 @@ export class AuthService {
       }
     }
 
-    if (env.isProduction && !isFirebaseAuthConfigured()) throw firebaseAuthNotConfiguredError();
-
     return this.localLogin(normalizedEmail, password);
   }
 
@@ -341,20 +346,27 @@ export class AuthService {
 
   async firebaseSession(payload, normalizedEmail) {
     const uid = payload.localId;
-    let storedUser = await this.users.findById(uid);
-    if (!storedUser) {
-      storedUser = await this.users.upsert(uid, {
-        uid,
-        name: displayNameFromFirebase(payload, normalizedEmail),
-        email: normalizedEmail,
-        role: "user",
-        ...planFields("trial"),
-        billingStatus: "trial",
-        trialSearchesUsed: 0,
-        entitlements: trialEntitlements(0),
-        emailVerified: Boolean(payload.registered),
-        tokenVersion: 1
-      });
+    let storedUser = null;
+    let notice = "";
+
+    if (canPersistUserProfiles()) {
+      storedUser = await this.users.findById(uid);
+      if (!storedUser) {
+        storedUser = await this.users.upsert(uid, {
+          uid,
+          name: displayNameFromFirebase(payload, normalizedEmail),
+          email: normalizedEmail,
+          role: "user",
+          ...planFields("trial"),
+          billingStatus: "trial",
+          trialSearchesUsed: 0,
+          entitlements: trialEntitlements(0),
+          emailVerified: Boolean(payload.registered),
+          tokenVersion: 1
+        });
+      }
+    } else {
+      notice = storageDegradedNotice();
     }
 
     const user = applyAdminEntitlements({
@@ -372,6 +384,7 @@ export class AuthService {
     return {
       user,
       authProvider: "firebase_auth",
+      notice: notice || undefined,
       idToken: payload.idToken,
       firebaseRefreshToken: payload.refreshToken,
       accessToken: signAccessToken(user),

@@ -3,6 +3,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { env } from "./config/env.js";
 import { isFirebaseAuthConfigured, isFirebaseConfigured } from "./config/firebase.js";
+import { storageStatus } from "./repositories/firestoreRepository.js";
 import { AdminService } from "./services/adminService.js";
 import { AuthService } from "./services/authService.js";
 import { BillingService } from "./services/billingService.js";
@@ -216,7 +217,8 @@ const routes = [
       },
       realMode: true,
       authReady: isFirebaseAuthConfigured() || !env.isProduction,
-      storageReady: isFirebaseConfigured() || !env.isProduction,
+      storage: storageStatus(),
+      storageReady: isFirebaseConfigured(),
       missingRequiredForLiveOperation: [
         !isFirebaseAuthConfigured() && "FIREBASE_WEB_API_KEY",
         !env.firebase.projectId && "FIREBASE_PROJECT_ID",

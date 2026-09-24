@@ -134,9 +134,16 @@ function sessionText(user) {
   return `${user?.planName || user?.subscription || "Starter"} workspace active.`;
 }
 
+function consumeSessionNotice() {
+  const notice = localStorage.getItem("mat_session_notice") || "";
+  if (notice) localStorage.removeItem("mat_session_notice");
+  return notice;
+}
+
 async function initSessionBadge() {
   const target = document.querySelector("[data-session-badge]");
   if (!target) return;
+  const sessionNotice = consumeSessionNotice();
 
   const cached = localStorage.getItem("mat_user");
   if (cached) {
@@ -147,6 +154,7 @@ async function initSessionBadge() {
       target.textContent = "Workspace session active.";
     }
   }
+  if (sessionNotice) target.textContent = sessionNotice;
 
   if (!hasStoredSession()) {
     target.textContent = "Login required to access the workspace.";
@@ -157,7 +165,13 @@ async function initSessionBadge() {
     const result = await apiFetch("/api/auth/me");
     const user = result.user;
     localStorage.setItem("mat_user", JSON.stringify(user));
-    target.textContent = sessionText(user);
+    if (sessionNotice) {
+      window.setTimeout(() => {
+        target.textContent = sessionText(user);
+      }, 5000);
+    } else {
+      target.textContent = sessionText(user);
+    }
   } catch {
     target.textContent = "Workspace session active.";
   }

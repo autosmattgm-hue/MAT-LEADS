@@ -1,20 +1,24 @@
 import { randomUUID } from "node:crypto";
 import fs from "node:fs/promises";
 import path from "node:path";
-import { env } from "../config/env.js";
 import { firestoreClient } from "../config/firebase.js";
-import { AppError } from "../utils/errors.js";
+import { logger } from "../utils/logger.js";
 
 const memoryStore = new Map();
 const localStorePath = path.resolve(process.cwd(), process.env.LOCAL_DATA_FILE || "data/local-store.json");
 const localStoreWriteErrors = ["EROFS", "EPERM", "EACCES", "ENOENT", "EBADF"];
+const STORAGE_WARNING = "Records are stored in the local store of a single instance. Add the Firebase service account (FIREBASE_CLIENT_EMAIL and FIREBASE_PRIVATE_KEY, or paste the service-account JSON into FIREBASE_SERVICE_ACCOUNT) so Firestore keeps accounts, leads and CRM records permanently.";
 
-function storageNotConfiguredError() {
-  return new AppError(
-    "Persistent storage is not configured on this deployment. Set FIREBASE_PROJECT_ID, FIREBASE_CLIENT_EMAIL and FIREBASE_PRIVATE_KEY (Firebase service account) in the deployment environment variables so Firestore can store accounts, leads and CRM records.",
-    503,
-    "STORAGE_NOT_CONFIGURED"
-  );
+let localStoreWritable = true;
+let storageWarningLogged = false;
+
+export function storageStatus() {
+  const persistent = Boolean(firestoreClient());
+  return {
+    backend: persistent ? "firestore" : localStoreWritable ? "local-json" : "memory",
+    persistent,
+    warning: persistent ? "" : STORAGE_WARNING
+  };
 }
 let localStoreLoaded = false;
 let localStoreWriteQueue = Promise.resolve();
@@ -61,7 +65,14 @@ async function persistLocalStore() {
     await fs.writeFile(tempPath, payload, "utf8");
     await fs.rename(tempPath, localStorePath);
   } catch (error) {
-    if (env.isProduction || localStoreWriteErrors.includes(error.code)) throw storageNotConfiguredError();
+    if (localStoreWriteErrors.includes(error.code)) {
+      localStoreWritable = false;
+      if (!storageWarningLogged) {
+        storageWarningLogged = true;
+        logger.warn("local_store_not_writable", { code: error.code, path: localStorePath, message: STORAGE_WARNING });
+      }
+      return;
+    }
     throw error;
   }
 }
@@ -96,7 +107,6 @@ export class FirestoreRepository {
     if (client) {
       return client.set(this.collectionName, id, payload);
     }
-    if (env.isProduction) throw storageNotConfiguredError();
 
     await loadLocalStore();
     collectionStore(this.collectionName).set(id, payload);
@@ -113,8 +123,6 @@ export class FirestoreRepository {
     if (client) {
       return client.set(this.collectionName, id, payload);
     }
-    if (env.isProduction) throw storageNotConfiguredError();
-
     await loadLocalStore();
     collectionStore(this.collectionName).set(id, payload);
     await queueLocalStorePersist();
