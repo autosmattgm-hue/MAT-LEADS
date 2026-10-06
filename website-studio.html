@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Website Studio | MAT LEADS AI PRO X</title>
+    <meta name="description" content="Generate a professional client website with AI, edit it with chat, download it, and share a live link.">
+    <link rel="icon" href="/assets/logo-mark.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="/css/style.css">
+  </head>
+  <body data-page="website-studio">
+    <div class="app-layout" data-app-shell>
+      <main class="workspace">
+        <section class="workspace-header">
+          <div>
+            <h1>AI Website Studio</h1>
+            <p>Professional one-click website builds for any lead. Chat to refine, download, and share.</p>
+          </div>
+          <div class="toolbar">
+            <span class="plan-pill" id="studioPlan">Pro / Admin</span>
+            <a class="btn btn-secondary" href="/dashboard.html">Back to Leads</a>
+          </div>
+        </section>
+        <section class="detail-layout">
+          <article class="panel">
+            <h2>Build a Website</h2>
+            <form id="studioBuildForm" class="form-grid compact">
+              <div class="field" style="grid-column:1 / -1;"><label for="studioBusiness">Business name</label><input id="studioBusiness" name="businessName" placeholder="e.g. Lakeside Dental Studio"></div>
+              <div class="field"><label for="studioStyle">Style</label><select id="studioStyle" name="style"><option value="modern">Modern premium</option><option value="luxury">Luxury dark</option><option value="medical">Clean medical</option><option value="restaurant">Warm restaurant</option><option value="bold">Bold agency</option></select></div>
+              <div class="field"><label for="studioPalette">Color theme</label><select id="studioPalette" name="palette"><option value="emerald">Emerald</option><option value="blue">Royal blue</option><option value="gold">Gold + black</option><option value="rose">Rose</option><option value="teal">Teal</option></select></div>
+              <div class="field" style="grid-column:1 / -1;"><label for="studioLeadId">Lead ID (optional - auto-filled from leads)</label><input id="studioLeadId" name="leadId" placeholder="Paste lead id or open Studio from a lead"></div>
+              <button class="btn btn-primary" type="submit" id="studioBuildBtn">Generate Website</button>
+            </form>
+            <div id="studioStatus" class="notice" style="margin-top:12px;">Paste a lead or type a business name to start.</div>
+            <h2 style="margin-top:18px;">Refine with AI chat</h2>
+            <form id="studioRefineForm" class="form-grid compact">
+              <div class="field" style="grid-column:1 / -1;"><label for="studioInstruction">Tell the AI what to change</label><textarea id="studioInstruction" rows="3" placeholder="e.g. Make the hero dark blue, add a pricing section with 3 plans, and bigger call button"></textarea></div>
+              <button class="btn btn-secondary" type="submit">Apply Change</button>
+            </form>
+            <div class="toolbar" style="margin-top:14px;flex-wrap:wrap;">
+              <button class="btn btn-secondary" type="button" id="studioDownload">Download HTML</button>
+              <button class="btn btn-secondary" type="button" id="studioCopyLink">Copy Share Link</button>
+              <a class="btn btn-secondary" id="studioOpenLive" href="#" target="_blank" rel="noopener">Open Live Link</a>
+            </div>
+          </article>
+          <article class="panel">
+            <h2>Live Preview</h2>
+            <div class="notice" id="studioMeta">No website yet.</div>
+            <iframe id="studioPreview" title="Generated website preview" style="width:100%;min-height:560px;border:1px solid var(--border);border-radius:12px;background:#fff;margin-top:12px;"></iframe>
+          </article>
+        </section>
+      </main>
+    </div>
+    <script type="module" src="/components/layout.js"></script>
+    <script type="module" src="/js/website-studio.js"></script>
+  </body>
+</html>

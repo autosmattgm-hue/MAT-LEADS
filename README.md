@@ -45,33 +45,6 @@ New free accounts start on the Free Trial plan. The API allows 2 lead searches t
 6. Configure each hosted PayPal link to redirect successful payments to `https://your-domain.com/billing-success.html`.
 7. Deploy to Vercel and configure your custom domain, TLS, and monitoring.
 
-### Required Vercel Environment Variables
-
-Public, non-secret settings are already committed in `config/public-config.js` (Firebase project id and Web API key, OpenStreetMap endpoints, NVIDIA base URL and model names). A fresh GitHub to Vercel deploy therefore boots with working sign-in and lead search even with no environment variables configured. Add the secrets below in Vercel > Project > Settings > Environment Variables (Production + Preview), then redeploy.
-
-| Variable | Why it is required |
-| --- | --- |
-| `NODE_ENV=production` | Enables production guards and keeps provider errors explicit |
-| `APP_URL=https://your-domain.com` | Used for URL parsing and same-origin CORS |
-| `CORS_ORIGINS=https://your-domain.com,https://your-app.vercel.app` | Allows browser calls from your deployed origin |
-| `JWT_SECRET`, `JWT_REFRESH_SECRET` | Session tokens; use two different 64-character random strings |
-| `FIREBASE_CLIENT_EMAIL`, `FIREBASE_PRIVATE_KEY` or `FIREBASE_SERVICE_ACCOUNT` | Firestore storage so accounts, leads and CRM records persist between requests and restarts. Without them the app keeps working on the local store of a single instance and `/api/health` reports `storage.persistent: false` |
-| `NVIDIA_API_KEY` | AI analysis and outreach (a secret, so it is not committed) |
-| `FIREBASE_PROJECT_ID`, `FIREBASE_WEB_API_KEY`, `NVIDIA_MODEL`, `NVIDIA_MODEL_FALLBACKS` (optional) | Override the committed public defaults from `config/public-config.js` |
-| `GOOGLE_PLACES_API_KEY` (optional) | Google Places search. Leave empty to use the OpenStreetMap Overpass fallback |
-| `STRIPE_SECRET_KEY` (optional) | Stripe checkout; without it the endpoint returns `503 STRIPE_NOT_CONFIGURED` |
-| `PAYPAL_CLIENT_ID`, `PAYPAL_CLIENT_SECRET` or the four `PAYPAL_*_PAYMENT_LINK` values | PayPal checkout |
-| `OWNER_EMAIL`, `OWNER_PASSWORD` | Admin account with free enterprise access; change before going public |
-
-Notes:
-
-- You can paste the **entire downloaded service-account JSON** into a single variable (`FIREBASE_SERVICE_ACCOUNT` or `GOOGLE_APPLICATION_CREDENTIALS_JSON`) instead of splitting it into `FIREBASE_PROJECT_ID`, `FIREBASE_CLIENT_EMAIL` and `FIREBASE_PRIVATE_KEY`. Quotes and `\n` escapes are handled automatically.
-- Run `node utils/check-firebase.js` (or `npm run check:firebase`) before deploying. It verifies the web API key, the service-account OAuth token and Firestore access, and prints exactly which variable is missing.
-- `NODE_ENV=production` matters on Vercel: without it the deployment runs in development mode, which skips the production storage guard and uses the development JWT secrets.
-- Accounts registered on a local machine live in `data/local-store.json`, which is not deployed. Register again on the deployed site once `FIREBASE_WEB_API_KEY` is set so the account exists in Firebase Authentication.
-- `https://your-domain.com/api/health` lists the integrations that are active and the variables that are still missing.
-- The built-in owner account works even before the other variables are set, because it is resolved from `OWNER_EMAIL`/`OWNER_PASSWORD` (defaults: `owner@matleads.local` / `admin2026`).
-
 Complete paid SaaS operation requires Firebase credentials, `NVIDIA_API_KEY`, Stripe credentials, and either PayPal API credentials or hosted PayPal payment links. `GOOGLE_PLACES_API_KEY` is optional because Google Maps links can seed real OpenStreetMap Overpass searches without a Google API key. The app will not fake provider responses.
 
 ## Google Maps Link Search
@@ -99,9 +72,22 @@ For broad links like `/place/Europe/...` or `/place/United+States/...`, selected
 - `GET /api/leads/:id/report`
 - `POST /api/ai/analyze`
 - `POST /api/ai/outreach`
+- `POST /api/ai/tycoon` (Pro/Admin: Business AI Tycoon, WhatsApp-ready scripts)
+- `POST /api/ai/websites` (Pro/Admin: generate pro client site)
+- `PATCH /api/ai/websites/:id` (Pro/Admin: chat-refine the site)
+- `GET /api/ai/websites/:id` (load Studio site)
+- `GET /api/s/:token` (public shared-site JSON) + `GET /s/:token` (public live HTML)
 - `GET /api/crm/leads`
 - `PATCH /api/crm/leads/:id/stage`
 - `GET /api/dashboard/metrics`
 - `POST /api/billing/stripe/payment-intent`
 - `POST /api/billing/paypal/order`
 - `POST /api/billing/paypal/confirm`
+
+## Money-Making Upgrades
+
+- Lead cards + saved leads now show `Use AI to create website` toggle. Create Website stays hidden until ticked, then redirects to `/website-studio.html?leadId=...`.
+- Website Studio: NVIDIA `z-ai/glm-5.3` -> `deepseek-ai/deepseek-v4.1-flash` builds full HTML, chat-refine, download HTML, copy/open live `/s/:token` link. Pro/Admin only, free users go to `/pricing.html?upgrade=pro`.
+- Business AI Tycoon page (`/business-ai.html`): NVIDIA `deepseek-ai/deepseek-v4.1-flash` closer brain, Pro/Admin only, Copy + Share-to-WhatsApp buttons.
+- Pricing pushes Professional as the money plan with Studio + Tycoon; plans config also advertises the features.
+- You add `NVIDIA_API_KEY` yourself in `.env` / Vercel. Base URL + models are prewired in `.env.example`.

@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Shared Website | MAT LEADS AI PRO X</title><link rel="stylesheet" href="/css/style.css"></head>
+<body class="page">
+<header class="public-nav" data-public-nav></header>
+<main class="section"><div class="container">
+<section class="panel" id="shareBox"><span class="plan-pill">Shared Website</span><h1 id="shareTitle">Loading shared website...</h1><p class="notice" id="shareMeta">Fetching the live AI-built site.</p><div class="toolbar"><a class="btn btn-primary" id="shareOpen" href="#" target="_blank" rel="noopener">Open Live Site</a><a class="btn btn-secondary" href="/pricing.html">Create Yours</a></div>
+<iframe id="shareFrame" title="Shared website" style="width:100%;min-height:560px;border:1px solid var(--border);border-radius:12px;background:#fff;margin-top:14px;"></iframe></section>
+</div></main>
+<script type="module" src="/components/layout.js"></script>
+<script type="module">
+const token = new URLSearchParams(location.search).get("token") || location.pathname.split("/s/")[1] || "";
+async function load(){
+  if(!token){document.getElementById("shareTitle").textContent="Missing share link.";return;}
+  try{
+    const r = await fetch(`/api/s/${encodeURIComponent(token)}`).then(x=>x.json());
+    if(r.error) throw new Error(r.error.message);
+    document.getElementById("shareTitle").textContent = r.website.businessName || r.website.leadName || "Shared Website";
+    document.getElementById("shareMeta").textContent = `${r.website.businessType||""} • Built with MAT LEADS AI PRO X`;
+    document.getElementById("shareFrame").srcdoc = r.html;
+    document.getElementById("shareOpen").href = `/s/${encodeURIComponent(token)}`;
+  }catch(e){document.getElementById("shareTitle").textContent=e.message;}
+}
+load();
+</script>
+</body>
+</html>

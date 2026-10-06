@@ -18,13 +18,6 @@
         <form id="workspaceSettingsForm" data-settings-form>
           <section class="report-grid">
           <article class="panel">
-            <h2>Integrations</h2>
-            <div class="audit-list" id="integrationStatus">
-              <div class="skeleton">Checking live providers...</div>
-            </div>
-            <p class="notice" id="missingConfig" style="margin-top:12px;">Checking required production configuration...</p>
-          </article>
-          <article class="panel">
             <h2>Security</h2>
             <div class="audit-list">
               <div class="audit-item"><span>Rate limiting</span><span class="status-pill success">On</span></div>
@@ -40,6 +33,17 @@
               <div class="field"><label for="poorMobileWeight">Poor Mobile</label><input id="poorMobileWeight" name="poorMobileWeight" type="number" min="0" max="100" value="20"></div>
               <div class="field"><label for="weakSeoWeight">Weak SEO</label><input id="weakSeoWeight" name="weakSeoWeight" type="number" min="0" max="100" value="20"></div>
               <div class="field"><label for="noSslWeight">No SSL</label><input id="noSslWeight" name="noSslWeight" type="number" min="0" max="100" value="10"></div>
+              <div class="field"><label for="socialPresenceWeight">No Social Presence</label><input id="socialPresenceWeight" name="socialPresenceWeight" type="number" min="0" max="100" value="15"></div>
+              <div class="field"><label for="lowReviewWeight">Low Reviews</label><input id="lowReviewWeight" name="lowReviewWeight" type="number" min="0" max="100" value="10"></div>
+            </div>
+          </article>
+          <article class="panel">
+            <h2>Email & Communication</h2>
+            <div class="form-grid compact">
+              <div class="field"><label for="senderName">Sender Name</label><input id="senderName" name="senderName" maxlength="120" placeholder="Your name or company"></div>
+              <div class="field"><label for="replyToEmail">Reply-To Email</label><input id="replyToEmail" name="replyToEmail" type="email" maxlength="255" placeholder="you@example.com"></div>
+              <div class="field"><label for="bccEmail">BCC Monitoring</label><input id="bccEmail" name="bccEmail" type="email" maxlength="255" placeholder="monitor@example.com"></div>
+              <div class="field" style="grid-column:1 / -1;"><label for="emailSignature">Email Signature</label><textarea id="emailSignature" name="emailSignature" maxlength="1000" rows="3" placeholder="Best regards,&#10;Your Name"></textarea></div>
             </div>
           </article>
           <article class="panel">
@@ -47,6 +51,9 @@
             <div class="field checkbox-field">
               <label><input id="leadAlerts" name="leadAlerts" type="checkbox" checked> Lead alerts</label>
               <label><input id="weeklyDigest" name="weeklyDigest" type="checkbox" checked> Weekly digest</label>
+              <label><input id="emailNotifications" name="emailNotifications" type="checkbox" checked> Email notifications</label>
+              <label><input id="smsNotifications" name="smsNotifications" type="checkbox"> SMS notifications</label>
+              <label><input id="browserNotifications" name="browserNotifications" type="checkbox" checked> Browser push notifications</label>
             </div>
           </article>
           <article class="panel">
@@ -54,6 +61,10 @@
             <div class="form-grid compact">
               <div class="field"><label for="defaultCountry">Default Country</label><input id="defaultCountry" name="defaultCountry" value="United States"></div>
               <div class="field"><label for="defaultResults">Default Results</label><input id="defaultResults" name="defaultResults" type="number" min="5" max="200" value="20"></div>
+              <div class="field"><label for="defaultRadius">Search Radius (m)</label><input id="defaultRadius" name="defaultRadius" type="number" min="500" max="50000" value="15000"></div>
+              <div class="field"><label for="defaultSearchDepth">Search Depth</label><select id="defaultSearchDepth" name="defaultSearchDepth"><option value="quick">Quick</option><option value="standard">Standard</option><option value="deep" selected>Deep</option><option value="maximum">Maximum</option></select></div>
+              <div class="field"><label for="defaultSortBy">Sort By</label><select id="defaultSortBy" name="defaultSortBy"><option value="opportunity" selected>Opportunity</option><option value="contact">Contact Ready</option><option value="website_missing">Missing Website</option><option value="name">Name</option></select></div>
+              <div class="field"><label for="defaultLeadQuality">Lead Quality</label><select id="defaultLeadQuality" name="defaultLeadQuality"><option value="all" selected>All Leads</option><option value="contact_ready">Contact Ready</option><option value="high_opportunity">High Opportunity</option><option value="owner_data">Has Owner Data</option></select></div>
             </div>
           </article>
           <article class="panel" style="grid-column:1 / -1;">
@@ -64,6 +75,31 @@
               <div class="field"><label for="primaryOffer">Primary Offer</label><input id="primaryOffer" name="primaryOffer" maxlength="180" value="Website + local lead growth audit"></div>
               <div class="field"><label for="proposalPrice">Default Proposal Price</label><input id="proposalPrice" name="proposalPrice" type="number" min="0" max="100000" value="2500"></div>
               <div class="field" style="grid-column:1 / -1;"><label for="followUpCadence">Follow-Up Cadence</label><input id="followUpCadence" name="followUpCadence" maxlength="120" value="Day 1, Day 3, Day 7"></div>
+            </div>
+          </article>
+          <article class="panel">
+            <h2>Export & Data</h2>
+            <div class="form-grid compact">
+              <div class="field"><label for="exportFormat">Export Format</label><select id="exportFormat" name="exportFormat"><option value="csv" selected>CSV</option><option value="xlsx">Excel (XLSX)</option><option value="pdf">PDF</option></select></div>
+              <div class="field"><label for="dateFormat">Date Format</label><select id="dateFormat" name="dateFormat"><option value="MM/DD/YYYY" selected>MM/DD/YYYY</option><option value="DD/MM/YYYY">DD/MM/YYYY</option><option value="YYYY-MM-DD">YYYY-MM-DD</option></select></div>
+              <div class="field"><label for="timezone">Timezone</label><select id="timezone" name="timezone"><option value="America/New_York">Eastern (US)</option><option value="America/Chicago">Central (US)</option><option value="America/Denver">Mountain (US)</option><option value="America/Los_Angeles" selected>Pacific (US)</option><option value="Europe/London">London</option><option value="Europe/Berlin">Berlin</option><option value="Europe/Paris">Paris</option><option value="Asia/Tokyo">Tokyo</option><option value="Asia/Shanghai">Shanghai</option><option value="Australia/Sydney">Sydney</option><option value="UTC">UTC</option></select></div>
+              <div class="field checkbox-field" style="justify-content:end;">
+                <label><input id="exportHeaders" name="exportHeaders" type="checkbox" checked> Include headers in export</label>
+                <label><input id="autoExport" name="autoExport" type="checkbox"> Auto-export new leads</label>
+              </div>
+            </div>
+          </article>
+          <article class="panel">
+            <h2>AI & Automation</h2>
+            <div class="form-grid compact">
+              <div class="field"><label for="aiModel">AI Model</label><select id="aiModel" name="aiModel"><option value="llama-3.1-8b" selected>Llama 3.1 8B</option><option value="llama-4-maverick">Llama 4 Maverick</option><option value="gpt-4o-mini">GPT-4o Mini</option><option value="claude-3-haiku">Claude 3 Haiku</option></select></div>
+              <div class="field"><label for="outreachTone">Outreach Tone</label><select id="outreachTone" name="outreachTone"><option value="professional" selected>Professional</option><option value="friendly">Friendly</option><option value="direct">Direct</option><option value="consultative">Consultative</option></select></div>
+              <div class="field"><label for="maxFollowUps">Max Follow-Ups</label><input id="maxFollowUps" name="maxFollowUps" type="number" min="0" max="20" value="3"></div>
+              <div class="field checkbox-field" style="justify-content:end;">
+                <label><input id="autoFollowUp" name="autoFollowUp" type="checkbox"> Auto follow-up</label>
+                <label><input id="aiSuggestions" name="aiSuggestions" type="checkbox" checked> AI suggestions</label>
+                <label><input id="autoScore" name="autoScore" type="checkbox" checked> Auto-score leads</label>
+              </div>
             </div>
           </article>
           <article class="panel">

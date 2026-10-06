@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Business AI Tycoon | MAT LEADS AI PRO X</title>
+    <meta name="description" content="Business AI Tycoon: pricing, negotiation, WhatsApp scripts and closing strategy. Pro + Admin only.">
+    <link rel="icon" href="/assets/logo-mark.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="/css/style.css">
+  </head>
+  <body data-page="business-ai">
+    <div class="app-layout" data-app-shell>
+      <main class="workspace">
+        <section class="workspace-header">
+          <div>
+            <h1>Business AI Tycoon</h1>
+            <p>The ruthless closer: what to say, what price to give, and how to win every deal. Pro / Admin only.</p>
+          </div>
+          <div class="toolbar">
+            <a class="btn btn-secondary" href="/dashboard.html">Leads</a>
+            <a class="btn btn-primary" href="/website-studio.html">Website Studio</a>
+          </div>
+        </section>
+        <section class="detail-layout">
+          <article class="panel">
+            <h2>Ask the Tycoon</h2>
+            <div id="tycoonGate" class="notice">Checking Pro access...</div>
+            <form id="tycoonForm" class="form-grid compact">
+              <div class="field" style="grid-column:1 / -1;"><label for="tycoonLead">Lead context (optional JSON or lead id)</label><input id="tycoonLead" placeholder="Paste lead id or leave blank"></div>
+              <div class="field" style="grid-column:1 / -1;"><label for="tycoonPrompt">Your deal question</label><textarea id="tycoonPrompt" rows="4" required placeholder="e.g. This restaurant has no website, owner asked price on WhatsApp. What do I say and what price?"></textarea></div>
+              <button class="btn btn-primary" type="submit">Ask Tycoon</button>
+            </form>
+            <div class="toolbar" style="margin-top:12px;">
+              <button class="btn btn-secondary" type="button" id="tycoonCopy">Copy Answer</button>
+              <button class="btn btn-secondary" type="button" id="tycoonWhats">Share to WhatsApp</button>
+            </div>
+          </article>
+          <article class="panel">
+            <h2>Tycoon Playbook</h2>
+            <div id="tycoonOut" class="notice">Example: ask for price anchoring, objection replies, follow-up sequence, retainer upsell.</div>
+            <div class="audit-list" style="margin-top:12px;">
+              <div class="audit-item"><span>Price rule</span><strong>Setup $1,500-$3,500 + $297-$797/mo</strong></div>
+              <div class="audit-item"><span>Close rule</span><strong>Audit first, price second, urgency last</strong></div>
+              <div class="audit-item"><span>WhatsApp rule</span><strong>Short script + voice note + audit link</strong></div>
+            </div>
+          </article>
+        </section>
+      </main>
+    </div>
+    <script type="module" src="/components/layout.js"></script>
+    <script type="module" src="/js/business-ai.js"></script>
+  </body>
+</html>
