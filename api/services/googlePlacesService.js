@@ -1610,7 +1610,12 @@ export class GooglePlacesService {
 
     if (!response.ok) {
       const body = await response.text();
-      throw new AppError("Google Places request failed.", response.status, "GOOGLE_PLACES_ERROR", body.slice(0, 400));
+      let detail = body.slice(0, 400);
+      try {
+        const parsed = JSON.parse(body);
+        detail = parsed.error?.message || parsed.error?.status || detail;
+      } catch {}
+      throw new AppError(`Google Places request failed (${response.status}): ${detail}. If no key is set, the app should use OpenStreetMap instead - check GOOGLE_PLACES_API_KEY env.`, response.status, "GOOGLE_PLACES_ERROR", body.slice(0, 400));
     }
 
     const payload = await response.json();

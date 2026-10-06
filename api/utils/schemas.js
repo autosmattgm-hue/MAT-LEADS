@@ -39,11 +39,15 @@ function stringField(input, field, options = {}) {
 
 function stringListField(input, field, options = {}) {
   const raw = input[field];
-  const values = Array.isArray(raw)
-    ? raw
-    : typeof raw === "string"
-      ? raw.split(/[,;\n|]/)
-      : [];
+  let values = [];
+  if (Array.isArray(raw)) {
+    values = raw;
+  } else if (typeof raw === "string") {
+    // Browsers send multi-selects as comma strings; dashboard also sends arrays.
+    values = raw.split(/[,;\n|]/);
+  } else if (raw !== undefined && raw !== null && raw !== "") {
+    values = [String(raw)];
+  }
   const cleaned = [...new Set(values
     .map((value) => String(value || "").trim())
     .filter(Boolean))]
@@ -170,7 +174,9 @@ export const leadSearchSchema = schema((input) => {
   const hasMapLocation = Boolean(mapLink || (latitude !== null && longitude !== null));
   const country = stringField(input, "country", { max: 80 });
   const countries = stringListField(input, "countries", { max: 80, maxItems: 12 });
-  const selectedCountries = [...new Set([country, ...countries].filter(Boolean))];
+  // Live dashboard sends both country + countries; merge them leniently so a 400 never blocks scanning.
+  const merged = [...new Set([...(Array.isArray(countries) ? countries : []), ...(country ? String(country).split(/[,;\n|]/) : [])].map((v) => String(v || "").trim()).filter(Boolean))];
+  const selectedCountries = merged.length ? merged : (hasMapLocation ? [] : ["Germany"]);
   const normalizedCountries = selectedCountries.length || hasMapLocation ? selectedCountries : ["Germany"];
 
   return {

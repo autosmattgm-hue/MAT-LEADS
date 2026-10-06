@@ -1845,11 +1845,18 @@ function initLeadSearch() {
         note.textContent = `Real ${provider} results loaded${locationText}.${countryText}${stats}${cacheText}${refreshText}${relaxedText}${trialText}${pageText} Query: ${result.query || "businesses"}.`;
       }
     } catch (error) {
-      target.innerHTML = `<div class="error-state">${error.message}</div>`;
+      const raw = String(error?.message || "Search failed");
+      target.innerHTML = `<div class="error-state">${raw}</div>`;
       const note = byId("searchNote");
       if (note) note.textContent = error.message.includes("free trial")
         ? `${error.message} Open Pricing to subscribe.`
-        : "Real map-link search needs valid coordinates and an available map data provider.";
+        : /validation|invalid request/i.test(raw)
+          ? `${raw} — pick at least one Country or Business Type, then Search again.`
+          : /google places/i.test(raw)
+            ? `${raw} — remove GOOGLE_PLACES_API_KEY in Vercel to use free OpenStreetMap, or fix the Google key.`
+            : /overpass|openstreetmap/i.test(raw)
+              ? `${raw} — Overpass is rate-limited, click Refresh Leads to retry another mirror.`
+              : "Real map-link search needs valid coordinates and an available map data provider.";
     } finally {
       actionButtons.forEach((button) => {
         button.disabled = false;
