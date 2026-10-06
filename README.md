@@ -24,12 +24,7 @@ The local runtime does not require `node_modules`; it uses built-in Node APIs so
 
 ## Owner Access
 
-Use this local owner account for full, free enterprise access:
-
-- Email: `owner@matleads.local`
-- Password: `admin2026`
-
-Admin users receive unlimited enterprise access across lead search, CRM, reports, analytics, admin, billing, settings, and AI workflows. Billing is not required for admin accounts. Set `OWNER_EMAIL` and `OWNER_PASSWORD` in `.env` before deploying a public instance.
+Owner access is configured privately via `OWNER_EMAIL` and `OWNER_PASSWORD` in `.env` and is never displayed in the app UI.
 
 ## Free Trial Limits
 
