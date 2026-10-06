@@ -2,6 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 
 function loadDotEnv() {
+  if (process.env.VERCEL) return;
   const envPath = path.resolve(process.cwd(), ".env");
   if (!fs.existsSync(envPath)) return;
 

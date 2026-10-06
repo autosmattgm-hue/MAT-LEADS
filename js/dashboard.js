@@ -70,10 +70,11 @@ async function initDashboard() {
 
   try {
     const result = await apiFetch("/api/dashboard/metrics");
-    renderMetrics(result.metrics);
-    renderChart(result.metrics);
+    renderMetrics(result.metrics || { totalLeads: 0, savedLeads: 0, contactedLeads: 0, wonDeals: 0, estimatedRevenue: 0, conversionRate: 0, monthlyGrowth: [] });
+    renderChart(result.metrics || { monthlyGrowth: [] });
   } catch (error) {
-    target.innerHTML = `<div class="error-state">${error.message}</div>`;
+    const msg = String(error?.message || "Metrics unavailable");
+    target.innerHTML = `<div class="error-state">${msg}. Check Vercel env vars (Firebase/NVIDIA/JWT) and redeploy.</div>`;
   }
 }
 

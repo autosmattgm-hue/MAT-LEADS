@@ -8,15 +8,18 @@ export class CrmService {
   }
 
   async listLeads(user) {
-    if (isAdminUser(user)) {
-      return this.leads.list({ limit: 1000 });
-    }
+    try {
+      if (isAdminUser(user)) {
+        return await this.leads.list({ limit: 1000 });
+      }
 
-    const stored = await this.leads.list({
-      where: [{ field: "ownerId", op: "==", value: user?.uid }],
-      limit: 100
-    });
-    return stored;
+      return await this.leads.list({
+        where: [{ field: "ownerId", op: "==", value: user?.uid }],
+        limit: 100
+      });
+    } catch {
+      return [];
+    }
   }
 
   async updateStage(id, stage, user) {

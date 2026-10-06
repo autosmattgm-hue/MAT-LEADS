@@ -315,39 +315,52 @@ function computeScore(checks, elapsedMs) {
 }
 
 export class WebsiteAuditService {
+  fallbackAudit(reason = "") {
+    const checks = {
+      websiteExists: false,
+      https: false,
+      mobileFriendly: false,
+      seoMetadata: false,
+      contactForm: false,
+      socialLinksFound: false,
+      businessEmailDetected: false,
+      bookingSystem: false,
+      outdatedDesign: true
+    };
+    return { score: computeScore(checks, 0), category: categorize(computeScore(checks, 0)), checks, elapsedMs: 0, error: reason || undefined };
+  }
+
   async audit(lead) {
-    if (!lead.websiteUrl) {
-      const checks = {
-        websiteExists: false,
-        https: false,
-        mobileFriendly: false,
-        seoMetadata: false,
-        contactForm: false,
-        socialLinksFound: false,
-        businessEmailDetected: false,
-        bookingSystem: false,
-        outdatedDesign: true
-      };
-      const score = computeScore(checks, 0);
-      return { score, category: categorize(score), checks, elapsedMs: 0 };
-    }
-
-    const url = normalizeWebsiteUrl(lead.websiteUrl);
-    await assertPublicHostname(url);
-
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 8000);
-    const started = performance.now();
-
     try {
-      const response = await fetch(url, {
-        redirect: "follow",
-        signal: controller.signal,
-        headers: {
-          "User-Agent": "MATLeadsAIProX-AuditBot/1.0",
-          "Range": "bytes=0-524288"
-        }
-      });
+      if (!lead.websiteUrl) {
+        return this.fallbackAudit("");
+      }
+
+      let url;
+      try {
+        url = normalizeWebsiteUrl(lead.websiteUrl);
+      } catch {
+        return this.fallbackAudit("Invalid website URL");
+      }
+      try {
+        await assertPublicHostname(url);
+      } catch {
+        return this.fallbackAudit("Website host blocked");
+      }
+
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 8000);
+      const started = performance.now();
+
+      try {
+        const response = await fetch(url, {
+          redirect: "follow",
+          signal: controller.signal,
+          headers: {
+            "User-Agent": "MATLeadsAIProX-AuditBot/1.0",
+            "Range": "bytes=0-524288"
+          }
+        });
       const elapsedMs = Math.round(performance.now() - started);
       const rawHtml = (await response.text()).slice(0, 524288);
       const html = rawHtml.toLowerCase();
@@ -370,8 +383,14 @@ export class WebsiteAuditService {
       };
       const score = computeScore(checks, elapsedMs);
       return { score, category: categorize(score), checks, elapsedMs, status: response.status, publicProfile };
-    } finally {
-      clearTimeout(timeout);
+      } catch {
+        clearTimeout(timeout);
+        return this.fallbackAudit("Website audit timed out");
+      } finally {
+        clearTimeout(timeout);
+      }
+    } catch {
+      return this.fallbackAudit("Website audit failed");
     }
   }
 }

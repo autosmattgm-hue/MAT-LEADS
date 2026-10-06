@@ -43,6 +43,7 @@ function localStorePayload() {
 }
 
 async function persistLocalStore() {
+  if (process.env.VERCEL) return;
   const payload = JSON.stringify(localStorePayload(), null, 2);
   const directory = path.dirname(localStorePath);
   const tempPath = `${localStorePath}.${process.pid}.tmp`;
@@ -52,6 +53,7 @@ async function persistLocalStore() {
 }
 
 async function queueLocalStorePersist() {
+  if (process.env.VERCEL) return;
   localStoreWriteQueue = localStoreWriteQueue.then(persistLocalStore, persistLocalStore);
   return localStoreWriteQueue;
 }

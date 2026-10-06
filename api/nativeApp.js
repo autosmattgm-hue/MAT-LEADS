@@ -551,10 +551,16 @@ export async function handleRequest(req, res) {
   } catch (error) {
     const status = error.status || 500;
     const showMessage = status < 500 || String(error.code || "").endsWith("_NOT_CONFIGURED");
+    if (status >= 500) {
+      try {
+        const { logger } = await import("./utils/logger.js");
+        logger.error("request_failed", { path: req.url, method: req.method, code: error.code, message: error.message, stack: String(error.stack || "").slice(0, 800) });
+      } catch {}
+    }
     return json(res, status, {
       error: {
         code: error.code || "INTERNAL_SERVER_ERROR",
-        message: showMessage ? error.message : "Something went wrong.",
+        message: showMessage ? error.message : "Something went wrong. Please retry; if it persists check Vercel env vars + logs.",
         details: error.details
       }
     });

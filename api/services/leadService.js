@@ -1062,7 +1062,9 @@ export class LeadService {
     }
 
     const result = await this.googlePlaces.search(providerSearch);
-    const audited = await Promise.all(result.leads.map(async (lead) => {
+    let audited = [];
+    try {
+      audited = await Promise.all(result.leads.map(async (lead) => {
       try {
         const audit = lead.audit?.publicProfile ? lead.audit : await this.websiteAudit.audit(lead);
         const enrichedLead = mergePublicWebsiteProfile(lead, audit);
@@ -1075,7 +1077,15 @@ export class LeadService {
           opportunityCategory: "Audit Pending"
         };
       }
-    }));
+      }));
+    } catch {
+      audited = (result.leads || []).map((lead) => ({
+        ...lead,
+        audit: { score: 0, category: "Audit Pending", checks: {} },
+        opportunityScore: 0,
+        opportunityCategory: "Audit Pending"
+      }));
+    }
     const filteredPool = applyLeadFilters(audited, effectiveSearch);
     const filtersRelaxed = filteredPool.length === 0 && audited.length > 0;
     const qualifiedPool = freshLeadOrder(filtersRelaxed ? fallbackLeadPool(audited) : filteredPool, refreshSeed);

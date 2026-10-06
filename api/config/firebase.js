@@ -14,13 +14,13 @@ function base64Url(input) {
   return Buffer.from(input).toString("base64url");
 }
 
-function encodeJwt(payload) {
+function encodeJwt(payload, privateKey) {
   const header = base64Url(JSON.stringify({ alg: "RS256", typ: "JWT" }));
   const body = base64Url(JSON.stringify(payload));
   const signer = crypto.createSign("RSA-SHA256");
   signer.update(`${header}.${body}`);
   signer.end();
-  const signature = signer.sign(env.firebase.privateKey, "base64url");
+  const signature = signer.sign(privateKey || env.firebase.privateKey, "base64url");
   return `${header}.${body}.${signature}`;
 }
 
@@ -28,13 +28,17 @@ async function getAccessToken() {
   const now = Math.floor(Date.now() / 1000);
   if (cachedToken && cachedToken.expiresAt - 60 > now) return cachedToken.value;
 
+  const privateKey = normalizedPrivateKey(env.firebase.privateKey);
+  if (!privateKey || !env.firebase.clientEmail || !env.firebase.projectId) {
+    throw new Error("Firestore credentials incomplete");
+  }
   const assertion = encodeJwt({
     iss: env.firebase.clientEmail,
     scope: "https://www.googleapis.com/auth/datastore",
     aud: "https://oauth2.googleapis.com/token",
     iat: now,
     exp: now + 3600
-  });
+  }, privateKey);
 
   const response = await fetch("https://oauth2.googleapis.com/token", {
     method: "POST",
@@ -113,6 +117,17 @@ function decodeDocument(doc) {
 
 export function isFirebaseConfigured() {
   return hasFirestoreCredentials;
+}
+
+function normalizedPrivateKey(raw = "") {
+  const trimmed = String(raw || "").trim();
+  if (!trimmed) return "";
+  // Vercel env editors often store literal \n - convert to real newlines, then normalize wrapping quotes.
+  let key = trimmed.replace(/\\n/g, "\n");
+  if ((key.startsWith('"') && key.endsWith('"')) || (key.startsWith("'") && key.endsWith("'"))) {
+    key = key.slice(1, -1);
+  }
+  return key.includes("BEGIN PRIVATE KEY") ? key : "";
 }
 
 export function isFirebaseAuthConfigured() {
