@@ -20,6 +20,13 @@ function initAuthForm() {
         body: JSON.stringify(payload)
       });
       setSession(result);
+      try {
+        const ref = new URLSearchParams(window.location.search).get("ref") || localStorage.getItem("mat_referral_code");
+        if (mode === "register" && ref) {
+          localStorage.removeItem("mat_referral_code");
+          await apiFetch("/api/earn/track-signup", { method: "POST", body: JSON.stringify({ ref }) }).catch(() => {});
+        }
+      } catch {}
       status.textContent = "Success. Redirecting...";
       const next = new URLSearchParams(window.location.search).get("next");
       window.location.href = next && next.startsWith("/") ? next : "/dashboard.html";

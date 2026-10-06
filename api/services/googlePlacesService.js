@@ -1610,6 +1610,10 @@ export class GooglePlacesService {
 
     if (!response.ok) {
       const body = await response.text();
+      // Invalid Google key / billing / quota should NOT kill scanning: fall back to free OSM automatically.
+      if (response.status === 400 || response.status === 401 || response.status === 403 || response.status === 429) {
+        return this.searchOpenStreetMap(normalizedSearch, location);
+      }
       let detail = body.slice(0, 400);
       try {
         const parsed = JSON.parse(body);

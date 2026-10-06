@@ -1,6 +1,7 @@
 import { env } from "../config/env.js";
 import { getPlan, publicPlan } from "../config/plans.js";
 import { FirestoreRepository } from "../repositories/firestoreRepository.js";
+import { EarnService } from "./earnService.js";
 import { signAccessToken } from "../middleware/auth.js";
 import { AppError } from "../utils/errors.js";
 import { isAdminUser } from "../utils/entitlements.js";
@@ -256,6 +257,10 @@ export class BillingService {
       plan: payload.plan,
       sessionId: session.id
     });
+
+    try {
+      await new EarnService().rewardForPaidUser({ ...activatedUser, uid: user.uid });
+    } catch {}
 
     return {
       configured: true,

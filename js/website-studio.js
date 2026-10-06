@@ -73,8 +73,8 @@ document.addEventListener("DOMContentLoaded", () => {
       const r = await apiFetch("/api/ai/websites", { method: "POST", body: JSON.stringify(payload) });
       websiteId = r.websiteId; shareToken = r.shareToken; shareUrl = r.shareUrl;
       setPreview(r.website.html);
-      byId("studioMeta").textContent = `${r.website.businessName} • built with ${r.website.model}`;
-      byId("studioStatus").textContent = "Done. Chat refinements, download, or share the live link.";
+      byId("studioMeta").textContent = `${r.website.businessName} • built with ${r.website.model}${r.website.aiError ? ` • Note: ${r.website.aiError}` : ""}`;
+      byId("studioStatus").textContent = r.website.provider === "nvidia" ? "Done. Real AI site built. Chat refinements, download, or share." : `Done with premium template (${r.website.aiError || "AI unavailable"}). Check Vercel NVIDIA_API_KEY, then rebuild.`;
       updateShare();
       history.replaceState(null, "", `/website-studio.html?id=${encodeURIComponent(websiteId)}`);
     } catch (err) {

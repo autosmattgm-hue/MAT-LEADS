@@ -34,12 +34,13 @@ export class WebsiteService {
     let html = "";
     let provider = "template";
     let model = "builtin-template-v1";
+    let aiError = "";
     try {
       const result = await this.nvidia.buildWebsite(lead, options);
       if (result.html && result.html.length > 800) { html = result.html; provider = result.provider || "nvidia"; model = result.model; }
-      else html = fallbackWebsiteHtml(lead, options);
-    } catch { html = fallbackWebsiteHtml(lead, options); }
-    const record = { id, shareToken, ownerId: user?.uid || "anon", leadId: lead?.id || "", leadName: lead?.name || options.businessName || "Business", businessType: lead?.businessType || lead?.category || "", address: lead?.address || "", phone: lead?.phone || "", email: lead?.email || "", businessName: options.businessName || lead?.name || "Business", style: options.style || "modern", html, provider, model, revisions: 1, history: [{ at: createdAt, instruction: "Initial AI website build" }], createdAt, updatedAt: createdAt };
+      else { html = fallbackWebsiteHtml(lead, options); aiError = "AI returned too little HTML, used premium template."; }
+    } catch (e) { html = fallbackWebsiteHtml(lead, options); aiError = e?.message || "AI build failed, used premium template."; }
+    const record = { id, shareToken, ownerId: user?.uid || "anon", leadId: lead?.id || "", leadName: lead?.name || options.businessName || "Business", businessType: lead?.businessType || lead?.category || "", address: lead?.address || "", phone: lead?.phone || "", email: lead?.email || "", businessName: options.businessName || lead?.name || "Business", style: options.style || "modern", html, provider, model, aiError, revisions: 1, history: [{ at: createdAt, instruction: "Initial AI website build" }], createdAt, updatedAt: createdAt };
     try { await this.websites.upsert(id, record); } catch {}
     memoryWebsites.set(id, record);
     memoryByToken.set(shareToken, id);

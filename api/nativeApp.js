@@ -11,9 +11,10 @@ import { DashboardService } from "./services/dashboardService.js";
 import { LeadService } from "./services/leadService.js";
 import { NvidiaService } from "./services/nvidiaService.js";
 import { WebsiteService } from "./services/websiteService.js";
+import { EarnService } from "./services/earnService.js";
 import { isAdminUser } from "./utils/entitlements.js";
 import { AppError } from "./utils/errors.js";
-import { aiSchemas, authSchemas, billingSchema, crmSchemas, leadSearchSchema, paypalConfirmationSchema, profileSchema, settingsSchema } from "./utils/schemas.js";
+import { aiSchemas, authSchemas, billingSchema, crmSchemas, earnSchemas, leadSearchSchema, paypalConfirmationSchema, profileSchema, settingsSchema } from "./utils/schemas.js";
 import { verifyAccessToken } from "./middleware/auth.js";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -28,6 +29,7 @@ const billingService = new BillingService();
 const adminService = new AdminService();
 const nvidiaService = new NvidiaService();
 const websiteService = new WebsiteService();
+const earnService = new EarnService();
 
 function canUseProAi(user = {}) {
   if (isAdminUser(user)) return true;
@@ -82,6 +84,10 @@ const publicFiles = new Set([
   "/website-studio.html",
   "/business-ai.html",
   "/share.html",
+  "/earn.html",
+  "/outreach.html",
+  "/proposals.html",
+  "/pay.html",
   "/manifest.webmanifest",
   "/sw.js",
   "/robots.txt",
@@ -231,6 +237,11 @@ const routes = [
         paypalHostedLinks: Object.values(env.paypal.paymentLinks).every(Boolean)
       },
       realMode: true,
+      aiModels: {
+        chat: [env.nvidia.model, ...(env.nvidia.modelFallbacks || [])].filter(Boolean),
+        website: [env.nvidia.websiteModel, ...(env.nvidia.websiteFallbacks || []), "z-ai/glm-5.3-flash", "google/gemma-4-31b-it"].filter(Boolean),
+        tycoon: [env.nvidia.tycoonModel, "deepseek-ai/deepseek-v4.1-flash", "z-ai/glm-5.3-flash"].filter(Boolean)
+      },
       missingRequiredForLiveOperation: [
         !env.nvidia.apiKey && "NVIDIA_API_KEY",
         !env.firebase.projectId && "........",
@@ -350,6 +361,18 @@ const routes = [
       const lead = await leadService.getById(payload.leadId);
       if (!lead) throw new AppError("Lead not found.", 404, "LEAD_NOT_FOUND");
       return nvidiaService.writeOutreach(lead, payload.type);
+    }
+  },
+  {
+    method: "POST",
+    regex: /^\/api\/ai\/proposal$/,
+    keys: [],
+    handler: async ({ req, body }) => {
+      await getUser(req);
+      const payload = validate(aiSchemas.proposal, body);
+      const lead = await leadService.getById(payload.leadId);
+      if (!lead) throw new AppError("Lead not found.", 404, "LEAD_NOT_FOUND");
+      return nvidiaService.proposalPack(lead, payload.offerKey || "pro_site");
     }
   },
   {
@@ -475,6 +498,78 @@ const routes = [
     handler: async ({ req }) => {
       await getAdminUser(req);
       return adminService.overview();
+    }
+  },
+  {
+    method: "GET",
+    regex: /^\/api\/earn\/offers$/,
+    keys: [],
+    handler: async ({ req }) => {
+      await getUser(req);
+      return { offers: earnService.offers() };
+    }
+  },
+  {
+    method: "GET",
+    regex: /^\/api\/earn\/referral$/,
+    keys: [],
+    handler: async ({ req }) => {
+      const user = await getUser(req);
+      const data = await earnService.myReferral(user);
+      return { ...data, paidUsd: (data.paidCents / 100).toFixed(2), pendingUsd: (data.pendingCents / 100).toFixed(2) };
+    }
+  },
+  {
+    method: "GET",
+    regex: /^\/api\/earn\/invoices$/,
+    keys: [],
+    handler: async ({ req }) => ({ invoices: await earnService.myInvoices(await getUser(req)) })
+  },
+  {
+    method: "POST",
+    regex: /^\/api\/earn\/invoices$/,
+    keys: [],
+    handler: async ({ req, body }) => earnService.createInvoice(await getUser(req), validate(earnSchemas.invoice, body)),
+    status: 201
+  },
+  {
+    method: "GET",
+    regex: /^\/api\/earn\/invoices\/([^/]+)$/,
+    keys: ["id"],
+    handler: async ({ params }) => {
+      const invoice = await earnService.getInvoice(params.id);
+      if (!invoice) throw new AppError("Invoice not found.", 404, "INVOICE_NOT_FOUND");
+      return { invoice };
+    }
+  },
+  {
+    method: "POST",
+    regex: /^\/api\/earn\/invoices\/([^/]+)\/paid$/,
+    keys: ["id"],
+    handler: async ({ req, body, params }) => earnService.markInvoicePaid(params.id, await getUser(req), validate(earnSchemas.invoicePaid, body))
+  },
+  {
+    method: "GET",
+    regex: /^\/api\/earn\/payouts$/,
+    keys: [],
+    handler: async ({ req }) => ({ payouts: await earnService.myPayouts(await getUser(req)) })
+  },
+  {
+    method: "POST",
+    regex: /^\/api\/earn\/payouts$/,
+    keys: [],
+    handler: async ({ req, body }) => earnService.requestPayout(await getUser(req), validate(earnSchemas.payout, body)),
+    status: 201
+  },
+  {
+    method: "POST",
+    regex: /^\/api\/earn\/track-signup$/,
+    keys: [],
+    handler: async ({ req, body }) => {
+      const user = await getUser(req);
+      const ref = String(body?.ref || body?.code || "").slice(0, 40);
+      if (!ref) return { tracked: false };
+      return { tracked: true, referral: await earnService.trackSignup(user, ref) };
     }
   }
 ];

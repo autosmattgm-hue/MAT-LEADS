@@ -140,8 +140,22 @@ export class NvidiaService {
     return Boolean(env.nvidia.apiKey);
   }
 
+  sanitizeMessages(messages = []) {
+    // NVIDIA chat models accept text only. Drop image_url parts (your deepseek sample) so Tycoon/Studio never 400.
+    return (Array.isArray(messages) ? messages : []).map((m) => {
+      const role = m?.role || "user";
+      const content = m?.content;
+      if (typeof content === "string") return { role, content };
+      if (Array.isArray(content)) {
+        const text = content.filter((p) => p?.type === "text").map((p) => String(p?.text || "")).join("\n").trim();
+        return { role, content: text || "(no text provided)" };
+      }
+      return { role, content: String(content ?? "") };
+    }).filter((m) => String(m.content || "").trim().length);
+  }
+
   async complete(messages, {
-    temperature = 1,
+    temperature = 0.5,
     maxTokens = env.nvidia.maxTokens,
     topP = 1,
     frequencyPenalty = 0,
@@ -156,10 +170,11 @@ export class NvidiaService {
     }
 
     const invokeUrl = `${env.nvidia.baseUrl.replace(/\/$/, "")}/chat/completions`;
+    const cleanMessages = this.sanitizeMessages(messages);
     const basePayload = {
-      messages: withPlainTextInstruction(messages),
-      max_tokens: Math.max(64, Math.min(Number(maxTokens) || env.nvidia.maxTokens, 900)),
-      temperature,
+      messages: withPlainTextInstruction(cleanMessages),
+      max_tokens: Math.max(64, Math.min(Number(maxTokens) || env.nvidia.maxTokens, 4096)),
+      temperature: Number(temperature ?? 0.5),
       top_p: topP,
       frequency_penalty: frequencyPenalty,
       presence_penalty: presencePenalty,
@@ -271,16 +286,33 @@ export class NvidiaService {
 
   writeOutreach(lead, type) {
     const leadContext = compactLeadForAi(lead);
+    const closers = {
+      cold_email: "Cold email that books a call. Subject + 3 short paragraphs + paid-audit CTA.",
+      follow_up: "Polite breakup follow-up with urgency + invoice CTA.",
+      website_redesign: "Website redesign pitch with 3 flaws, outcome, price anchor $799-$1499.",
+      seo: "Local SEO pitch with map-pack outcome + monthly retainer anchor.",
+      marketing: "Marketing growth pitch with offer + guarantee + call CTA.",
+      ai_automation: "AI chatbot/automation pitch with hours saved + setup + monthly.",
+      business_audit: "Paid audit pitch: sell the $149 audit before the build."
+    };
     return this.complete([
       {
         role: "system",
-        content: "You write professional B2B outreach for web development, SEO, marketing, and AI automation agencies. Be specific, respectful, and concise. Use plain text."
+        content: "You write professional B2B outreach for web development, SEO, marketing, and AI automation agencies. Be specific, respectful, and concise. Use plain text. Always end with a clear money CTA."
       },
       {
         role: "user",
-        content: `Write a ${type} for this business lead. Include a subject line, short email body, and one clear CTA. Keep under 150 words. Do not use # or * characters.\n\n${JSON.stringify(leadContext)}`
+        content: `Write a ${closers[type] || type} for this business lead. Include a subject line, short email body, and one clear CTA. Keep under 150 words. Do not use # or * characters.\n\n${JSON.stringify(leadContext)}`
       }
     ], { temperature: 0.3, maxTokens: 300 });
+  }
+
+  proposalPack(lead, offerKey = "pro_site") {
+    const leadContext = compactLeadForAi(lead);
+    return this.complete([
+      { role: "system", content: "You are a proposal writer for agencies. Plain text only. Structure: Problem, Offer, Deliverables, Timeline, Price, Guarantee, Next step to pay." },
+      { role: "user", content: `Write a client-ready proposal for offer ${offerKey} for this lead. Keep under 260 words. No markdown.\n\n${JSON.stringify(leadContext)}` }
+    ], { temperature: 0.4, maxTokens: 500 });
   }
 
   tycoonChat(prompt, context = {}) {
@@ -294,26 +326,28 @@ export class NvidiaService {
         role: "user",
         content: `${String(prompt || "").slice(0, 3000)}\n\nLead context: ${ctx}`
       }
-    ], { temperature: 0.5, maxTokens: 700, preferredModels: [env.nvidia.tycoonModel, "deepseek-ai/deepseek-v4.1-flash", "z-ai/glm-5.3"] });
+    ], { temperature: 0.5, topP: 1, maxTokens: 1024, timeoutMs: 45000, preferredModels: [env.nvidia.tycoonModel, "deepseek-ai/deepseek-v4.1-flash", "z-ai/glm-5.3-flash", "google/gemma-4-31b-it"] });
   }
 
-  async completeRaw(messages, { temperature = 0.7, maxTokens = 3800, timeoutMs = 60000 } = {}) {
+  async completeRaw(messages, { temperature = 0.5, topP = 1, maxTokens = 3800, timeoutMs = 0 } = {}) {
     if (!this.configured()) {
       throw new AppError("Real NVIDIA AI requires NVIDIA_API_KEY in .env.", 503, "NVIDIA_NOT_CONFIGURED");
     }
     const invokeUrl = `${env.nvidia.baseUrl.replace(/\/$/, "")}/chat/completions`;
     const models = modelsToTry();
-    const websiteModels = [...new Set([env.nvidia.websiteModel, ...((env.nvidia.websiteFallbacks || []).length ? env.nvidia.websiteFallbacks : []), "z-ai/glm-5.3", "deepseek-ai/deepseek-v4.1-flash", ...models].filter(Boolean))];
+    const websiteModels = [...new Set([env.nvidia.websiteModel, ...((env.nvidia.websiteFallbacks || []).length ? env.nvidia.websiteFallbacks : []), "z-ai/glm-5.3-flash", "google/gemma-4-31b-it", "deepseek-ai/deepseek-v4.1-flash", ...models].filter(Boolean))];
+    const effectiveTimeout = Math.max(5000, timeoutMs || env.nvidia.websiteTimeoutMs || 90000);
+    const cleanMessages = this.sanitizeMessages(messages);
     let lastError = null;
     for (const model of websiteModels) {
       const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), Math.max(5000, timeoutMs));
+      const timeout = setTimeout(() => controller.abort(), effectiveTimeout);
       try {
         const response = await fetch(invokeUrl, {
           method: "POST",
           signal: controller.signal,
           headers: { "Content-Type": "application/json", Accept: "application/json", Authorization: `Bearer ${env.nvidia.apiKey}` },
-          body: JSON.stringify({ model, messages, max_tokens: maxTokens, temperature, top_p: 0.95, stream: false })
+          body: JSON.stringify({ model, messages: cleanMessages, max_tokens: maxTokens, temperature: Number(temperature ?? 0.5), top_p: topP ?? 1, stream: false })
         });
         clearTimeout(timeout);
         if (!response.ok) {

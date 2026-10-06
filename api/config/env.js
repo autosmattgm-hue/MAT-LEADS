@@ -61,15 +61,15 @@ export const env = {
   nvidia: {
     apiKey: process.env.NVIDIA_API_KEY || "",
     baseUrl: process.env.NVIDIA_BASE_URL || "https://integrate.api.nvidia.com/v1",
-    model: process.env.NVIDIA_MODEL || "meta/llama-3.1-8b-instruct",
-    modelFallbacks: list(process.env.NVIDIA_MODEL_FALLBACKS, ["meta/llama-4-maverick-17b-128e-instruct", "deepseek-ai/deepseek-v4.1-flash", "z-ai/glm-5.3"]),
-    websiteModel: process.env.NVIDIA_WEBSITE_MODEL || "z-ai/glm-5.3",
-    websiteFallbacks: list(process.env.NVIDIA_WEBSITE_FALLBACKS, ["deepseek-ai/deepseek-v4.1-flash", "meta/llama-4-maverick-17b-128e-instruct"]),
+    model: process.env.NVIDIA_MODEL || "z-ai/glm-5.3-flash",
+    modelFallbacks: list(process.env.NVIDIA_MODEL_FALLBACKS, ["google/gemma-4-31b-it", "deepseek-ai/deepseek-v4.1-flash", "meta/llama-4-maverick-17b-128e-instruct"]),
+    websiteModel: process.env.NVIDIA_WEBSITE_MODEL || "z-ai/glm-5.3-flash",
+    websiteFallbacks: list(process.env.NVIDIA_WEBSITE_FALLBACKS, ["google/gemma-4-31b-it", "deepseek-ai/deepseek-v4.1-flash"]),
     tycoonModel: process.env.NVIDIA_TYCOON_MODEL || "deepseek-ai/deepseek-v4.1-flash",
-    timeoutMs: number(process.env.NVIDIA_TIMEOUT_MS, 30000),
-    websiteTimeoutMs: number(process.env.NVIDIA_WEBSITE_TIMEOUT_MS, 60000),
+    timeoutMs: number(process.env.NVIDIA_TIMEOUT_MS, 45000),
+    websiteTimeoutMs: number(process.env.NVIDIA_WEBSITE_TIMEOUT_MS, 90000),
     cacheTtlMs: number(process.env.NVIDIA_CACHE_TTL_MS, 600000),
-    maxTokens: number(process.env.NVIDIA_MAX_TOKENS, 600)
+    maxTokens: number(process.env.NVIDIA_MAX_TOKENS, 1024)
   },
   stripe: {
     secretKey: process.env.STRIPE_SECRET_KEY || "",

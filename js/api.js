@@ -16,7 +16,8 @@ const PROTECTED_API_PREFIXES = [
   "/api/crm/",
   "/api/admin/",
   "/api/ai/",
-  "/api/billing/"
+  "/api/billing/",
+  "/api/earn/"
 ];
 
 const PUBLIC_API_EXACT = new Set([

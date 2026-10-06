@@ -233,6 +233,10 @@ export const aiSchemas = {
     leadId: stringField(input, "leadId", { required: true, min: 1, max: 160 }),
     type: enumField(input, "type", outreachTypes, { default: "cold_email" })
   })),
+  proposal: schema((input) => ({
+    leadId: stringField(input, "leadId", { required: true, min: 1, max: 160 }),
+    offerKey: stringField(input, "offerKey", { max: 80, truncate: true })
+  })),
   tycoon: schema((input) => ({
     prompt: stringField(input, "prompt", { required: true, min: 1, max: 4000 }),
     leadId: stringField(input, "leadId", { max: 160, truncate: true }),
@@ -248,6 +252,25 @@ export const aiSchemas = {
   websiteRefine: schema((input) => ({
     websiteId: stringField(input, "websiteId", { required: true, min: 1, max: 160 }),
     instruction: stringField(input, "instruction", { required: true, min: 1, max: 2000 })
+  }))
+};
+
+export const earnSchemas = {
+  invoice: schema((input) => ({
+    leadId: stringField(input, "leadId", { max: 160, truncate: true }),
+    leadName: stringField(input, "leadName", { max: 160, truncate: true }),
+    offerKey: stringField(input, "offerKey", { max: 80, truncate: true }),
+    amountUsd: numberField(input, "amountUsd", { min: 1, max: 100000, defaultOnInvalid: false }),
+    clientName: stringField(input, "clientName", { max: 160, truncate: true }),
+    clientEmail: stringField(input, "clientEmail", { max: 255, truncate: true }),
+    notes: stringField(input, "notes", { max: 1000, truncate: true })
+  })),
+  payout: schema((input) => ({
+    amountUsd: numberField(input, "amountUsd", { min: 10, max: 100000, defaultOnInvalid: false }),
+    destination: stringField(input, "destination", { max: 200, truncate: true })
+  })),
+  invoicePaid: schema((input) => ({
+    transactionId: stringField(input, "transactionId", { max: 220, truncate: true })
   }))
 };
 

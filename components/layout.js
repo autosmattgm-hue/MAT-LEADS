@@ -6,10 +6,13 @@ const navItems = [
   { href: "/lead-details.html", label: "Lead Details", icon: "L" },
   { href: "/website-studio.html", label: "Website Studio", icon: "W" },
   { href: "/business-ai.html", label: "Business AI", icon: "B" },
+  { href: "/earn.html", label: "Earn", icon: "E" },
+  { href: "/outreach.html", label: "Outreach", icon: "O" },
+  { href: "/proposals.html", label: "Proposals", icon: "P" },
   { href: "/reports.html", label: "Reports", icon: "R" },
   { href: "/analytics.html", label: "Analytics", icon: "A" },
   { href: "/pricing.html", label: "Pricing", icon: "$" },
-  { href: "/profile.html", label: "Profile", icon: "P" },
+  { href: "/profile.html", label: "Profile", icon: "F" },
   { href: "/settings.html", label: "Settings", icon: "S" },
   { href: "/admin.html", label: "Admin", icon: "M" }
 ];
