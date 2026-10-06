@@ -73,4 +73,20 @@ function initBillingButtons() {
 }
 
 document.addEventListener("DOMContentLoaded", initBillingButtons);
+document.addEventListener("DOMContentLoaded", () => {
+  try {
+    const q = new URLSearchParams(window.location.search);
+    if (q.get("upgrade") === "pro") {
+      const header = document.querySelector(".section-header");
+      if (header && !document.querySelector("[data-upgrade-banner]")) {
+        const banner = document.createElement("div");
+        banner.setAttribute("data-upgrade-banner", "true");
+        banner.className = "notice";
+        banner.style.marginTop = "12px";
+        banner.innerHTML = "<strong>Pro required:</strong> AI Website Studio + Business AI Tycoon unlock on <strong>Professional ($99)</strong> and higher. Choose a plan below.";
+        header.append(banner);
+      }
+    }
+  } catch {}
+});
 document.addEventListener("DOMContentLoaded", initOwnerPricingState);

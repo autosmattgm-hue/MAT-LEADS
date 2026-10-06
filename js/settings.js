@@ -1,17 +1,15 @@
 import { apiFetch, byId, requireAuth, setCurrentUser, setToken } from "./api.js";
 
 function escapeHtml(value) {
-  return String(value ?? "").replace(/[&<>"']/g, (character) => ({
-    "&": "&amp;",
-    "<": "&lt;",
-    ">": "&gt;",
-    "\"": "&quot;",
-    "'": "&#39;"
-  })[character]);
-}
-
-function statusPill(enabled) {
-  return `<span class="status-pill ${enabled ? "success" : "danger"}">${enabled ? "Connected" : "Required"}</span>`;
+  if (value == null) return "";
+  return String(value).replace(/[&<>"']/g, function(c) {
+    if (c === "&") return String.fromCharCode(38) + "amp;";
+    if (c === "<") return String.fromCharCode(38) + "lt;";
+    if (c === ">") return String.fromCharCode(38) + "gt;";
+    if (c === "\"") return String.fromCharCode(38) + "quot;";
+    if (c === "'") return String.fromCharCode(38) + "#39;";
+    return c;
+  });
 }
 
 function safeExternalUrl(value) {
@@ -23,7 +21,8 @@ function safeExternalUrl(value) {
   }
 }
 
-function setSettingsStatus(message, state = "info") {
+function setSettingsStatus(message, state) {
+  state = state || "info";
   const target = document.querySelector("[data-settings-status]");
   if (!target) return;
   target.textContent = message;
@@ -31,86 +30,129 @@ function setSettingsStatus(message, state = "info") {
   target.classList.toggle("error", state === "error");
 }
 
+function val(id) {
+  var el = byId(id);
+  if (!el) return;
+  if (el.type === "checkbox") return el.checked;
+  return el.value || "";
+}
+
+function setVal(id, value, fallback) {
+  var el = byId(id);
+  if (!el) return;
+  if (el.type === "checkbox") {
+    el.checked = value != null ? Boolean(value) : Boolean(fallback);
+  } else {
+    el.value = value != null ? String(value) : String(fallback || "");
+  }
+}
+
 function settingsPayload() {
   return {
-    leadAlerts: byId("leadAlerts")?.checked,
-    weeklyDigest: byId("weeklyDigest")?.checked,
-    defaultCountry: byId("defaultCountry")?.value || "",
-    defaultResults: byId("defaultResults")?.value || 20,
-    brandName: byId("brandName")?.value || "",
-    bookingUrl: byId("bookingUrl")?.value || "",
-    primaryOffer: byId("primaryOffer")?.value || "",
-    proposalPrice: byId("proposalPrice")?.value || 2500,
-    followUpCadence: byId("followUpCadence")?.value || "",
-    noWebsiteWeight: byId("noWebsiteWeight")?.value || 50,
-    poorMobileWeight: byId("poorMobileWeight")?.value || 20,
-    weakSeoWeight: byId("weakSeoWeight")?.value || 20,
-    noSslWeight: byId("noSslWeight")?.value || 10
+    leadAlerts: val("leadAlerts"),
+    weeklyDigest: val("weeklyDigest"),
+    emailNotifications: val("emailNotifications"),
+    smsNotifications: val("smsNotifications"),
+    browserNotifications: val("browserNotifications"),
+    defaultCountry: val("defaultCountry"),
+    defaultResults: val("defaultResults") || 20,
+    defaultRadius: val("defaultRadius") || 15000,
+    defaultSearchDepth: val("defaultSearchDepth") || "deep",
+    defaultSortBy: val("defaultSortBy") || "opportunity",
+    defaultLeadQuality: val("defaultLeadQuality") || "all",
+    brandName: val("brandName"),
+    bookingUrl: val("bookingUrl"),
+    primaryOffer: val("primaryOffer"),
+    proposalPrice: val("proposalPrice") || 2500,
+    followUpCadence: val("followUpCadence"),
+    noWebsiteWeight: val("noWebsiteWeight") || 50,
+    poorMobileWeight: val("poorMobileWeight") || 20,
+    weakSeoWeight: val("weakSeoWeight") || 20,
+    noSslWeight: val("noSslWeight") || 10,
+    socialPresenceWeight: val("socialPresenceWeight") || 15,
+    lowReviewWeight: val("lowReviewWeight") || 10,
+    senderName: val("senderName"),
+    replyToEmail: val("replyToEmail"),
+    bccEmail: val("bccEmail"),
+    emailSignature: val("emailSignature"),
+    exportFormat: val("exportFormat") || "csv",
+    dateFormat: val("dateFormat") || "MM/DD/YYYY",
+    timezone: val("timezone") || "America/Los_Angeles",
+    exportHeaders: val("exportHeaders"),
+    autoExport: val("autoExport"),
+    aiModel: val("aiModel") || "llama-3.1-8b",
+    outreachTone: val("outreachTone") || "professional",
+    maxFollowUps: val("maxFollowUps") || 3,
+    autoFollowUp: val("autoFollowUp"),
+    aiSuggestions: val("aiSuggestions"),
+    autoScore: val("autoScore")
   };
 }
 
-function populateSettings(settings = {}) {
-  byId("leadAlerts").checked = settings.leadAlerts ?? true;
-  byId("weeklyDigest").checked = settings.weeklyDigest ?? true;
-  byId("defaultCountry").value = settings.defaultCountry || "United States";
-  byId("defaultResults").value = settings.defaultResults || 20;
-  byId("brandName").value = settings.brandName || "MAT Leads AI Pro X";
-  byId("bookingUrl").value = settings.bookingUrl || "";
-  byId("primaryOffer").value = settings.primaryOffer || "Website + local lead growth audit";
-  byId("proposalPrice").value = settings.proposalPrice ?? 2500;
-  byId("followUpCadence").value = settings.followUpCadence || "Day 1, Day 3, Day 7";
-  byId("noWebsiteWeight").value = settings.noWebsiteWeight ?? 50;
-  byId("poorMobileWeight").value = settings.poorMobileWeight ?? 20;
-  byId("weakSeoWeight").value = settings.weakSeoWeight ?? 20;
-  byId("noSslWeight").value = settings.noSslWeight ?? 10;
+function populateSettings(settings) {
+  settings = settings || {};
+  setVal("leadAlerts", settings.leadAlerts, true);
+  setVal("weeklyDigest", settings.weeklyDigest, true);
+  setVal("emailNotifications", settings.emailNotifications, true);
+  setVal("smsNotifications", settings.smsNotifications, false);
+  setVal("browserNotifications", settings.browserNotifications, true);
+  setVal("defaultCountry", settings.defaultCountry, "United States");
+  setVal("defaultResults", settings.defaultResults, 20);
+  setVal("defaultRadius", settings.defaultRadius, 15000);
+  setVal("defaultSearchDepth", settings.defaultSearchDepth, "deep");
+  setVal("defaultSortBy", settings.defaultSortBy, "opportunity");
+  setVal("defaultLeadQuality", settings.defaultLeadQuality, "all");
+  setVal("brandName", settings.brandName, "MAT Leads AI Pro X");
+  setVal("bookingUrl", settings.bookingUrl, "");
+  setVal("primaryOffer", settings.primaryOffer, "Website + local lead growth audit");
+  setVal("proposalPrice", settings.proposalPrice, 2500);
+  setVal("followUpCadence", settings.followUpCadence, "Day 1, Day 3, Day 7");
+  setVal("noWebsiteWeight", settings.noWebsiteWeight, 50);
+  setVal("poorMobileWeight", settings.poorMobileWeight, 20);
+  setVal("weakSeoWeight", settings.weakSeoWeight, 20);
+  setVal("noSslWeight", settings.noSslWeight, 10);
+  setVal("socialPresenceWeight", settings.socialPresenceWeight, 15);
+  setVal("lowReviewWeight", settings.lowReviewWeight, 10);
+  setVal("senderName", settings.senderName, "");
+  setVal("replyToEmail", settings.replyToEmail, "");
+  setVal("bccEmail", settings.bccEmail, "");
+  setVal("emailSignature", settings.emailSignature, "");
+  setVal("exportFormat", settings.exportFormat, "csv");
+  setVal("dateFormat", settings.dateFormat, "MM/DD/YYYY");
+  setVal("timezone", settings.timezone, "America/Los_Angeles");
+  setVal("exportHeaders", settings.exportHeaders, true);
+  setVal("autoExport", settings.autoExport, false);
+  setVal("aiModel", settings.aiModel, "llama-3.1-8b");
+  setVal("outreachTone", settings.outreachTone, "professional");
+  setVal("maxFollowUps", settings.maxFollowUps, 3);
+  setVal("autoFollowUp", settings.autoFollowUp, false);
+  setVal("aiSuggestions", settings.aiSuggestions, true);
+  setVal("autoScore", settings.autoScore, true);
 }
 
-function renderSettingsSummary(user = {}, settings = {}) {
+function renderSettingsSummary(user, settings) {
+  user = user || {};
+  settings = settings || {};
   const target = document.querySelector("[data-settings-summary]");
   if (!target) return;
   const plan = user.role === "admin" || user.entitlements?.unlimitedAccess
     ? "Admin Unlimited"
     : user.planName || user.subscription || "Workspace";
   const bookingUrl = safeExternalUrl(settings.bookingUrl);
-  target.innerHTML = `
-    <div class="audit-item"><span>Current plan</span><strong>${escapeHtml(plan)}</strong></div>
-    <div class="audit-item"><span>Report brand</span><strong>${escapeHtml(settings.brandName || "MAT Leads AI Pro X")}</strong></div>
-    <div class="audit-item"><span>Primary offer</span><strong>${escapeHtml(settings.primaryOffer || "Website + local lead growth audit")}</strong></div>
-    <div class="audit-item"><span>Booking URL</span><strong>${bookingUrl ? `<a href="${escapeHtml(bookingUrl)}" target="_blank" rel="noreferrer">${escapeHtml(bookingUrl)}</a>` : "Not set"}</strong></div>
-    <div class="audit-item"><span>Default proposal</span><strong>$${escapeHtml(settings.proposalPrice ?? 2500)}</strong></div>
-    <div class="audit-item"><span>Default scan</span><strong>${escapeHtml(settings.defaultCountry || "United States")}</strong></div>
-    <div class="audit-item"><span>Default results</span><strong>${escapeHtml(settings.defaultResults || 20)}</strong></div>
-    <div class="audit-item"><span>Follow-up cadence</span><strong>${escapeHtml(settings.followUpCadence || "Day 1, Day 3, Day 7")}</strong></div>
-    <div class="audit-item"><span>Lead alerts</span><span class="status-pill ${settings.leadAlerts ? "success" : "warning"}">${settings.leadAlerts ? "On" : "Off"}</span></div>
-  `;
-}
-
-async function initIntegrationStatus() {
-  const target = byId("integrationStatus");
-  const missing = byId("missingConfig");
-  if (!target) return;
-
-  try {
-    const health = await apiFetch("/api/health");
-    const integrations = health.integrations || {};
-    target.innerHTML = `
-      <div class="audit-item"><span>Google Places API</span>${statusPill(integrations.googlePlaces)}</div>
-      <div class="audit-item"><span>OpenStreetMap Overpass</span>${statusPill(integrations.openStreetMap)}</div>
-      <div class="audit-item"><span>Firebase Firestore</span>${statusPill(integrations.firebase)}</div>
-      <div class="audit-item"><span>NVIDIA API</span>${statusPill(integrations.nvidia)}</div>
-      <div class="audit-item"><span>Stripe Billing</span>${statusPill(integrations.stripe)}</div>
-      <div class="audit-item"><span>PayPal Billing</span>${statusPill(integrations.paypal)}</div>
-    `;
-
-    if (missing) {
-      const items = health.missingRequiredForLiveOperation || [];
-      missing.textContent = items.length
-        ? `live operation: ${items.join(", ")}.`
-        : "All live provider credentials are configured.";
-    }
-  } catch (error) {
-    target.innerHTML = `<div class="error-state">${error.message}</div>`;
-  }
+  target.innerHTML = [
+    '<div class="audit-item"><span>Current plan</span><strong>' + escapeHtml(plan) + '</strong></div>',
+    '<div class="audit-item"><span>Report brand</span><strong>' + escapeHtml(settings.brandName || "MAT Leads AI Pro X") + '</strong></div>',
+    '<div class="audit-item"><span>Primary offer</span><strong>' + escapeHtml(settings.primaryOffer || "Website + local lead growth audit") + '</strong></div>',
+    '<div class="audit-item"><span>Booking URL</span><strong>' + (bookingUrl ? '<a href="' + escapeHtml(bookingUrl) + '" target="_blank" rel="noreferrer">' + escapeHtml(bookingUrl) + '</a>' : "Not set") + '</strong></div>',
+    '<div class="audit-item"><span>Default proposal</span><strong>$' + escapeHtml(settings.proposalPrice ?? 2500) + '</strong></div>',
+    '<div class="audit-item"><span>Default scan</span><strong>' + escapeHtml(settings.defaultCountry || "United States") + '</strong></div>',
+    '<div class="audit-item"><span>Default results</span><strong>' + escapeHtml(settings.defaultResults || 20) + '</strong></div>',
+    '<div class="audit-item"><span>AI model</span><strong>' + escapeHtml(settings.aiModel || "llama-3.1-8b") + '</strong></div>',
+    '<div class="audit-item"><span>Outreach tone</span><strong>' + escapeHtml(settings.outreachTone || "professional") + '</strong></div>',
+    '<div class="audit-item"><span>Follow-up cadence</span><strong>' + escapeHtml(settings.followUpCadence || "Day 1, Day 3, Day 7") + '</strong></div>',
+    '<div class="audit-item"><span>Lead alerts</span><span class="status-pill ' + (settings.leadAlerts ? "success" : "warning") + '">' + (settings.leadAlerts ? "On" : "Off") + '</span></div>',
+    '<div class="audit-item"><span>Timezone</span><strong>' + escapeHtml(settings.timezone || "America/Los_Angeles") + '</strong></div>'
+  ].join("\n    ");
 }
 
 async function loadSettings() {
@@ -135,7 +177,7 @@ function initSettingsForm() {
     if (!requireAuth()) return;
 
     const submit = document.querySelector("[form='workspaceSettingsForm']");
-    const original = submit?.textContent || "Save Settings";
+    const original = submit ? submit.textContent : "Save Settings";
     if (submit) {
       submit.disabled = true;
       submit.textContent = "Saving...";
@@ -163,8 +205,7 @@ function initSettingsForm() {
   });
 }
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", function () {
   initSettingsForm();
-  initIntegrationStatus();
   loadSettings();
 });

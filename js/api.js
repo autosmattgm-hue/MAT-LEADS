@@ -1,7 +1,6 @@
 const TOKEN_KEY = "mat_access_token";
 const REFRESH_KEY = "mat_refresh_token";
 const USER_KEY = "mat_user";
-const SESSION_NOTICE_KEY = "mat_session_notice";
 const PUBLIC_API_PATHS = new Set([
   "/api/auth/login",
   "/api/auth/register",
@@ -19,6 +18,32 @@ const PROTECTED_API_PREFIXES = [
   "/api/ai/",
   "/api/billing/"
 ];
+
+const PUBLIC_API_EXACT = new Set([
+  "/api/s/shared"
+]);
+
+function isPublicShareApi(path) {
+  const pathname = String(path || "").split("?")[0];
+  if (PUBLIC_API_EXACT.has(pathname)) return true;
+  return /^\/api\/s\/[^/]+$/.test(pathname);
+}
+
+export function isProUser(user = {}) {
+  if (!user) return false;
+  if (String(user.role || "").toLowerCase() === "admin") return true;
+  if (user?.entitlements?.unlimitedAccess) return true;
+  const sub = String(user?.subscription || user?.planName || "").toLowerCase();
+  if (["professional", "growth_plus", "growth plus", "agency", "enterprise", "pro"].some((k) => sub.includes(k))) return true;
+  if (user?.entitlements?.activePlan && !["trial", "starter", ""].includes(String(user.entitlements.activePlan))) return true;
+  return false;
+}
+
+export function requirePro(user = {}) {
+  if (isProUser(user)) return true;
+  window.location.href = "/pricing.html?upgrade=pro";
+  return false;
+}
 
 export function getToken() {
   return localStorage.getItem(TOKEN_KEY);
@@ -44,8 +69,6 @@ export function setSession(session = {}) {
   setToken(session.accessToken || session.idToken);
   setRefreshToken(session.refreshToken);
   setCurrentUser(session.user);
-  if (session.notice) localStorage.setItem(SESSION_NOTICE_KEY, session.notice);
-  else localStorage.removeItem(SESSION_NOTICE_KEY);
 }
 
 export function getCurrentUser() {
@@ -60,7 +83,6 @@ export function clearToken() {
   localStorage.removeItem(TOKEN_KEY);
   localStorage.removeItem(REFRESH_KEY);
   localStorage.removeItem(USER_KEY);
-  localStorage.removeItem(SESSION_NOTICE_KEY);
 }
 
 function decodeJwtPayload(token) {
@@ -96,6 +118,8 @@ export function hasStoredSession() {
 function isProtectedApiPath(path) {
   const pathname = String(path || "").split("?")[0];
   if (PUBLIC_API_PATHS.has(pathname)) return false;
+  if (typeof isPublicShareApi === "function" && isPublicShareApi(pathname)) return false;
+  if (/^\/api\/s\/[^/]+$/.test(pathname)) return false;
   return PROTECTED_API_PREFIXES.some((prefix) => pathname === prefix.replace(/\/$/, "") || pathname.startsWith(prefix));
 }
 
@@ -174,14 +198,21 @@ export async function apiFetch(path, options = {}) {
         if (requiresAuth) redirectToLogin();
       }
     }
-    const fieldErrors = payload?.error?.details?.fieldErrors || payload?.error?.details;
-    const fieldMessage = fieldErrors && typeof fieldErrors === "object"
-      ? Object.entries(fieldErrors)
-        .map(([field, errors]) => `${field}: ${Array.isArray(errors) ? errors.join(", ") : errors}`)
-        .join(" | ")
-      : "";
-    const baseMessage = typeof payload === "object" && payload?.error ? payload.error.message : "Request failed";
-    const message = fieldMessage ? `${baseMessage} (${fieldMessage})` : baseMessage;
+    var errors = payload?.error?.details;
+    var fieldMessage = "";
+    if (errors && typeof errors === "object") {
+      if (errors.fieldErrors && typeof errors.fieldErrors === "object") {
+        fieldMessage = Object.entries(errors.fieldErrors)
+          .map(function(entry) {
+            var field = entry[0];
+            var msgs = entry[1];
+            return field + ": " + (Array.isArray(msgs) ? msgs.join(", ") : msgs);
+          })
+          .join(" | ");
+      }
+    }
+    var baseMessage = typeof payload === "object" && payload && payload.error ? payload.error.message : "Request failed";
+    var message = fieldMessage ? baseMessage + " (" + fieldMessage + ")" : baseMessage;
     throw new Error(message);
   }
 

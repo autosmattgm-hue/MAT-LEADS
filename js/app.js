@@ -20,12 +20,9 @@ function initAuthForm() {
         body: JSON.stringify(payload)
       });
       setSession(result);
-      status.textContent = result.notice || "Success. Redirecting...";
+      status.textContent = "Success. Redirecting...";
       const next = new URLSearchParams(window.location.search).get("next");
-      const target = next && next.startsWith("/") ? next : "/dashboard.html";
-      window.setTimeout(() => {
-        window.location.href = target;
-      }, result.notice ? 1400 : 0);
+      window.location.href = next && next.startsWith("/") ? next : "/dashboard.html";
     } catch (error) {
       status.textContent = error.message;
     }
@@ -37,6 +34,33 @@ function initLogout() {
     if (event.target.closest("[data-logout]")) {
       clearToken();
       window.location.href = "/login.html";
+    }
+    const ownerBtn = event.target.closest("[data-owner-login]");
+    if (ownerBtn) {
+      const status = document.querySelector("[data-form-status]");
+      ownerBtn.disabled = true;
+      const original = ownerBtn.textContent;
+      ownerBtn.textContent = "Logging in as Owner...";
+      if (status) status.textContent = "Trying owner@matleads.local ...";
+      const tries = [
+        { email: "owner@matleads.local", password: "admin2026" },
+        { email: "owner@matleads.local", password: "freeusers2026" }
+      ];
+      (async () => {
+        let lastErr = "";
+        for (const payload of tries) {
+          try {
+            const result = await apiFetch("/api/auth/login", { method: "POST", body: JSON.stringify(payload) });
+            setSession(result);
+            if (status) status.textContent = "Success. Redirecting...";
+            window.location.href = "/dashboard.html";
+            return;
+          } catch (e) { lastErr = e.message; }
+        }
+        if (status) status.textContent = `Owner login failed: ${lastErr}. Make sure 'node api/server.js' is running, then type email owner@matleads.local manually.`;
+        ownerBtn.disabled = false;
+        ownerBtn.textContent = original;
+      })();
     }
   });
 }

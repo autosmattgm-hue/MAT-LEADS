@@ -2,24 +2,10 @@ import { randomUUID } from "node:crypto";
 import fs from "node:fs/promises";
 import path from "node:path";
 import { firestoreClient } from "../config/firebase.js";
-import { logger } from "../utils/logger.js";
 
 const memoryStore = new Map();
-const localStorePath = path.resolve(process.cwd(), process.env.LOCAL_DATA_FILE || "data/local-store.json");
-const localStoreWriteErrors = ["EROFS", "EPERM", "EACCES", "ENOENT", "EBADF"];
-const STORAGE_WARNING = "Records are stored in the local store of a single instance. Add the Firebase service account (FIREBASE_CLIENT_EMAIL and FIREBASE_PRIVATE_KEY, or paste the service-account JSON into FIREBASE_SERVICE_ACCOUNT) so Firestore keeps accounts, leads and CRM records permanently.";
-
-let localStoreWritable = true;
-let storageWarningLogged = false;
-
-export function storageStatus() {
-  const persistent = Boolean(firestoreClient());
-  return {
-    backend: persistent ? "firestore" : localStoreWritable ? "local-json" : "memory",
-    persistent,
-    warning: persistent ? "" : STORAGE_WARNING
-  };
-}
+const storeDir = process.env.VERCEL ? "/tmp" : process.cwd();
+const localStorePath = path.resolve(storeDir, process.env.LOCAL_DATA_FILE || "data/local-store.json");
 let localStoreLoaded = false;
 let localStoreWriteQueue = Promise.resolve();
 
@@ -60,21 +46,9 @@ async function persistLocalStore() {
   const payload = JSON.stringify(localStorePayload(), null, 2);
   const directory = path.dirname(localStorePath);
   const tempPath = `${localStorePath}.${process.pid}.tmp`;
-  try {
-    await fs.mkdir(directory, { recursive: true });
-    await fs.writeFile(tempPath, payload, "utf8");
-    await fs.rename(tempPath, localStorePath);
-  } catch (error) {
-    if (localStoreWriteErrors.includes(error.code)) {
-      localStoreWritable = false;
-      if (!storageWarningLogged) {
-        storageWarningLogged = true;
-        logger.warn("local_store_not_writable", { code: error.code, path: localStorePath, message: STORAGE_WARNING });
-      }
-      return;
-    }
-    throw error;
-  }
+  await fs.mkdir(directory, { recursive: true });
+  await fs.writeFile(tempPath, payload, "utf8");
+  await fs.rename(tempPath, localStorePath);
 }
 
 async function queueLocalStorePersist() {
@@ -123,6 +97,7 @@ export class FirestoreRepository {
     if (client) {
       return client.set(this.collectionName, id, payload);
     }
+
     await loadLocalStore();
     collectionStore(this.collectionName).set(id, payload);
     await queueLocalStorePersist();

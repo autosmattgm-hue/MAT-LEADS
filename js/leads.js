@@ -1481,6 +1481,11 @@ function renderLead(lead) {
       <div class="lead-actions">
         <a class="btn btn-secondary" href="/lead-details.html?id=${encodeURIComponent(lead.id)}">View</a>
         <button class="btn btn-primary" type="button" data-save-lead="${lead.id}">Save Lead</button>
+        <label class="select-check" title="Tick to reveal the AI website builder for this lead">
+          <input type="checkbox" data-ai-website-toggle="${escapeHtml(lead.id)}">
+          <span>Use AI to create website</span>
+        </label>
+        <button class="btn btn-primary" type="button" hidden data-create-website="${escapeHtml(lead.id)}" data-lead-name="${escapeHtml(lead.name || "Business")}">Create Website</button>
         ${renderWhatsappButton(lead, "btn btn-secondary")}
         ${socialUrl ? `<a class="btn btn-ghost" href="${socialUrl}" target="_blank" rel="noreferrer">Social</a>` : ""}
         ${mapsUrl ? `<a class="btn btn-ghost" href="${mapsUrl}" target="_blank" rel="noreferrer">Maps</a>` : ""}
@@ -1523,6 +1528,11 @@ function renderLocalSavedLead(lead) {
       ${renderLocalLeadTools(lead)}
       <div class="lead-actions">
         <a class="btn btn-secondary" href="/lead-details.html?id=${encodeURIComponent(localLeadId(lead))}">View</a>
+        <label class="select-check" title="Tick to reveal the AI website builder for this lead">
+          <input type="checkbox" data-ai-website-toggle="${escapeHtml(localLeadId(lead))}">
+          <span>Use AI to create website</span>
+        </label>
+        <button class="btn btn-primary" type="button" hidden data-create-website="${escapeHtml(localLeadId(lead))}" data-lead-name="${escapeHtml(lead.name || "Business")}">Create Website</button>
         ${renderWhatsappButton(lead, "btn btn-secondary")}
         ${socialUrl ? `<a class="btn btn-ghost" href="${socialUrl}" target="_blank" rel="noreferrer">Social</a>` : ""}
         ${mapsUrl ? `<a class="btn btn-ghost" href="${mapsUrl}" target="_blank" rel="noreferrer">Maps</a>` : ""}
@@ -1920,12 +1930,39 @@ function initLeadCommandCenter() {
   });
 }
 
+function initWebsiteStudioActions() {
+  document.addEventListener("change", (event) => {
+    const toggle = event.target.closest("[data-ai-website-toggle]");
+    if (!toggle) return;
+    const card = toggle.closest(".lead-card");
+    const btn = card?.querySelector("[data-create-website]");
+    if (btn) btn.hidden = !toggle.checked;
+  });
+  document.addEventListener("click", (event) => {
+    const btn = event.target.closest("[data-create-website]");
+    if (!btn) return;
+    if (!requireAuth()) return;
+    const user = getCurrentUser();
+    const pro = user && (String(user.role || "").toLowerCase() === "admin" || user?.entitlements?.unlimitedAccess || /professional|growth|agency|enterprise|pro/i.test(String(user.subscription || user.planName || user?.entitlements?.activePlan || "")));
+    const leadId = btn.dataset.createWebsite;
+    const lead = currentLeadResults.find((l) => String(l.id) === String(leadId))
+      || currentFilteredLeadResults.find((l) => String(l.id) === String(leadId))
+      || readLocalSavedLeads().find((l) => String(localLeadId(l)) === String(leadId) || String(l.id) === String(leadId));
+    if (lead) { try { sessionStorage.setItem("mat_studio_lead", JSON.stringify(lead)); } catch {} }
+    if (!pro) {
+      window.location.href = "/pricing.html?upgrade=pro";
+      return;
+    }
+    const name = btn.dataset.leadName || lead?.name || "Business";
+    window.location.href = `/website-studio.html?leadId=${encodeURIComponent(leadId)}&business=${encodeURIComponent(name)}`;
+  });
+}
+
 function initLeadActions() {
   document.addEventListener("click", async (event) => {
     const button = event.target.closest("[data-save-lead]");
     if (!button) return;
     if (!requireAuth()) return;
-
     button.disabled = true;
     button.textContent = "Saving...";
 
@@ -2307,7 +2344,7 @@ function initAiButtons() {
     const originalText = button.textContent;
     button.disabled = true;
     button.textContent = "Running...";
-    if (output) output.textContent = "Running NVIDIA analysis...";
+    if (output) output.textContent = "Loading analysis...";
 
     try {
       const endpoint = analyze ? "/api/ai/analyze" : "/api/ai/outreach";
@@ -2383,6 +2420,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initLeadCommandCenter();
   initLeadSearch();
   initLeadActions();
+  initWebsiteStudioActions();
   initBulkLeadActions();
   initLocalSavedLeadActions();
   initLocalSavedLeadFilters();

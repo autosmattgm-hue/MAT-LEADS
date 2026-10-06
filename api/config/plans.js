@@ -19,7 +19,7 @@ export const plans = {
     priceUsd: 29,
     stripePriceEnv: "STRIPE_STARTER_PRICE_ID",
     paypalPaymentLink: env.paypal.paymentLinks.starter,
-    features: ["100 leads/mo"]
+    features: ["100 leads/mo", "CRM + reports"]
   },
   professional: {
     key: "professional",
@@ -28,7 +28,7 @@ export const plans = {
     priceUsd: 99,
     stripePriceEnv: "STRIPE_PRO_PRICE_ID",
     paypalPaymentLink: env.paypal.paymentLinks.professional,
-    features: ["1,000 leads/mo", "AI outreach"]
+    features: ["1,000 leads/mo", "AI outreach", "AI Website Studio", "Business AI Tycoon + WhatsApp scripts", "Shareable website links + downloads"]
   },
   growth_plus: {
     key: "growth_plus",
@@ -37,7 +37,7 @@ export const plans = {
     priceUsd: 149,
     stripePriceEnv: "STRIPE_GROWTH_PLUS_PRICE_ID",
     paypalPaymentLink: env.paypal.paymentLinks.growthPlus,
-    features: ["3,500 leads/mo", "AI outreach", "CRM integrations"]
+    features: ["3,500 leads/mo", "AI outreach", "CRM integrations", "AI Website Studio + priority builds", "Business AI Tycoon + WhatsApp scripts"]
   },
   agency: {
     key: "agency",
@@ -46,7 +46,7 @@ export const plans = {
     priceUsd: 249,
     stripePriceEnv: "STRIPE_AGENCY_PRICE_ID",
     paypalPaymentLink: env.paypal.paymentLinks.agency,
-    features: ["Unlimited leads", "Team workflows"]
+    features: ["Unlimited leads", "Team workflows", "AI Website Studio + white-label links", "Business AI Tycoon for closers"]
   },
   enterprise: {
     key: "enterprise",

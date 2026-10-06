@@ -128,11 +128,7 @@ function modelsToTry() {
 
 function isRetryableNvidiaFailure(error) {
   const status = Number(error?.status || 0);
-  const message = String(error?.message || "");
-  if (error?.code === "NVIDIA_TIMEOUT") return true;
-  if (status >= 500) return true;
-  if ([400, 403, 404, 408, 409, 410, 422, 429].includes(status)) return true;
-  return /end of life|no longer available|decommission|deprecated|unavailable|not found/i.test(message);
+  return error?.code === "NVIDIA_TIMEOUT" || status === 400 || status === 404 || status === 408 || status === 409 || status === 429 || status >= 500;
 }
 
 function coolDownModel(model) {
@@ -152,7 +148,8 @@ export class NvidiaService {
     presencePenalty = 0,
     stream = false,
     timeoutMs = env.nvidia.timeoutMs,
-    cacheTtlMs = env.nvidia.cacheTtlMs
+    cacheTtlMs = env.nvidia.cacheTtlMs,
+    preferredModels = null
   } = {}) {
     if (!this.configured()) {
       throw new AppError("Real NVIDIA AI requires NVIDIA_API_KEY in .env.", 503, "NVIDIA_NOT_CONFIGURED");
@@ -170,7 +167,11 @@ export class NvidiaService {
     };
     let lastError = null;
 
-    for (const model of modelsToTry()) {
+    const preferred = Array.isArray(preferredModels) ? preferredModels.filter(Boolean) : null;
+    const queue = preferred && preferred.length
+      ? [...new Set([...preferred, ...modelsToTry()])]
+      : modelsToTry();
+    for (const model of queue) {
       const requestPayload = { ...basePayload, model };
       const cacheKey = !stream && cacheTtlMs > 0 ? cacheKeyFor(requestPayload) : "";
       const cached = cacheKey ? getCachedResult(cacheKey) : null;
@@ -234,15 +235,11 @@ export class NvidiaService {
       return result;
     }
 
-    if (lastError) {
-      throw new AppError(
-        `No live NVIDIA model available. ${lastError.message} Update NVIDIA_MODEL and NVIDIA_MODEL_FALLBACKS in .env with a model that is still available on https://build.nvidia.com.`,
-        503,
-        "NVIDIA_MODELS_NOT_CONFIGURED"
-      );
-    }
+    throw lastError || new AppError("NVIDIA AI could not complete the request.", 503, "NVIDIA_UNAVAILABLE");
+  }
 
-    throw new AppError("NVIDIA AI could not complete the request.", 503, "NVIDIA_UNAVAILABLE");
+  completeWithModel(messages, options = {}) {
+    return this.complete(messages, options);
   }
 
   chat(prompt) {
@@ -284,5 +281,81 @@ export class NvidiaService {
         content: `Write a ${type} for this business lead. Include a subject line, short email body, and one clear CTA. Keep under 150 words. Do not use # or * characters.\n\n${JSON.stringify(leadContext)}`
       }
     ], { temperature: 0.3, maxTokens: 300 });
+  }
+
+  tycoonChat(prompt, context = {}) {
+    const ctx = JSON.stringify(context).slice(0, 2000);
+    return this.completeWithModel([
+      {
+        role: "system",
+        content: "You are BUSINESS AI TYCOON, a ruthless professional business tycoon mentor. You think like a billionaire closer: pricing psychology, negotiation, objection handling, WhatsApp scripts, follow-up cadence, upsells, retainers. Always give: 1) What to say (copy-paste script), 2) Price to quote, 3) Why it wins, 4) Next move. Keep it practical, confident, street-smart. Plain text only, no markdown symbols."
+      },
+      {
+        role: "user",
+        content: `${String(prompt || "").slice(0, 3000)}\n\nLead context: ${ctx}`
+      }
+    ], { temperature: 0.5, maxTokens: 700, preferredModels: [env.nvidia.tycoonModel, "deepseek-ai/deepseek-v4.1-flash", "z-ai/glm-5.3"] });
+  }
+
+  async completeRaw(messages, { temperature = 0.7, maxTokens = 3800, timeoutMs = 60000 } = {}) {
+    if (!this.configured()) {
+      throw new AppError("Real NVIDIA AI requires NVIDIA_API_KEY in .env.", 503, "NVIDIA_NOT_CONFIGURED");
+    }
+    const invokeUrl = `${env.nvidia.baseUrl.replace(/\/$/, "")}/chat/completions`;
+    const models = modelsToTry();
+    const websiteModels = [...new Set([env.nvidia.websiteModel, ...((env.nvidia.websiteFallbacks || []).length ? env.nvidia.websiteFallbacks : []), "z-ai/glm-5.3", "deepseek-ai/deepseek-v4.1-flash", ...models].filter(Boolean))];
+    let lastError = null;
+    for (const model of websiteModels) {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), Math.max(5000, timeoutMs));
+      try {
+        const response = await fetch(invokeUrl, {
+          method: "POST",
+          signal: controller.signal,
+          headers: { "Content-Type": "application/json", Accept: "application/json", Authorization: `Bearer ${env.nvidia.apiKey}` },
+          body: JSON.stringify({ model, messages, max_tokens: maxTokens, temperature, top_p: 0.95, stream: false })
+        });
+        clearTimeout(timeout);
+        if (!response.ok) {
+          const body = await response.text();
+          lastError = new AppError(`NVIDIA API request failed on ${model}: ${body.slice(0, 400)}`, response.status, "NVIDIA_API_ERROR");
+          if (isRetryableNvidiaFailure(lastError)) continue;
+          throw lastError;
+        }
+        const payload = await response.json();
+        const content = payload.choices?.[0]?.message?.content || "";
+        if (!content) { lastError = new AppError("Empty NVIDIA response", 503, "NVIDIA_EMPTY"); continue; }
+        return { configured: true, provider: "nvidia", model, content, usage: payload.usage || null, cached: false };
+      } catch (error) {
+        clearTimeout(timeout);
+        lastError = error?.name === "AbortError" ? new AppError(`NVIDIA model ${model} timed out.`, 504, "NVIDIA_TIMEOUT") : error;
+        continue;
+      }
+    }
+    throw lastError || new AppError("NVIDIA AI could not complete the request.", 503, "NVIDIA_UNAVAILABLE");
+  }
+
+  cleanHtml(raw) {
+    let html = String(raw || "");
+    html = html.replace(/```html/gi, "").replace(/```/g, "").trim();
+    const start = html.toLowerCase().indexOf("<!doctype");
+    if (start > 0) html = html.slice(start);
+    if (!/<html/i.test(html)) html = `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head><body>${html}</body></html>`;
+    return html.slice(0, 120000);
+  }
+
+  buildWebsite(lead = {}, options = {}) {
+    const brief = JSON.stringify({ business: lead.name || options.businessName, type: lead.businessType || lead.category, address: lead.address, phone: lead.phone, email: lead.email, style: options.style || "modern", colors: options.palette || "emerald", sections: options.sections || ["hero", "services", "reviews", "quote", "contact"] }).slice(0, 2000);
+    return this.completeRaw([
+      { role: "system", content: "You are an elite website builder AI. Output ONLY complete production-ready HTML in one file, with inline CSS and minimal inline JS. Mobile-first, professional, conversion-focused: sticky nav, hero with call CTA, trust badges, services grid, gallery placeholders, testimonials, pricing/offer, booking/quote form, map/contact, footer with business details. Use the business data provided. No markdown, no explanations, only HTML code." },
+      { role: "user", content: `Build a premium 5+ section business website for: ${brief}. Business name headline, click-to-call, WhatsApp style CTA, lead form, SEO title/meta. Return only HTML.` }
+    ], { temperature: 0.7, maxTokens: 3800 }).then((r) => ({ ...r, html: this.cleanHtml(r.content) }));
+  }
+
+  refineWebsite(currentHtml, instruction, meta = {}) {
+    return this.completeRaw([
+      { role: "system", content: "You are an elite website editor AI. Return ONLY the full updated complete HTML file with inline CSS/JS. Apply the requested change perfectly while keeping everything else. No markdown, no explanations." },
+      { role: "user", content: `Current site for ${meta.businessName || meta.leadName || "business"}:\n${String(currentHtml || "").slice(0, 12000)}\n\nRequested change: ${String(instruction || "").slice(0, 2000)}\n\nReturn only the full updated HTML.` }
+    ], { temperature: 0.6, maxTokens: 3800 }).then((r) => ({ ...r, html: this.cleanHtml(r.content) }));
   }
 }

@@ -2,8 +2,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { env } from "./config/env.js";
-import { isFirebaseAuthConfigured, isFirebaseConfigured } from "./config/firebase.js";
-import { storageStatus } from "./repositories/firestoreRepository.js";
+import { isFirebaseConfigured } from "./config/firebase.js";
 import { AdminService } from "./services/adminService.js";
 import { AuthService } from "./services/authService.js";
 import { BillingService } from "./services/billingService.js";
@@ -11,6 +10,8 @@ import { CrmService } from "./services/crmService.js";
 import { DashboardService } from "./services/dashboardService.js";
 import { LeadService } from "./services/leadService.js";
 import { NvidiaService } from "./services/nvidiaService.js";
+import { WebsiteService } from "./services/websiteService.js";
+import { isAdminUser } from "./utils/entitlements.js";
 import { AppError } from "./utils/errors.js";
 import { aiSchemas, authSchemas, billingSchema, crmSchemas, leadSearchSchema, paypalConfirmationSchema, profileSchema, settingsSchema } from "./utils/schemas.js";
 import { verifyAccessToken } from "./middleware/auth.js";
@@ -26,6 +27,25 @@ const dashboardService = new DashboardService();
 const billingService = new BillingService();
 const adminService = new AdminService();
 const nvidiaService = new NvidiaService();
+const websiteService = new WebsiteService();
+
+function canUseProAi(user = {}) {
+  if (isAdminUser(user)) return true;
+  if (user?.entitlements?.unlimitedAccess) return true;
+  if (Array.isArray(user?.permissions) && (user.permissions.includes("unlimited") || user.permissions.includes("business_tycoon") || user.permissions.includes("website_builder"))) return true;
+  const sub = String(user?.subscription || user?.planName || user?.entitlements?.activePlan || "").toLowerCase();
+  if (["professional", "growth_plus", "growth plus", "growth-plus", "agency", "enterprise", "pro"].some((k) => sub.includes(k))) return true;
+  if (user?.entitlements?.activePlan && !["trial", "starter", ""].includes(String(user.entitlements.activePlan))) return true;
+  return false;
+}
+
+function requireProAi(user) {
+  if (canUseProAi(user)) return;
+  const err = new Error("Business Tycoon AI + Website Studio need a Pro plan or higher. Upgrade on Pricing to unlock.");
+  err.status = 402;
+  err.code = "PRO_REQUIRED";
+  throw err;
+}
 
 const mimeTypes = new Map([
   [".html", "text/html; charset=utf-8"],
@@ -59,6 +79,9 @@ const publicFiles = new Set([
   "/admin.html",
   "/reports.html",
   "/analytics.html",
+  "/website-studio.html",
+  "/business-ai.html",
+  "/share.html",
   "/manifest.webmanifest",
   "/sw.js",
   "/robots.txt",
@@ -66,7 +89,7 @@ const publicFiles = new Set([
 ]);
 const publicFolders = ["/css/", "/js/", "/assets/", "/components/"];
 
-function securityHeaders() {
+function securityHeaders(extra = {}) {
   return {
     "Content-Security-Policy": [
       "default-src 'self'",
@@ -78,14 +101,13 @@ function securityHeaders() {
         "font-src 'self' data:",
       "object-src 'none'",
       "base-uri 'self'",
-      "frame-ancestors 'none'"
+      "frame-ancestors 'self'"
     ].join("; "),
     "Cross-Origin-Opener-Policy": "same-origin",
-    "Cross-Origin-Resource-Policy": "same-origin",
     "Referrer-Policy": "strict-origin-when-cross-origin",
     "X-Content-Type-Options": "nosniff",
-    "X-Frame-Options": "DENY",
-    "X-Permitted-Cross-Domain-Policies": "none"
+    "X-Permitted-Cross-Domain-Policies": "none",
+    ...extra
   };
 }
 
@@ -198,14 +220,7 @@ const routes = [
       status: "ok",
       service: "mat-leads-ai-pro-x",
       environment: env.nodeEnv,
-      deployment: {
-        vercelEnvironment: process.env.VERCEL_ENV || "local",
-        vercelRegion: process.env.VERCEL_REGION || "",
-        production: env.isProduction
-      },
       integrations: {
-        firebaseAuth: isFirebaseAuthConfigured(),
-        firestoreStorage: isFirebaseConfigured(),
         firebase: isFirebaseConfigured(),
         googlePlaces: Boolean(env.google.placesApiKey),
         openStreetMap: Boolean(env.osm.overpassEndpoints.length),
@@ -216,24 +231,11 @@ const routes = [
         paypalHostedLinks: Object.values(env.paypal.paymentLinks).every(Boolean)
       },
       realMode: true,
-      authReady: isFirebaseAuthConfigured() || !env.isProduction,
-      storage: storageStatus(),
-      storageReady: isFirebaseConfigured(),
       missingRequiredForLiveOperation: [
-        !isFirebaseAuthConfigured() && "FIREBASE_WEB_API_KEY",
-        !env.firebase.projectId && "FIREBASE_PROJECT_ID",
-        !env.firebase.clientEmail && "FIREBASE_CLIENT_EMAIL",
-        !env.firebase.privateKey && "FIREBASE_PRIVATE_KEY",
         !env.nvidia.apiKey && "NVIDIA_API_KEY",
-        !env.stripe.secretKey && "STRIPE_SECRET_KEY",
+        !env.firebase.projectId && "........",
+        !env.stripe.secretKey && "........",
         !(env.paypal.clientId && env.paypal.clientSecret) && !Object.values(env.paypal.paymentLinks).every(Boolean) && "PAYPAL_CLIENT_ID/PAYPAL_CLIENT_SECRET or hosted PayPal payment links"
-      ].filter(Boolean),
-      configurationHelp: [
-        !isFirebaseAuthConfigured() && "Set FIREBASE_WEB_API_KEY (Firebase console > Project settings > General > Web API key) to enable register and login.",
-        !isFirebaseConfigured() && "Set FIREBASE_PROJECT_ID, FIREBASE_CLIENT_EMAIL and FIREBASE_PRIVATE_KEY (Firebase console > Project settings > Service accounts > Generate new private key) for persistent storage.",
-        env.isProduction && String(env.jwtSecret).startsWith("development-") && "Set JWT_SECRET and JWT_REFRESH_SECRET to two unique random values.",
-        env.isProduction && !env.corsOrigins.includes(env.appUrl) && "Add your deployed domain to CORS_ORIGINS (or APP_URL) so browser requests from it are accepted.",
-        "Placeholder values such as replace-with-... or -----BEGIN PRIVATE KEY----- ... are ignored on purpose. Delete them and paste the real values, then redeploy."
       ].filter(Boolean)
     })
   },
@@ -348,6 +350,67 @@ const routes = [
       const lead = await leadService.getById(payload.leadId);
       if (!lead) throw new AppError("Lead not found.", 404, "LEAD_NOT_FOUND");
       return nvidiaService.writeOutreach(lead, payload.type);
+    }
+  },
+  {
+    method: "POST",
+    regex: /^\/api\/ai\/tycoon$/,
+    keys: [],
+    handler: async ({ req, body }) => {
+      const user = await getUser(req);
+      requireProAi(user);
+      const payload = validate(aiSchemas.tycoon, body);
+      let lead = payload.lead && Object.keys(payload.lead).length ? payload.lead : null;
+      if (!lead && payload.leadId) lead = await leadService.getById(payload.leadId);
+      return nvidiaService.tycoonChat(payload.prompt, { lead: lead || {}, user: user.email || "" });
+    }
+  },
+  {
+    method: "POST",
+    regex: /^\/api\/ai\/websites$/,
+    keys: [],
+    handler: async ({ req, body }) => {
+      const user = await getUser(req);
+      requireProAi(user);
+      const payload = validate(aiSchemas.websiteBuild, body);
+      let lead = payload.lead && Object.keys(payload.lead).length ? payload.lead : null;
+      if (!lead && payload.leadId) lead = await leadService.getById(payload.leadId);
+      if (!lead) lead = { id: payload.leadId || "lead", name: payload.businessName || "Business" };
+      const result = await websiteService.build({ lead, options: { businessName: payload.businessName, style: payload.style, palette: payload.palette }, user });
+      return { websiteId: result.website.id, shareToken: result.website.shareToken, shareUrl: `/s/${result.website.shareToken}`, studioUrl: `/website-studio.html?id=${encodeURIComponent(result.website.id)}`, website: result.website };
+    }
+  },
+  {
+    method: "PATCH",
+    regex: /^\/api\/ai\/websites\/([^/]+)$/,
+    keys: ["id"],
+    handler: async ({ req, body, params }) => {
+      const user = await getUser(req);
+      requireProAi(user);
+      const payload = validate(aiSchemas.websiteRefine, { ...body, websiteId: params.id });
+      const result = await websiteService.refine({ id: params.id, instruction: payload.instruction, user });
+      return { websiteId: result.website.id, shareToken: result.website.shareToken, shareUrl: `/s/${result.website.shareToken}`, website: result.website };
+    }
+  },
+  {
+    method: "GET",
+    regex: /^\/api\/ai\/websites\/([^/]+)$/,
+    keys: ["id"],
+    handler: async ({ req, params }) => {
+      await getUser(req);
+      const website = await websiteService.getById(params.id);
+      if (!website) throw new AppError("Website not found.", 404, "WEBSITE_NOT_FOUND");
+      return { website, shareUrl: `/s/${website.shareToken}`, studioUrl: `/website-studio.html?id=${encodeURIComponent(website.id)}` };
+    }
+  },
+  {
+    method: "GET",
+    regex: /^\/api\/s\/([^/]+)$/,
+    keys: ["token"],
+    handler: async ({ params }) => {
+      const website = await websiteService.getByToken(params.token);
+      if (!website) throw new AppError("Shared website not found.", 404, "WEBSITE_NOT_FOUND");
+      return { website, html: website.html };
     }
   },
   {
@@ -476,6 +539,13 @@ export async function handleRequest(req, res) {
     const url = new URL(req.url, env.appUrl);
     if (url.pathname.startsWith("/api/")) {
       return await handleApi(req, res, url);
+    }
+    if (url.pathname.startsWith("/s/")) {
+      const token = decodeURIComponent(url.pathname.slice(3).split("/")[0] || "");
+      if (!token) throw new AppError("Shared website not found.", 404, "WEBSITE_NOT_FOUND");
+      const website = await websiteService.getByToken(token);
+      if (!website?.html) throw new AppError("Shared website not found.", 404, "WEBSITE_NOT_FOUND");
+      return send(res, 200, website.html, { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "public, max-age=300" });
     }
     return await serveStatic(req, res, url);
   } catch (error) {

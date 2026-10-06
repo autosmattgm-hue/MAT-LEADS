@@ -10,6 +10,8 @@ export const ADMIN_PERMISSIONS = [
   "lead_search",
   "lead_export",
   "website_audit",
+  "website_builder",
+  "business_tycoon",
   "outreach",
   "team",
   "unlimited"

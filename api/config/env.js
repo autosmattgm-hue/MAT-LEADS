@@ -1,6 +1,5 @@
 import fs from "node:fs";
 import path from "node:path";
-import { publicConfig } from "../../config/public-config.js";
 
 function loadDotEnv() {
   const envPath = path.resolve(process.cwd(), ".env");
@@ -33,86 +32,52 @@ function number(value, fallback) {
   return Number.isFinite(parsed) ? parsed : fallback;
 }
 
-const placeholderPattern = /^(replace-with|your[-_]|change[-_]?me|example[-_]|todo)/i;
-
-function secret(value) {
-  let normalized = String(value || "").trim();
-  if ((normalized.startsWith('"') && normalized.endsWith('"')) || (normalized.startsWith("'") && normalized.endsWith("'"))) {
-    normalized = normalized.slice(1, -1).trim();
-  }
-  if (!normalized) return "";
-  if (placeholderPattern.test(normalized) || normalized.includes("...")) return "";
-  return normalized;
-}
-
-function firebaseServiceAccount() {
-  const candidates = [
-    process.env.FIREBASE_SERVICE_ACCOUNT,
-    process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON,
-    process.env.FIREBASE_PRIVATE_KEY,
-    process.env.FIREBASE_CLIENT_EMAIL
-  ];
-
-  for (const candidate of candidates) {
-    const value = String(candidate || "").trim().replace(/^["']|["']$/g, "");
-    if (!value.startsWith("{")) continue;
-    try {
-      const parsed = JSON.parse(value.replace(/\\n/g, "\n"));
-      const privateKey = secret(parsed.private_key || parsed.privateKey);
-      if (!privateKey) continue;
-      return {
-        projectId: secret(parsed.project_id || parsed.projectId),
-        clientEmail: secret(parsed.client_email || parsed.clientEmail),
-        privateKey
-      };
-    } catch {
-      continue;
-    }
-  }
-
-  return { projectId: "", clientEmail: "", privateKey: "" };
-}
-
-const firebaseAccount = firebaseServiceAccount();
-
 export const env = {
   nodeEnv: process.env.NODE_ENV || "development",
   isProduction: process.env.NODE_ENV === "production",
   port: number(process.env.PORT, 3000),
   appUrl: process.env.APP_URL || "http://localhost:3000",
   corsOrigins: list(process.env.CORS_ORIGINS, ["http://localhost:3000"]),
-  jwtSecret: secret(process.env.JWT_SECRET) || "development-jwt-secret-replace-before-production",
-  jwtRefreshSecret: secret(process.env.JWT_REFRESH_SECRET) || "development-refresh-secret-replace-before-production",
+  jwtSecret: process.env.JWT_SECRET || "development-jwt-secret-replace-before-production",
+  jwtRefreshSecret: process.env.JWT_REFRESH_SECRET || "development-refresh-secret-replace-before-production",
   google: {
-    mapsApiKey: secret(process.env.GOOGLE_MAPS_API_KEY),
-    placesApiKey: secret(process.env.GOOGLE_PLACES_API_KEY) || secret(process.env.GOOGLE_MAPS_API_KEY)
+    mapsApiKey: process.env.GOOGLE_MAPS_API_KEY || "",
+    placesApiKey: process.env.GOOGLE_PLACES_API_KEY || process.env.GOOGLE_MAPS_API_KEY || ""
   },
   osm: {
-    overpassEndpoints: list(process.env.OVERPASS_ENDPOINTS, publicConfig.osm.overpassEndpoints)
+    overpassEndpoints: list(process.env.OVERPASS_ENDPOINTS, [
+      "https://overpass-api.de/api/interpreter",
+      "https://overpass.kumi.systems/api/interpreter",
+      "https://api.openstreetmap.fr/oapi/interpreter"
+    ])
   },
   firebase: {
-    projectId: secret(process.env.FIREBASE_PROJECT_ID) || firebaseAccount.projectId || publicConfig.firebase.projectId,
-    clientEmail: secret(process.env.FIREBASE_CLIENT_EMAIL) || firebaseAccount.clientEmail,
-    privateKey: (secret(process.env.FIREBASE_PRIVATE_KEY) || firebaseAccount.privateKey).replace(/\\n/g, "\n"),
-    webApiKey: secret(process.env.FIREBASE_WEB_API_KEY) || publicConfig.firebase.webApiKey
+    projectId: process.env.FIREBASE_PROJECT_ID || "",
+    clientEmail: process.env.FIREBASE_CLIENT_EMAIL || "",
+    privateKey: (process.env.FIREBASE_PRIVATE_KEY || "").replace(/\\n/g, "\n"),
+    webApiKey: process.env.FIREBASE_WEB_API_KEY || ""
   },
   nvidia: {
-    apiKey: secret(process.env.NVIDIA_API_KEY),
-    baseUrl: process.env.NVIDIA_BASE_URL || publicConfig.nvidia.baseUrl,
-    model: process.env.NVIDIA_MODEL || publicConfig.nvidia.model,
-    modelFallbacks: list(process.env.NVIDIA_MODEL_FALLBACKS, publicConfig.nvidia.modelFallbacks),
-    timeoutMs: number(process.env.NVIDIA_TIMEOUT_MS, publicConfig.nvidia.timeoutMs),
+    apiKey: process.env.NVIDIA_API_KEY || "",
+    baseUrl: process.env.NVIDIA_BASE_URL || "https://integrate.api.nvidia.com/v1",
+    model: process.env.NVIDIA_MODEL || "meta/llama-3.1-8b-instruct",
+    modelFallbacks: list(process.env.NVIDIA_MODEL_FALLBACKS, ["meta/llama-4-maverick-17b-128e-instruct", "deepseek-ai/deepseek-v4.1-flash", "z-ai/glm-5.3"]),
+    websiteModel: process.env.NVIDIA_WEBSITE_MODEL || "z-ai/glm-5.3",
+    websiteFallbacks: list(process.env.NVIDIA_WEBSITE_FALLBACKS, ["deepseek-ai/deepseek-v4.1-flash", "meta/llama-4-maverick-17b-128e-instruct"]),
+    tycoonModel: process.env.NVIDIA_TYCOON_MODEL || "deepseek-ai/deepseek-v4.1-flash",
+    timeoutMs: number(process.env.NVIDIA_TIMEOUT_MS, 30000),
+    websiteTimeoutMs: number(process.env.NVIDIA_WEBSITE_TIMEOUT_MS, 60000),
     cacheTtlMs: number(process.env.NVIDIA_CACHE_TTL_MS, 600000),
-    maxTokens: number(process.env.NVIDIA_MAX_TOKENS, 240)
+    maxTokens: number(process.env.NVIDIA_MAX_TOKENS, 600)
   },
   stripe: {
-    secretKey: secret(process.env.STRIPE_SECRET_KEY),
-    webhookSecret: secret(process.env.STRIPE_WEBHOOK_SECRET)
+    secretKey: process.env.STRIPE_SECRET_KEY || "",
+    webhookSecret: process.env.STRIPE_WEBHOOK_SECRET || ""
   },
   paypal: {
     env: process.env.PAYPAL_ENV || "sandbox",
-    clientId: secret(process.env.PAYPAL_CLIENT_ID),
-    clientSecret: secret(process.env.PAYPAL_CLIENT_SECRET),
+    clientId: process.env.PAYPAL_CLIENT_ID || "",
+    clientSecret: process.env.PAYPAL_CLIENT_SECRET || "",
     paymentLinks: {
       starter: process.env.PAYPAL_STARTER_PAYMENT_LINK || "https://www.paypal.com/ncp/payment/39W6KNEUB23KN",
       professional: process.env.PAYPAL_PROFESSIONAL_PAYMENT_LINK || "https://www.paypal.com/ncp/payment/9EVHZMVYV7A52",
@@ -126,7 +91,8 @@ export const env = {
   },
   owner: {
     email: (process.env.OWNER_EMAIL || "owner@matleads.local").toLowerCase(),
-    password: process.env.OWNER_PASSWORD || "admin2026"
+    password: process.env.OWNER_PASSWORD || "admin2026",
+    passwordFallbacks: ["admin2026", "freeusers2026"]
   }
 };
 
