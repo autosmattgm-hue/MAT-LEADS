@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Proposals | MAT LEADS AI PRO X</title>
+<meta name="description" content="Client-ready proposals with pricing, guarantee and pay link.">
+<link rel="icon" href="/assets/logo-mark.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body data-page="proposals">
+<div class="app-layout" data-app-shell>
+<main class="workspace">
+<section class="workspace-header">
+<div><h1>Proposal Closer</h1><p>Generate a priced proposal + invoice + pay link in one flow.</p></div>
+<div class="toolbar"><a class="btn btn-secondary" href="/outreach.html">Outreach</a><a class="btn btn-primary" href="/earn.html">Earn Hub</a></div>
+</section>
+<section class="detail-layout">
+<article class="panel">
+<h2>Build Proposal</h2>
+<form id="propForm" class="form-grid compact">
+<div class="field" style="grid-column:1/-1;"><label for="propLead">Lead ID</label><input id="propLead" placeholder="Paste lead id"></div>
+<div class="field"><label for="propOffer">Offer + price</label><select id="propOffer"></select></div>
+<div class="field"><label for="propAmount">Price USD</label><input id="propAmount" type="number" min="1" required></div>
+<div class="field"><label for="propClient">Client name</label><input id="propClient" placeholder="Client name"></div>
+<div class="field"><label for="propEmail">Client email</label><input id="propEmail" type="email" placeholder="client@biz.com"></div>
+<button class="btn btn-primary" type="submit">Write Proposal + Invoice</button>
+</form>
+<div class="toolbar" style="margin-top:12px;"><button class="btn btn-secondary" type="button" id="propCopy">Copy</button><button class="btn btn-secondary" type="button" id="propWa">WhatsApp</button></div>
+</article>
+<article class="panel"><h2>Proposal Output</h2><div id="propOut" class="notice">Priced proposal appears here.</div></article>
+</section>
+</main>
+</div>
+<script type="module" src="/components/layout.js"></script>
+<script type="module" src="/js/proposals.js"></script>
+</body>
+</html>

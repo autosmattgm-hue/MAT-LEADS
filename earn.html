@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Earn Hub | MAT LEADS AI PRO X</title>
+<meta name="description" content="Earn with referrals, client invoices, paid audits, websites and care plans.">
+<link rel="icon" href="/assets/logo-mark.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body data-page="earn">
+<div class="app-layout" data-app-shell>
+<main class="workspace">
+<section class="workspace-header">
+<div><h1>Earn Hub</h1><p>Turn leads into income: referrals, client billing, paid audits.</p></div>
+<div class="toolbar"><a class="btn btn-secondary" href="/proposals.html">Proposals</a><a class="btn btn-primary" href="/outreach.html">Outreach Studio</a></div>
+</section>
+<section class="metrics-grid" id="earnMetrics"></section>
+<section class="detail-layout" style="margin-top:14px;">
+<article class="panel">
+<h2>Your Referral Link</h2>
+<div class="notice" id="refBox">Loading referral link...</div>
+<div class="toolbar" style="margin-top:10px;"><button class="btn btn-secondary" type="button" id="copyRef">Copy Link</button><button class="btn btn-secondary" type="button" id="shareRefWa">WhatsApp Share</button></div>
+<h2 style="margin-top:18px;">Request Payout</h2>
+<form id="payoutForm" class="form-grid compact">
+<div class="field"><label for="payoutAmount">Amount USD (min $10)</label><input id="payoutAmount" type="number" min="10" step="1" required></div>
+<div class="field"><label for="payoutDest">Payout destination</label><input id="payoutDest" placeholder="PayPal email / bank" required></div>
+<button class="btn btn-primary" type="submit">Request Payout</button>
+</form>
+<div class="notice" id="payoutMsg" style="margin-top:10px;">Payouts are reviewed by admin.</div>
+</article>
+<article class="panel">
+<h2>Create Client Invoice</h2>
+<form id="invoiceForm" class="form-grid compact">
+<div class="field" style="grid-column:1/-1;"><label for="invOffer">Offer</label><select id="invOffer"></select></div>
+<div class="field"><label for="invAmount">Amount USD</label><input id="invAmount" type="number" min="1" step="1" required></div>
+<div class="field"><label for="invLead">Lead / business</label><input id="invLead" placeholder="Business name"></div>
+<div class="field"><label for="invClient">Client name</label><input id="invClient" placeholder="Client name"></div>
+<div class="field"><label for="invEmail">Client email</label><input id="invEmail" type="email" placeholder="client@business.com"></div>
+<div class="field" style="grid-column:1/-1;"><label for="invNotes">Notes</label><textarea id="invNotes" rows="2" placeholder="Scope, timeline, deliverables"></textarea></div>
+<button class="btn btn-primary" type="submit">Create Invoice + Pay Link</button>
+</form>
+<div class="notice" id="invMsg" style="margin-top:10px;">Send the pay link to get paid.</div>
+<div id="invoiceList" style="margin-top:12px;"></div>
+</article>
+</section>
+</main>
+</div>
+<script type="module" src="/components/layout.js"></script>
+<script type="module" src="/js/earn.js"></script>
+</body>
+</html>

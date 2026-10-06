@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Outreach Studio | MAT LEADS AI PRO X</title>
+<meta name="description" content="Generate outreach that gets clients: email, WhatsApp, follow-ups, call scripts.">
+<link rel="icon" href="/assets/logo-mark.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body data-page="outreach">
+<div class="app-layout" data-app-shell>
+<main class="workspace">
+<section class="workspace-header">
+<div><h1>Outreach Studio</h1><p>Turn any lead into booked calls with AI scripts you can sell.</p></div>
+<div class="toolbar"><a class="btn btn-secondary" href="/earn.html">Earn Hub</a><a class="btn btn-primary" href="/proposals.html">Proposals</a></div>
+</section>
+<section class="detail-layout">
+<article class="panel">
+<h2>Generate Outreach</h2>
+<form id="outForm" class="form-grid compact">
+<div class="field" style="grid-column:1/-1;"><label for="outLead">Lead ID</label><input id="outLead" placeholder="Paste lead id from dashboard"></div>
+<div class="field"><label for="outType">Type</label><select id="outType"><option value="cold_email">Cold email</option><option value="follow_up">Follow-up</option><option value="website_redesign">Website redesign pitch</option><option value="seo">SEO pitch</option><option value="marketing">Marketing pitch</option><option value="ai_automation">AI automation pitch</option><option value="business_audit">Paid audit pitch</option></select></div>
+<div class="field"><label for="outOffer">Attach paid offer</label><select id="outOffer"></select></div>
+<button class="btn btn-primary" type="submit">Generate + Price It</button>
+</form>
+<div class="toolbar" style="margin-top:12px;"><button class="btn btn-secondary" type="button" id="outCopy">Copy</button><button class="btn btn-secondary" type="button" id="outWa">WhatsApp</button><button class="btn btn-secondary" type="button" id="outInvoice">Create Invoice</button></div>
+</article>
+<article class="panel"><h2>Script Output</h2><div id="outResult" class="notice">Your money script appears here.</div></article>
+</section>
+</main>
+</div>
+<script type="module" src="/components/layout.js"></script>
+<script type="module" src="/js/outreach.js"></script>
+</body>
+</html>

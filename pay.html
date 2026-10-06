@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pay Invoice | MAT LEADS AI PRO X</title>
+<link rel="icon" href="/assets/logo-mark.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="page">
+<header class="public-nav" data-public-nav></header>
+<main class="section"><div class="container">
+<section class="panel" id="payBox"><span class="plan-pill">Client Payment</span><h1 id="payTitle">Loading invoice...</h1><p class="notice" id="payMeta"></p><div class="toolbar"><button class="btn btn-primary" type="button" id="markPaid">I Have Paid</button><a class="btn btn-secondary" href="/pricing.html">Buy Subscription Instead</a></div></section>
+</div></main>
+<script type="module" src="/components/layout.js"></script>
+<script type="module">
+const id = new URLSearchParams(location.search).get("invoice") || "";
+async function load() {
+  if (!id) { document.getElementById("payTitle").textContent = "Missing invoice."; return; }
+  try {
+    const r = await fetch(`/api/earn/invoices/${encodeURIComponent(id)}`).then((x) => x.json());
+    if (r.error) throw new Error(r.error.message);
+    document.getElementById("payTitle").textContent = `${r.invoice.offerName} — $${(r.invoice.amountCents / 100).toFixed(2)}`;
+    document.getElementById("payMeta").textContent = `${r.invoice.leadName || ""} • ${r.invoice.clientName || ""} • Status: ${r.invoice.status}`;
+  } catch (e) { document.getElementById("payTitle").textContent = e.message; }
+}
+document.getElementById("markPaid")?.addEventListener("click", async () => {
+  const r = await fetch(`/api/earn/invoices/${encodeURIComponent(id)}/paid`, { method: "POST", headers: { "Content-Type": "application/json", Authorization: `Bearer ${localStorage.getItem("mat_access_token") || ""}` }, body: JSON.stringify({ transactionId: prompt("Paste payment reference:") || "" }) }).then((x) => x.json());
+  alert(r?.invoice ? `Marked ${r.invoice.status}` : (r?.error?.message || "Failed"));
+  load();
+});
+load();
+</script>
+</body>
+</html>
