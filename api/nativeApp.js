@@ -330,6 +330,20 @@ const routes = [
     }
   },
   {
+    method: "GET",
+    regex: /^\/api\/ai\/status$/,
+    keys: [],
+    handler: async () => ({
+      configured: nvidiaService.configured(),
+      models: {
+        chat: [env.nvidia.model, ...(env.nvidia.modelFallbacks || [])].filter(Boolean).slice(0, 3),
+        website: [env.nvidia.websiteModel, ...(env.nvidia.websiteFallbacks || [])].filter(Boolean).slice(0, 3),
+        tycoon: [env.nvidia.tycoonModel].filter(Boolean).slice(0, 3)
+      },
+      hint: nvidiaService.configured() ? "AI ready" : "Add NVIDIA_API_KEY in Vercel env vars, then redeploy."
+    })
+  },
+  {
     method: "POST",
     regex: /^\/api\/ai\/chat$/,
     keys: [],

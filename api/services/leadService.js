@@ -78,6 +78,8 @@ function contactScore(lead) {
     lead.phone,
     lead.email,
     lead.details?.contact?.mobile,
+    lead.details?.contact?.whatsappLink || lead.details?.contact?.whatsapp,
+    lead.details?.contact?.phone,
     lead.websiteUrl,
     lead.social || Object.keys(lead.details?.social || {}).length
   ].filter(Boolean).length;
@@ -174,16 +176,21 @@ function mergePublicWebsiteProfile(lead, audit) {
   if (!profile) return lead;
 
   const details = lead.details || {};
+  const profilePhones = Array.isArray(profile.phones) ? profile.phones : [];
+  const profileEmails = Array.isArray(profile.emails) ? profile.emails : [];
   const contact = compactObject({
     ...(details.contact || {}),
-    phone: lead.phone || details.contact?.phone || profile.phones?.[0],
-    email: lead.email || details.contact?.email || profile.emails?.[0],
+    phone: lead.phone || details.contact?.phone || details.contact?.mobile || profilePhones[0],
+    mobile: details.contact?.mobile || profilePhones[1] || profilePhones[0],
+    email: lead.email || details.contact?.email || profileEmails[0],
     website: lead.websiteUrl || details.contact?.website || profile.finalUrl
   });
   const social = compactObject({
     ...(details.social || {}),
-    ...(profile.socialLinks || {})
+    ...(profile.socialLinks || {}),
+    ...(lead.details?.social || {})
   });
+  const whatsappFromProfile = profile.socialLinks?.whatsapp || "";
   const business = compactObject({
     ...(details.business || {}),
     websiteTitle: profile.metadata?.title,
@@ -198,13 +205,19 @@ function mergePublicWebsiteProfile(lead, audit) {
 
   return {
     ...lead,
-    phone: lead.phone || contact.phone || "",
+    phone: lead.phone || contact.phone || contact.mobile || "",
     email: lead.email || contact.email || "",
     websiteUrl: lead.websiteUrl || contact.website || "",
-    social: lead.social || Object.values(social)[0] || "",
+    social: lead.social || social.facebook || social.instagram || social.linkedin || social.tiktok || social.youtube || social.x || Object.values(social)[0] || "",
     details: {
       ...details,
-      contact,
+      contact: {
+        ...contact,
+        whatsapp: whatsappFromProfile || contact.whatsapp || "",
+        whatsappLink: whatsappFromProfile ? whatsappFromProfile : whatsappLinkFromPhone(contact.mobile || contact.phone, { ...lead, details: { ...(lead.details || {}), contact, location: details.location } }, details.location || {}),
+        whatsappSource: whatsappFromProfile ? "public_whatsapp_link" : (contact.mobile || contact.phone ? "business_phone_number" : ""),
+        whatsappNeedsCheck: !whatsappFromProfile && Boolean(contact.mobile || contact.phone)
+      },
       social,
       business,
       source,

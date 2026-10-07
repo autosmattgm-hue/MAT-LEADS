@@ -371,7 +371,22 @@ function socialLinksFromLead(lead = {}) {
 }
 
 function firstSocialUrl(lead = {}) {
-  return safeExternalUrl(lead.social) || safeExternalUrl(Object.values(socialLinksFromLead(lead))[0]);
+  const links = socialLinksFromLead(lead);
+  const preferred = ["facebook", "instagram", "linkedin", "tiktok", "youtube", "x", "threads", "snapchat", "whatsapp"];
+  for (const key of preferred) {
+    const url = safeExternalUrl(links[key]);
+    if (url) return url;
+  }
+  return safeExternalUrl(lead.social) || safeExternalUrl(Object.values(links)[0]);
+}
+
+function renderSocialButtons(lead = {}) {
+  const links = socialLinksFromLead(lead);
+  const order = [["facebook", "FB"], ["instagram", "IG"], ["linkedin", "IN"], ["tiktok", "TT"], ["youtube", "YT"], ["x", "X"], ["whatsapp", "WA"]];
+  const buttons = order.filter(([key]) => safeExternalUrl(links[key])).map(([key, label]) => `<a class="btn btn-ghost" href="${escapeHtml(safeExternalUrl(links[key]))}" target="_blank" rel="noreferrer" title="${escapeHtml(key)}">${escapeHtml(label)}</a>`);
+  const first = firstSocialUrl(lead);
+  if (!buttons.length && first) return `<a class="btn btn-ghost" href="${escapeHtml(first)}" target="_blank" rel="noreferrer">Social</a>`;
+  return buttons.join("");
 }
 
 function normalizedName(value) {
@@ -441,13 +456,13 @@ function whatsappLinkFromPhone(phone, lead = {}) {
 
 function whatsappActionFromLead(lead = {}) {
   const socialLinks = socialLinksFromLead(lead);
-  const explicitWhatsapp = safeExternalUrl(socialLinks.whatsapp || lead.details?.contact?.whatsappLink || "");
+  const explicitWhatsapp = safeExternalUrl(socialLinks.whatsapp || lead.details?.contact?.whatsappLink || lead.details?.contact?.whatsapp || "");
   if (explicitWhatsapp && isWhatsappUrl(explicitWhatsapp)) {
     return {
       url: explicitWhatsapp,
       label: "WhatsApp",
       status: "WhatsApp link",
-      note: "Public WhatsApp link found"
+      note: "Public WhatsApp link found — opens chat directly"
     };
   }
 
@@ -457,7 +472,7 @@ function whatsappActionFromLead(lead = {}) {
       url: leadSocial,
       label: "WhatsApp",
       status: "WhatsApp link",
-      note: "Public WhatsApp link found"
+      note: "Public WhatsApp link found — opens chat directly"
     };
   }
 
@@ -465,18 +480,20 @@ function whatsappActionFromLead(lead = {}) {
   const phoneLink = whatsappLinkFromPhone(phone, lead);
   if (!phoneLink) return null;
 
+  const needsCheck = lead.details?.contact?.whatsappNeedsCheck !== false;
   return {
     url: phoneLink,
-    label: "Check WhatsApp",
-    status: "WhatsApp check",
-    note: "Uses real business phone number"
+    label: "WhatsApp",
+    status: needsCheck ? "Tap to check WhatsApp" : "WhatsApp",
+    note: "Opens WhatsApp with the real business number — WhatsApp shows if it is registered"
   };
 }
 
 function renderWhatsappButton(lead = {}, className = "btn btn-secondary") {
   const action = whatsappActionFromLead(lead);
   if (!action) return "";
-  return `<a class="${escapeHtml(className)}" href="${escapeHtml(action.url)}" target="_blank" rel="noreferrer">${escapeHtml(action.label)}</a>`;
+  const hint = action.status === "WhatsApp link" ? "Opens WhatsApp chat directly" : "Opens WhatsApp to verify this number";
+  return `<a class="${escapeHtml(className)}" href="${escapeHtml(action.url)}" target="_blank" rel="noreferrer" title="${escapeHtml(hint)}">${escapeHtml(action.label)}</a>`;
 }
 
 function renderWhatsappContact(lead = {}) {
@@ -1487,7 +1504,7 @@ function renderLead(lead) {
         </label>
         <button class="btn btn-primary" type="button" hidden data-create-website="${escapeHtml(lead.id)}" data-lead-name="${escapeHtml(lead.name || "Business")}">Create Website</button>
         ${renderWhatsappButton(lead, "btn btn-secondary")}
-        ${socialUrl ? `<a class="btn btn-ghost" href="${socialUrl}" target="_blank" rel="noreferrer">Social</a>` : ""}
+        ${renderSocialButtons(lead)}
         ${mapsUrl ? `<a class="btn btn-ghost" href="${mapsUrl}" target="_blank" rel="noreferrer">Maps</a>` : ""}
       </div>
     </article>

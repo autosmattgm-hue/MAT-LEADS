@@ -156,7 +156,19 @@ function modelsToTry() {
 
 function isRetryableNvidiaFailure(error) {
   const status = Number(error?.status || 0);
+  if (isEndOfLifeError(error)) return true;
   return error?.code === "NVIDIA_TIMEOUT" || status === 400 || status === 404 || status === 408 || status === 409 || status === 429 || status >= 500;
+}
+
+function friendlyAiError(error, fallback = "AI is temporarily unavailable. Please try again in a moment.") {
+  const raw = String(error?.message || "");
+  if (/NVIDIA_API_KEY|NVIDIA_NOT_CONFIGURED/i.test(raw)) return "AI key missing. Add NVIDIA_API_KEY in Vercel env vars, then redeploy.";
+  if (isEndOfLifeError(error)) return "That model retired — switched to a live model. Please try again.";
+  if (/timed out|NVIDIA_TIMEOUT|504/i.test(raw)) return "AI took too long — I retried a faster model. Please send again.";
+  if (/402|PRO_REQUIRED/i.test(raw)) return raw;
+  if (/401|INVALID_TOKEN|Login required/i.test(raw)) return "Please log in again, then retry.";
+  if (error?.status && Number(error.status) >= 500) return `${fallback} (${raw.slice(0, 160)})`;
+  return raw || fallback;
 }
 
 function coolDownModel(model) {
@@ -285,12 +297,29 @@ export class NvidiaService {
     throw lastError || new AppError("NVIDIA AI could not complete the request.", 503, "NVIDIA_UNAVAILABLE");
   }
 
+  async completeSafe(messages, options = {}, fallbackText = "") {
+    try {
+      return await this.complete(messages, options);
+    } catch (error) {
+      return {
+        configured: Boolean(env.nvidia.apiKey),
+        provider: "fallback",
+        model: "local-fallback",
+        content: fallbackText || friendlyAiError(error),
+        usage: null,
+        cached: false,
+        fallback: true,
+        error: String(error?.message || "AI_UNAVAILABLE")
+      };
+    }
+  }
+
   completeWithModel(messages, options = {}) {
     return this.complete(messages, options);
   }
 
   chat(prompt) {
-    return this.complete([
+    return this.completeSafe([
       {
         role: "system",
         content: "You are MAT LEADS AI PRO X, a practical agency growth assistant. Give concise, useful, revenue-focused answers in plain text."
@@ -299,12 +328,13 @@ export class NvidiaService {
         role: "user",
         content: truncateText(prompt, 3000)
       }
-    ], { temperature: 0.4, maxTokens: env.nvidia.maxTokens });
+    ], { temperature: 0.4, maxTokens: env.nvidia.maxTokens }, "AI is temporarily unavailable. Please check NVIDIA_API_KEY and try again.");
   }
 
   analyzeLead(lead) {
     const leadContext = compactLeadForAi(lead);
-    return this.complete([
+    const fallback = `Opportunity: Website/SEO lead for ${lead?.name || "this business"}. Problems: Missing online presence data. Offer: Website audit + rebuild. First Outreach Angle: Free audit. Revenue Estimate: $799-$1499 setup.`;
+    return this.completeSafe([
       {
         role: "system",
         content: "You are an expert agency growth strategist. Be factual, direct, and concise. Use plain text."
@@ -313,7 +343,7 @@ export class NvidiaService {
         role: "user",
         content: `Analyze this lead for website, SEO, AI automation, and marketing opportunity. Return these labels only: Opportunity, Problems, Offer, First Outreach Angle, Revenue Estimate. Keep under 160 words. Do not use # or * characters.\n\n${JSON.stringify(leadContext)}`
       }
-    ], { temperature: 0.25, maxTokens: 320 });
+    ], { temperature: 0.25, maxTokens: 320 }, fallback);
   }
 
   writeOutreach(lead, type) {
@@ -327,7 +357,8 @@ export class NvidiaService {
       ai_automation: "AI chatbot/automation pitch with hours saved + setup + monthly.",
       business_audit: "Paid audit pitch: sell the $149 audit before the build."
     };
-    return this.complete([
+    const fallback = `Subject: Quick idea for ${lead?.name || "your business"}\n\nHi, I found your listing and can help with website, WhatsApp and bookings. Reply YES for a free audit.`;
+    return this.completeSafe([
       {
         role: "system",
         content: "You write professional B2B outreach for web development, SEO, marketing, and AI automation agencies. Be specific, respectful, and concise. Use plain text. Always end with a clear money CTA."
@@ -336,20 +367,22 @@ export class NvidiaService {
         role: "user",
         content: `Write a ${closers[type] || type} for this business lead. Include a subject line, short email body, and one clear CTA. Keep under 150 words. Do not use # or * characters.\n\n${JSON.stringify(leadContext)}`
       }
-    ], { temperature: 0.3, maxTokens: 300 });
+    ], { temperature: 0.3, maxTokens: 300 }, fallback);
   }
 
   proposalPack(lead, offerKey = "pro_site") {
     const leadContext = compactLeadForAi(lead);
-    return this.complete([
+    const fallback = `Proposal for ${lead?.name || "your business"}: Website rebuild, WhatsApp + booking setup, $799-$1499, 7-14 days. Reply YES to approve.`;
+    return this.completeSafe([
       { role: "system", content: "You are a proposal writer for agencies. Plain text only. Structure: Problem, Offer, Deliverables, Timeline, Price, Guarantee, Next step to pay." },
       { role: "user", content: `Write a client-ready proposal for offer ${offerKey} for this lead. Keep under 260 words. No markdown.\n\n${JSON.stringify(leadContext)}` }
-    ], { temperature: 0.4, maxTokens: 500 });
+    ], { temperature: 0.4, maxTokens: 500 }, fallback);
   }
 
   tycoonChat(prompt, context = {}) {
     const ctx = JSON.stringify(context).slice(0, 2000);
-    return this.completeWithModel([
+    const fallback = `What to say: Hi, I can rebuild your online presence with WhatsApp bookings. Price to quote: $799 setup + $99/mo care. Why it wins: direct bookings. Next move: send audit + pay link.`;
+    return this.completeSafe([
       {
         role: "system",
         content: "You are BUSINESS AI TYCOON, a ruthless professional business tycoon mentor. You think like a billionaire closer: pricing psychology, negotiation, objection handling, WhatsApp scripts, follow-up cadence, upsells, retainers. Always give: 1) What to say (copy-paste script), 2) Price to quote, 3) Why it wins, 4) Next move. Keep it practical, confident, street-smart. Plain text only, no markdown symbols."
@@ -358,7 +391,7 @@ export class NvidiaService {
         role: "user",
         content: `${String(prompt || "").slice(0, 3000)}\n\nLead context: ${ctx}`
       }
-    ], { temperature: 0.5, topP: 1, maxTokens: 700, timeoutMs: 25000, cacheTtlMs: 600000, preferredModels: [env.nvidia.tycoonModel, "z-ai/glm-5.3-flash", "deepseek-ai/deepseek-v4.1-flash", "google/gemma-4-31b-it"] });
+    ], { temperature: 0.5, topP: 1, maxTokens: 700, timeoutMs: 25000, cacheTtlMs: 600000, preferredModels: [env.nvidia.tycoonModel, "z-ai/glm-5.3-flash", "deepseek-ai/deepseek-v4.1-flash", "google/gemma-4-31b-it"] }, fallback);
   }
 
   async completeRaw(messages, { temperature = 0.5, topP = 1, maxTokens = 2800, timeoutMs = 0 } = {}) {

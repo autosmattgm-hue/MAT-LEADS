@@ -63,7 +63,7 @@ document.addEventListener("DOMContentLoaded", () => {
     e.preventDefault();
     const btn = byId("studioBuildBtn");
     btn.disabled = true; btn.textContent = "Building professional site...";
-    byId("studioStatus").textContent = "AI is designing your premium website (20-60s)...";
+    byId("studioStatus").textContent = "AI is designing your premium website (usually 15-45s, cached rebuilds are instant)...";
     try {
       let lead = null;
       try { lead = JSON.parse(sessionStorage.getItem("mat_studio_lead") || "null"); } catch {}
