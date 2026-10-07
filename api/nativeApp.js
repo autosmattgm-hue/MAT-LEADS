@@ -239,8 +239,8 @@ const routes = [
       realMode: true,
       aiModels: {
         chat: [env.nvidia.model, ...(env.nvidia.modelFallbacks || [])].filter(Boolean),
-        website: [env.nvidia.websiteModel, ...(env.nvidia.websiteFallbacks || []), "z-ai/glm-5.3-flash", "google/gemma-4-31b-it"].filter(Boolean),
-        tycoon: [env.nvidia.tycoonModel, "deepseek-ai/deepseek-v4.1-flash", "z-ai/glm-5.3-flash"].filter(Boolean)
+        website: [env.nvidia.websiteModel, ...(env.nvidia.websiteFallbacks || []), "z-ai/glm-5.3-flash", "deepseek-ai/deepseek-v4.1-flash", "google/gemma-4-31b-it"].filter(Boolean),
+        tycoon: [env.nvidia.tycoonModel, "z-ai/glm-5.3-flash", "deepseek-ai/deepseek-v4.1-flash"].filter(Boolean)
       },
       missingRequiredForLiveOperation: [
         !env.nvidia.apiKey && "NVIDIA_API_KEY",

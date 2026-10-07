@@ -99,7 +99,7 @@ function defaultSettings(settings = {}) {
     timezone: settings.timezone || "America/Los_Angeles",
     exportHeaders: settings.exportHeaders ?? true,
     autoExport: settings.autoExport ?? false,
-    aiModel: settings.aiModel || "llama-3.1-8b",
+    aiModel: settings.aiModel && !/llama-3\.1-8b|llama-4-maverick/i.test(settings.aiModel) ? settings.aiModel : "z-ai/glm-5.3-flash",
     outreachTone: settings.outreachTone || "professional",
     maxFollowUps: settings.maxFollowUps ?? 3,
     autoFollowUp: settings.autoFollowUp ?? false,

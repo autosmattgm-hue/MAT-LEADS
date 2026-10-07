@@ -5,7 +5,32 @@ import { AppError } from "../utils/errors.js";
 const aiCache = new Map();
 const modelCooldowns = new Map();
 const MAX_CACHE_ENTRIES = 200;
-const MODEL_COOLDOWN_MS = 2 * 60 * 1000;
+const MODEL_COOLDOWN_MS = 5 * 60 * 1000;
+
+// Retired NVIDIA IDs — never call these (your error: llama-3.1-8b EOL 2026-08-26).
+const DEAD_MODELS = new Set([
+  "meta/llama-3.1-8b-instruct",
+  "meta/llama-3.1-8b",
+  "meta/llama-4-maverick-17b-128e-instruct",
+  "llama-3.1-8b",
+  "llama-4-maverick",
+  "z-ai/glm-5.3"
+]);
+
+function isDeadModel(id = "") {
+  const v = String(id || "").trim();
+  if (!v) return true;
+  if (DEAD_MODELS.has(v)) return true;
+  if (/llama-3\.1-8b/i.test(v)) return true;
+  if (/llama-4-maverick/i.test(v)) return true;
+  if (/^z-ai\/glm-5\.3$/i.test(v)) return true;
+  return false;
+}
+
+function isEndOfLifeError(error) {
+  const msg = String(error?.message || "").toLowerCase();
+  return msg.includes("end of life") || msg.includes("end-of-life") || msg.includes("decommissioned") || msg.includes("retired") || msg.includes("no longer supported");
+}
 
 function plainTextAiOutput(content) {
   return String(content || "")
@@ -121,9 +146,12 @@ function setCachedResult(cacheKey, result, ttlMs) {
 
 function modelsToTry() {
   const now = Date.now();
-  const models = [...new Set([env.nvidia.model, ...(env.nvidia.modelFallbacks || [])].filter(Boolean))]
+  const fallbackLive = ["z-ai/glm-5.3-flash", "google/gemma-4-31b-it", "deepseek-ai/deepseek-v4.1-flash"];
+  const configured = [...new Set([env.nvidia.model, ...(env.nvidia.modelFallbacks || [])].filter(Boolean))].filter((m) => !isDeadModel(m));
+  const models = [...new Set([...configured, ...fallbackLive])]
     .filter((model) => (modelCooldowns.get(model) || 0) <= now);
-  return models.length ? models : [...new Set([env.nvidia.model, ...(env.nvidia.modelFallbacks || [])].filter(Boolean))];
+  const live = models.filter((m) => !isDeadModel(m));
+  return (live.length ? live : fallbackLive).slice(0, 3);
 }
 
 function isRetryableNvidiaFailure(error) {
@@ -182,10 +210,9 @@ export class NvidiaService {
     };
     let lastError = null;
 
-    const preferred = Array.isArray(preferredModels) ? preferredModels.filter(Boolean) : null;
-    const queue = preferred && preferred.length
-      ? [...new Set([...preferred, ...modelsToTry()])]
-      : modelsToTry();
+    const preferred = Array.isArray(preferredModels) ? preferredModels.filter((m) => m && !isDeadModel(m)) : null;
+    const queue = [...new Set([...(preferred && preferred.length ? preferred : []), ...modelsToTry()])].filter((m) => !isDeadModel(m)).slice(0, 3);
+    if (!queue.length) throw new AppError("No live NVIDIA model configured. Set NVIDIA_MODEL=z-ai/glm-5.3-flash in Vercel.", 503, "NVIDIA_NO_LIVE_MODEL");
     for (const model of queue) {
       const requestPayload = { ...basePayload, model };
       const cacheKey = !stream && cacheTtlMs > 0 ? cacheKeyFor(requestPayload) : "";
@@ -229,6 +256,11 @@ export class NvidiaService {
           // Keep the raw text detail when NVIDIA returns non-JSON errors.
         }
         lastError = new AppError(`NVIDIA API request failed on ${model}: ${detail}`, response.status, "NVIDIA_API_ERROR");
+        // EOL / retired models: ban for 5 min and move on instantly — don't burn the timeout.
+        if (isEndOfLifeError(lastError) || isDeadModel(model)) {
+          coolDownModel(model);
+          continue;
+        }
         if (isRetryableNvidiaFailure(lastError)) {
           coolDownModel(model);
           continue;
@@ -326,17 +358,17 @@ export class NvidiaService {
         role: "user",
         content: `${String(prompt || "").slice(0, 3000)}\n\nLead context: ${ctx}`
       }
-    ], { temperature: 0.5, topP: 1, maxTokens: 1024, timeoutMs: 45000, preferredModels: [env.nvidia.tycoonModel, "deepseek-ai/deepseek-v4.1-flash", "z-ai/glm-5.3-flash", "google/gemma-4-31b-it"] });
+    ], { temperature: 0.5, topP: 1, maxTokens: 700, timeoutMs: 25000, cacheTtlMs: 600000, preferredModels: [env.nvidia.tycoonModel, "z-ai/glm-5.3-flash", "deepseek-ai/deepseek-v4.1-flash", "google/gemma-4-31b-it"] });
   }
 
-  async completeRaw(messages, { temperature = 0.5, topP = 1, maxTokens = 3800, timeoutMs = 0 } = {}) {
+  async completeRaw(messages, { temperature = 0.5, topP = 1, maxTokens = 2800, timeoutMs = 0 } = {}) {
     if (!this.configured()) {
       throw new AppError("Real NVIDIA AI requires NVIDIA_API_KEY in .env.", 503, "NVIDIA_NOT_CONFIGURED");
     }
     const invokeUrl = `${env.nvidia.baseUrl.replace(/\/$/, "")}/chat/completions`;
     const models = modelsToTry();
-    const websiteModels = [...new Set([env.nvidia.websiteModel, ...((env.nvidia.websiteFallbacks || []).length ? env.nvidia.websiteFallbacks : []), "z-ai/glm-5.3-flash", "google/gemma-4-31b-it", "deepseek-ai/deepseek-v4.1-flash", ...models].filter(Boolean))];
-    const effectiveTimeout = Math.max(5000, timeoutMs || env.nvidia.websiteTimeoutMs || 90000);
+    const websiteModels = [...new Set([env.nvidia.websiteModel, ...((env.nvidia.websiteFallbacks || []).length ? env.nvidia.websiteFallbacks : []), "z-ai/glm-5.3-flash", "google/gemma-4-31b-it", "deepseek-ai/deepseek-v4.1-flash", ...models].filter(Boolean))].filter((m) => !isDeadModel(m)).slice(0, 3);
+    const effectiveTimeout = Math.max(5000, Math.min(timeoutMs || env.nvidia.websiteTimeoutMs || 60000, 60000));
     const cleanMessages = this.sanitizeMessages(messages);
     let lastError = null;
     for (const model of websiteModels) {
@@ -353,6 +385,10 @@ export class NvidiaService {
         if (!response.ok) {
           const body = await response.text();
           lastError = new AppError(`NVIDIA API request failed on ${model}: ${body.slice(0, 400)}`, response.status, "NVIDIA_API_ERROR");
+          if (isEndOfLifeError(lastError) || isDeadModel(model)) {
+            coolDownModel(model);
+            continue;
+          }
           if (isRetryableNvidiaFailure(lastError)) continue;
           throw lastError;
         }

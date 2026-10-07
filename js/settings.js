@@ -80,7 +80,7 @@ function settingsPayload() {
     timezone: val("timezone") || "America/Los_Angeles",
     exportHeaders: val("exportHeaders"),
     autoExport: val("autoExport"),
-    aiModel: val("aiModel") || "llama-3.1-8b",
+    aiModel: val("aiModel") || "z-ai/glm-5.3-flash",
     outreachTone: val("outreachTone") || "professional",
     maxFollowUps: val("maxFollowUps") || 3,
     autoFollowUp: val("autoFollowUp"),
@@ -122,7 +122,7 @@ function populateSettings(settings) {
   setVal("timezone", settings.timezone, "America/Los_Angeles");
   setVal("exportHeaders", settings.exportHeaders, true);
   setVal("autoExport", settings.autoExport, false);
-  setVal("aiModel", settings.aiModel, "llama-3.1-8b");
+  setVal("aiModel", settings.aiModel, "z-ai/glm-5.3-flash");
   setVal("outreachTone", settings.outreachTone, "professional");
   setVal("maxFollowUps", settings.maxFollowUps, 3);
   setVal("autoFollowUp", settings.autoFollowUp, false);
@@ -147,7 +147,7 @@ function renderSettingsSummary(user, settings) {
     '<div class="audit-item"><span>Default proposal</span><strong>$' + escapeHtml(settings.proposalPrice ?? 2500) + '</strong></div>',
     '<div class="audit-item"><span>Default scan</span><strong>' + escapeHtml(settings.defaultCountry || "United States") + '</strong></div>',
     '<div class="audit-item"><span>Default results</span><strong>' + escapeHtml(settings.defaultResults || 20) + '</strong></div>',
-    '<div class="audit-item"><span>AI model</span><strong>' + escapeHtml(settings.aiModel || "llama-3.1-8b") + '</strong></div>',
+    '<div class="audit-item"><span>AI model</span><strong>' + escapeHtml(settings.aiModel || "z-ai/glm-5.3-flash") + '</strong></div>',
     '<div class="audit-item"><span>Outreach tone</span><strong>' + escapeHtml(settings.outreachTone || "professional") + '</strong></div>',
     '<div class="audit-item"><span>Follow-up cadence</span><strong>' + escapeHtml(settings.followUpCadence || "Day 1, Day 3, Day 7") + '</strong></div>',
     '<div class="audit-item"><span>Lead alerts</span><span class="status-pill ' + (settings.leadAlerts ? "success" : "warning") + '">' + (settings.leadAlerts ? "On" : "Off") + '</span></div>',

@@ -159,7 +159,7 @@ export const settingsSchema = schema((input) => ({
   timezone: stringField(input, "timezone", { max: 60, truncate: true, default: "America/Los_Angeles" }),
   exportHeaders: booleanField(input, "exportHeaders", { default: true }),
   autoExport: booleanField(input, "autoExport", { default: false }),
-  aiModel: stringField(input, "aiModel", { max: 40, truncate: true, default: "llama-3.1-8b" }),
+  aiModel: stringField(input, "aiModel", { max: 60, truncate: true, default: "z-ai/glm-5.3-flash" }),
   outreachTone: stringField(input, "outreachTone", { max: 30, truncate: true, default: "professional" }),
   maxFollowUps: numberField(input, "maxFollowUps", { int: true, min: 0, max: 20, default: 3, defaultOnInvalid: true, clamp: true }),
   autoFollowUp: booleanField(input, "autoFollowUp", { default: false }),
