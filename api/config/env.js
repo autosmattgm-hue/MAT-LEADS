@@ -66,10 +66,10 @@ export const env = {
     websiteModel: process.env.NVIDIA_WEBSITE_MODEL || "z-ai/glm-5.3-flash",
     websiteFallbacks: list(process.env.NVIDIA_WEBSITE_FALLBACKS, ["deepseek-ai/deepseek-v4.1-flash", "google/gemma-4-31b-it"]),
     tycoonModel: process.env.NVIDIA_TYCOON_MODEL || "z-ai/glm-5.3-flash",
-    timeoutMs: number(process.env.NVIDIA_TIMEOUT_MS, 25000),
-    websiteTimeoutMs: number(process.env.NVIDIA_WEBSITE_TIMEOUT_MS, 60000),
+    timeoutMs: number(process.env.NVIDIA_TIMEOUT_MS, 12000),
+    websiteTimeoutMs: number(process.env.NVIDIA_WEBSITE_TIMEOUT_MS, 35000),
     cacheTtlMs: number(process.env.NVIDIA_CACHE_TTL_MS, 600000),
-    maxTokens: number(process.env.NVIDIA_MAX_TOKENS, 700)
+    maxTokens: number(process.env.NVIDIA_MAX_TOKENS, 450)
   },
   stripe: {
     secretKey: process.env.STRIPE_SECRET_KEY || "",

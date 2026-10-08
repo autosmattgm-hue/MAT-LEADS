@@ -22,7 +22,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (!prompt) return;
     const btn = e.target.querySelector("[type=submit]");
     btn.disabled = true; btn.textContent = "Tycoon thinking...";
-    byId("tycoonOut").textContent = "Tycoon is crafting your winning script (usually 5-15s)...";
+    byId("tycoonOut").textContent = "Tycoon is crafting your winning script (fast mode: max 12s)...";
+    const timeout = setTimeout(() => {
+      if (btn.disabled) byId("tycoonOut").textContent += "\nStill working... if this exceeds 15s, your Vercel key or network is slow — try again.";
+    }, 8000);
     try {
       const status = await apiFetch("/api/ai/status").catch(() => null);
       if (status && !status.configured) {
@@ -39,7 +42,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       const msg = String(err?.message || "Request failed");
       byId("tycoonOut").innerHTML = `${msg} ${/pro plan|402|PRO_REQUIRED/i.test(msg) ? `<br><a href="/pricing.html?upgrade=pro"><strong>Upgrade to Pro to unlock Tycoon</strong></a>` : `<br><span class="muted-value">Try again — cached answers reply instantly.</span>`}`;
     }
-    finally { btn.disabled = false; btn.textContent = "Ask Tycoon"; }
+    finally { clearTimeout(timeout); btn.disabled = false; btn.textContent = "Ask Tycoon"; }
   });
 
   byId("tycoonCopy").addEventListener("click", async () => {

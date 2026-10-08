@@ -389,19 +389,19 @@ export class NvidiaService {
       },
       {
         role: "user",
-        content: `${String(prompt || "").slice(0, 3000)}\n\nLead context: ${ctx}`
+        content: `${String(prompt || "").slice(0, 1200)}\n\nLead context: ${ctx}`
       }
-    ], { temperature: 0.5, topP: 1, maxTokens: 700, timeoutMs: 25000, cacheTtlMs: 600000, preferredModels: [env.nvidia.tycoonModel, "z-ai/glm-5.3-flash", "deepseek-ai/deepseek-v4.1-flash", "google/gemma-4-31b-it"] }, fallback);
+    ], { temperature: 0.5, topP: 1, maxTokens: 450, timeoutMs: 12000, cacheTtlMs: 600000, preferredModels: [env.nvidia.tycoonModel, "z-ai/glm-5.3-flash"] }, fallback);
   }
 
-  async completeRaw(messages, { temperature = 0.5, topP = 1, maxTokens = 2800, timeoutMs = 0 } = {}) {
+  async completeRaw(messages, { temperature = 0.5, topP = 1, maxTokens = 2200, timeoutMs = 0 } = {}) {
     if (!this.configured()) {
       throw new AppError("Real NVIDIA AI requires NVIDIA_API_KEY in .env.", 503, "NVIDIA_NOT_CONFIGURED");
     }
     const invokeUrl = `${env.nvidia.baseUrl.replace(/\/$/, "")}/chat/completions`;
     const models = modelsToTry();
-    const websiteModels = [...new Set([env.nvidia.websiteModel, ...((env.nvidia.websiteFallbacks || []).length ? env.nvidia.websiteFallbacks : []), "z-ai/glm-5.3-flash", "google/gemma-4-31b-it", "deepseek-ai/deepseek-v4.1-flash", ...models].filter(Boolean))].filter((m) => !isDeadModel(m)).slice(0, 3);
-    const effectiveTimeout = Math.max(5000, Math.min(timeoutMs || env.nvidia.websiteTimeoutMs || 60000, 60000));
+    const websiteModels = [...new Set([env.nvidia.websiteModel, ...((env.nvidia.websiteFallbacks || []).length ? env.nvidia.websiteFallbacks : []), "z-ai/glm-5.3-flash", "deepseek-ai/deepseek-v4.1-flash"].filter(Boolean))].filter((m) => !isDeadModel(m)).slice(0, 2);
+    const effectiveTimeout = Math.max(5000, Math.min(timeoutMs || env.nvidia.websiteTimeoutMs || 35000, 35000));
     const cleanMessages = this.sanitizeMessages(messages);
     let lastError = null;
     for (const model of websiteModels) {
@@ -452,13 +452,13 @@ export class NvidiaService {
     return this.completeRaw([
       { role: "system", content: "You are an elite website builder AI. Output ONLY complete production-ready HTML in one file, with inline CSS and minimal inline JS. Mobile-first, professional, conversion-focused: sticky nav, hero with call CTA, trust badges, services grid, gallery placeholders, testimonials, pricing/offer, booking/quote form, map/contact, footer with business details. Use the business data provided. No markdown, no explanations, only HTML code." },
       { role: "user", content: `Build a premium 5+ section business website for: ${brief}. Business name headline, click-to-call, WhatsApp style CTA, lead form, SEO title/meta. Return only HTML.` }
-    ], { temperature: 0.7, maxTokens: 3800 }).then((r) => ({ ...r, html: this.cleanHtml(r.content) }));
+    ], { temperature: 0.5, maxTokens: 2200, timeoutMs: 35000 }).then((r) => ({ ...r, html: this.cleanHtml(r.content) }));
   }
 
   refineWebsite(currentHtml, instruction, meta = {}) {
     return this.completeRaw([
       { role: "system", content: "You are an elite website editor AI. Return ONLY the full updated complete HTML file with inline CSS/JS. Apply the requested change perfectly while keeping everything else. No markdown, no explanations." },
       { role: "user", content: `Current site for ${meta.businessName || meta.leadName || "business"}:\n${String(currentHtml || "").slice(0, 12000)}\n\nRequested change: ${String(instruction || "").slice(0, 2000)}\n\nReturn only the full updated HTML.` }
-    ], { temperature: 0.6, maxTokens: 3800 }).then((r) => ({ ...r, html: this.cleanHtml(r.content) }));
+    ], { temperature: 0.5, maxTokens: 2200, timeoutMs: 35000 }).then((r) => ({ ...r, html: this.cleanHtml(r.content) }));
   }
 }
