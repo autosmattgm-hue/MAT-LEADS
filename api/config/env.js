@@ -61,15 +61,15 @@ export const env = {
   nvidia: {
     apiKey: process.env.NVIDIA_API_KEY || "",
     baseUrl: process.env.NVIDIA_BASE_URL || "https://integrate.api.nvidia.com/v1",
-    model: process.env.NVIDIA_MODEL || "deepseek-ai/deepseek-v4-flash",
-    modelFallbacks: list(process.env.NVIDIA_MODEL_FALLBACKS, ["z-ai/glm-5.3", "z-ai/glm-5.3-flash"]),
-    websiteModel: process.env.NVIDIA_WEBSITE_MODEL || "z-ai/glm-5.3",
-    websiteFallbacks: list(process.env.NVIDIA_WEBSITE_FALLBACKS, ["deepseek-ai/deepseek-v4-flash", "z-ai/glm-5.3-flash"]),
-    tycoonModel: process.env.NVIDIA_TYCOON_MODEL || "deepseek-ai/deepseek-v4-flash",
-    timeoutMs: number(process.env.NVIDIA_TIMEOUT_MS, 12000),
-    websiteTimeoutMs: number(process.env.NVIDIA_WEBSITE_TIMEOUT_MS, 35000),
+    model: process.env.NVIDIA_MODEL || "z-ai/glm-5.3-flash",
+    modelFallbacks: list(process.env.NVIDIA_MODEL_FALLBACKS, ["deepseek-ai/deepseek-v4-flash"]),
+    websiteModel: process.env.NVIDIA_WEBSITE_MODEL || "deepseek-ai/deepseek-v4-flash",
+    websiteFallbacks: list(process.env.NVIDIA_WEBSITE_FALLBACKS, ["z-ai/glm-5.3-flash"]),
+    tycoonModel: process.env.NVIDIA_TYCOON_MODEL || "z-ai/glm-5.3-flash",
+    timeoutMs: number(process.env.NVIDIA_TIMEOUT_MS, 18000),
+    websiteTimeoutMs: number(process.env.NVIDIA_WEBSITE_TIMEOUT_MS, 18000),
     cacheTtlMs: number(process.env.NVIDIA_CACHE_TTL_MS, 600000),
-    maxTokens: number(process.env.NVIDIA_MAX_TOKENS, 450)
+    maxTokens: number(process.env.NVIDIA_MAX_TOKENS, 420)
   },
   stripe: {
     secretKey: process.env.STRIPE_SECRET_KEY || "",

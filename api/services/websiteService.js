@@ -38,8 +38,13 @@ export class WebsiteService {
     try {
       const result = await this.nvidia.buildWebsite(lead, options);
       if (result.html && result.html.length > 800) { html = result.html; provider = result.provider || "nvidia"; model = result.model; }
-      else { html = fallbackWebsiteHtml(lead, options); aiError = "AI returned too little HTML, used premium template."; }
-    } catch (e) { html = fallbackWebsiteHtml(lead, options); aiError = e?.message || "AI build failed, used premium template."; }
+      else { html = fallbackWebsiteHtml(lead, options); aiError = "AI returned too little HTML, used premium template. Click Generate again for an AI retry."; }
+    } catch (e) {
+      html = fallbackWebsiteHtml(lead, options);
+      aiError = /NVIDIA_API_KEY|NVIDIA_NOT_CONFIGURED/i.test(String(e?.message || ""))
+        ? "AI key missing (NVIDIA_API_KEY in Vercel). Used premium template."
+        : "AI timed out or was busy — used premium template. Click Generate again to retry AI (instant when the model responds).";
+    }
     const record = { id, shareToken, ownerId: user?.uid || "anon", leadId: lead?.id || "", leadName: lead?.name || options.businessName || "Business", businessType: lead?.businessType || lead?.category || "", address: lead?.address || "", phone: lead?.phone || "", email: lead?.email || "", businessName: options.businessName || lead?.name || "Business", style: options.style || "modern", html, provider, model, aiError, revisions: 1, history: [{ at: createdAt, instruction: "Initial AI website build" }], createdAt, updatedAt: createdAt };
     try { await this.websites.upsert(id, record); } catch {}
     memoryWebsites.set(id, record);
