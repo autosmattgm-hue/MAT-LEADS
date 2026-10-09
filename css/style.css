@@ -526,12 +526,27 @@ button:disabled {
   padding: 18px;
   background: var(--surface);
   border-right: 1px solid var(--border);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+.sidebar::-webkit-scrollbar {
+  width: 9px;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border: 3px solid var(--surface);
+  border-radius: 999px;
 }
 
 .sidebar nav {
   display: grid;
   gap: 5px;
   margin-top: 26px;
+  padding-bottom: 20px;
 }
 
 .sidebar a {
@@ -717,6 +732,167 @@ button:disabled {
   align-items: end;
   flex-wrap: wrap;
   gap: 8px;
+}
+
+.tools-layout {
+  display: grid;
+  grid-template-columns: minmax(260px, 0.8fr) minmax(0, 1.4fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.tools-panel {
+  display: grid;
+  gap: 14px;
+}
+
+.tools-panel--workspace {
+  position: sticky;
+  top: 18px;
+}
+
+.tool-search {
+  width: 100%;
+  min-height: 42px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text);
+}
+
+.tool-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(205px, 1fr));
+  gap: 10px;
+}
+
+.tool-card {
+  display: grid;
+  gap: 7px;
+  width: 100%;
+  min-height: 145px;
+  padding: 15px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 160ms ease, transform 160ms ease, box-shadow 160ms ease;
+}
+
+.tool-card:hover,
+.tool-card:focus-visible,
+.tool-card.active {
+  border-color: var(--accent);
+  box-shadow: 0 10px 24px rgba(10, 10, 10, 0.08);
+  outline: 0;
+}
+
+.tool-card:hover {
+  transform: translateY(-2px);
+}
+
+.tool-card__category,
+.task-priority {
+  color: var(--accent-strong);
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.tool-card strong {
+  font-size: 1rem;
+}
+
+.tool-card span:last-child {
+  color: var(--muted);
+  font-size: 0.86rem;
+  line-height: 1.4;
+}
+
+.tool-output {
+  min-height: 250px;
+  margin: 0;
+  padding: 16px;
+  overflow: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface-2);
+  color: var(--text);
+  font: 0.92rem/1.6 var(--font);
+  white-space: pre-wrap;
+}
+
+.tool-note {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.planner-metrics {
+  margin-bottom: 16px;
+}
+
+.task-list {
+  display: grid;
+  gap: 10px;
+}
+
+.task-item {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  padding: 13px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.task-item input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--accent);
+}
+
+.task-item h3,
+.task-item p {
+  margin: 0;
+}
+
+.task-item h3 {
+  font-size: 0.96rem;
+}
+
+.task-item p {
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: 0.84rem;
+}
+
+.task-item.complete h3 {
+  color: var(--muted);
+  text-decoration: line-through;
+}
+
+.task-delete {
+  min-width: 34px;
+  min-height: 34px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.task-delete:hover,
+.task-delete:focus-visible {
+  border-color: var(--danger);
+  color: var(--danger);
+  outline: 0;
 }
 
 .leads-grid {
@@ -1195,6 +1371,14 @@ th {
     transform: translateX(0);
   }
 
+  .tools-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .tools-panel--workspace {
+    position: static;
+  }
+
   .mobile-menu {
     display: inline-flex;
   }
@@ -1256,6 +1440,19 @@ th {
 
   .workspace {
     padding: 18px 12px 32px;
+  }
+
+  .tool-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .task-item {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .task-delete {
+    grid-column: 2;
+    justify-self: start;
   }
 
   .topbar-actions .btn {

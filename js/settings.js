@@ -30,6 +30,60 @@ function setSettingsStatus(message, state) {
   target.classList.toggle("error", state === "error");
 }
 
+function setAiConnectionStatus(message, state) {
+  const target = byId("aiConnectionStatus");
+  if (!target) return;
+  target.textContent = message;
+  target.classList.toggle("success", state === "success");
+  target.classList.toggle("error", state === "error");
+}
+
+async function loadAiConnectionStatus() {
+  try {
+    const status = await apiFetch("/api/ai/status");
+    if (!status.configured) {
+      setAiConnectionStatus(status.hint || "NVIDIA_API_KEY is missing.", "error");
+      return;
+    }
+    if (status.verification === "verified") {
+      setAiConnectionStatus(`Connected. Last verified: ${new Date(status.lastSuccessAt).toLocaleString()}.`, "success");
+      return;
+    }
+    if (status.verification === "failed") {
+      setAiConnectionStatus(status.hint || "NVIDIA AI connection failed.", "error");
+      return;
+    }
+    setAiConnectionStatus("NVIDIA AI is configured but has not been tested in this server session.");
+  } catch (error) {
+    setAiConnectionStatus(error.message, "error");
+  }
+}
+
+async function testAiConnection() {
+  const button = byId("testAiConnection");
+  if (!button) return;
+  const original = button.textContent;
+  button.disabled = true;
+  button.textContent = "Testing...";
+  setAiConnectionStatus("Sending a safe provider test...");
+  try {
+    const result = await apiFetch("/api/ai/debug", {
+      method: "POST",
+      body: JSON.stringify({ prompt: "Reply with exactly: NVIDIA connection verified." })
+    });
+    if (result.ok && result.provider === "nvidia") {
+      setAiConnectionStatus(`Connected to ${result.model} in ${result.ms}ms.`, "success");
+    } else {
+      setAiConnectionStatus(result.error || "NVIDIA AI test failed.", "error");
+    }
+  } catch (error) {
+    setAiConnectionStatus(error.message, "error");
+  } finally {
+    button.disabled = false;
+    button.textContent = original;
+  }
+}
+
 function val(id) {
   var el = byId(id);
   if (!el) return;
@@ -208,4 +262,6 @@ function initSettingsForm() {
 document.addEventListener("DOMContentLoaded", function () {
   initSettingsForm();
   loadSettings();
+  loadAiConnectionStatus();
+  byId("testAiConnection")?.addEventListener("click", testAiConnection);
 });

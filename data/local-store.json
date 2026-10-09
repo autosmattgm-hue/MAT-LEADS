@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-09T06:42:13.039Z",
+  "updatedAt": "2026-10-09T07:25:13.927Z",
   "collections": {
     "leads": [
       {
@@ -11902,13 +11902,13 @@
         },
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
-        "discoveredBy": "3d30774b-b2f6-4541-9b2d-f8023970dcfb",
-        "discoveredAt": "2026-10-09T06:41:53.933Z",
-        "updatedAt": "2026-10-09T06:42:10.459Z",
+        "discoveredBy": "2c16f281-fa0c-4d4d-a7df-8c25442f444a",
+        "discoveredAt": "2026-10-09T07:03:24.514Z",
+        "updatedAt": "2026-10-09T07:03:42.378Z",
         "createdAt": "2026-10-09T06:41:53.933Z",
-        "ownerId": "3d30774b-b2f6-4541-9b2d-f8023970dcfb",
+        "ownerId": "2c16f281-fa0c-4d4d-a7df-8c25442f444a",
         "stage": "Contacted",
-        "savedAt": "2026-10-09T06:42:08.522Z"
+        "savedAt": "2026-10-09T07:03:39.421Z"
       },
       {
         "id": "osm-node-9080250962",
@@ -11989,9 +11989,9 @@
         },
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
-        "discoveredBy": "3d30774b-b2f6-4541-9b2d-f8023970dcfb",
-        "discoveredAt": "2026-10-09T06:41:53.933Z",
-        "updatedAt": "2026-10-09T06:41:53.933Z",
+        "discoveredBy": "2c16f281-fa0c-4d4d-a7df-8c25442f444a",
+        "discoveredAt": "2026-10-09T07:03:24.515Z",
+        "updatedAt": "2026-10-09T07:03:24.515Z",
         "createdAt": "2026-10-09T06:41:53.933Z"
       },
       {
@@ -12073,9 +12073,9 @@
         },
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
-        "discoveredBy": "3d30774b-b2f6-4541-9b2d-f8023970dcfb",
-        "discoveredAt": "2026-10-09T06:41:53.933Z",
-        "updatedAt": "2026-10-09T06:41:53.933Z",
+        "discoveredBy": "2c16f281-fa0c-4d4d-a7df-8c25442f444a",
+        "discoveredAt": "2026-10-09T07:03:24.515Z",
+        "updatedAt": "2026-10-09T07:03:24.515Z",
         "createdAt": "2026-10-09T06:41:53.933Z"
       },
       {
@@ -12153,9 +12153,9 @@
         },
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
-        "discoveredBy": "3d30774b-b2f6-4541-9b2d-f8023970dcfb",
-        "discoveredAt": "2026-10-09T06:41:53.933Z",
-        "updatedAt": "2026-10-09T06:41:53.933Z",
+        "discoveredBy": "2c16f281-fa0c-4d4d-a7df-8c25442f444a",
+        "discoveredAt": "2026-10-09T07:03:24.515Z",
+        "updatedAt": "2026-10-09T07:03:24.515Z",
         "createdAt": "2026-10-09T06:41:53.933Z"
       },
       {
@@ -12244,10 +12244,675 @@
         },
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
-        "discoveredBy": "3d30774b-b2f6-4541-9b2d-f8023970dcfb",
-        "discoveredAt": "2026-10-09T06:41:53.933Z",
-        "updatedAt": "2026-10-09T06:41:53.933Z",
+        "discoveredBy": "2c16f281-fa0c-4d4d-a7df-8c25442f444a",
+        "discoveredAt": "2026-10-09T07:03:24.515Z",
+        "updatedAt": "2026-10-09T07:03:24.515Z",
         "createdAt": "2026-10-09T06:41:53.933Z"
+      },
+      {
+        "id": "photon-node-8209452111",
+        "name": "restaurant",
+        "category": "Restaurant",
+        "businessType": "Restaurant",
+        "address": "Rue A(GD28), Dakar, 13000, SN",
+        "phone": "",
+        "rating": null,
+        "reviewsCount": 0,
+        "websiteUrl": "",
+        "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=restaurant%20Rue%20A(GD28)%2C%20Dakar%2C%2013000%2C%20SN",
+        "latitude": 14.7083153,
+        "longitude": -17.4535845,
+        "country": "Senegal",
+        "countryCode": "SN",
+        "email": "",
+        "social": "",
+        "openingHours": "",
+        "details": {
+          "ownerContact": {
+            "publicContactNote": "Owner or direct contact person was not listed in the public map data."
+          },
+          "contact": {},
+          "social": {},
+          "location": {
+            "latitude": 14.7083153,
+            "longitude": -17.4535845,
+            "address": "Rue A(GD28), Dakar, 13000, SN",
+            "street": "Rue A(GD28)",
+            "city": "Dakar",
+            "postcode": "13000",
+            "country": "Senegal",
+            "countryCode": "SN",
+            "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=restaurant%20Rue%20A(GD28)%2C%20Dakar%2C%2013000%2C%20SN"
+          },
+          "business": {},
+          "operations": {},
+          "payments": {},
+          "source": {
+            "provider": "OpenStreetMap Photon",
+            "osmType": "node",
+            "osmId": 8209452111,
+            "osmUrl": "https://www.openstreetmap.org/node/8209452111",
+            "rawTags": {
+              "name": "restaurant",
+              "amenity": "restaurant",
+              "addr:street": "Rue A(GD28)",
+              "addr:city": "Dakar",
+              "addr:postcode": "13000",
+              "addr:country": "SN",
+              "is_in:country": "Senegal"
+            },
+            "photonProperties": {
+              "osm_type": "N",
+              "osm_id": 8209452111,
+              "osm_key": "amenity",
+              "osm_value": "restaurant",
+              "type": "house",
+              "name": "restaurant",
+              "street": "Rue A(GD28)",
+              "district": "Grand-Dakar",
+              "city": "Dakar",
+              "state": "Dakar Region",
+              "country": "Senegal",
+              "postcode": "13000",
+              "countrycode": "SN"
+            }
+          }
+        },
+        "source": "openstreetmap_photon",
+        "raw": {
+          "osmType": "node",
+          "osmId": 8209452111,
+          "tags": {
+            "name": "restaurant",
+            "amenity": "restaurant",
+            "addr:street": "Rue A(GD28)",
+            "addr:city": "Dakar",
+            "addr:postcode": "13000",
+            "addr:country": "SN",
+            "is_in:country": "Senegal"
+          },
+          "photon": {
+            "type": "Feature",
+            "properties": {
+              "osm_type": "N",
+              "osm_id": 8209452111,
+              "osm_key": "amenity",
+              "osm_value": "restaurant",
+              "type": "house",
+              "name": "restaurant",
+              "street": "Rue A(GD28)",
+              "district": "Grand-Dakar",
+              "city": "Dakar",
+              "state": "Dakar Region",
+              "country": "Senegal",
+              "postcode": "13000",
+              "countrycode": "SN"
+            },
+            "geometry": {
+              "type": "Point",
+              "coordinates": [
+                -17.4535845,
+                14.7083153
+              ]
+            }
+          }
+        },
+        "searchRelevance": 77,
+        "audit": {
+          "score": 100,
+          "category": "Very High Opportunity",
+          "checks": {
+            "websiteExists": false,
+            "https": false,
+            "mobileFriendly": false,
+            "seoMetadata": false,
+            "contactForm": false,
+            "socialLinksFound": false,
+            "businessEmailDetected": false,
+            "bookingSystem": false,
+            "outdatedDesign": true
+          },
+          "elapsedMs": 0
+        },
+        "opportunityScore": 100,
+        "opportunityCategory": "Very High Opportunity",
+        "discoveredBy": "8c44d0d9-9deb-449f-89f4-b01484433016",
+        "discoveredAt": "2026-10-09T07:24:55.141Z",
+        "updatedAt": "2026-10-09T07:25:11.849Z",
+        "createdAt": "2026-10-09T07:24:55.141Z",
+        "ownerId": "8c44d0d9-9deb-449f-89f4-b01484433016",
+        "stage": "Contacted",
+        "savedAt": "2026-10-09T07:25:10.561Z"
+      },
+      {
+        "id": "photon-node-7320697313",
+        "name": "restaurant",
+        "category": "Restaurant",
+        "businessType": "Restaurant",
+        "address": "Rue C(GD-48), Dakar, 13000, SN",
+        "phone": "",
+        "rating": null,
+        "reviewsCount": 0,
+        "websiteUrl": "",
+        "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=restaurant%20Rue%20C(GD-48)%2C%20Dakar%2C%2013000%2C%20SN",
+        "latitude": 14.7057506,
+        "longitude": -17.4527599,
+        "country": "Senegal",
+        "countryCode": "SN",
+        "email": "",
+        "social": "",
+        "openingHours": "",
+        "details": {
+          "ownerContact": {
+            "publicContactNote": "Owner or direct contact person was not listed in the public map data."
+          },
+          "contact": {},
+          "social": {},
+          "location": {
+            "latitude": 14.7057506,
+            "longitude": -17.4527599,
+            "address": "Rue C(GD-48), Dakar, 13000, SN",
+            "street": "Rue C(GD-48)",
+            "city": "Dakar",
+            "postcode": "13000",
+            "country": "Senegal",
+            "countryCode": "SN",
+            "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=restaurant%20Rue%20C(GD-48)%2C%20Dakar%2C%2013000%2C%20SN"
+          },
+          "business": {},
+          "operations": {},
+          "payments": {},
+          "source": {
+            "provider": "OpenStreetMap Photon",
+            "osmType": "node",
+            "osmId": 7320697313,
+            "osmUrl": "https://www.openstreetmap.org/node/7320697313",
+            "rawTags": {
+              "name": "restaurant",
+              "amenity": "restaurant",
+              "addr:street": "Rue C(GD-48)",
+              "addr:city": "Dakar",
+              "addr:postcode": "13000",
+              "addr:country": "SN",
+              "is_in:country": "Senegal"
+            },
+            "photonProperties": {
+              "osm_type": "N",
+              "osm_id": 7320697313,
+              "osm_key": "amenity",
+              "osm_value": "restaurant",
+              "type": "house",
+              "name": "restaurant",
+              "street": "Rue C(GD-48)",
+              "district": "Grand-Dakar",
+              "city": "Dakar",
+              "state": "Dakar Region",
+              "country": "Senegal",
+              "postcode": "13000",
+              "countrycode": "SN"
+            }
+          }
+        },
+        "source": "openstreetmap_photon",
+        "raw": {
+          "osmType": "node",
+          "osmId": 7320697313,
+          "tags": {
+            "name": "restaurant",
+            "amenity": "restaurant",
+            "addr:street": "Rue C(GD-48)",
+            "addr:city": "Dakar",
+            "addr:postcode": "13000",
+            "addr:country": "SN",
+            "is_in:country": "Senegal"
+          },
+          "photon": {
+            "type": "Feature",
+            "properties": {
+              "osm_type": "N",
+              "osm_id": 7320697313,
+              "osm_key": "amenity",
+              "osm_value": "restaurant",
+              "type": "house",
+              "name": "restaurant",
+              "street": "Rue C(GD-48)",
+              "district": "Grand-Dakar",
+              "city": "Dakar",
+              "state": "Dakar Region",
+              "country": "Senegal",
+              "postcode": "13000",
+              "countrycode": "SN"
+            },
+            "geometry": {
+              "type": "Point",
+              "coordinates": [
+                -17.4527599,
+                14.7057506
+              ]
+            }
+          }
+        },
+        "searchRelevance": 77,
+        "audit": {
+          "score": 100,
+          "category": "Very High Opportunity",
+          "checks": {
+            "websiteExists": false,
+            "https": false,
+            "mobileFriendly": false,
+            "seoMetadata": false,
+            "contactForm": false,
+            "socialLinksFound": false,
+            "businessEmailDetected": false,
+            "bookingSystem": false,
+            "outdatedDesign": true
+          },
+          "elapsedMs": 0
+        },
+        "opportunityScore": 100,
+        "opportunityCategory": "Very High Opportunity",
+        "discoveredBy": "8c44d0d9-9deb-449f-89f4-b01484433016",
+        "discoveredAt": "2026-10-09T07:24:55.141Z",
+        "updatedAt": "2026-10-09T07:24:55.141Z",
+        "createdAt": "2026-10-09T07:24:55.141Z"
+      },
+      {
+        "id": "photon-node-7174217209",
+        "name": "restaurant",
+        "category": "Restaurant",
+        "businessType": "Restaurant",
+        "address": "Rue GD 38, Dakar, 13000, SN",
+        "phone": "",
+        "rating": null,
+        "reviewsCount": 0,
+        "websiteUrl": "",
+        "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=restaurant%20Rue%20GD%2038%2C%20Dakar%2C%2013000%2C%20SN",
+        "latitude": 14.7053219,
+        "longitude": -17.4577599,
+        "country": "Senegal",
+        "countryCode": "SN",
+        "email": "",
+        "social": "",
+        "openingHours": "",
+        "details": {
+          "ownerContact": {
+            "publicContactNote": "Owner or direct contact person was not listed in the public map data."
+          },
+          "contact": {},
+          "social": {},
+          "location": {
+            "latitude": 14.7053219,
+            "longitude": -17.4577599,
+            "address": "Rue GD 38, Dakar, 13000, SN",
+            "street": "Rue GD 38",
+            "city": "Dakar",
+            "postcode": "13000",
+            "country": "Senegal",
+            "countryCode": "SN",
+            "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=restaurant%20Rue%20GD%2038%2C%20Dakar%2C%2013000%2C%20SN"
+          },
+          "business": {},
+          "operations": {},
+          "payments": {},
+          "source": {
+            "provider": "OpenStreetMap Photon",
+            "osmType": "node",
+            "osmId": 7174217209,
+            "osmUrl": "https://www.openstreetmap.org/node/7174217209",
+            "rawTags": {
+              "name": "restaurant",
+              "amenity": "restaurant",
+              "addr:street": "Rue GD 38",
+              "addr:city": "Dakar",
+              "addr:postcode": "13000",
+              "addr:country": "SN",
+              "is_in:country": "Senegal"
+            },
+            "photonProperties": {
+              "osm_type": "N",
+              "osm_id": 7174217209,
+              "osm_key": "amenity",
+              "osm_value": "restaurant",
+              "type": "house",
+              "name": "restaurant",
+              "street": "Rue GD 38",
+              "district": "Grand-Dakar",
+              "city": "Dakar",
+              "state": "Dakar Region",
+              "country": "Senegal",
+              "postcode": "13000",
+              "countrycode": "SN"
+            }
+          }
+        },
+        "source": "openstreetmap_photon",
+        "raw": {
+          "osmType": "node",
+          "osmId": 7174217209,
+          "tags": {
+            "name": "restaurant",
+            "amenity": "restaurant",
+            "addr:street": "Rue GD 38",
+            "addr:city": "Dakar",
+            "addr:postcode": "13000",
+            "addr:country": "SN",
+            "is_in:country": "Senegal"
+          },
+          "photon": {
+            "type": "Feature",
+            "properties": {
+              "osm_type": "N",
+              "osm_id": 7174217209,
+              "osm_key": "amenity",
+              "osm_value": "restaurant",
+              "type": "house",
+              "name": "restaurant",
+              "street": "Rue GD 38",
+              "district": "Grand-Dakar",
+              "city": "Dakar",
+              "state": "Dakar Region",
+              "country": "Senegal",
+              "postcode": "13000",
+              "countrycode": "SN"
+            },
+            "geometry": {
+              "type": "Point",
+              "coordinates": [
+                -17.4577599,
+                14.7053219
+              ]
+            }
+          }
+        },
+        "searchRelevance": 77,
+        "audit": {
+          "score": 100,
+          "category": "Very High Opportunity",
+          "checks": {
+            "websiteExists": false,
+            "https": false,
+            "mobileFriendly": false,
+            "seoMetadata": false,
+            "contactForm": false,
+            "socialLinksFound": false,
+            "businessEmailDetected": false,
+            "bookingSystem": false,
+            "outdatedDesign": true
+          },
+          "elapsedMs": 0
+        },
+        "opportunityScore": 100,
+        "opportunityCategory": "Very High Opportunity",
+        "discoveredBy": "8c44d0d9-9deb-449f-89f4-b01484433016",
+        "discoveredAt": "2026-10-09T07:24:55.141Z",
+        "updatedAt": "2026-10-09T07:24:55.141Z",
+        "createdAt": "2026-10-09T07:24:55.141Z"
+      },
+      {
+        "id": "photon-node-7174223631",
+        "name": "restaurant",
+        "category": "Restaurant",
+        "businessType": "Restaurant",
+        "address": "Boulevard Dial Diop, Dakar, 13000, SN",
+        "phone": "",
+        "rating": null,
+        "reviewsCount": 0,
+        "websiteUrl": "",
+        "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=restaurant%20Boulevard%20Dial%20Diop%2C%20Dakar%2C%2013000%2C%20SN",
+        "latitude": 14.7052401,
+        "longitude": -17.4581649,
+        "country": "Senegal",
+        "countryCode": "SN",
+        "email": "",
+        "social": "",
+        "openingHours": "",
+        "details": {
+          "ownerContact": {
+            "publicContactNote": "Owner or direct contact person was not listed in the public map data."
+          },
+          "contact": {},
+          "social": {},
+          "location": {
+            "latitude": 14.7052401,
+            "longitude": -17.4581649,
+            "address": "Boulevard Dial Diop, Dakar, 13000, SN",
+            "street": "Boulevard Dial Diop",
+            "city": "Dakar",
+            "postcode": "13000",
+            "country": "Senegal",
+            "countryCode": "SN",
+            "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=restaurant%20Boulevard%20Dial%20Diop%2C%20Dakar%2C%2013000%2C%20SN"
+          },
+          "business": {},
+          "operations": {},
+          "payments": {},
+          "source": {
+            "provider": "OpenStreetMap Photon",
+            "osmType": "node",
+            "osmId": 7174223631,
+            "osmUrl": "https://www.openstreetmap.org/node/7174223631",
+            "rawTags": {
+              "name": "restaurant",
+              "amenity": "restaurant",
+              "addr:street": "Boulevard Dial Diop",
+              "addr:city": "Dakar",
+              "addr:postcode": "13000",
+              "addr:country": "SN",
+              "is_in:country": "Senegal"
+            },
+            "photonProperties": {
+              "osm_type": "N",
+              "osm_id": 7174223631,
+              "osm_key": "amenity",
+              "osm_value": "restaurant",
+              "type": "house",
+              "name": "restaurant",
+              "street": "Boulevard Dial Diop",
+              "district": "Grand-Dakar",
+              "city": "Dakar",
+              "state": "Dakar Region",
+              "country": "Senegal",
+              "postcode": "13000",
+              "countrycode": "SN"
+            }
+          }
+        },
+        "source": "openstreetmap_photon",
+        "raw": {
+          "osmType": "node",
+          "osmId": 7174223631,
+          "tags": {
+            "name": "restaurant",
+            "amenity": "restaurant",
+            "addr:street": "Boulevard Dial Diop",
+            "addr:city": "Dakar",
+            "addr:postcode": "13000",
+            "addr:country": "SN",
+            "is_in:country": "Senegal"
+          },
+          "photon": {
+            "type": "Feature",
+            "properties": {
+              "osm_type": "N",
+              "osm_id": 7174223631,
+              "osm_key": "amenity",
+              "osm_value": "restaurant",
+              "type": "house",
+              "name": "restaurant",
+              "street": "Boulevard Dial Diop",
+              "district": "Grand-Dakar",
+              "city": "Dakar",
+              "state": "Dakar Region",
+              "country": "Senegal",
+              "postcode": "13000",
+              "countrycode": "SN"
+            },
+            "geometry": {
+              "type": "Point",
+              "coordinates": [
+                -17.4581649,
+                14.7052401
+              ]
+            }
+          }
+        },
+        "searchRelevance": 77,
+        "audit": {
+          "score": 100,
+          "category": "Very High Opportunity",
+          "checks": {
+            "websiteExists": false,
+            "https": false,
+            "mobileFriendly": false,
+            "seoMetadata": false,
+            "contactForm": false,
+            "socialLinksFound": false,
+            "businessEmailDetected": false,
+            "bookingSystem": false,
+            "outdatedDesign": true
+          },
+          "elapsedMs": 0
+        },
+        "opportunityScore": 100,
+        "opportunityCategory": "Very High Opportunity",
+        "discoveredBy": "8c44d0d9-9deb-449f-89f4-b01484433016",
+        "discoveredAt": "2026-10-09T07:24:55.141Z",
+        "updatedAt": "2026-10-09T07:24:55.141Z",
+        "createdAt": "2026-10-09T07:24:55.141Z"
+      },
+      {
+        "id": "photon-node-8157756690",
+        "name": "restaurant",
+        "category": "Restaurant",
+        "businessType": "Restaurant",
+        "address": "Nations-Unies, Guédiawaye, 14000, SN",
+        "phone": "",
+        "rating": null,
+        "reviewsCount": 0,
+        "websiteUrl": "",
+        "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=restaurant%20Nations-Unies%2C%20Gu%C3%A9diawaye%2C%2014000%2C%20SN",
+        "latitude": 14.7712139,
+        "longitude": -17.415913,
+        "country": "Senegal",
+        "countryCode": "SN",
+        "email": "",
+        "social": "",
+        "openingHours": "",
+        "details": {
+          "ownerContact": {
+            "publicContactNote": "Owner or direct contact person was not listed in the public map data."
+          },
+          "contact": {},
+          "social": {},
+          "location": {
+            "latitude": 14.7712139,
+            "longitude": -17.415913,
+            "address": "Nations-Unies, Guédiawaye, 14000, SN",
+            "street": "Nations-Unies",
+            "city": "Guédiawaye",
+            "postcode": "14000",
+            "country": "Senegal",
+            "countryCode": "SN",
+            "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=restaurant%20Nations-Unies%2C%20Gu%C3%A9diawaye%2C%2014000%2C%20SN"
+          },
+          "business": {},
+          "operations": {},
+          "payments": {},
+          "source": {
+            "provider": "OpenStreetMap Photon",
+            "osmType": "node",
+            "osmId": 8157756690,
+            "osmUrl": "https://www.openstreetmap.org/node/8157756690",
+            "rawTags": {
+              "name": "restaurant",
+              "amenity": "restaurant",
+              "addr:street": "Nations-Unies",
+              "addr:city": "Guédiawaye",
+              "addr:postcode": "14000",
+              "addr:country": "SN",
+              "is_in:country": "Senegal"
+            },
+            "photonProperties": {
+              "osm_type": "N",
+              "osm_id": 8157756690,
+              "osm_key": "amenity",
+              "osm_value": "restaurant",
+              "type": "house",
+              "name": "restaurant",
+              "street": "Nations-Unies",
+              "locality": "Golf Sud(Cité Aliou SOW)",
+              "district": "Commune du Golf Sud",
+              "city": "Guédiawaye",
+              "state": "Dakar Region",
+              "country": "Senegal",
+              "postcode": "14000",
+              "countrycode": "SN"
+            }
+          }
+        },
+        "source": "openstreetmap_photon",
+        "raw": {
+          "osmType": "node",
+          "osmId": 8157756690,
+          "tags": {
+            "name": "restaurant",
+            "amenity": "restaurant",
+            "addr:street": "Nations-Unies",
+            "addr:city": "Guédiawaye",
+            "addr:postcode": "14000",
+            "addr:country": "SN",
+            "is_in:country": "Senegal"
+          },
+          "photon": {
+            "type": "Feature",
+            "properties": {
+              "osm_type": "N",
+              "osm_id": 8157756690,
+              "osm_key": "amenity",
+              "osm_value": "restaurant",
+              "type": "house",
+              "name": "restaurant",
+              "street": "Nations-Unies",
+              "locality": "Golf Sud(Cité Aliou SOW)",
+              "district": "Commune du Golf Sud",
+              "city": "Guédiawaye",
+              "state": "Dakar Region",
+              "country": "Senegal",
+              "postcode": "14000",
+              "countrycode": "SN"
+            },
+            "geometry": {
+              "type": "Point",
+              "coordinates": [
+                -17.415913,
+                14.7712139
+              ]
+            }
+          }
+        },
+        "searchRelevance": 77,
+        "audit": {
+          "score": 100,
+          "category": "Very High Opportunity",
+          "checks": {
+            "websiteExists": false,
+            "https": false,
+            "mobileFriendly": false,
+            "seoMetadata": false,
+            "contactForm": false,
+            "socialLinksFound": false,
+            "businessEmailDetected": false,
+            "bookingSystem": false,
+            "outdatedDesign": true
+          },
+          "elapsedMs": 0
+        },
+        "opportunityScore": 100,
+        "opportunityCategory": "Very High Opportunity",
+        "discoveredBy": "8c44d0d9-9deb-449f-89f4-b01484433016",
+        "discoveredAt": "2026-10-09T07:24:55.141Z",
+        "updatedAt": "2026-10-09T07:24:55.141Z",
+        "createdAt": "2026-10-09T07:24:55.141Z"
       }
     ],
     "users": [
@@ -12369,6 +13034,60 @@
         "createdAt": "2026-10-09T06:41:37.684Z",
         "updatedAt": "2026-10-09T06:42:04.271Z",
         "uid": "3d30774b-b2f6-4541-9b2d-f8023970dcfb",
+        "subscription": "trial",
+        "planName": "Free Trial",
+        "monthlyLeadLimit": 5,
+        "trialSearchLimit": 2,
+        "trialLeadLimit": 5,
+        "billingStatus": "trial",
+        "trialSearchesUsed": 1,
+        "entitlements": {
+          "billingRequired": true,
+          "trial": true,
+          "trialSearchesUsed": 1,
+          "trialSearchLimit": 2,
+          "trialLeadLimit": 5,
+          "upgradeRequiredAfterTrial": true
+        },
+        "emailVerified": false
+      },
+      {
+        "name": "Smoke Tester",
+        "email": "smoke-1791529392380@example.com",
+        "passwordHash": "scrypt$642bcfa7db53cc6686fd26eaf1e02660$1b45309fd3d29a00c35b7d2f45cc04366e65e11b4456dc11d67cb9501ee7c7a8d70e9e04f663dc592bed1e53e548deb10709ac3fabb18d913011bdc1e37fdbda",
+        "role": "user",
+        "tokenVersion": 1,
+        "id": "2c16f281-fa0c-4d4d-a7df-8c25442f444a",
+        "createdAt": "2026-10-09T07:03:12.599Z",
+        "updatedAt": "2026-10-09T07:03:35.193Z",
+        "uid": "2c16f281-fa0c-4d4d-a7df-8c25442f444a",
+        "subscription": "trial",
+        "planName": "Free Trial",
+        "monthlyLeadLimit": 5,
+        "trialSearchLimit": 2,
+        "trialLeadLimit": 5,
+        "billingStatus": "trial",
+        "trialSearchesUsed": 1,
+        "entitlements": {
+          "billingRequired": true,
+          "trial": true,
+          "trialSearchesUsed": 1,
+          "trialSearchLimit": 2,
+          "trialLeadLimit": 5,
+          "upgradeRequiredAfterTrial": true
+        },
+        "emailVerified": false
+      },
+      {
+        "name": "Smoke Tester",
+        "email": "smoke-1791530670148@example.com",
+        "passwordHash": "scrypt$f9a36b513fbbf53254a8a12fadc5e3c6$5dc7824425cd1c0b39bcf93be8eea9fd27d92ffe7f003f0626419a3f0e6f5d0f73c340096ff645d89730863ca32332d6fd361693184eed6e0f82ef1b31da600d",
+        "role": "user",
+        "tokenVersion": 1,
+        "id": "8c44d0d9-9deb-449f-89f4-b01484433016",
+        "createdAt": "2026-10-09T07:24:30.327Z",
+        "updatedAt": "2026-10-09T07:25:05.117Z",
+        "uid": "8c44d0d9-9deb-449f-89f4-b01484433016",
         "subscription": "trial",
         "planName": "Free Trial",
         "monthlyLeadLimit": 5,
@@ -12945,6 +13664,68 @@
         "id": "b682eca9-2e3c-4fe0-96e5-c1be47d9b5e0",
         "createdAt": "2026-10-09T06:42:06.407Z",
         "updatedAt": "2026-10-09T06:42:06.407Z"
+      },
+      {
+        "actor": "smoke-1791529392380@example.com",
+        "action": "lead_search",
+        "query": {
+          "country": "",
+          "countries": [],
+          "state": "",
+          "city": "",
+          "zip": "",
+          "industry": "",
+          "keyword": "businesses",
+          "businessTypes": [],
+          "mapLink": "https://www.google.com/maps/@13.4053888,-16.6887424,11z?entry=ttu&g_ep=EgoyMDI2MDYwMS4wIKXMDSoASAFQAw%3D%3D",
+          "latitude": null,
+          "longitude": null,
+          "radiusMeters": 15000,
+          "limit": 10,
+          "searchDepth": "deep",
+          "leadQuality": "all",
+          "sortBy": "opportunity",
+          "minOpportunityScore": 0,
+          "requireContact": false,
+          "missingWebsiteOnly": false,
+          "bypassCache": false,
+          "refreshSeed": ""
+        },
+        "count": 5,
+        "id": "8eb91862-644f-493b-ab23-288d511d74c8",
+        "createdAt": "2026-10-09T07:03:37.700Z",
+        "updatedAt": "2026-10-09T07:03:37.700Z"
+      },
+      {
+        "actor": "smoke-1791530670148@example.com",
+        "action": "lead_search",
+        "query": {
+          "country": "",
+          "countries": [],
+          "state": "",
+          "city": "",
+          "zip": "",
+          "industry": "",
+          "keyword": "businesses",
+          "businessTypes": [],
+          "mapLink": "https://www.google.com/maps/@13.4053888,-16.6887424,11z?entry=ttu&g_ep=EgoyMDI2MDYwMS4wIKXMDSoASAFQAw%3D%3D",
+          "latitude": null,
+          "longitude": null,
+          "radiusMeters": 15000,
+          "limit": 10,
+          "searchDepth": "deep",
+          "leadQuality": "all",
+          "sortBy": "opportunity",
+          "minOpportunityScore": 0,
+          "requireContact": false,
+          "missingWebsiteOnly": false,
+          "bypassCache": false,
+          "refreshSeed": ""
+        },
+        "count": 5,
+        "id": "3cc174b0-cbb7-4b74-9318-f505f37d4379",
+        "createdAt": "2026-10-09T07:25:07.625Z",
+        "updatedAt": "2026-10-09T07:25:07.625Z"
       }
     ],
     "activities": [
@@ -12956,6 +13737,24 @@
         "id": "bb6df589-0621-43ff-94c8-6900c5a541ea",
         "createdAt": "2026-10-09T06:42:13.038Z",
         "updatedAt": "2026-10-09T06:42:13.038Z"
+      },
+      {
+        "leadId": "osm-node-6341257888",
+        "actor": "smoke-1791529392380@example.com",
+        "action": "stage_updated",
+        "stage": "Contacted",
+        "id": "cebc8d5e-3571-4e4b-ac70-7503bd88744b",
+        "createdAt": "2026-10-09T07:03:44.059Z",
+        "updatedAt": "2026-10-09T07:03:44.059Z"
+      },
+      {
+        "leadId": "photon-node-8209452111",
+        "actor": "smoke-1791530670148@example.com",
+        "action": "stage_updated",
+        "stage": "Contacted",
+        "id": "99ca5b44-2751-4a9b-a7e9-e508ddab9691",
+        "createdAt": "2026-10-09T07:25:13.926Z",
+        "updatedAt": "2026-10-09T07:25:13.926Z"
       }
     ],
     "checkoutSessions": [

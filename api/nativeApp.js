@@ -85,6 +85,8 @@ const publicFiles = new Set([
   "/analytics.html",
   "/website-studio.html",
   "/business-ai.html",
+  "/tools.html",
+  "/work-planner.html",
   "/share.html",
   "/earn.html",
   "/gigs.html",
