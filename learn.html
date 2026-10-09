@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Learn & Earn | MAT LEADS AI PRO X</title>
+<meta name="description" content="Free earn tracks for students and adults: 7-day website challenge, WhatsApp closer course, daily checklist.">
+<link rel="icon" href="/assets/logo-mark.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body data-page="learn">
+<div class="app-layout" data-app-shell>
+<main class="workspace">
+<section class="workspace-header">
+<div><h1>Learn & Earn</h1><p>Zero-experience tracks that end with paid work.</p></div>
+<div class="toolbar"><a class="btn btn-secondary" href="/gigs.html">Gigs Board</a><a class="btn btn-primary" href="/earn.html">Earn Hub</a></div>
+</section>
+<section class="report-grid">
+<article class="panel"><h2>7-Day Website Challenge</h2><p>Day 1 find lead, Day 2 audit, Day 3 Studio build, Day 4 WhatsApp script, Day 5 proposal + invoice, Day 6 follow-up, Day 7 get paid.</p><a class="btn btn-secondary" href="/website-studio.html">Start Day 3 Build</a></article>
+<article class="panel"><h2>WhatsApp Closer in 60 Minutes</h2><p>Opener, audit drop, price anchor $799 + $99/mo, objection replies, pay-link close. Practice inside Business AI.</p><a class="btn btn-secondary" href="/business-ai.html">Practice Closer</a></article>
+<article class="panel"><h2>Daily Earn Checklist</h2><div class="audit-list"><div class="audit-item"><span>Search 10 leads</span><strong><a href="/dashboard.html">Go</a></strong></div><div class="audit-item"><span>Send 10 WhatsApps</span><strong><a href="/outreach.html">Go</a></strong></div><div class="audit-item"><span>Send 3 proposals</span><strong><a href="/proposals.html">Go</a></strong></div><div class="audit-item"><span>Claim 1 gig</span><strong><a href="/gigs.html">Go</a></strong></div></div></article>
+<article class="panel"><h2>Ask AI Coach</h2><form id="coachForm" class="form-grid compact"><div class="field" style="grid-column:1/-1;"><label for="coachQ">What do you want to learn?</label><input id="coachQ" required placeholder="e.g. How do I price my first website as a student?"></div><button class="btn btn-primary" type="submit">Ask Coach</button></form><div id="coachOut" class="notice" style="margin-top:10px;">Coach answers here.</div></article>
+</section>
+</main>
+</div>
+<script type="module" src="/components/layout.js"></script>
+<script type="module">
+import { apiFetch } from "/js/api.js";
+document.getElementById("coachForm")?.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const q = document.getElementById("coachQ").value.trim();
+  if (!q) return;
+  document.getElementById("coachOut").textContent = "Coach thinking...";
+  try {
+    const r = await apiFetch("/api/ai/chat", { method: "POST", body: JSON.stringify({ prompt: `As an earn coach for students/adults: ${q}` }) });
+    document.getElementById("coachOut").textContent = r.content;
+  } catch (err) { document.getElementById("coachOut").textContent = err.message; }
+});
+</script>
+</body>
+</html>

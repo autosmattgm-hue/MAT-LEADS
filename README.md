@@ -82,7 +82,8 @@ For broad links like `/place/Europe/...` or `/place/United+States/...`, selected
 ## Money-Making Upgrades
 
 - Lead cards + saved leads now show `Use AI to create website` toggle. Create Website stays hidden until ticked, then redirects to `/website-studio.html?leadId=...`.
-- Website Studio: NVIDIA `z-ai/glm-5.3-flash` -> `google/gemma-4-31b-it` -> `deepseek-ai/deepseek-v4.1-flash` builds full HTML, chat-refine, download HTML, copy/open live `/s/:token` link. Pro/Admin only, free users go to `/pricing.html?upgrade=pro`.
-- Business AI Tycoon page (`/business-ai.html`): NVIDIA `deepseek-ai/deepseek-v4.1-flash` closer brain, Pro/Admin only, Copy + Share-to-WhatsApp buttons.
+- Website Studio: NVIDIA `deepseek-ai/deepseek-v4-flash` -> `z-ai/glm-5.3-flash` builds full HTML, chat-refine, download HTML, copy/open live `/s/:token` link. Pro/Admin only, free users go to `/pricing.html?upgrade=pro`.
+- Business AI Tycoon page (`/business-ai.html`): NVIDIA `deepseek-ai/deepseek-v4-flash` closer brain, Pro/Admin only, Copy + Share-to-WhatsApp buttons.
+- New earn pages: `/earn.html` referrals + invoices + payouts, `/gigs.html` claimable paid gigs, `/learn.html` student/adult tracks, `/outreach.html` money scripts, `/proposals.html` priced proposals, `/pay.html` client pay links.
 - Pricing pushes Professional as the money plan with Studio + Tycoon; plans config also advertises the features.
 - You add `NVIDIA_API_KEY` yourself in `.env` / Vercel. Base URL + models are prewired in `.env.example`.

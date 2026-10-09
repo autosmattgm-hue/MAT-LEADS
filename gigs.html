@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gigs Board | MAT LEADS AI PRO X</title>
+<meta name="description" content="Student + adult gigs: website setups, audits, outreach, WhatsApp follow-up. Post a gig, claim a gig, get paid.">
+<link rel="icon" href="/assets/logo-mark.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body data-page="gigs">
+<div class="app-layout" data-app-shell>
+<main class="workspace">
+<section class="workspace-header">
+<div><h1>Gigs Board</h1><p>Real ways students + adults earn: do a gig, deliver, get paid via invoice.</p></div>
+<div class="toolbar"><a class="btn btn-secondary" href="/earn.html">Earn Hub</a><a class="btn btn-primary" href="/learn.html">Learn Skills</a></div>
+</section>
+<section class="detail-layout">
+<article class="panel">
+<h2>Post a Gig</h2>
+<form id="gigForm" class="form-grid compact">
+<div class="field" style="grid-column:1/-1;"><label for="gigTitle">Title</label><input id="gigTitle" required placeholder="e.g. Build 5-page site for bakery"></div>
+<div class="field"><label for="gigPay">Pay USD</label><input id="gigPay" type="number" min="5" value="80" required></div>
+<div class="field"><label for="gigLevel">Level</label><select id="gigLevel"><option>Beginner</option><option>Intermediate</option><option>Pro</option></select></div>
+<div class="field" style="grid-column:1/-1;"><label for="gigDesc">Details</label><textarea id="gigDesc" rows="3" required placeholder="Deliverables, deadline, contact"></textarea></div>
+<button class="btn btn-primary" type="submit">Post Gig</button>
+</form>
+<div class="notice" id="gigMsg" style="margin-top:10px;">Posting a gig creates a trackable job.</div>
+</article>
+<article class="panel">
+<h2>Open Gigs</h2>
+<div id="gigList"><div class="empty-state">Loading gigs...</div></div>
+</article>
+</section>
+</main>
+</div>
+<script type="module" src="/components/layout.js"></script>
+<script type="module" src="/js/gigs.js"></script>
+</body>
+</html>
