@@ -255,6 +255,15 @@ export const aiSchemas = {
   }))
 };
 
+export const gigSchemas = {
+  create: schema((input) => ({
+    title: stringField(input, "title", { required: true, min: 3, max: 160 }),
+    payUsd: numberField(input, "payUsd", { min: 5, max: 100000, defaultOnInvalid: false }),
+    level: stringField(input, "level", { max: 40, truncate: true }),
+    description: stringField(input, "description", { max: 1000, truncate: true })
+  }))
+};
+
 export const earnSchemas = {
   invoice: schema((input) => ({
     leadId: stringField(input, "leadId", { max: 160, truncate: true }),

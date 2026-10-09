@@ -7,6 +7,8 @@ const navItems = [
   { href: "/website-studio.html", label: "Website Studio", icon: "W" },
   { href: "/business-ai.html", label: "Business AI", icon: "B" },
   { href: "/earn.html", label: "Earn", icon: "E" },
+  { href: "/gigs.html", label: "Gigs", icon: "G" },
+  { href: "/learn.html", label: "Learn", icon: "T" },
   { href: "/outreach.html", label: "Outreach", icon: "O" },
   { href: "/proposals.html", label: "Proposals", icon: "P" },
   { href: "/reports.html", label: "Reports", icon: "R" },

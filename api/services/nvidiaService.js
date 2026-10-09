@@ -7,14 +7,26 @@ const modelCooldowns = new Map();
 const MAX_CACHE_ENTRIES = 200;
 const MODEL_COOLDOWN_MS = 5 * 60 * 1000;
 
-// Retired NVIDIA IDs — never call these (your error: llama-3.1-8b EOL 2026-08-26).
+// Verified live NVIDIA NIM chat IDs (docs 2026): deepseek-v4-flash, z-ai glm-5.3-flash, moonshot kimi-k2, qwen3-next, nemotron nano.
+// Retired — never call these (your error: llama-3.1-8b EOL 2026-08-26).
+const LIVE_MODELS = [
+  "deepseek-ai/deepseek-v4-flash",
+  "z-ai/glm-5.3-flash",
+  "moonshotai/kimi-k2-instruct",
+  "qwen/qwen3-next-80b-a3b-instruct",
+  "nvidia/nemotron-nano-9b-v2"
+];
 const DEAD_MODELS = new Set([
   "meta/llama-3.1-8b-instruct",
   "meta/llama-3.1-8b",
   "meta/llama-4-maverick-17b-128e-instruct",
   "llama-3.1-8b",
   "llama-4-maverick",
-  "z-ai/glm-5.3"
+  "z-ai/glm-5.3",
+  "deepseek-ai/deepseek-v4.1-flash",
+  "google/gemma-4-31b-it",
+  "z-ai/glm5.1",
+  "z-ai/glm5.2"
 ]);
 
 function isDeadModel(id = "") {
@@ -146,12 +158,12 @@ function setCachedResult(cacheKey, result, ttlMs) {
 
 function modelsToTry() {
   const now = Date.now();
-  const fallbackLive = ["z-ai/glm-5.3-flash", "google/gemma-4-31b-it", "deepseek-ai/deepseek-v4.1-flash"];
   const configured = [...new Set([env.nvidia.model, ...(env.nvidia.modelFallbacks || [])].filter(Boolean))].filter((m) => !isDeadModel(m));
-  const models = [...new Set([...configured, ...fallbackLive])]
+  // Always prefer verified live IDs first so one bad env var can't stall AI.
+  const models = [...new Set([...configured.filter((m) => LIVE_MODELS.includes(m)), ...LIVE_MODELS, ...configured])]
     .filter((model) => (modelCooldowns.get(model) || 0) <= now);
   const live = models.filter((m) => !isDeadModel(m));
-  return (live.length ? live : fallbackLive).slice(0, 3);
+  return (live.length ? live : [...LIVE_MODELS]).slice(0, 3);
 }
 
 function isRetryableNvidiaFailure(error) {
@@ -391,7 +403,7 @@ export class NvidiaService {
         role: "user",
         content: `${String(prompt || "").slice(0, 1200)}\n\nLead context: ${ctx}`
       }
-    ], { temperature: 0.5, topP: 1, maxTokens: 450, timeoutMs: 12000, cacheTtlMs: 600000, preferredModels: [env.nvidia.tycoonModel, "z-ai/glm-5.3-flash"] }, fallback);
+    ], { temperature: 0.5, topP: 1, maxTokens: 450, timeoutMs: 12000, cacheTtlMs: 600000, preferredModels: [env.nvidia.tycoonModel, "deepseek-ai/deepseek-v4-flash", "z-ai/glm-5.3-flash", "moonshotai/kimi-k2-instruct"] }, fallback);
   }
 
   async completeRaw(messages, { temperature = 0.5, topP = 1, maxTokens = 2200, timeoutMs = 0 } = {}) {
@@ -400,7 +412,7 @@ export class NvidiaService {
     }
     const invokeUrl = `${env.nvidia.baseUrl.replace(/\/$/, "")}/chat/completions`;
     const models = modelsToTry();
-    const websiteModels = [...new Set([env.nvidia.websiteModel, ...((env.nvidia.websiteFallbacks || []).length ? env.nvidia.websiteFallbacks : []), "z-ai/glm-5.3-flash", "deepseek-ai/deepseek-v4.1-flash"].filter(Boolean))].filter((m) => !isDeadModel(m)).slice(0, 2);
+    const websiteModels = [...new Set([env.nvidia.websiteModel, ...((env.nvidia.websiteFallbacks || []).length ? env.nvidia.websiteFallbacks : []), "deepseek-ai/deepseek-v4-flash", "z-ai/glm-5.3-flash", "moonshotai/kimi-k2-instruct", ...models].filter(Boolean))].filter((m) => !isDeadModel(m)).slice(0, 2);
     const effectiveTimeout = Math.max(5000, Math.min(timeoutMs || env.nvidia.websiteTimeoutMs || 35000, 35000));
     const cleanMessages = this.sanitizeMessages(messages);
     let lastError = null;

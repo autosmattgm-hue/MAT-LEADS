@@ -80,7 +80,7 @@ function settingsPayload() {
     timezone: val("timezone") || "America/Los_Angeles",
     exportHeaders: val("exportHeaders"),
     autoExport: val("autoExport"),
-    aiModel: val("aiModel") || "z-ai/glm-5.3-flash",
+    aiModel: val("aiModel") || "deepseek-ai/deepseek-v4-flash",
     outreachTone: val("outreachTone") || "professional",
     maxFollowUps: val("maxFollowUps") || 3,
     autoFollowUp: val("autoFollowUp"),

@@ -12,9 +12,10 @@ import { LeadService } from "./services/leadService.js";
 import { NvidiaService } from "./services/nvidiaService.js";
 import { WebsiteService } from "./services/websiteService.js";
 import { EarnService } from "./services/earnService.js";
+import { GigService } from "./services/gigService.js";
 import { isAdminUser } from "./utils/entitlements.js";
 import { AppError } from "./utils/errors.js";
-import { aiSchemas, authSchemas, billingSchema, crmSchemas, earnSchemas, leadSearchSchema, paypalConfirmationSchema, profileSchema, settingsSchema } from "./utils/schemas.js";
+import { aiSchemas, authSchemas, billingSchema, crmSchemas, earnSchemas, gigSchemas, leadSearchSchema, paypalConfirmationSchema, profileSchema, settingsSchema } from "./utils/schemas.js";
 import { verifyAccessToken } from "./middleware/auth.js";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -30,6 +31,7 @@ const adminService = new AdminService();
 const nvidiaService = new NvidiaService();
 const websiteService = new WebsiteService();
 const earnService = new EarnService();
+const gigService = new GigService(earnService);
 
 function canUseProAi(user = {}) {
   if (isAdminUser(user)) return true;
@@ -85,6 +87,8 @@ const publicFiles = new Set([
   "/business-ai.html",
   "/share.html",
   "/earn.html",
+  "/gigs.html",
+  "/learn.html",
   "/outreach.html",
   "/proposals.html",
   "/pay.html",
@@ -239,8 +243,8 @@ const routes = [
       realMode: true,
       aiModels: {
         chat: [env.nvidia.model, ...(env.nvidia.modelFallbacks || [])].filter(Boolean),
-        website: [env.nvidia.websiteModel, ...(env.nvidia.websiteFallbacks || []), "z-ai/glm-5.3-flash", "deepseek-ai/deepseek-v4.1-flash", "google/gemma-4-31b-it"].filter(Boolean),
-        tycoon: [env.nvidia.tycoonModel, "z-ai/glm-5.3-flash", "deepseek-ai/deepseek-v4.1-flash"].filter(Boolean)
+        website: [env.nvidia.websiteModel, ...(env.nvidia.websiteFallbacks || []), "deepseek-ai/deepseek-v4-flash", "z-ai/glm-5.3-flash", "moonshotai/kimi-k2-instruct"].filter(Boolean),
+        tycoon: [env.nvidia.tycoonModel, "deepseek-ai/deepseek-v4-flash", "z-ai/glm-5.3-flash"].filter(Boolean)
       },
       missingRequiredForLiveOperation: [
         !env.nvidia.apiKey && "NVIDIA_API_KEY",
@@ -342,6 +346,22 @@ const routes = [
       },
       hint: nvidiaService.configured() ? "AI ready" : "Add NVIDIA_API_KEY in Vercel env vars, then redeploy."
     })
+  },
+  {
+    method: "POST",
+    regex: /^\/api\/ai\/debug$/,
+    keys: [],
+    handler: async ({ req, body }) => {
+      await getAdminUser(req);
+      const prompt = String(body?.prompt || "Say OK in 5 words.").slice(0, 500);
+      const started = Date.now();
+      try {
+        const r = await nvidiaService.chat(prompt);
+        return { ok: true, ms: Date.now() - started, provider: r.provider, model: r.model, fallback: Boolean(r.fallback), content: String(r.content || "").slice(0, 1000) };
+      } catch (e) {
+        return { ok: false, ms: Date.now() - started, error: String(e?.message || e), code: e?.code || null, status: e?.status || null };
+      }
+    }
   },
   {
     method: "POST",
@@ -585,6 +605,25 @@ const routes = [
       if (!ref) return { tracked: false };
       return { tracked: true, referral: await earnService.trackSignup(user, ref) };
     }
+  },
+  {
+    method: "GET",
+    regex: /^\/api\/gigs$/,
+    keys: [],
+    handler: async ({ req }) => ({ gigs: await gigService.list(await getUser(req)) })
+  },
+  {
+    method: "POST",
+    regex: /^\/api\/gigs$/,
+    keys: [],
+    handler: async ({ req, body }) => gigService.create(await getUser(req), validate(gigSchemas.create, body)),
+    status: 201
+  },
+  {
+    method: "POST",
+    regex: /^\/api\/gigs\/([^/]+)\/claim$/,
+    keys: ["id"],
+    handler: async ({ req, params }) => gigService.claim(await getUser(req), params.id)
   }
 ];
 
