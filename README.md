@@ -42,6 +42,12 @@ New free accounts start on the Free Trial plan. The API allows 2 lead searches t
 
 Complete paid SaaS operation requires Firebase credentials, `NVIDIA_API_KEY`, Stripe credentials, and either PayPal API credentials or hosted PayPal payment links. `GOOGLE_PLACES_API_KEY` is optional because Google Maps links can seed real OpenStreetMap Overpass searches without a Google API key. The app will not fake provider responses.
 
+## AI troubleshooting
+
+The AI features use the server-side NVIDIA NIM chat endpoint. Configure a valid `NVIDIA_API_KEY` locally and in Vercel, then restart or redeploy. The supplied defaults use `deepseek-ai/deepseek-v4-flash`, with `z-ai/glm-5.3` and `z-ai/glm-5.3-flash` as fallbacks.
+
+Check `GET /api/ai/status` after an AI request. A `verification` value of `verified` confirms a successful provider response. `NVIDIA_AUTH_FAILED` means the NVIDIA key is invalid, revoked, or unavailable to the deployed environment; replace the key rather than changing client-side code. The app deliberately returns this error instead of presenting a canned response as real AI output.
+
 ## Google Maps Link Search
 
 The dashboard accepts a Google Maps URL such as:
