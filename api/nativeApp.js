@@ -243,7 +243,7 @@ const routes = [
       realMode: true,
       aiModels: {
         chat: [env.nvidia.model, ...(env.nvidia.modelFallbacks || [])].filter(Boolean),
-        website: [env.nvidia.websiteModel, ...(env.nvidia.websiteFallbacks || []), "deepseek-ai/deepseek-v4-flash", "z-ai/glm-5.3-flash", "moonshotai/kimi-k2-instruct"].filter(Boolean),
+        website: [env.nvidia.websiteModel, ...(env.nvidia.websiteFallbacks || []), "deepseek-ai/deepseek-v4-flash", "z-ai/glm-5.3", "z-ai/glm-5.3-flash"].filter(Boolean),
         tycoon: [env.nvidia.tycoonModel, "deepseek-ai/deepseek-v4-flash", "z-ai/glm-5.3-flash"].filter(Boolean)
       },
       missingRequiredForLiveOperation: [
@@ -337,15 +337,25 @@ const routes = [
     method: "GET",
     regex: /^\/api\/ai\/status$/,
     keys: [],
-    handler: async () => ({
-      configured: nvidiaService.configured(),
-      models: {
-        chat: [env.nvidia.model, ...(env.nvidia.modelFallbacks || [])].filter(Boolean).slice(0, 3),
-        website: [env.nvidia.websiteModel, ...(env.nvidia.websiteFallbacks || [])].filter(Boolean).slice(0, 3),
-        tycoon: [env.nvidia.tycoonModel].filter(Boolean).slice(0, 3)
-      },
-      hint: nvidiaService.configured() ? "AI ready" : "Add NVIDIA_API_KEY in Vercel env vars, then redeploy."
-    })
+    handler: async () => {
+      const status = nvidiaService.status();
+      const hint = !status.configured
+        ? "Add NVIDIA_API_KEY in .env or Vercel, then restart or redeploy."
+        : status.verification === "failed"
+          ? status.lastFailure?.message || "NVIDIA AI connection failed."
+          : status.verification === "verified"
+            ? "AI connection verified."
+            : "AI is configured but has not been verified yet.";
+      return {
+        ...status,
+        models: {
+          chat: [env.nvidia.model, ...(env.nvidia.modelFallbacks || [])].filter(Boolean).slice(0, 3),
+          website: [env.nvidia.websiteModel, ...(env.nvidia.websiteFallbacks || [])].filter(Boolean).slice(0, 3),
+          tycoon: [env.nvidia.tycoonModel].filter(Boolean).slice(0, 3)
+        },
+        hint
+      };
+    }
   },
   {
     method: "POST",
@@ -698,7 +708,8 @@ export async function handleRequest(req, res) {
     return await serveStatic(req, res, url);
   } catch (error) {
     const status = error.status || 500;
-    const showMessage = status < 500 || String(error.code || "").endsWith("_NOT_CONFIGURED");
+    const errorCode = String(error.code || "");
+    const showMessage = status < 500 || errorCode.endsWith("_NOT_CONFIGURED") || errorCode.startsWith("NVIDIA_");
     if (status >= 500) {
       try {
         const { logger } = await import("./utils/logger.js");

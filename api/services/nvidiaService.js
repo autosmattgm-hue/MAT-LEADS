@@ -9,35 +9,29 @@ const MODEL_COOLDOWN_MS = 5 * 60 * 1000;
 
 // Verified live NVIDIA NIM chat IDs (docs 2026): deepseek-v4-flash, z-ai glm-5.3-flash, moonshot kimi-k2, qwen3-next, nemotron nano.
 // Retired — never call these (your error: llama-3.1-8b EOL 2026-08-26).
-const LIVE_MODELS = [
+const DEFAULT_MODELS = [
   "deepseek-ai/deepseek-v4-flash",
+  "z-ai/glm-5.3",
   "z-ai/glm-5.3-flash",
-  "moonshotai/kimi-k2-instruct",
-  "qwen/qwen3-next-80b-a3b-instruct",
-  "nvidia/nemotron-nano-9b-v2"
+  "deepseek-ai/deepseek-v4-flash-0731"
 ];
 const DEAD_MODELS = new Set([
   "meta/llama-3.1-8b-instruct",
-  "meta/llama-3.1-8b",
   "meta/llama-4-maverick-17b-128e-instruct",
-  "llama-3.1-8b",
-  "llama-4-maverick",
-  "z-ai/glm-5.3",
   "deepseek-ai/deepseek-v4.1-flash",
-  "google/gemma-4-31b-it",
-  "z-ai/glm5.1",
-  "z-ai/glm5.2"
 ]);
 
-function isDeadModel(id = "") {
+function isRetiredModel(id = "") {
   const v = String(id || "").trim();
   if (!v) return true;
-  if (DEAD_MODELS.has(v)) return true;
-  if (/llama-3\.1-8b/i.test(v)) return true;
-  if (/llama-4-maverick/i.test(v)) return true;
-  if (/^z-ai\/glm-5\.3$/i.test(v)) return true;
-  return false;
+  return DEAD_MODELS.has(v);
 }
+
+const providerState = {
+  lastCheckedAt: null,
+  lastSuccessAt: null,
+  lastFailure: null
+};
 
 function isEndOfLifeError(error) {
   const msg = String(error?.message || "").toLowerCase();
@@ -65,13 +59,12 @@ function plainTextAiOutput(content) {
 
 function withPlainTextInstruction(messages) {
   const instruction = "Formatting rule: reply in plain text only. Do not use Markdown. Do not use # headings. Do not use * bullets or bold markers. Keep answers concise.";
-  return [
-    {
-      role: "system",
-      content: instruction
-    },
-    ...messages
-  ];
+  const normalized = Array.isArray(messages) ? [...messages] : [];
+  if (normalized[0]?.role === "system") {
+    normalized[0] = { ...normalized[0], content: `${instruction}\n\n${normalized[0].content}` };
+    return normalized;
+  }
+  return [{ role: "system", content: instruction }, ...normalized];
 }
 
 function compactObject(value) {
@@ -158,18 +151,17 @@ function setCachedResult(cacheKey, result, ttlMs) {
 
 function modelsToTry() {
   const now = Date.now();
-  const configured = [...new Set([env.nvidia.model, ...(env.nvidia.modelFallbacks || [])].filter(Boolean))].filter((m) => !isDeadModel(m));
-  // Always prefer verified live IDs first so one bad env var can't stall AI.
-  const models = [...new Set([...configured.filter((m) => LIVE_MODELS.includes(m)), ...LIVE_MODELS, ...configured])]
+  const configured = [env.nvidia.model, ...(env.nvidia.modelFallbacks || [])];
+  const models = [...new Set([...configured, ...DEFAULT_MODELS].map((model) => String(model || "").trim()).filter(Boolean))]
+    .filter((model) => !isRetiredModel(model))
     .filter((model) => (modelCooldowns.get(model) || 0) <= now);
-  const live = models.filter((m) => !isDeadModel(m));
-  return (live.length ? live : [...LIVE_MODELS]).slice(0, 3);
+  return models.slice(0, 3);
 }
 
 function isRetryableNvidiaFailure(error) {
   const status = Number(error?.status || 0);
   if (isEndOfLifeError(error)) return true;
-  return error?.code === "NVIDIA_TIMEOUT" || status === 400 || status === 404 || status === 408 || status === 409 || status === 429 || status >= 500;
+  return error?.code === "NVIDIA_TIMEOUT" || error?.name === "TypeError" || status === 400 || status === 404 || status === 408 || status === 409 || status === 429 || status >= 500;
 }
 
 function friendlyAiError(error, fallback = "AI is temporarily unavailable. Please try again in a moment.") {
@@ -183,6 +175,43 @@ function friendlyAiError(error, fallback = "AI is temporarily unavailable. Pleas
   return raw || fallback;
 }
 
+function publicNvidiaError(error) {
+  const raw = String(error?.message || "");
+  const status = Number(error?.status || 0);
+  if (error?.code === "NVIDIA_NOT_CONFIGURED") return error;
+  if (status === 401 || status === 403 || /authorization failed|invalid api key|invalid token|unauthorized/i.test(raw)) {
+    return new AppError("NVIDIA AI authentication failed. Replace NVIDIA_API_KEY in .env or Vercel, then restart or redeploy.", 503, "NVIDIA_AUTH_FAILED");
+  }
+  if (status === 402 || /payment required|insufficient.*credit|billing/i.test(raw)) {
+    return new AppError("NVIDIA AI has no available inference credit or model access. Check the NVIDIA account, then try again.", 503, "NVIDIA_CREDIT_REQUIRED");
+  }
+  if (isEndOfLifeError(error) || status === 404) {
+    return new AppError("No configured NVIDIA model is available. Set NVIDIA_MODEL to deepseek-ai/deepseek-v4-flash, then restart or redeploy.", 503, "NVIDIA_MODEL_UNAVAILABLE");
+  }
+  if (error?.code === "NVIDIA_TIMEOUT" || status === 408 || status === 504) {
+    return new AppError("NVIDIA AI timed out. Please try again in a moment.", 503, "NVIDIA_TIMEOUT");
+  }
+  if (status === 400 || status === 422) {
+    return new AppError("NVIDIA AI rejected this request. Check the configured model IDs and try again.", 503, "NVIDIA_REQUEST_REJECTED");
+  }
+  return new AppError("NVIDIA AI is temporarily unavailable. Please try again in a moment.", 503, "NVIDIA_UNAVAILABLE");
+}
+
+function markProviderSuccess() {
+  const at = new Date().toISOString();
+  providerState.lastCheckedAt = at;
+  providerState.lastSuccessAt = at;
+  providerState.lastFailure = null;
+}
+
+function markProviderFailure(error) {
+  providerState.lastCheckedAt = new Date().toISOString();
+  providerState.lastFailure = {
+    code: error.code || "NVIDIA_UNAVAILABLE",
+    message: error.message || "NVIDIA AI is unavailable."
+  };
+}
+
 function coolDownModel(model) {
   modelCooldowns.set(model, Date.now() + MODEL_COOLDOWN_MS);
 }
@@ -190,6 +219,16 @@ function coolDownModel(model) {
 export class NvidiaService {
   configured() {
     return Boolean(env.nvidia.apiKey);
+  }
+
+  status() {
+    return {
+      configured: this.configured(),
+      verification: providerState.lastSuccessAt ? "verified" : providerState.lastFailure ? "failed" : "unverified",
+      lastCheckedAt: providerState.lastCheckedAt,
+      lastSuccessAt: providerState.lastSuccessAt,
+      lastFailure: providerState.lastFailure
+    };
   }
 
   sanitizeMessages(messages = []) {
@@ -234,9 +273,9 @@ export class NvidiaService {
     };
     let lastError = null;
 
-    const preferred = Array.isArray(preferredModels) ? preferredModels.filter((m) => m && !isDeadModel(m)) : null;
-    const queue = [...new Set([...(preferred && preferred.length ? preferred : []), ...modelsToTry()])].filter((m) => !isDeadModel(m)).slice(0, 3);
-    if (!queue.length) throw new AppError("No live NVIDIA model configured. Set NVIDIA_MODEL=z-ai/glm-5.3-flash in Vercel.", 503, "NVIDIA_NO_LIVE_MODEL");
+    const preferred = Array.isArray(preferredModels) ? preferredModels.filter((m) => m && !isRetiredModel(m)) : null;
+    const queue = [...new Set([...(preferred && preferred.length ? preferred : []), ...modelsToTry()])].filter((m) => !isRetiredModel(m)).slice(0, 3);
+    if (!queue.length) throw new AppError("No usable NVIDIA model is configured. Set NVIDIA_MODEL=deepseek-ai/deepseek-v4-flash, then restart or redeploy.", 503, "NVIDIA_NO_LIVE_MODEL");
     for (const model of queue) {
       const requestPayload = { ...basePayload, model };
       const cacheKey = !stream && cacheTtlMs > 0 ? cacheKeyFor(requestPayload) : "";
@@ -281,7 +320,7 @@ export class NvidiaService {
         }
         lastError = new AppError(`NVIDIA API request failed on ${model}: ${detail}`, response.status, "NVIDIA_API_ERROR");
         // EOL / retired models: ban for 5 min and move on instantly — don't burn the timeout.
-        if (isEndOfLifeError(lastError) || isDeadModel(model)) {
+        if (isEndOfLifeError(lastError) || isRetiredModel(model)) {
           coolDownModel(model);
           continue;
         }
@@ -303,26 +342,20 @@ export class NvidiaService {
         cached: false
       };
       if (cacheKey) setCachedResult(cacheKey, result, cacheTtlMs);
+      markProviderSuccess();
       return result;
     }
 
     throw lastError || new AppError("NVIDIA AI could not complete the request.", 503, "NVIDIA_UNAVAILABLE");
   }
 
-  async completeSafe(messages, options = {}, fallbackText = "") {
+  async completeSafe(messages, options = {}) {
     try {
       return await this.complete(messages, options);
     } catch (error) {
-      return {
-        configured: Boolean(env.nvidia.apiKey),
-        provider: "fallback",
-        model: "local-fallback",
-        content: fallbackText || friendlyAiError(error),
-        usage: null,
-        cached: false,
-        fallback: true,
-        error: String(error?.message || "AI_UNAVAILABLE")
-      };
+      const publicError = publicNvidiaError(error);
+      markProviderFailure(publicError);
+      throw publicError;
     }
   }
 
@@ -403,7 +436,7 @@ export class NvidiaService {
         role: "user",
         content: `${String(prompt || "").slice(0, 1200)}\n\nLead context: ${ctx}`
       }
-    ], { temperature: 0.5, topP: 1, maxTokens: 450, timeoutMs: 12000, cacheTtlMs: 600000, preferredModels: [env.nvidia.tycoonModel, "deepseek-ai/deepseek-v4-flash", "z-ai/glm-5.3-flash", "moonshotai/kimi-k2-instruct"] }, fallback);
+    ], { temperature: 0.5, topP: 1, maxTokens: 450, timeoutMs: 12000, cacheTtlMs: 600000, preferredModels: [env.nvidia.tycoonModel, "deepseek-ai/deepseek-v4-flash", "z-ai/glm-5.3", "z-ai/glm-5.3-flash"] });
   }
 
   async completeRaw(messages, { temperature = 0.5, topP = 1, maxTokens = 2200, timeoutMs = 0 } = {}) {
@@ -412,7 +445,9 @@ export class NvidiaService {
     }
     const invokeUrl = `${env.nvidia.baseUrl.replace(/\/$/, "")}/chat/completions`;
     const models = modelsToTry();
-    const websiteModels = [...new Set([env.nvidia.websiteModel, ...((env.nvidia.websiteFallbacks || []).length ? env.nvidia.websiteFallbacks : []), "deepseek-ai/deepseek-v4-flash", "z-ai/glm-5.3-flash", "moonshotai/kimi-k2-instruct", ...models].filter(Boolean))].filter((m) => !isDeadModel(m)).slice(0, 2);
+    const websiteModels = [...new Set([env.nvidia.websiteModel, ...(env.nvidia.websiteFallbacks || []), ...models].map((model) => String(model || "").trim()).filter(Boolean))]
+      .filter((model) => !isRetiredModel(model))
+      .slice(0, 3);
     const effectiveTimeout = Math.max(5000, Math.min(timeoutMs || env.nvidia.websiteTimeoutMs || 35000, 35000));
     const cleanMessages = this.sanitizeMessages(messages);
     let lastError = null;
@@ -430,7 +465,7 @@ export class NvidiaService {
         if (!response.ok) {
           const body = await response.text();
           lastError = new AppError(`NVIDIA API request failed on ${model}: ${body.slice(0, 400)}`, response.status, "NVIDIA_API_ERROR");
-          if (isEndOfLifeError(lastError) || isDeadModel(model)) {
+          if (isEndOfLifeError(lastError) || isRetiredModel(model)) {
             coolDownModel(model);
             continue;
           }
@@ -440,11 +475,16 @@ export class NvidiaService {
         const payload = await response.json();
         const content = payload.choices?.[0]?.message?.content || "";
         if (!content) { lastError = new AppError("Empty NVIDIA response", 503, "NVIDIA_EMPTY"); continue; }
+        markProviderSuccess();
         return { configured: true, provider: "nvidia", model, content, usage: payload.usage || null, cached: false };
       } catch (error) {
         clearTimeout(timeout);
         lastError = error?.name === "AbortError" ? new AppError(`NVIDIA model ${model} timed out.`, 504, "NVIDIA_TIMEOUT") : error;
-        continue;
+        if (isRetryableNvidiaFailure(lastError)) {
+          coolDownModel(model);
+          continue;
+        }
+        throw lastError;
       }
     }
     throw lastError || new AppError("NVIDIA AI could not complete the request.", 503, "NVIDIA_UNAVAILABLE");
@@ -464,13 +504,25 @@ export class NvidiaService {
     return this.completeRaw([
       { role: "system", content: "You are an elite website builder AI. Output ONLY complete production-ready HTML in one file, with inline CSS and minimal inline JS. Mobile-first, professional, conversion-focused: sticky nav, hero with call CTA, trust badges, services grid, gallery placeholders, testimonials, pricing/offer, booking/quote form, map/contact, footer with business details. Use the business data provided. No markdown, no explanations, only HTML code." },
       { role: "user", content: `Build a premium 5+ section business website for: ${brief}. Business name headline, click-to-call, WhatsApp style CTA, lead form, SEO title/meta. Return only HTML.` }
-    ], { temperature: 0.5, maxTokens: 2200, timeoutMs: 35000 }).then((r) => ({ ...r, html: this.cleanHtml(r.content) }));
+    ], { temperature: 0.5, maxTokens: 2200, timeoutMs: 35000 })
+      .then((r) => ({ ...r, html: this.cleanHtml(r.content) }))
+      .catch((error) => {
+        const publicError = publicNvidiaError(error);
+        markProviderFailure(publicError);
+        throw publicError;
+      });
   }
 
   refineWebsite(currentHtml, instruction, meta = {}) {
     return this.completeRaw([
       { role: "system", content: "You are an elite website editor AI. Return ONLY the full updated complete HTML file with inline CSS/JS. Apply the requested change perfectly while keeping everything else. No markdown, no explanations." },
       { role: "user", content: `Current site for ${meta.businessName || meta.leadName || "business"}:\n${String(currentHtml || "").slice(0, 12000)}\n\nRequested change: ${String(instruction || "").slice(0, 2000)}\n\nReturn only the full updated HTML.` }
-    ], { temperature: 0.5, maxTokens: 2200, timeoutMs: 35000 }).then((r) => ({ ...r, html: this.cleanHtml(r.content) }));
+    ], { temperature: 0.5, maxTokens: 2200, timeoutMs: 35000 })
+      .then((r) => ({ ...r, html: this.cleanHtml(r.content) }))
+      .catch((error) => {
+        const publicError = publicNvidiaError(error);
+        markProviderFailure(publicError);
+        throw publicError;
+      });
   }
 }

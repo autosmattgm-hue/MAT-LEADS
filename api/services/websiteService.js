@@ -51,8 +51,11 @@ export class WebsiteService {
     try { record = await this.websites.findById(id); } catch {}
     record = record || memoryWebsites.get(id);
     if (!record) { const err = new Error("Website not found. Generate it first."); err.status = 404; err.code = "WEBSITE_NOT_FOUND"; throw err; }
-    let html = record.html;
-    try { const r = await this.nvidia.refineWebsite(record.html, instruction, record); if (r.html && r.html.length > 500) html = r.html; } catch {}
+    const result = await this.nvidia.refineWebsite(record.html, instruction, record);
+    if (!result.html || result.html.length <= 500) {
+      throw new AppError("NVIDIA AI returned an incomplete website update. Your current site was not changed; please try again.", 503, "NVIDIA_EMPTY");
+    }
+    const html = result.html;
     const updated = { ...record, html, revisions: Number(record.revisions || 1) + 1, history: [...(record.history || []), { at: new Date().toISOString(), instruction }], updatedAt: new Date().toISOString() };
     try { await this.websites.upsert(id, updated); } catch {}
     memoryWebsites.set(id, updated);

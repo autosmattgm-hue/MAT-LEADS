@@ -28,8 +28,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     }, 8000);
     try {
       const status = await apiFetch("/api/ai/status").catch(() => null);
-      if (status && !status.configured) {
-        byId("tycoonOut").textContent = "AI key missing. Add NVIDIA_API_KEY in Vercel env vars, then redeploy.";
+      if (status && (!status.configured || status.verification === "failed")) {
+        byId("tycoonOut").textContent = status.hint || "NVIDIA AI is unavailable. Please check its configuration and try again.";
         return;
       }
       const leadId = byId("tycoonLead").value.trim();
@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (leadId) { try { const r = await apiFetch(`/api/leads/${encodeURIComponent(leadId)}/report`); lead = r.lead; } catch {} }
       const r = await apiFetch("/api/ai/tycoon", { method: "POST", body: JSON.stringify({ prompt, leadId, lead: lead || {} }) });
       lastAnswer = r.content || "";
-      byId("tycoonOut").textContent = lastAnswer + (r.fallback ? "\n\n(Note: live AI was busy, showing instant playbook.)" : "");
+      byId("tycoonOut").textContent = lastAnswer;
     } catch (err) {
       const msg = String(err?.message || "Request failed");
       byId("tycoonOut").innerHTML = `${msg} ${/pro plan|402|PRO_REQUIRED/i.test(msg) ? `<br><a href="/pricing.html?upgrade=pro"><strong>Upgrade to Pro to unlock Tycoon</strong></a>` : `<br><span class="muted-value">Try again — cached answers reply instantly.</span>`}`;

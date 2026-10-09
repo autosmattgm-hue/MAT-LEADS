@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-23T07:14:02.368Z",
+  "updatedAt": "2026-10-09T06:42:13.039Z",
   "collections": {
     "leads": [
       {
@@ -11826,6 +11826,428 @@
         "discoveredAt": "2026-07-07T14:12:15.343Z",
         "updatedAt": "2026-07-07T14:12:15.343Z",
         "createdAt": "2026-07-07T14:12:15.343Z"
+      },
+      {
+        "id": "osm-node-6341257888",
+        "name": "African Living Art Centre",
+        "category": "Beauty & Spa",
+        "businessType": "Beauty & Spa",
+        "address": "",
+        "phone": "4495131",
+        "rating": null,
+        "reviewsCount": 0,
+        "websiteUrl": "",
+        "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=African%20Living%20Art%20Centre",
+        "latitude": 13.4694611,
+        "longitude": -16.6884116,
+        "country": "",
+        "countryCode": "",
+        "email": "",
+        "social": "",
+        "openingHours": "",
+        "details": {
+          "ownerContact": {
+            "publicContactNote": "Owner or direct contact person was not listed in the public map data."
+          },
+          "contact": {
+            "phone": "4495131"
+          },
+          "social": {},
+          "location": {
+            "latitude": 13.4694611,
+            "longitude": -16.6884116,
+            "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=African%20Living%20Art%20Centre"
+          },
+          "business": {},
+          "operations": {},
+          "payments": {},
+          "source": {
+            "provider": "OpenStreetMap Overpass",
+            "osmType": "node",
+            "osmId": 6341257888,
+            "osmUrl": "https://www.openstreetmap.org/node/6341257888",
+            "rawTags": {
+              "name": "African Living Art Centre",
+              "phone": "4495131",
+              "shop": "beauty"
+            }
+          }
+        },
+        "source": "openstreetmap_overpass",
+        "raw": {
+          "osmType": "node",
+          "osmId": 6341257888,
+          "tags": {
+            "name": "African Living Art Centre",
+            "phone": "4495131",
+            "shop": "beauty"
+          }
+        },
+        "searchRelevance": 88,
+        "audit": {
+          "score": 100,
+          "category": "Very High Opportunity",
+          "checks": {
+            "websiteExists": false,
+            "https": false,
+            "mobileFriendly": false,
+            "seoMetadata": false,
+            "contactForm": false,
+            "socialLinksFound": false,
+            "businessEmailDetected": false,
+            "bookingSystem": false,
+            "outdatedDesign": true
+          },
+          "elapsedMs": 0
+        },
+        "opportunityScore": 100,
+        "opportunityCategory": "Very High Opportunity",
+        "discoveredBy": "3d30774b-b2f6-4541-9b2d-f8023970dcfb",
+        "discoveredAt": "2026-10-09T06:41:53.933Z",
+        "updatedAt": "2026-10-09T06:42:10.459Z",
+        "createdAt": "2026-10-09T06:41:53.933Z",
+        "ownerId": "3d30774b-b2f6-4541-9b2d-f8023970dcfb",
+        "stage": "Contacted",
+        "savedAt": "2026-10-09T06:42:08.522Z"
+      },
+      {
+        "id": "osm-node-9080250962",
+        "name": "Ashu's Restaurant",
+        "category": "Restaurant",
+        "businessType": "Restaurant",
+        "address": "",
+        "phone": "220 223 5254",
+        "rating": null,
+        "reviewsCount": 0,
+        "websiteUrl": "",
+        "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=Ashu's%20Restaurant",
+        "latitude": 13.4676866,
+        "longitude": -16.6880607,
+        "country": "",
+        "countryCode": "",
+        "email": "",
+        "social": "",
+        "openingHours": "Mo-Su 13:00-25:00",
+        "details": {
+          "ownerContact": {
+            "publicContactNote": "Owner or direct contact person was not listed in the public map data."
+          },
+          "contact": {
+            "phone": "220 223 5254"
+          },
+          "social": {},
+          "location": {
+            "latitude": 13.4676866,
+            "longitude": -16.6880607,
+            "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=Ashu's%20Restaurant"
+          },
+          "business": {},
+          "operations": {
+            "openingHours": "Mo-Su 13:00-25:00"
+          },
+          "payments": {},
+          "source": {
+            "provider": "OpenStreetMap Overpass",
+            "osmType": "node",
+            "osmId": 9080250962,
+            "osmUrl": "https://www.openstreetmap.org/node/9080250962",
+            "rawTags": {
+              "amenity": "restaurant",
+              "name": "Ashu's Restaurant",
+              "opening_hours": "Mo-Su 13:00-25:00",
+              "phone": "220 223 5254"
+            }
+          }
+        },
+        "source": "openstreetmap_overpass",
+        "raw": {
+          "osmType": "node",
+          "osmId": 9080250962,
+          "tags": {
+            "amenity": "restaurant",
+            "name": "Ashu's Restaurant",
+            "opening_hours": "Mo-Su 13:00-25:00",
+            "phone": "220 223 5254"
+          }
+        },
+        "searchRelevance": 92,
+        "audit": {
+          "score": 100,
+          "category": "Very High Opportunity",
+          "checks": {
+            "websiteExists": false,
+            "https": false,
+            "mobileFriendly": false,
+            "seoMetadata": false,
+            "contactForm": false,
+            "socialLinksFound": false,
+            "businessEmailDetected": false,
+            "bookingSystem": false,
+            "outdatedDesign": true
+          },
+          "elapsedMs": 0
+        },
+        "opportunityScore": 100,
+        "opportunityCategory": "Very High Opportunity",
+        "discoveredBy": "3d30774b-b2f6-4541-9b2d-f8023970dcfb",
+        "discoveredAt": "2026-10-09T06:41:53.933Z",
+        "updatedAt": "2026-10-09T06:41:53.933Z",
+        "createdAt": "2026-10-09T06:41:53.933Z"
+      },
+      {
+        "id": "osm-node-9080250963",
+        "name": "Ashu's Restaurant",
+        "category": "Restaurant",
+        "businessType": "Restaurant",
+        "address": "",
+        "phone": "220 2235254",
+        "rating": null,
+        "reviewsCount": 0,
+        "websiteUrl": "",
+        "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=Ashu's%20Restaurant",
+        "latitude": 13.4503885,
+        "longitude": -16.704518,
+        "country": "",
+        "countryCode": "",
+        "email": "",
+        "social": "",
+        "openingHours": "Mo-Su 13:00-01:00",
+        "details": {
+          "ownerContact": {
+            "publicContactNote": "Owner or direct contact person was not listed in the public map data."
+          },
+          "contact": {
+            "phone": "220 2235254"
+          },
+          "social": {},
+          "location": {
+            "latitude": 13.4503885,
+            "longitude": -16.704518,
+            "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=Ashu's%20Restaurant"
+          },
+          "business": {},
+          "operations": {
+            "openingHours": "Mo-Su 13:00-01:00"
+          },
+          "payments": {},
+          "source": {
+            "provider": "OpenStreetMap Overpass",
+            "osmType": "node",
+            "osmId": 9080250963,
+            "osmUrl": "https://www.openstreetmap.org/node/9080250963",
+            "rawTags": {
+              "amenity": "restaurant",
+              "name": "Ashu's Restaurant",
+              "opening_hours": "Mo-Su 13:00-01:00",
+              "phone": "220 2235254"
+            }
+          }
+        },
+        "source": "openstreetmap_overpass",
+        "raw": {
+          "osmType": "node",
+          "osmId": 9080250963,
+          "tags": {
+            "amenity": "restaurant",
+            "name": "Ashu's Restaurant",
+            "opening_hours": "Mo-Su 13:00-01:00",
+            "phone": "220 2235254"
+          }
+        },
+        "searchRelevance": 92,
+        "audit": {
+          "score": 100,
+          "category": "Very High Opportunity",
+          "checks": {
+            "websiteExists": false,
+            "https": false,
+            "mobileFriendly": false,
+            "seoMetadata": false,
+            "contactForm": false,
+            "socialLinksFound": false,
+            "businessEmailDetected": false,
+            "bookingSystem": false,
+            "outdatedDesign": true
+          },
+          "elapsedMs": 0
+        },
+        "opportunityScore": 100,
+        "opportunityCategory": "Very High Opportunity",
+        "discoveredBy": "3d30774b-b2f6-4541-9b2d-f8023970dcfb",
+        "discoveredAt": "2026-10-09T06:41:53.933Z",
+        "updatedAt": "2026-10-09T06:41:53.933Z",
+        "createdAt": "2026-10-09T06:41:53.933Z"
+      },
+      {
+        "id": "osm-node-9080250981",
+        "name": "Bay Inn Hotel",
+        "category": "Hotel",
+        "businessType": "Hotel",
+        "address": "",
+        "phone": "+2205124422",
+        "rating": null,
+        "reviewsCount": 0,
+        "websiteUrl": "",
+        "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=Bay%20Inn%20Hotel",
+        "latitude": 13.3593304,
+        "longitude": -16.7973386,
+        "country": "",
+        "countryCode": "",
+        "email": "",
+        "social": "",
+        "openingHours": "",
+        "details": {
+          "ownerContact": {
+            "publicContactNote": "Owner or direct contact person was not listed in the public map data."
+          },
+          "contact": {
+            "phone": "+2205124422"
+          },
+          "social": {},
+          "location": {
+            "latitude": 13.3593304,
+            "longitude": -16.7973386,
+            "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=Bay%20Inn%20Hotel"
+          },
+          "business": {},
+          "operations": {},
+          "payments": {},
+          "source": {
+            "provider": "OpenStreetMap Overpass",
+            "osmType": "node",
+            "osmId": 9080250981,
+            "osmUrl": "https://www.openstreetmap.org/node/9080250981",
+            "rawTags": {
+              "name": "Bay Inn Hotel",
+              "phone": "+2205124422",
+              "tourism": "hotel"
+            }
+          }
+        },
+        "source": "openstreetmap_overpass",
+        "raw": {
+          "osmType": "node",
+          "osmId": 9080250981,
+          "tags": {
+            "name": "Bay Inn Hotel",
+            "phone": "+2205124422",
+            "tourism": "hotel"
+          }
+        },
+        "searchRelevance": 88,
+        "audit": {
+          "score": 100,
+          "category": "Very High Opportunity",
+          "checks": {
+            "websiteExists": false,
+            "https": false,
+            "mobileFriendly": false,
+            "seoMetadata": false,
+            "contactForm": false,
+            "socialLinksFound": false,
+            "businessEmailDetected": false,
+            "bookingSystem": false,
+            "outdatedDesign": true
+          },
+          "elapsedMs": 0
+        },
+        "opportunityScore": 100,
+        "opportunityCategory": "Very High Opportunity",
+        "discoveredBy": "3d30774b-b2f6-4541-9b2d-f8023970dcfb",
+        "discoveredAt": "2026-10-09T06:41:53.933Z",
+        "updatedAt": "2026-10-09T06:41:53.933Z",
+        "createdAt": "2026-10-09T06:41:53.933Z"
+      },
+      {
+        "id": "osm-node-10582398605",
+        "name": "Benteh Residence 2",
+        "category": "Hotel",
+        "businessType": "Hotel",
+        "address": "1-8, Trankill",
+        "phone": "7229447",
+        "rating": null,
+        "reviewsCount": 0,
+        "websiteUrl": "",
+        "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=Benteh%20Residence%202%201-8%2C%20Trankill",
+        "latitude": 13.4079997,
+        "longitude": -16.7325761,
+        "country": "",
+        "countryCode": "",
+        "email": "",
+        "social": "",
+        "openingHours": "24/7",
+        "details": {
+          "ownerContact": {
+            "publicContactNote": "Owner or direct contact person was not listed in the public map data."
+          },
+          "contact": {
+            "phone": "7229447"
+          },
+          "social": {},
+          "location": {
+            "latitude": 13.4079997,
+            "longitude": -16.7325761,
+            "address": "1-8, Trankill",
+            "houseNumber": "1-8",
+            "city": "Trankill",
+            "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=Benteh%20Residence%202%201-8%2C%20Trankill"
+          },
+          "business": {},
+          "operations": {
+            "openingHours": "24/7"
+          },
+          "payments": {},
+          "source": {
+            "provider": "OpenStreetMap Overpass",
+            "osmType": "node",
+            "osmId": 10582398605,
+            "osmUrl": "https://www.openstreetmap.org/node/10582398605",
+            "rawTags": {
+              "addr:city": "Trankill",
+              "addr:housenumber": "1-8",
+              "name": "Benteh Residence 2",
+              "opening_hours": "24/7",
+              "phone": "7229447",
+              "tourism": "apartment"
+            }
+          }
+        },
+        "source": "openstreetmap_overpass",
+        "raw": {
+          "osmType": "node",
+          "osmId": 10582398605,
+          "tags": {
+            "addr:city": "Trankill",
+            "addr:housenumber": "1-8",
+            "name": "Benteh Residence 2",
+            "opening_hours": "24/7",
+            "phone": "7229447",
+            "tourism": "apartment"
+          }
+        },
+        "searchRelevance": 97,
+        "audit": {
+          "score": 100,
+          "category": "Very High Opportunity",
+          "checks": {
+            "websiteExists": false,
+            "https": false,
+            "mobileFriendly": false,
+            "seoMetadata": false,
+            "contactForm": false,
+            "socialLinksFound": false,
+            "businessEmailDetected": false,
+            "bookingSystem": false,
+            "outdatedDesign": true
+          },
+          "elapsedMs": 0
+        },
+        "opportunityScore": 100,
+        "opportunityCategory": "Very High Opportunity",
+        "discoveredBy": "3d30774b-b2f6-4541-9b2d-f8023970dcfb",
+        "discoveredAt": "2026-10-09T06:41:53.933Z",
+        "updatedAt": "2026-10-09T06:41:53.933Z",
+        "createdAt": "2026-10-09T06:41:53.933Z"
       }
     ],
     "users": [
@@ -11904,6 +12326,60 @@
           "billingRequired": true,
           "trial": true,
           "trialSearchesUsed": 0,
+          "trialSearchLimit": 2,
+          "trialLeadLimit": 5,
+          "upgradeRequiredAfterTrial": true
+        },
+        "emailVerified": false
+      },
+      {
+        "name": "AI Test",
+        "email": "ai-test-1791528006425@example.com",
+        "passwordHash": "scrypt$fd3b73ecac3c24807c66fae893c8db0a$e8e9585e645e2bf1c8d10ccc183fc6632b628ebae6c0837fdd6e116a3bb669f27e5480876eb31cdbeda3bdbe8a6017ca25b39ffcb03d6c97f7e45da7faf1112c",
+        "role": "user",
+        "tokenVersion": 1,
+        "id": "f5a274e7-1a6d-47a2-a6c4-1a9a815b07f2",
+        "createdAt": "2026-10-09T06:40:06.698Z",
+        "updatedAt": "2026-10-09T06:40:08.807Z",
+        "uid": "f5a274e7-1a6d-47a2-a6c4-1a9a815b07f2",
+        "subscription": "trial",
+        "planName": "Free Trial",
+        "monthlyLeadLimit": 5,
+        "trialSearchLimit": 2,
+        "trialLeadLimit": 5,
+        "billingStatus": "trial",
+        "trialSearchesUsed": 0,
+        "entitlements": {
+          "billingRequired": true,
+          "trial": true,
+          "trialSearchesUsed": 0,
+          "trialSearchLimit": 2,
+          "trialLeadLimit": 5,
+          "upgradeRequiredAfterTrial": true
+        },
+        "emailVerified": false
+      },
+      {
+        "name": "Smoke Tester",
+        "email": "smoke-1791528097496@example.com",
+        "passwordHash": "scrypt$5dbe2f76456ac6408b74b363534211c0$071e1fbbc7324a48ca5a228dfef7720dba18d94320468db66d4067f635045ff822b460e1375bec263b687a68949891746d2d0fc4f9be9150cdbe78053dc8042b",
+        "role": "user",
+        "tokenVersion": 1,
+        "id": "3d30774b-b2f6-4541-9b2d-f8023970dcfb",
+        "createdAt": "2026-10-09T06:41:37.684Z",
+        "updatedAt": "2026-10-09T06:42:04.271Z",
+        "uid": "3d30774b-b2f6-4541-9b2d-f8023970dcfb",
+        "subscription": "trial",
+        "planName": "Free Trial",
+        "monthlyLeadLimit": 5,
+        "trialSearchLimit": 2,
+        "trialLeadLimit": 5,
+        "billingStatus": "trial",
+        "trialSearchesUsed": 1,
+        "entitlements": {
+          "billingRequired": true,
+          "trial": true,
+          "trialSearchesUsed": 1,
           "trialSearchLimit": 2,
           "trialLeadLimit": 5,
           "upgradeRequiredAfterTrial": true
@@ -12438,9 +12914,50 @@
         "id": "7d009c02-6753-4f2b-b450-469dc2211453",
         "createdAt": "2026-07-07T14:12:22.317Z",
         "updatedAt": "2026-07-07T14:12:22.317Z"
+      },
+      {
+        "actor": "smoke-1791528097496@example.com",
+        "action": "lead_search",
+        "query": {
+          "country": "",
+          "countries": [],
+          "state": "",
+          "city": "",
+          "zip": "",
+          "industry": "",
+          "keyword": "businesses",
+          "businessTypes": [],
+          "mapLink": "https://www.google.com/maps/@13.4053888,-16.6887424,11z?entry=ttu&g_ep=EgoyMDI2MDYwMS4wIKXMDSoASAFQAw%3D%3D",
+          "latitude": null,
+          "longitude": null,
+          "radiusMeters": 15000,
+          "limit": 10,
+          "searchDepth": "deep",
+          "leadQuality": "all",
+          "sortBy": "opportunity",
+          "minOpportunityScore": 0,
+          "requireContact": false,
+          "missingWebsiteOnly": false,
+          "bypassCache": false,
+          "refreshSeed": ""
+        },
+        "count": 5,
+        "id": "b682eca9-2e3c-4fe0-96e5-c1be47d9b5e0",
+        "createdAt": "2026-10-09T06:42:06.407Z",
+        "updatedAt": "2026-10-09T06:42:06.407Z"
       }
     ],
-    "activities": [],
+    "activities": [
+      {
+        "leadId": "osm-node-6341257888",
+        "actor": "smoke-1791528097496@example.com",
+        "action": "stage_updated",
+        "stage": "Contacted",
+        "id": "bb6df589-0621-43ff-94c8-6900c5a541ea",
+        "createdAt": "2026-10-09T06:42:13.038Z",
+        "updatedAt": "2026-10-09T06:42:13.038Z"
+      }
+    ],
     "checkoutSessions": [
       {
         "userId": "29ff1e1b-8bde-4e5e-b24e-eeae455a1b48",
@@ -12454,6 +12971,34 @@
         "createdAt": "2026-07-07T14:20:58.568Z",
         "updatedAt": "2026-07-07T14:20:59.126Z",
         "returnUrl": "http://localhost:3000/billing-success.html?provider=paypal&plan=growth_plus&session=ada472dd-6e04-44b0-8356-3aa8c03c92d2"
+      }
+    ],
+    "aiWebsites": [
+      {
+        "id": "cbcba759-f0b4-4b17-90d2-5714b2b084c3",
+        "shareToken": "dbb3908eb01a4a84ab7abb39",
+        "ownerId": "owner",
+        "leadId": "lead",
+        "leadName": "AI Test Dental",
+        "businessType": "",
+        "address": "",
+        "phone": "",
+        "email": "",
+        "businessName": "AI Test Dental",
+        "style": "medical",
+        "html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>AI Test Dental | Local Business</title><meta name=\"description\" content=\"AI Test Dental - Local Business. Call, book and get a quote today.\"><style>*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,Arial,sans-serif;color:#0f172a;background:#f8fafc}header{background:#0b1220;color:#fff;padding:56px 24px;text-align:center}header h1{margin:0 0 8px;font-size:clamp(2rem,5vw,3.4rem)}.btn{display:inline-block;padding:13px 22px;border-radius:10px;font-weight:700;text-decoration:none}.btn-p{background:#22c55e;color:#06281a}.btn-g{border:1px solid rgba(255,255,255,.4);color:#fff;margin-left:10px}.wrap{max-width:1080px;margin:0 auto;padding:28px 20px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}.card{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:20px}footer{background:#0b1220;color:#cbd5e1;text-align:center;padding:22px}form{display:grid;gap:10px;max-width:520px}input,textarea{padding:12px;border:1px solid #cbd5e1;border-radius:10px;font:inherit}</style></head><body><header><p style=\"letter-spacing:2px;text-transform:uppercase;font-size:12px\">Local Business</p><h1>AI Test Dental</h1><p>Professional mobile-first website built to turn local searches into calls and bookings.</p><div><a class=\"btn btn-p\" href=\"#quote\">Get a Free Quote</a><a class=\"btn btn-g\" href=\"#quote\">Book Online</a></div></header><div class=\"wrap\"><div class=\"grid\"><div class=\"card\"><h3>Why choose us</h3><p>Trusted local local business with fast response and transparent pricing.</p></div><div class=\"card\"><h3>Services</h3><p>Consultation, premium service, bookings and priority support.</p></div><div class=\"card\"><h3>Reviews</h3><p>Loved by local customers for quality and friendly support.</p></div></div><div class=\"card\" id=\"quote\" style=\"margin-top:20px\"><h2>Get a free quote</h2><form onsubmit=\"alert('Thanks! We will contact you shortly.');return false\"><input required placeholder=\"Your name\"><input placeholder=\"Phone or email\"><textarea rows=\"4\" placeholder=\"What do you need?\"></textarea><button class=\"btn btn-p\" type=\"submit\">Request Quote</button></form><p> </p></div></div><footer>AI Test Dental - Local Business - Built with MAT LEADS AI PRO X</footer></body></html>",
+        "provider": "template",
+        "model": "builtin-template-v1",
+        "aiError": "NVIDIA AI authentication failed. Replace NVIDIA_API_KEY in .env or Vercel, then restart or redeploy.",
+        "revisions": 1,
+        "history": [
+          {
+            "at": "2026-10-09T06:40:39.956Z",
+            "instruction": "Initial AI website build"
+          }
+        ],
+        "createdAt": "2026-10-09T06:40:40.377Z",
+        "updatedAt": "2026-10-09T06:40:40.377Z"
       }
     ]
   }
