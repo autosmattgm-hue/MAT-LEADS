@@ -15,10 +15,12 @@ Premium Google Maps lead-generation SaaS for agencies, freelancers, SEO teams, a
 
 ```bash
 cp .env.example .env
-npm run dev
+node api/server.js
 ```
 
 Open `http://localhost:3000`.
+
+Do not use the VS Code JSON Server or Live Server extensions for this project. They only serve static files and cannot run the required `/api/*` routes, including every AI feature. In VS Code, open **Run and Debug**, select **Run MAT Leads AI API**, and press F5.
 
 The local runtime does not require `node_modules`; it uses built-in Node APIs so the product launches cleanly on a fresh machine. Real mode is always active: the API does not return simulated Google Maps leads, billing sessions, or AI responses. Missing provider credentials return explicit setup errors.
 
@@ -46,7 +48,7 @@ Complete paid SaaS operation requires Firebase credentials, `NVIDIA_API_KEY`, St
 
 The AI features use the server-side NVIDIA NIM chat endpoint. Configure a valid `NVIDIA_API_KEY` locally and in Vercel, then restart or redeploy. The supplied defaults use `deepseek-ai/deepseek-v4-flash`, with `z-ai/glm-5.3` and `z-ai/glm-5.3-flash` as fallbacks.
 
-Check `GET /api/ai/status` after an AI request. A `verification` value of `verified` confirms a successful provider response. `NVIDIA_AUTH_FAILED` means the NVIDIA key is invalid, revoked, or unavailable to the deployed environment; replace the key rather than changing client-side code. The app deliberately returns this error instead of presenting a canned response as real AI output.
+Check `GET /api/ai/status` after an AI request. A `verification` value of `verified` confirms a successful provider response. `NVIDIA_AUTH_FAILED` means the NVIDIA key is invalid, revoked, or unavailable to the deployed environment; replace the key rather than changing client-side code. The Settings page includes a connection test for administrators. The app deliberately returns this error instead of presenting a canned response as real AI output.
 
 ## Google Maps Link Search
 

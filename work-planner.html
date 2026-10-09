@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Work Planner | MAT LEADS AI PRO X</title>
+    <meta name="description" content="Plan focused online business work, daily revenue actions and client delivery tasks.">
+    <link rel="icon" href="/assets/logo-mark.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="/css/style.css">
+  </head>
+  <body data-page="work-planner">
+    <div class="app-layout" data-app-shell>
+      <main class="workspace">
+        <section class="workspace-header">
+          <div>
+            <h1>Daily Work Planner</h1>
+            <p>Turn lead generation, outreach and client delivery into a focused workday. Your plan stays in this browser.</p>
+          </div>
+          <div class="toolbar">
+            <a class="btn btn-secondary" href="/tools.html">Open 20 Tools</a>
+            <a class="btn btn-primary" href="/outreach.html">Write Outreach</a>
+          </div>
+        </section>
+
+        <section id="plannerMetrics" class="metrics-grid planner-metrics" aria-live="polite"></section>
+
+        <section class="detail-layout">
+          <article class="panel">
+            <h2>Plan a Task</h2>
+            <form id="taskForm" class="form-grid compact">
+              <div class="field" style="grid-column:1 / -1;">
+                <label for="taskTitle">Task</label>
+                <input id="taskTitle" required maxlength="160" placeholder="Example: Send three website audit follow-ups">
+              </div>
+              <div class="field">
+                <label for="taskType">Work type</label>
+                <select id="taskType"><option value="Revenue">Revenue</option><option value="Lead generation">Lead generation</option><option value="Client delivery">Client delivery</option><option value="Marketing">Marketing</option><option value="Learning">Learning</option></select>
+              </div>
+              <div class="field">
+                <label for="taskPriority">Priority</label>
+                <select id="taskPriority"><option value="High">High</option><option value="Medium" selected>Medium</option><option value="Low">Low</option></select>
+              </div>
+              <div class="field">
+                <label for="taskMinutes">Minutes</label>
+                <input id="taskMinutes" type="number" min="5" max="480" step="5" value="30" required>
+              </div>
+              <button class="btn btn-primary" type="submit">Add Task</button>
+            </form>
+            <div class="toolbar" style="margin-top:14px;">
+              <button id="loadRevenueDay" class="btn btn-secondary" type="button">Load Revenue Day</button>
+              <button id="clearDone" class="btn btn-secondary" type="button">Clear Completed</button>
+            </div>
+          </article>
+
+          <article class="panel">
+            <h2>Today's Focus</h2>
+            <p class="tool-note">Complete revenue actions first, then delivery. Mark each task done as you work.</p>
+            <div id="taskList" class="task-list" style="margin-top:14px;"></div>
+          </article>
+        </section>
+      </main>
+    </div>
+    <script type="module" src="/components/layout.js"></script>
+    <script type="module" src="/js/work-planner.js"></script>
+  </body>
+</html>

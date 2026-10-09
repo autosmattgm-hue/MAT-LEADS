@@ -4,6 +4,8 @@
   <url><loc>https://matleads.example.com/pricing.html</loc><priority>0.8</priority></url>
   <url><loc>https://matleads.example.com/website-studio.html</loc><priority>0.8</priority></url>
   <url><loc>https://matleads.example.com/business-ai.html</loc><priority>0.8</priority></url>
+  <url><loc>https://matleads.example.com/tools.html</loc><priority>0.8</priority></url>
+  <url><loc>https://matleads.example.com/work-planner.html</loc><priority>0.7</priority></url>
   <url><loc>https://matleads.example.com/earn.html</loc><priority>0.8</priority></url>
   <url><loc>https://matleads.example.com/gigs.html</loc><priority>0.8</priority></url>
   <url><loc>https://matleads.example.com/learn.html</loc><priority>0.8</priority></url>

@@ -92,7 +92,7 @@
           <article class="panel">
             <h2>AI & Automation</h2>
             <div class="form-grid compact">
-              <div class="field"><label for="aiModel">AI Model</label><select id="aiModel" name="aiModel"><option value="deepseek-ai/deepseek-v4-flash" selected>DeepSeek V4 Flash (fast)</option><option value="z-ai/glm-5.3-flash">GLM 5.3 Flash</option><option value="moonshotai/kimi-k2-instruct">Kimi K2</option></select></div>
+              <div class="field"><label for="aiModel">AI Model Preference</label><select id="aiModel" name="aiModel"><option value="deepseek-ai/deepseek-v4-flash" selected>DeepSeek V4 Flash (fast)</option><option value="z-ai/glm-5.3">GLM 5.3</option><option value="z-ai/glm-5.3-flash">GLM 5.3 Flash</option></select></div>
               <div class="field"><label for="outreachTone">Outreach Tone</label><select id="outreachTone" name="outreachTone"><option value="professional" selected>Professional</option><option value="friendly">Friendly</option><option value="direct">Direct</option><option value="consultative">Consultative</option></select></div>
               <div class="field"><label for="maxFollowUps">Max Follow-Ups</label><input id="maxFollowUps" name="maxFollowUps" type="number" min="0" max="20" value="3"></div>
               <div class="field checkbox-field" style="justify-content:end;">
@@ -101,6 +101,14 @@
                 <label><input id="autoScore" name="autoScore" type="checkbox" checked> Auto-score leads</label>
               </div>
             </div>
+          </article>
+          <article class="panel">
+            <h2>AI Provider Connection</h2>
+            <p id="aiConnectionStatus" class="notice" role="status">Checking NVIDIA AI configuration...</p>
+            <div class="toolbar" style="margin-top:12px;">
+              <button id="testAiConnection" class="btn btn-secondary" type="button">Test NVIDIA Connection</button>
+            </div>
+            <p class="tool-note" style="margin-top:10px;">Only an administrator can run the live provider test. It never exposes the API key.</p>
           </article>
           <article class="panel">
             <h2>Workspace</h2>

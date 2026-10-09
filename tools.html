@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Business Tools | MAT LEADS AI PRO X</title>
+    <meta name="description" content="Twenty practical business tools for pricing, sales, client delivery, marketing and daily online work.">
+    <link rel="icon" href="/assets/logo-mark.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="/css/style.css">
+  </head>
+  <body data-page="tools">
+    <div class="app-layout" data-app-shell>
+      <main class="workspace">
+        <section class="workspace-header">
+          <div>
+            <h1>Business Tools Hub</h1>
+            <p>20 fast tools for finding clients, pricing work, delivering projects and earning online. Every tool runs in your browser and keeps your draft private.</p>
+          </div>
+          <div class="toolbar">
+            <a class="btn btn-secondary" href="/work-planner.html">Plan Your Day</a>
+            <a class="btn btn-primary" href="/dashboard.html">Find Leads</a>
+          </div>
+        </section>
+
+        <div class="notice" role="status">Choose a tool, add your details, then copy or download your result. These are instant business utilities, not simulated AI responses.</div>
+
+        <section class="tools-layout" style="margin-top:16px;">
+          <article class="panel tools-panel">
+            <div>
+              <h2>Choose a Tool</h2>
+              <p class="tool-note">Search the full toolkit by job, deliverable or sales task.</p>
+            </div>
+            <label class="field" for="toolSearch">
+              <span>Search tools</span>
+              <input id="toolSearch" class="tool-search" type="search" placeholder="Try pricing, proposal, caption or client">
+            </label>
+            <div id="toolGrid" class="tool-grid" aria-live="polite"></div>
+          </article>
+
+          <article class="panel tools-panel tools-panel--workspace">
+            <div>
+              <p id="toolCategory" class="tool-card__category">Sales</p>
+              <h2 id="toolTitle">Offer Builder</h2>
+              <p id="toolDescription" class="tool-note"></p>
+            </div>
+            <form id="toolForm" class="form-grid compact" novalidate></form>
+            <div class="toolbar">
+              <button id="toolGenerate" class="btn btn-primary" type="submit" form="toolForm">Create Result</button>
+              <button id="toolCopy" class="btn btn-secondary" type="button">Copy</button>
+              <button id="toolDownload" class="btn btn-secondary" type="button">Download</button>
+              <button id="toolSave" class="btn btn-secondary" type="button">Save Draft</button>
+            </div>
+            <pre id="toolOutput" class="tool-output" tabindex="0">Choose a tool and create your first business asset.</pre>
+          </article>
+        </section>
+      </main>
+    </div>
+    <script type="module" src="/components/layout.js"></script>
+    <script type="module" src="/js/tools.js"></script>
+  </body>
+</html>
