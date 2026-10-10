@@ -46,9 +46,9 @@ Complete paid SaaS operation requires Firebase credentials, `NVIDIA_API_KEY`, St
 
 ## AI troubleshooting
 
-The AI features use the server-side NVIDIA NIM chat endpoint. Configure a valid `NVIDIA_API_KEY` locally and in Vercel, then restart or redeploy. The supplied defaults use `deepseek-ai/deepseek-v4-flash`, with `z-ai/glm-5.3` and `z-ai/glm-5.3-flash` as fallbacks.
+The AI features use the server-side NVIDIA NIM chat endpoint. Configure a valid `NVIDIA_API_KEY` locally and in Vercel, then restart or redeploy. Defaults use `z-ai/glm-5.3-flash` with `z-ai/glm-5.3` and `moonshotai/kimi-k3` fallbacks (all verified live Oct 2026).
 
-Check `GET /api/ai/status` after an AI request. A `verification` value of `verified` confirms a successful provider response. `NVIDIA_AUTH_FAILED` means the NVIDIA key is invalid, revoked, or unavailable to the deployed environment; replace the key rather than changing client-side code. The Settings page includes a connection test for administrators. The app deliberately returns this error instead of presenting a canned response as real AI output.
+Important: NVIDIA keys are authorized per-model. A `403 Authorization failed` means the key exists but is not activated for that model. While signed in at https://build.nvidia.com, open the model page (e.g. https://build.nvidia.com/z-ai/glm-5.3-flash), click "Get API Key" / activate it, then replace `NVIDIA_API_KEY` in `.env` and Vercel and redeploy. `410` means the model retired; the app skips dead IDs automatically. Check `GET /api/ai/status` after an AI request. `NVIDIA_AUTH_FAILED` means the key itself is invalid — generate a fresh key. The app deliberately returns the real error instead of presenting a canned response as real AI output.
 
 ## Google Maps Link Search
 
