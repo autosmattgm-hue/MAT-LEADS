@@ -1,6 +1,197 @@
 {
-  "updatedAt": "2026-10-09T07:25:13.927Z",
+  "updatedAt": "2026-10-10T20:42:56.400Z",
   "collections": {
+    "users": [
+      {
+        "name": "mat autos",
+        "email": "autosmattgm@gmail.com",
+        "passwordHash": "scrypt$a81170b25b18f822a469564b118710c2$bb7a2fe804c796e26023b65d07fab8f2f960af7b774c80d288034c85c5bda0cb0a1e5db582b0964a7ab27c5c129d52616507db4496d0f0c8fac92e947a52c3b7",
+        "role": "user",
+        "tokenVersion": 1,
+        "id": "dd2b498f-35f2-4846-9211-60465a60b59a",
+        "createdAt": "2026-07-05T20:50:28.983Z",
+        "updatedAt": "2026-07-05T20:52:13.800Z",
+        "uid": "dd2b498f-35f2-4846-9211-60465a60b59a",
+        "subscription": "trial",
+        "planName": "Free Trial",
+        "monthlyLeadLimit": 5,
+        "trialSearchLimit": 2,
+        "trialLeadLimit": 5,
+        "billingStatus": "trial",
+        "trialSearchesUsed": 2,
+        "entitlements": {
+          "billingRequired": true,
+          "trial": true,
+          "trialSearchesUsed": 2,
+          "trialSearchLimit": 2,
+          "trialLeadLimit": 5,
+          "upgradeRequiredAfterTrial": true
+        },
+        "emailVerified": false
+      },
+      {
+        "name": "danny daniel",
+        "email": "dannydanielzzg@gmail.com",
+        "passwordHash": "scrypt$cc123fc9cd0996936e4531a71c7b7d0e$08a6c2dbee463708e420f8f741973829243713e15b8804f0e193e0733cd45a92f191a7ae84530d7dcf009127103f395f76402ca7108b7fc030fffed970521b6f",
+        "role": "user",
+        "tokenVersion": 1,
+        "id": "29ff1e1b-8bde-4e5e-b24e-eeae455a1b48",
+        "createdAt": "2026-07-06T21:17:19.807Z",
+        "updatedAt": "2026-07-07T14:12:21.597Z",
+        "uid": "29ff1e1b-8bde-4e5e-b24e-eeae455a1b48",
+        "subscription": "trial",
+        "planName": "Free Trial",
+        "monthlyLeadLimit": 5,
+        "trialSearchLimit": 2,
+        "trialLeadLimit": 5,
+        "billingStatus": "trial",
+        "trialSearchesUsed": 2,
+        "entitlements": {
+          "billingRequired": true,
+          "trial": true,
+          "trialSearchesUsed": 2,
+          "trialSearchLimit": 2,
+          "trialLeadLimit": 5,
+          "upgradeRequiredAfterTrial": true
+        },
+        "emailVerified": false
+      },
+      {
+        "name": "danny daniel",
+        "email": "dannydanielzzg11@gmail.com",
+        "passwordHash": "scrypt$90744dabc268cb12f500e58f2b1681e7$d383631f997057a919992a23ffaec796e21c5ecd0a0f9fcd1dc8df2de7622469aa4fae3d3d3f13bef53c883d09f560a0532420cf49e7a0f4fa799bef1edc53cf",
+        "role": "user",
+        "tokenVersion": 1,
+        "id": "0298ce7b-3a5f-478a-b880-d05487802b38",
+        "createdAt": "2026-09-23T07:14:01.095Z",
+        "updatedAt": "2026-09-23T07:14:02.368Z",
+        "uid": "0298ce7b-3a5f-478a-b880-d05487802b38",
+        "subscription": "trial",
+        "planName": "Free Trial",
+        "monthlyLeadLimit": 5,
+        "trialSearchLimit": 2,
+        "trialLeadLimit": 5,
+        "billingStatus": "trial",
+        "trialSearchesUsed": 0,
+        "entitlements": {
+          "billingRequired": true,
+          "trial": true,
+          "trialSearchesUsed": 0,
+          "trialSearchLimit": 2,
+          "trialLeadLimit": 5,
+          "upgradeRequiredAfterTrial": true
+        },
+        "emailVerified": false
+      },
+      {
+        "name": "AI Test",
+        "email": "ai-test-1791528006425@example.com",
+        "passwordHash": "scrypt$fd3b73ecac3c24807c66fae893c8db0a$e8e9585e645e2bf1c8d10ccc183fc6632b628ebae6c0837fdd6e116a3bb669f27e5480876eb31cdbeda3bdbe8a6017ca25b39ffcb03d6c97f7e45da7faf1112c",
+        "role": "user",
+        "tokenVersion": 1,
+        "id": "f5a274e7-1a6d-47a2-a6c4-1a9a815b07f2",
+        "createdAt": "2026-10-09T06:40:06.698Z",
+        "updatedAt": "2026-10-09T06:40:08.807Z",
+        "uid": "f5a274e7-1a6d-47a2-a6c4-1a9a815b07f2",
+        "subscription": "trial",
+        "planName": "Free Trial",
+        "monthlyLeadLimit": 5,
+        "trialSearchLimit": 2,
+        "trialLeadLimit": 5,
+        "billingStatus": "trial",
+        "trialSearchesUsed": 0,
+        "entitlements": {
+          "billingRequired": true,
+          "trial": true,
+          "trialSearchesUsed": 0,
+          "trialSearchLimit": 2,
+          "trialLeadLimit": 5,
+          "upgradeRequiredAfterTrial": true
+        },
+        "emailVerified": false
+      },
+      {
+        "name": "Smoke Tester",
+        "email": "smoke-1791528097496@example.com",
+        "passwordHash": "scrypt$5dbe2f76456ac6408b74b363534211c0$071e1fbbc7324a48ca5a228dfef7720dba18d94320468db66d4067f635045ff822b460e1375bec263b687a68949891746d2d0fc4f9be9150cdbe78053dc8042b",
+        "role": "user",
+        "tokenVersion": 1,
+        "id": "3d30774b-b2f6-4541-9b2d-f8023970dcfb",
+        "createdAt": "2026-10-09T06:41:37.684Z",
+        "updatedAt": "2026-10-09T06:42:04.271Z",
+        "uid": "3d30774b-b2f6-4541-9b2d-f8023970dcfb",
+        "subscription": "trial",
+        "planName": "Free Trial",
+        "monthlyLeadLimit": 5,
+        "trialSearchLimit": 2,
+        "trialLeadLimit": 5,
+        "billingStatus": "trial",
+        "trialSearchesUsed": 1,
+        "entitlements": {
+          "billingRequired": true,
+          "trial": true,
+          "trialSearchesUsed": 1,
+          "trialSearchLimit": 2,
+          "trialLeadLimit": 5,
+          "upgradeRequiredAfterTrial": true
+        },
+        "emailVerified": false
+      },
+      {
+        "name": "Smoke Tester",
+        "email": "smoke-1791529392380@example.com",
+        "passwordHash": "scrypt$642bcfa7db53cc6686fd26eaf1e02660$1b45309fd3d29a00c35b7d2f45cc04366e65e11b4456dc11d67cb9501ee7c7a8d70e9e04f663dc592bed1e53e548deb10709ac3fabb18d913011bdc1e37fdbda",
+        "role": "user",
+        "tokenVersion": 1,
+        "id": "2c16f281-fa0c-4d4d-a7df-8c25442f444a",
+        "createdAt": "2026-10-09T07:03:12.599Z",
+        "updatedAt": "2026-10-09T07:03:35.193Z",
+        "uid": "2c16f281-fa0c-4d4d-a7df-8c25442f444a",
+        "subscription": "trial",
+        "planName": "Free Trial",
+        "monthlyLeadLimit": 5,
+        "trialSearchLimit": 2,
+        "trialLeadLimit": 5,
+        "billingStatus": "trial",
+        "trialSearchesUsed": 1,
+        "entitlements": {
+          "billingRequired": true,
+          "trial": true,
+          "trialSearchesUsed": 1,
+          "trialSearchLimit": 2,
+          "trialLeadLimit": 5,
+          "upgradeRequiredAfterTrial": true
+        },
+        "emailVerified": false
+      },
+      {
+        "name": "Smoke Tester",
+        "email": "smoke-1791530670148@example.com",
+        "passwordHash": "scrypt$f9a36b513fbbf53254a8a12fadc5e3c6$5dc7824425cd1c0b39bcf93be8eea9fd27d92ffe7f003f0626419a3f0e6f5d0f73c340096ff645d89730863ca32332d6fd361693184eed6e0f82ef1b31da600d",
+        "role": "user",
+        "tokenVersion": 1,
+        "id": "8c44d0d9-9deb-449f-89f4-b01484433016",
+        "createdAt": "2026-10-09T07:24:30.327Z",
+        "updatedAt": "2026-10-09T07:25:05.117Z",
+        "uid": "8c44d0d9-9deb-449f-89f4-b01484433016",
+        "subscription": "trial",
+        "planName": "Free Trial",
+        "monthlyLeadLimit": 5,
+        "trialSearchLimit": 2,
+        "trialLeadLimit": 5,
+        "billingStatus": "trial",
+        "trialSearchesUsed": 1,
+        "entitlements": {
+          "billingRequired": true,
+          "trial": true,
+          "trialSearchesUsed": 1,
+          "trialSearchLimit": 2,
+          "trialLeadLimit": 5,
+          "upgradeRequiredAfterTrial": true
+        },
+        "emailVerified": false
+      }
+    ],
     "leads": [
       {
         "id": "photon-node-898586535",
@@ -275,8 +466,8 @@
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
         "discoveredBy": "owner",
-        "discoveredAt": "2026-07-05T22:05:52.296Z",
-        "updatedAt": "2026-07-05T22:05:52.296Z",
+        "discoveredAt": "2026-10-09T21:46:56.495Z",
+        "updatedAt": "2026-10-09T21:46:56.495Z",
         "createdAt": "2026-07-05T20:50:35.805Z"
       },
       {
@@ -478,6 +669,7 @@
               "type": "house",
               "name": "Restaurant",
               "street": "Hofwiesen",
+              "locality": "Kaisersbach",
               "district": "Gmeinweiler",
               "city": "Kaisersbach",
               "county": "Rems-Murr-Kreis",
@@ -517,6 +709,7 @@
               "type": "house",
               "name": "Restaurant",
               "street": "Hofwiesen",
+              "locality": "Kaisersbach",
               "district": "Gmeinweiler",
               "city": "Kaisersbach",
               "county": "Rems-Murr-Kreis",
@@ -562,8 +755,8 @@
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
         "discoveredBy": "owner",
-        "discoveredAt": "2026-07-05T22:05:52.296Z",
-        "updatedAt": "2026-07-05T22:05:52.296Z",
+        "discoveredAt": "2026-10-09T21:46:56.495Z",
+        "updatedAt": "2026-10-09T21:46:56.495Z",
         "createdAt": "2026-07-05T20:50:35.805Z"
       },
       {
@@ -838,8 +1031,8 @@
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
         "discoveredBy": "owner",
-        "discoveredAt": "2026-07-05T22:05:52.296Z",
-        "updatedAt": "2026-07-05T22:05:52.296Z",
+        "discoveredAt": "2026-10-09T21:46:56.495Z",
+        "updatedAt": "2026-10-09T21:46:56.495Z",
         "createdAt": "2026-07-05T20:52:47.394Z"
       },
       {
@@ -974,8 +1167,8 @@
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
         "discoveredBy": "owner",
-        "discoveredAt": "2026-07-05T22:05:52.296Z",
-        "updatedAt": "2026-07-05T22:05:52.296Z",
+        "discoveredAt": "2026-10-09T21:46:56.495Z",
+        "updatedAt": "2026-10-09T21:46:56.495Z",
         "createdAt": "2026-07-05T20:52:47.394Z"
       },
       {
@@ -8396,8 +8589,8 @@
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
         "discoveredBy": "owner",
-        "discoveredAt": "2026-07-06T21:15:06.147Z",
-        "updatedAt": "2026-07-06T21:15:06.148Z",
+        "discoveredAt": "2026-10-10T20:42:09.092Z",
+        "updatedAt": "2026-10-10T20:42:09.092Z",
         "createdAt": "2026-07-06T21:15:06.148Z"
       },
       {
@@ -8508,8 +8701,8 @@
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
         "discoveredBy": "owner",
-        "discoveredAt": "2026-07-06T21:15:06.148Z",
-        "updatedAt": "2026-07-06T21:15:06.148Z",
+        "discoveredAt": "2026-10-10T20:42:09.093Z",
+        "updatedAt": "2026-10-10T20:42:09.093Z",
         "createdAt": "2026-07-06T21:15:06.148Z"
       },
       {
@@ -9971,8 +10164,8 @@
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
         "discoveredBy": "owner",
-        "discoveredAt": "2026-07-06T21:15:06.148Z",
-        "updatedAt": "2026-07-06T21:15:06.148Z",
+        "discoveredAt": "2026-10-10T20:42:09.093Z",
+        "updatedAt": "2026-10-10T20:42:09.093Z",
         "createdAt": "2026-07-06T21:15:06.148Z"
       },
       {
@@ -10332,8 +10525,8 @@
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
         "discoveredBy": "owner",
-        "discoveredAt": "2026-07-06T21:15:06.148Z",
-        "updatedAt": "2026-07-06T21:15:06.148Z",
+        "discoveredAt": "2026-10-10T20:42:09.093Z",
+        "updatedAt": "2026-10-10T20:42:09.093Z",
         "createdAt": "2026-07-06T21:15:06.148Z"
       },
       {
@@ -10684,8 +10877,8 @@
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
         "discoveredBy": "owner",
-        "discoveredAt": "2026-07-06T21:15:06.148Z",
-        "updatedAt": "2026-07-06T21:15:06.148Z",
+        "discoveredAt": "2026-10-10T20:42:09.093Z",
+        "updatedAt": "2026-10-10T20:42:09.093Z",
         "createdAt": "2026-07-06T21:15:06.148Z"
       },
       {
@@ -10784,9 +10977,9 @@
         },
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
-        "discoveredBy": "29ff1e1b-8bde-4e5e-b24e-eeae455a1b48",
-        "discoveredAt": "2026-07-06T22:42:12.853Z",
-        "updatedAt": "2026-07-06T22:42:12.853Z",
+        "discoveredBy": "owner",
+        "discoveredAt": "2026-10-10T20:42:09.093Z",
+        "updatedAt": "2026-10-10T20:42:09.093Z",
         "createdAt": "2026-07-06T22:42:12.853Z"
       },
       {
@@ -10845,7 +11038,7 @@
               "addr:postcode": "20357",
               "addr:street": "Schulterblatt",
               "amenity": "restaurant",
-              "check_date:opening_hours": "2025-06-25",
+              "check_date:opening_hours": "2026-09-13",
               "diet:vegan": "yes",
               "diet:vegetarian": "yes",
               "name": "Asia House",
@@ -10867,7 +11060,7 @@
             "addr:postcode": "20357",
             "addr:street": "Schulterblatt",
             "amenity": "restaurant",
-            "check_date:opening_hours": "2025-06-25",
+            "check_date:opening_hours": "2026-09-13",
             "diet:vegan": "yes",
             "diet:vegetarian": "yes",
             "name": "Asia House",
@@ -10898,9 +11091,9 @@
         },
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
-        "discoveredBy": "29ff1e1b-8bde-4e5e-b24e-eeae455a1b48",
-        "discoveredAt": "2026-07-06T22:42:12.853Z",
-        "updatedAt": "2026-07-06T22:42:12.853Z",
+        "discoveredBy": "owner",
+        "discoveredAt": "2026-10-09T21:46:56.494Z",
+        "updatedAt": "2026-10-09T21:46:56.494Z",
         "createdAt": "2026-07-06T22:42:12.853Z"
       },
       {
@@ -11008,9 +11201,9 @@
         },
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
-        "discoveredBy": "29ff1e1b-8bde-4e5e-b24e-eeae455a1b48",
-        "discoveredAt": "2026-07-06T22:42:12.853Z",
-        "updatedAt": "2026-07-06T22:42:12.853Z",
+        "discoveredBy": "owner",
+        "discoveredAt": "2026-10-09T21:46:56.494Z",
+        "updatedAt": "2026-10-09T21:46:56.494Z",
         "createdAt": "2026-07-06T22:42:12.853Z"
       },
       {
@@ -11150,9 +11343,9 @@
         },
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
-        "discoveredBy": "29ff1e1b-8bde-4e5e-b24e-eeae455a1b48",
-        "discoveredAt": "2026-07-06T22:42:12.853Z",
-        "updatedAt": "2026-07-06T22:42:12.853Z",
+        "discoveredBy": "owner",
+        "discoveredAt": "2026-10-10T20:42:09.093Z",
+        "updatedAt": "2026-10-10T20:42:09.093Z",
         "createdAt": "2026-07-06T22:42:12.853Z"
       },
       {
@@ -11273,9 +11466,9 @@
         },
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
-        "discoveredBy": "29ff1e1b-8bde-4e5e-b24e-eeae455a1b48",
-        "discoveredAt": "2026-07-06T22:42:12.853Z",
-        "updatedAt": "2026-07-06T22:42:12.853Z",
+        "discoveredBy": "owner",
+        "discoveredAt": "2026-10-10T20:42:09.093Z",
+        "updatedAt": "2026-10-10T20:42:09.093Z",
         "createdAt": "2026-07-06T22:42:12.853Z"
       },
       {
@@ -11381,7 +11574,7 @@
       },
       {
         "id": "osm-node-251115510",
-        "name": "Batman Kebap",
+        "name": "Besni Döner",
         "category": "Restaurant",
         "businessType": "Restaurant",
         "address": "",
@@ -11389,13 +11582,13 @@
         "rating": null,
         "reviewsCount": 0,
         "websiteUrl": "",
-        "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=Batman%20Kebap",
+        "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=Besni%20D%C3%B6ner",
         "latitude": 48.6548353,
         "longitude": 9.2141646,
         "country": "Germany",
         "countryCode": "DE",
         "email": "",
-        "social": "https://www.facebook.com/batmankebap/",
+        "social": "https://www.instagram.com/p/DXZYcv8CP7P/",
         "openingHours": "Mo-Fr 11:00-19:30; Sa 11:00-19:00; Su,PH off",
         "details": {
           "ownerContact": {
@@ -11405,14 +11598,14 @@
             "phone": "+49 711 7776520"
           },
           "social": {
-            "facebook": "https://www.facebook.com/batmankebap/"
+            "instagram": "https://www.instagram.com/p/DXZYcv8CP7P/"
           },
           "location": {
             "latitude": 48.6548353,
             "longitude": 9.2141646,
             "country": "Germany",
             "countryCode": "DE",
-            "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=Batman%20Kebap"
+            "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=Besni%20D%C3%B6ner"
           },
           "business": {
             "cuisine": "kebab"
@@ -11430,9 +11623,10 @@
             "osmUrl": "https://www.openstreetmap.org/node/251115510",
             "rawTags": {
               "amenity": "fast_food",
-              "contact:facebook": "https://www.facebook.com/batmankebap/",
+              "contact:instagram": "https://www.instagram.com/p/DXZYcv8CP7P/",
               "cuisine": "kebab",
-              "name": "Batman Kebap",
+              "name": "Besni Döner",
+              "old_name": "Batman Kebap",
               "opening_hours": "Mo-Fr 11:00-19:30; Sa 11:00-19:00; Su,PH off",
               "outdoor_seating": "yes",
               "phone": "+49 711 7776520",
@@ -11447,9 +11641,10 @@
           "osmId": 251115510,
           "tags": {
             "amenity": "fast_food",
-            "contact:facebook": "https://www.facebook.com/batmankebap/",
+            "contact:instagram": "https://www.instagram.com/p/DXZYcv8CP7P/",
             "cuisine": "kebab",
-            "name": "Batman Kebap",
+            "name": "Besni Döner",
+            "old_name": "Batman Kebap",
             "opening_hours": "Mo-Fr 11:00-19:30; Sa 11:00-19:00; Su,PH off",
             "outdoor_seating": "yes",
             "phone": "+49 711 7776520",
@@ -11478,9 +11673,9 @@
         },
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
-        "discoveredBy": "29ff1e1b-8bde-4e5e-b24e-eeae455a1b48",
-        "discoveredAt": "2026-07-07T14:12:15.343Z",
-        "updatedAt": "2026-07-07T14:12:15.343Z",
+        "discoveredBy": "owner",
+        "discoveredAt": "2026-10-10T20:42:09.093Z",
+        "updatedAt": "2026-10-10T20:42:09.093Z",
         "createdAt": "2026-07-07T14:12:15.343Z"
       },
       {
@@ -11714,9 +11909,9 @@
         },
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
-        "discoveredBy": "29ff1e1b-8bde-4e5e-b24e-eeae455a1b48",
-        "discoveredAt": "2026-07-07T14:12:15.343Z",
-        "updatedAt": "2026-07-07T14:12:15.343Z",
+        "discoveredBy": "owner",
+        "discoveredAt": "2026-10-10T20:42:09.093Z",
+        "updatedAt": "2026-10-10T20:42:09.093Z",
         "createdAt": "2026-07-07T14:12:15.343Z"
       },
       {
@@ -11822,9 +12017,9 @@
         },
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
-        "discoveredBy": "29ff1e1b-8bde-4e5e-b24e-eeae455a1b48",
-        "discoveredAt": "2026-07-07T14:12:15.343Z",
-        "updatedAt": "2026-07-07T14:12:15.343Z",
+        "discoveredBy": "owner",
+        "discoveredAt": "2026-10-10T20:42:09.093Z",
+        "updatedAt": "2026-10-10T20:42:09.093Z",
         "createdAt": "2026-07-07T14:12:15.343Z"
       },
       {
@@ -12913,197 +13108,1805 @@
         "discoveredAt": "2026-10-09T07:24:55.141Z",
         "updatedAt": "2026-10-09T07:24:55.141Z",
         "createdAt": "2026-10-09T07:24:55.141Z"
-      }
-    ],
-    "users": [
-      {
-        "name": "mat autos",
-        "email": "autosmattgm@gmail.com",
-        "passwordHash": "scrypt$a81170b25b18f822a469564b118710c2$bb7a2fe804c796e26023b65d07fab8f2f960af7b774c80d288034c85c5bda0cb0a1e5db582b0964a7ab27c5c129d52616507db4496d0f0c8fac92e947a52c3b7",
-        "role": "user",
-        "tokenVersion": 1,
-        "id": "dd2b498f-35f2-4846-9211-60465a60b59a",
-        "createdAt": "2026-07-05T20:50:28.983Z",
-        "updatedAt": "2026-07-05T20:52:13.800Z",
-        "uid": "dd2b498f-35f2-4846-9211-60465a60b59a",
-        "subscription": "trial",
-        "planName": "Free Trial",
-        "monthlyLeadLimit": 5,
-        "trialSearchLimit": 2,
-        "trialLeadLimit": 5,
-        "billingStatus": "trial",
-        "trialSearchesUsed": 2,
-        "entitlements": {
-          "billingRequired": true,
-          "trial": true,
-          "trialSearchesUsed": 2,
-          "trialSearchLimit": 2,
-          "trialLeadLimit": 5,
-          "upgradeRequiredAfterTrial": true
-        },
-        "emailVerified": false
       },
       {
-        "name": "danny daniel",
-        "email": "dannydanielzzg@gmail.com",
-        "passwordHash": "scrypt$cc123fc9cd0996936e4531a71c7b7d0e$08a6c2dbee463708e420f8f741973829243713e15b8804f0e193e0733cd45a92f191a7ae84530d7dcf009127103f395f76402ca7108b7fc030fffed970521b6f",
-        "role": "user",
-        "tokenVersion": 1,
-        "id": "29ff1e1b-8bde-4e5e-b24e-eeae455a1b48",
-        "createdAt": "2026-07-06T21:17:19.807Z",
-        "updatedAt": "2026-07-07T14:12:21.597Z",
-        "uid": "29ff1e1b-8bde-4e5e-b24e-eeae455a1b48",
-        "subscription": "trial",
-        "planName": "Free Trial",
-        "monthlyLeadLimit": 5,
-        "trialSearchLimit": 2,
-        "trialLeadLimit": 5,
-        "billingStatus": "trial",
-        "trialSearchesUsed": 2,
-        "entitlements": {
-          "billingRequired": true,
-          "trial": true,
-          "trialSearchesUsed": 2,
-          "trialSearchLimit": 2,
-          "trialLeadLimit": 5,
-          "upgradeRequiredAfterTrial": true
+        "id": "osm-node-246707193",
+        "name": "Dalmatien",
+        "category": "Restaurant",
+        "businessType": "Restaurant",
+        "address": "",
+        "phone": "+49 221 5991781",
+        "rating": null,
+        "reviewsCount": 0,
+        "websiteUrl": "",
+        "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=Dalmatien",
+        "latitude": 50.9965749,
+        "longitude": 6.9146604,
+        "country": "Germany",
+        "countryCode": "DE",
+        "email": "",
+        "social": "",
+        "openingHours": "Mo-Su 11:30-15:00,17:00-23:00",
+        "details": {
+          "ownerContact": {
+            "publicContactNote": "Owner or direct contact person was not listed in the public map data."
+          },
+          "contact": {
+            "phone": "+49 221 5991781",
+            "fax": "+49 221 5349580"
+          },
+          "social": {},
+          "location": {
+            "latitude": 50.9965749,
+            "longitude": 6.9146604,
+            "country": "Germany",
+            "countryCode": "DE",
+            "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=Dalmatien"
+          },
+          "business": {},
+          "operations": {
+            "openingHours": "Mo-Su 11:30-15:00,17:00-23:00"
+          },
+          "payments": {},
+          "source": {
+            "provider": "OpenStreetMap Overpass",
+            "osmType": "node",
+            "osmId": 246707193,
+            "osmUrl": "https://www.openstreetmap.org/node/246707193",
+            "rawTags": {
+              "amenity": "restaurant",
+              "check_date": "2026-06-16",
+              "fax": "+49 221 5349580",
+              "name": "Dalmatien",
+              "opening_hours": "Mo-Su 11:30-15:00,17:00-23:00",
+              "phone": "+49 221 5991781",
+              "source": "survey"
+            }
+          }
         },
-        "emailVerified": false
+        "source": "openstreetmap_photon",
+        "raw": {
+          "osmType": "node",
+          "osmId": 246707193,
+          "tags": {
+            "amenity": "restaurant",
+            "check_date": "2026-06-16",
+            "fax": "+49 221 5349580",
+            "name": "Dalmatien",
+            "opening_hours": "Mo-Su 11:30-15:00,17:00-23:00",
+            "phone": "+49 221 5991781",
+            "source": "survey"
+          }
+        },
+        "searchRelevance": 92,
+        "marketName": "Cologne",
+        "countryName": "Germany",
+        "audit": {
+          "score": 100,
+          "category": "Very High Opportunity",
+          "checks": {
+            "websiteExists": false,
+            "https": false,
+            "mobileFriendly": false,
+            "seoMetadata": false,
+            "contactForm": false,
+            "socialLinksFound": false,
+            "businessEmailDetected": false,
+            "bookingSystem": false,
+            "outdatedDesign": true
+          },
+          "elapsedMs": 0
+        },
+        "opportunityScore": 100,
+        "opportunityCategory": "Very High Opportunity",
+        "discoveredBy": "owner",
+        "discoveredAt": "2026-10-10T20:42:09.093Z",
+        "updatedAt": "2026-10-10T20:42:09.093Z",
+        "createdAt": "2026-10-09T21:46:56.494Z"
       },
       {
-        "name": "danny daniel",
-        "email": "dannydanielzzg11@gmail.com",
-        "passwordHash": "scrypt$90744dabc268cb12f500e58f2b1681e7$d383631f997057a919992a23ffaec796e21c5ecd0a0f9fcd1dc8df2de7622469aa4fae3d3d3f13bef53c883d09f560a0532420cf49e7a0f4fa799bef1edc53cf",
-        "role": "user",
-        "tokenVersion": 1,
-        "id": "0298ce7b-3a5f-478a-b880-d05487802b38",
-        "createdAt": "2026-09-23T07:14:01.095Z",
-        "updatedAt": "2026-09-23T07:14:02.368Z",
-        "uid": "0298ce7b-3a5f-478a-b880-d05487802b38",
-        "subscription": "trial",
-        "planName": "Free Trial",
-        "monthlyLeadLimit": 5,
-        "trialSearchLimit": 2,
-        "trialLeadLimit": 5,
-        "billingStatus": "trial",
-        "trialSearchesUsed": 0,
-        "entitlements": {
-          "billingRequired": true,
-          "trial": true,
-          "trialSearchesUsed": 0,
-          "trialSearchLimit": 2,
-          "trialLeadLimit": 5,
-          "upgradeRequiredAfterTrial": true
+        "id": "osm-node-297502646",
+        "name": "Ibis Budget Hamburg City Ost",
+        "category": "Hotel",
+        "businessType": "Hotel",
+        "address": "25-29, Wandsbeker Zollstraße, Hamburg, 22041, DE",
+        "phone": "+49 40 20947520",
+        "rating": null,
+        "reviewsCount": 0,
+        "websiteUrl": "",
+        "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=Ibis%20Budget%20Hamburg%20City%20Ost%2025-29%2C%20Wandsbeker%20Zollstra%C3%9Fe%2C%20Hamburg%2C%2022041%2C%20DE",
+        "latitude": 53.5753899,
+        "longitude": 10.0749914,
+        "country": "Germany",
+        "countryCode": "DE",
+        "email": "",
+        "social": "",
+        "openingHours": "",
+        "details": {
+          "ownerContact": {
+            "operator": "Ibis Budget",
+            "publicContactNote": "Owner/operator/contact fields were found in public map data."
+          },
+          "contact": {
+            "phone": "+49 40 20947520"
+          },
+          "social": {},
+          "location": {
+            "latitude": 53.5753899,
+            "longitude": 10.0749914,
+            "address": "25-29, Wandsbeker Zollstraße, Hamburg, 22041, DE",
+            "houseNumber": "25-29",
+            "street": "Wandsbeker Zollstraße",
+            "city": "Hamburg",
+            "postcode": "22041",
+            "country": "Germany",
+            "countryCode": "DE",
+            "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=Ibis%20Budget%20Hamburg%20City%20Ost%2025-29%2C%20Wandsbeker%20Zollstra%C3%9Fe%2C%20Hamburg%2C%2022041%2C%20DE"
+          },
+          "business": {
+            "brand": "Ibis Budget",
+            "operator": "Ibis Budget"
+          },
+          "operations": {
+            "wheelchair": "yes",
+            "internetAccess": "wlan"
+          },
+          "payments": {},
+          "source": {
+            "provider": "OpenStreetMap Overpass",
+            "osmType": "node",
+            "osmId": 297502646,
+            "osmUrl": "https://www.openstreetmap.org/node/297502646",
+            "rawTags": {
+              "addr:city": "Hamburg",
+              "addr:country": "DE",
+              "addr:housenumber": "25-29",
+              "addr:postcode": "22041",
+              "addr:street": "Wandsbeker Zollstraße",
+              "brand": "Ibis Budget",
+              "brand:wikidata": "Q1458135",
+              "contact:phone": "+49 40 20947520",
+              "internet_access": "wlan",
+              "name": "Ibis Budget Hamburg City Ost",
+              "old_name": "Etap Hotel",
+              "operator": "Ibis Budget",
+              "tourism": "hotel",
+              "wheelchair": "yes"
+            }
+          }
         },
-        "emailVerified": false
+        "source": "openstreetmap_photon",
+        "raw": {
+          "osmType": "node",
+          "osmId": 297502646,
+          "tags": {
+            "addr:city": "Hamburg",
+            "addr:country": "DE",
+            "addr:housenumber": "25-29",
+            "addr:postcode": "22041",
+            "addr:street": "Wandsbeker Zollstraße",
+            "brand": "Ibis Budget",
+            "brand:wikidata": "Q1458135",
+            "contact:phone": "+49 40 20947520",
+            "internet_access": "wlan",
+            "name": "Ibis Budget Hamburg City Ost",
+            "old_name": "Etap Hotel",
+            "operator": "Ibis Budget",
+            "tourism": "hotel",
+            "wheelchair": "yes"
+          }
+        },
+        "searchRelevance": 93,
+        "marketName": "Hamburg",
+        "countryName": "Germany",
+        "audit": {
+          "score": 100,
+          "category": "Very High Opportunity",
+          "checks": {
+            "websiteExists": false,
+            "https": false,
+            "mobileFriendly": false,
+            "seoMetadata": false,
+            "contactForm": false,
+            "socialLinksFound": false,
+            "businessEmailDetected": false,
+            "bookingSystem": false,
+            "outdatedDesign": true
+          },
+          "elapsedMs": 0
+        },
+        "opportunityScore": 100,
+        "opportunityCategory": "Very High Opportunity",
+        "discoveredBy": "owner",
+        "discoveredAt": "2026-10-09T21:46:56.494Z",
+        "updatedAt": "2026-10-09T21:46:56.494Z",
+        "createdAt": "2026-10-09T21:46:56.494Z"
       },
       {
-        "name": "AI Test",
-        "email": "ai-test-1791528006425@example.com",
-        "passwordHash": "scrypt$fd3b73ecac3c24807c66fae893c8db0a$e8e9585e645e2bf1c8d10ccc183fc6632b628ebae6c0837fdd6e116a3bb669f27e5480876eb31cdbeda3bdbe8a6017ca25b39ffcb03d6c97f7e45da7faf1112c",
-        "role": "user",
-        "tokenVersion": 1,
-        "id": "f5a274e7-1a6d-47a2-a6c4-1a9a815b07f2",
-        "createdAt": "2026-10-09T06:40:06.698Z",
-        "updatedAt": "2026-10-09T06:40:08.807Z",
-        "uid": "f5a274e7-1a6d-47a2-a6c4-1a9a815b07f2",
-        "subscription": "trial",
-        "planName": "Free Trial",
-        "monthlyLeadLimit": 5,
-        "trialSearchLimit": 2,
-        "trialLeadLimit": 5,
-        "billingStatus": "trial",
-        "trialSearchesUsed": 0,
-        "entitlements": {
-          "billingRequired": true,
-          "trial": true,
-          "trialSearchesUsed": 0,
-          "trialSearchLimit": 2,
-          "trialLeadLimit": 5,
-          "upgradeRequiredAfterTrial": true
+        "id": "osm-node-288858596",
+        "name": "Jam Jam",
+        "category": "Restaurant",
+        "businessType": "Restaurant",
+        "address": "141, Wandsbeker Marktstraße, Hamburg, 22041, DE",
+        "phone": "+49 40 88155998",
+        "rating": null,
+        "reviewsCount": 0,
+        "websiteUrl": "",
+        "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=Jam%20Jam%20141%2C%20Wandsbeker%20Marktstra%C3%9Fe%2C%20Hamburg%2C%2022041%2C%20DE",
+        "latitude": 53.5734328,
+        "longitude": 10.0705985,
+        "country": "Germany",
+        "countryCode": "DE",
+        "email": "",
+        "social": "",
+        "openingHours": "Mo-Fr 12:00-15:30,17:30-22:30; Sa 13:00-22:30; Su,PH 13:00-22:30",
+        "details": {
+          "ownerContact": {
+            "publicContactNote": "Owner or direct contact person was not listed in the public map data."
+          },
+          "contact": {
+            "phone": "+49 40 88155998"
+          },
+          "social": {},
+          "location": {
+            "latitude": 53.5734328,
+            "longitude": 10.0705985,
+            "address": "141, Wandsbeker Marktstraße, Hamburg, 22041, DE",
+            "houseNumber": "141",
+            "street": "Wandsbeker Marktstraße",
+            "city": "Hamburg",
+            "postcode": "22041",
+            "country": "Germany",
+            "countryCode": "DE",
+            "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=Jam%20Jam%20141%2C%20Wandsbeker%20Marktstra%C3%9Fe%2C%20Hamburg%2C%2022041%2C%20DE"
+          },
+          "business": {
+            "cuisine": "japanese"
+          },
+          "operations": {
+            "openingHours": "Mo-Fr 12:00-15:30,17:30-22:30; Sa 13:00-22:30; Su,PH 13:00-22:30",
+            "outdoorSeating": "no",
+            "wheelchair": "yes"
+          },
+          "payments": {},
+          "source": {
+            "provider": "OpenStreetMap Overpass",
+            "osmType": "node",
+            "osmId": 288858596,
+            "osmUrl": "https://www.openstreetmap.org/node/288858596",
+            "rawTags": {
+              "addr:city": "Hamburg",
+              "addr:country": "DE",
+              "addr:housenumber": "141",
+              "addr:postcode": "22041",
+              "addr:street": "Wandsbeker Marktstraße",
+              "amenity": "restaurant",
+              "cuisine": "japanese",
+              "indoor_seating": "yes",
+              "name": "Jam Jam",
+              "opening_hours": "Mo-Fr 12:00-15:30,17:30-22:30; Sa 13:00-22:30; Su,PH 13:00-22:30",
+              "outdoor_seating": "no",
+              "phone": "+49 40 88155998",
+              "toilets:wheelchair": "no",
+              "wheelchair": "yes"
+            }
+          }
         },
-        "emailVerified": false
+        "source": "openstreetmap_photon",
+        "raw": {
+          "osmType": "node",
+          "osmId": 288858596,
+          "tags": {
+            "addr:city": "Hamburg",
+            "addr:country": "DE",
+            "addr:housenumber": "141",
+            "addr:postcode": "22041",
+            "addr:street": "Wandsbeker Marktstraße",
+            "amenity": "restaurant",
+            "cuisine": "japanese",
+            "indoor_seating": "yes",
+            "name": "Jam Jam",
+            "opening_hours": "Mo-Fr 12:00-15:30,17:30-22:30; Sa 13:00-22:30; Su,PH 13:00-22:30",
+            "outdoor_seating": "no",
+            "phone": "+49 40 88155998",
+            "toilets:wheelchair": "no",
+            "wheelchair": "yes"
+          }
+        },
+        "searchRelevance": 97,
+        "marketName": "Hamburg",
+        "countryName": "Germany",
+        "audit": {
+          "score": 100,
+          "category": "Very High Opportunity",
+          "checks": {
+            "websiteExists": false,
+            "https": false,
+            "mobileFriendly": false,
+            "seoMetadata": false,
+            "contactForm": false,
+            "socialLinksFound": false,
+            "businessEmailDetected": false,
+            "bookingSystem": false,
+            "outdatedDesign": true
+          },
+          "elapsedMs": 0
+        },
+        "opportunityScore": 100,
+        "opportunityCategory": "Very High Opportunity",
+        "discoveredBy": "owner",
+        "discoveredAt": "2026-10-09T21:46:56.495Z",
+        "updatedAt": "2026-10-09T21:46:56.495Z",
+        "createdAt": "2026-10-09T21:46:56.495Z"
       },
       {
-        "name": "Smoke Tester",
-        "email": "smoke-1791528097496@example.com",
-        "passwordHash": "scrypt$5dbe2f76456ac6408b74b363534211c0$071e1fbbc7324a48ca5a228dfef7720dba18d94320468db66d4067f635045ff822b460e1375bec263b687a68949891746d2d0fc4f9be9150cdbe78053dc8042b",
-        "role": "user",
-        "tokenVersion": 1,
-        "id": "3d30774b-b2f6-4541-9b2d-f8023970dcfb",
-        "createdAt": "2026-10-09T06:41:37.684Z",
-        "updatedAt": "2026-10-09T06:42:04.271Z",
-        "uid": "3d30774b-b2f6-4541-9b2d-f8023970dcfb",
-        "subscription": "trial",
-        "planName": "Free Trial",
-        "monthlyLeadLimit": 5,
-        "trialSearchLimit": 2,
-        "trialLeadLimit": 5,
-        "billingStatus": "trial",
-        "trialSearchesUsed": 1,
-        "entitlements": {
-          "billingRequired": true,
-          "trial": true,
-          "trialSearchesUsed": 1,
-          "trialSearchLimit": 2,
-          "trialLeadLimit": 5,
-          "upgradeRequiredAfterTrial": true
+        "id": "osm-node-278487896",
+        "name": "La Belle 2",
+        "category": "Restaurant",
+        "businessType": "Restaurant",
+        "address": "220, Fuhlsbüttler Straße, Hamburg, 22307, DE",
+        "phone": "+49 40 27965659",
+        "rating": null,
+        "reviewsCount": 0,
+        "websiteUrl": "",
+        "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=La%20Belle%202%20220%2C%20Fuhlsb%C3%BCttler%20Stra%C3%9Fe%2C%20Hamburg%2C%2022307%2C%20DE",
+        "latitude": 53.5952145,
+        "longitude": 10.0440803,
+        "country": "Germany",
+        "countryCode": "DE",
+        "email": "",
+        "social": "",
+        "openingHours": "Mo-Sa 17:00+",
+        "details": {
+          "ownerContact": {
+            "publicContactNote": "Owner or direct contact person was not listed in the public map data."
+          },
+          "contact": {
+            "phone": "+49 40 27965659"
+          },
+          "social": {},
+          "location": {
+            "latitude": 53.5952145,
+            "longitude": 10.0440803,
+            "address": "220, Fuhlsbüttler Straße, Hamburg, 22307, DE",
+            "houseNumber": "220",
+            "street": "Fuhlsbüttler Straße",
+            "city": "Hamburg",
+            "postcode": "22307",
+            "country": "Germany",
+            "countryCode": "DE",
+            "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=La%20Belle%202%20220%2C%20Fuhlsb%C3%BCttler%20Stra%C3%9Fe%2C%20Hamburg%2C%2022307%2C%20DE"
+          },
+          "business": {},
+          "operations": {
+            "openingHours": "Mo-Sa 17:00+",
+            "outdoorSeating": "yes",
+            "wheelchair": "yes"
+          },
+          "payments": {},
+          "source": {
+            "provider": "OpenStreetMap Overpass",
+            "osmType": "node",
+            "osmId": 278487896,
+            "osmUrl": "https://www.openstreetmap.org/node/278487896",
+            "rawTags": {
+              "addr:city": "Hamburg",
+              "addr:country": "DE",
+              "addr:housenumber": "220",
+              "addr:postcode": "22307",
+              "addr:street": "Fuhlsbüttler Straße",
+              "amenity": "pub",
+              "check_date:opening_hours": "2022-12-06",
+              "contact:phone": "+49 40 27965659",
+              "indoor_seating": "yes",
+              "min_age": "18",
+              "name": "La Belle 2",
+              "opening_hours": "Mo-Sa 17:00+",
+              "outdoor_seating": "yes",
+              "real_fire": "no",
+              "smoking": "yes",
+              "wheelchair": "yes"
+            }
+          }
         },
-        "emailVerified": false
+        "source": "openstreetmap_photon",
+        "raw": {
+          "osmType": "node",
+          "osmId": 278487896,
+          "tags": {
+            "addr:city": "Hamburg",
+            "addr:country": "DE",
+            "addr:housenumber": "220",
+            "addr:postcode": "22307",
+            "addr:street": "Fuhlsbüttler Straße",
+            "amenity": "pub",
+            "check_date:opening_hours": "2022-12-06",
+            "contact:phone": "+49 40 27965659",
+            "indoor_seating": "yes",
+            "min_age": "18",
+            "name": "La Belle 2",
+            "opening_hours": "Mo-Sa 17:00+",
+            "outdoor_seating": "yes",
+            "real_fire": "no",
+            "smoking": "yes",
+            "wheelchair": "yes"
+          }
+        },
+        "searchRelevance": 97,
+        "marketName": "Hamburg",
+        "countryName": "Germany",
+        "audit": {
+          "score": 100,
+          "category": "Very High Opportunity",
+          "checks": {
+            "websiteExists": false,
+            "https": false,
+            "mobileFriendly": false,
+            "seoMetadata": false,
+            "contactForm": false,
+            "socialLinksFound": false,
+            "businessEmailDetected": false,
+            "bookingSystem": false,
+            "outdatedDesign": true
+          },
+          "elapsedMs": 0
+        },
+        "opportunityScore": 100,
+        "opportunityCategory": "Very High Opportunity",
+        "discoveredBy": "owner",
+        "discoveredAt": "2026-10-09T21:46:56.495Z",
+        "updatedAt": "2026-10-09T21:46:56.495Z",
+        "createdAt": "2026-10-09T21:46:56.495Z"
       },
       {
-        "name": "Smoke Tester",
-        "email": "smoke-1791529392380@example.com",
-        "passwordHash": "scrypt$642bcfa7db53cc6686fd26eaf1e02660$1b45309fd3d29a00c35b7d2f45cc04366e65e11b4456dc11d67cb9501ee7c7a8d70e9e04f663dc592bed1e53e548deb10709ac3fabb18d913011bdc1e37fdbda",
-        "role": "user",
-        "tokenVersion": 1,
-        "id": "2c16f281-fa0c-4d4d-a7df-8c25442f444a",
-        "createdAt": "2026-10-09T07:03:12.599Z",
-        "updatedAt": "2026-10-09T07:03:35.193Z",
-        "uid": "2c16f281-fa0c-4d4d-a7df-8c25442f444a",
-        "subscription": "trial",
-        "planName": "Free Trial",
-        "monthlyLeadLimit": 5,
-        "trialSearchLimit": 2,
-        "trialLeadLimit": 5,
-        "billingStatus": "trial",
-        "trialSearchesUsed": 1,
-        "entitlements": {
-          "billingRequired": true,
-          "trial": true,
-          "trialSearchesUsed": 1,
-          "trialSearchLimit": 2,
-          "trialLeadLimit": 5,
-          "upgradeRequiredAfterTrial": true
+        "id": "osm-node-291167509",
+        "name": "La Casita",
+        "category": "Restaurant",
+        "businessType": "Restaurant",
+        "address": "30, Neuer Kamp, Hamburg, 20357, DE",
+        "phone": "",
+        "rating": null,
+        "reviewsCount": 0,
+        "websiteUrl": "",
+        "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=La%20Casita%2030%2C%20Neuer%20Kamp%2C%20Hamburg%2C%2020357%2C%20DE",
+        "latitude": 53.5575054,
+        "longitude": 9.9676474,
+        "country": "Germany",
+        "countryCode": "DE",
+        "email": "",
+        "social": "https://www.instagram.com/la_casita_hamburg",
+        "openingHours": "Tu-Sa 12:00-22:00",
+        "details": {
+          "ownerContact": {
+            "publicContactNote": "Owner or direct contact person was not listed in the public map data."
+          },
+          "contact": {},
+          "social": {
+            "instagram": "https://www.instagram.com/la_casita_hamburg"
+          },
+          "location": {
+            "latitude": 53.5575054,
+            "longitude": 9.9676474,
+            "address": "30, Neuer Kamp, Hamburg, 20357, DE",
+            "houseNumber": "30",
+            "street": "Neuer Kamp",
+            "city": "Hamburg",
+            "postcode": "20357",
+            "country": "Germany",
+            "countryCode": "DE",
+            "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=La%20Casita%2030%2C%20Neuer%20Kamp%2C%20Hamburg%2C%2020357%2C%20DE"
+          },
+          "business": {
+            "cuisine": "argentinian;mexican"
+          },
+          "operations": {
+            "openingHours": "Tu-Sa 12:00-22:00",
+            "outdoorSeating": "yes",
+            "wheelchair": "limited"
+          },
+          "payments": {
+            "cash": "yes",
+            "cards": "yes"
+          },
+          "source": {
+            "provider": "OpenStreetMap Overpass",
+            "osmType": "node",
+            "osmId": 291167509,
+            "osmUrl": "https://www.openstreetmap.org/node/291167509",
+            "rawTags": {
+              "addr:city": "Hamburg",
+              "addr:country": "DE",
+              "addr:housenumber": "30",
+              "addr:postcode": "20357",
+              "addr:street": "Neuer Kamp",
+              "amenity": "restaurant",
+              "check_date": "2026-06-21",
+              "contact:instagram": "https://www.instagram.com/la_casita_hamburg",
+              "cuisine": "argentinian;mexican",
+              "diet:meat": "yes",
+              "diet:vegan": "yes",
+              "indoor_seating": "no",
+              "name": "La Casita",
+              "opening_hours": "Tu-Sa 12:00-22:00",
+              "outdoor_seating": "yes",
+              "payment:cards": "yes",
+              "payment:cash": "yes",
+              "payment:contactless": "yes",
+              "payment:credit_cards": "yes",
+              "payment:debit_cards": "yes",
+              "wheelchair": "limited"
+            }
+          }
         },
-        "emailVerified": false
+        "source": "openstreetmap_photon",
+        "raw": {
+          "osmType": "node",
+          "osmId": 291167509,
+          "tags": {
+            "addr:city": "Hamburg",
+            "addr:country": "DE",
+            "addr:housenumber": "30",
+            "addr:postcode": "20357",
+            "addr:street": "Neuer Kamp",
+            "amenity": "restaurant",
+            "check_date": "2026-06-21",
+            "contact:instagram": "https://www.instagram.com/la_casita_hamburg",
+            "cuisine": "argentinian;mexican",
+            "diet:meat": "yes",
+            "diet:vegan": "yes",
+            "indoor_seating": "no",
+            "name": "La Casita",
+            "opening_hours": "Tu-Sa 12:00-22:00",
+            "outdoor_seating": "yes",
+            "payment:cards": "yes",
+            "payment:cash": "yes",
+            "payment:contactless": "yes",
+            "payment:credit_cards": "yes",
+            "payment:debit_cards": "yes",
+            "wheelchair": "limited"
+          }
+        },
+        "searchRelevance": 87,
+        "marketName": "Hamburg",
+        "countryName": "Germany",
+        "audit": {
+          "score": 100,
+          "category": "Very High Opportunity",
+          "checks": {
+            "websiteExists": false,
+            "https": false,
+            "mobileFriendly": false,
+            "seoMetadata": false,
+            "contactForm": false,
+            "socialLinksFound": false,
+            "businessEmailDetected": false,
+            "bookingSystem": false,
+            "outdatedDesign": true
+          },
+          "elapsedMs": 0
+        },
+        "opportunityScore": 100,
+        "opportunityCategory": "Very High Opportunity",
+        "discoveredBy": "owner",
+        "discoveredAt": "2026-10-09T21:46:56.495Z",
+        "updatedAt": "2026-10-09T21:46:56.495Z",
+        "createdAt": "2026-10-09T21:46:56.495Z"
       },
       {
-        "name": "Smoke Tester",
-        "email": "smoke-1791530670148@example.com",
-        "passwordHash": "scrypt$f9a36b513fbbf53254a8a12fadc5e3c6$5dc7824425cd1c0b39bcf93be8eea9fd27d92ffe7f003f0626419a3f0e6f5d0f73c340096ff645d89730863ca32332d6fd361693184eed6e0f82ef1b31da600d",
-        "role": "user",
-        "tokenVersion": 1,
-        "id": "8c44d0d9-9deb-449f-89f4-b01484433016",
-        "createdAt": "2026-10-09T07:24:30.327Z",
-        "updatedAt": "2026-10-09T07:25:05.117Z",
-        "uid": "8c44d0d9-9deb-449f-89f4-b01484433016",
-        "subscription": "trial",
-        "planName": "Free Trial",
-        "monthlyLeadLimit": 5,
-        "trialSearchLimit": 2,
-        "trialLeadLimit": 5,
-        "billingStatus": "trial",
-        "trialSearchesUsed": 1,
-        "entitlements": {
-          "billingRequired": true,
-          "trial": true,
-          "trialSearchesUsed": 1,
-          "trialSearchLimit": 2,
-          "trialLeadLimit": 5,
-          "upgradeRequiredAfterTrial": true
+        "id": "osm-node-203814570",
+        "name": "Mangal Döner X Lukas Podolski",
+        "category": "Restaurant",
+        "businessType": "Restaurant",
+        "address": "79, Ehrenfeldgürtel, Köln, 50825, DE",
+        "phone": "+49 221 51090300",
+        "rating": null,
+        "reviewsCount": 0,
+        "websiteUrl": "",
+        "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=Mangal%20D%C3%B6ner%20X%20Lukas%20Podolski%2079%2C%20Ehrenfeldg%C3%BCrtel%2C%20K%C3%B6ln%2C%2050825%2C%20DE",
+        "latitude": 50.9504482,
+        "longitude": 6.916734,
+        "country": "Germany",
+        "countryCode": "DE",
+        "email": "",
+        "social": "",
+        "openingHours": "Mo-Fr 11:00-01:00; Sa-Su 11:00-06:00",
+        "details": {
+          "ownerContact": {
+            "publicContactNote": "Owner or direct contact person was not listed in the public map data."
+          },
+          "contact": {
+            "phone": "+49 221 51090300"
+          },
+          "social": {},
+          "location": {
+            "latitude": 50.9504482,
+            "longitude": 6.916734,
+            "address": "79, Ehrenfeldgürtel, Köln, 50825, DE",
+            "houseNumber": "79",
+            "street": "Ehrenfeldgürtel",
+            "city": "Köln",
+            "postcode": "50825",
+            "country": "Germany",
+            "countryCode": "DE",
+            "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=Mangal%20D%C3%B6ner%20X%20Lukas%20Podolski%2079%2C%20Ehrenfeldg%C3%BCrtel%2C%20K%C3%B6ln%2C%2050825%2C%20DE"
+          },
+          "business": {
+            "cuisine": "kebab"
+          },
+          "operations": {
+            "openingHours": "Mo-Fr 11:00-01:00; Sa-Su 11:00-06:00",
+            "takeaway": "yes",
+            "wheelchair": "yes"
+          },
+          "payments": {},
+          "source": {
+            "provider": "OpenStreetMap Overpass",
+            "osmType": "node",
+            "osmId": 203814570,
+            "osmUrl": "https://www.openstreetmap.org/node/203814570",
+            "rawTags": {
+              "addr:city": "Köln",
+              "addr:country": "DE",
+              "addr:housenumber": "79",
+              "addr:postcode": "50825",
+              "addr:street": "Ehrenfeldgürtel",
+              "amenity": "fast_food",
+              "check_date": "2026-01-05",
+              "cuisine": "kebab",
+              "drive_through": "no",
+              "name": "Mangal Döner X Lukas Podolski",
+              "opening_hours": "Mo-Fr 11:00-01:00; Sa-Su 11:00-06:00",
+              "phone": "+49 221 51090300",
+              "takeaway": "yes",
+              "wheelchair": "yes"
+            }
+          }
         },
-        "emailVerified": false
+        "source": "openstreetmap_photon",
+        "raw": {
+          "osmType": "node",
+          "osmId": 203814570,
+          "tags": {
+            "addr:city": "Köln",
+            "addr:country": "DE",
+            "addr:housenumber": "79",
+            "addr:postcode": "50825",
+            "addr:street": "Ehrenfeldgürtel",
+            "amenity": "fast_food",
+            "check_date": "2026-01-05",
+            "cuisine": "kebab",
+            "drive_through": "no",
+            "name": "Mangal Döner X Lukas Podolski",
+            "opening_hours": "Mo-Fr 11:00-01:00; Sa-Su 11:00-06:00",
+            "phone": "+49 221 51090300",
+            "takeaway": "yes",
+            "wheelchair": "yes"
+          }
+        },
+        "searchRelevance": 97,
+        "marketName": "Cologne",
+        "countryName": "Germany",
+        "audit": {
+          "score": 100,
+          "category": "Very High Opportunity",
+          "checks": {
+            "websiteExists": false,
+            "https": false,
+            "mobileFriendly": false,
+            "seoMetadata": false,
+            "contactForm": false,
+            "socialLinksFound": false,
+            "businessEmailDetected": false,
+            "bookingSystem": false,
+            "outdatedDesign": true
+          },
+          "elapsedMs": 0
+        },
+        "opportunityScore": 100,
+        "opportunityCategory": "Very High Opportunity",
+        "discoveredBy": "owner",
+        "discoveredAt": "2026-10-10T20:42:09.093Z",
+        "updatedAt": "2026-10-10T20:42:09.093Z",
+        "createdAt": "2026-10-09T21:46:56.495Z"
+      },
+      {
+        "id": "osm-node-248283815",
+        "name": "McDonald's",
+        "category": "Restaurant",
+        "businessType": "Restaurant",
+        "address": "2-8, Marzellenstraße, Köln, 50667",
+        "phone": "+49 221 1136667",
+        "rating": null,
+        "reviewsCount": 0,
+        "websiteUrl": "",
+        "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=McDonald's%202-8%2C%20Marzellenstra%C3%9Fe%2C%20K%C3%B6ln%2C%2050667",
+        "latitude": 50.9418739,
+        "longitude": 6.9562012,
+        "country": "Germany",
+        "countryCode": "DE",
+        "email": "",
+        "social": "",
+        "openingHours": "Mo-Th 07:00-02:00; Fr,Sa 07:00-05:00; Su,PH 08:00-02:00",
+        "details": {
+          "ownerContact": {
+            "operator": "Tolan Restaurants GmbH & Co. KG",
+            "publicContactNote": "Owner/operator/contact fields were found in public map data."
+          },
+          "contact": {
+            "phone": "+49 221 1136667"
+          },
+          "social": {},
+          "location": {
+            "latitude": 50.9418739,
+            "longitude": 6.9562012,
+            "address": "2-8, Marzellenstraße, Köln, 50667",
+            "houseNumber": "2-8",
+            "street": "Marzellenstraße",
+            "city": "Köln",
+            "postcode": "50667",
+            "country": "Germany",
+            "countryCode": "DE",
+            "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=McDonald's%202-8%2C%20Marzellenstra%C3%9Fe%2C%20K%C3%B6ln%2C%2050667"
+          },
+          "business": {
+            "brand": "McDonald's",
+            "operator": "Tolan Restaurants GmbH & Co. KG",
+            "cuisine": "burger"
+          },
+          "operations": {
+            "openingHours": "Mo-Th 07:00-02:00; Fr,Sa 07:00-05:00; Su,PH 08:00-02:00",
+            "delivery": "yes",
+            "takeaway": "yes",
+            "outdoorSeating": "no",
+            "wheelchair": "limited"
+          },
+          "payments": {
+            "cash": "yes",
+            "visa": "yes",
+            "mastercard": "yes"
+          },
+          "source": {
+            "provider": "OpenStreetMap Overpass",
+            "osmType": "node",
+            "osmId": 248283815,
+            "osmUrl": "https://www.openstreetmap.org/node/248283815",
+            "rawTags": {
+              "addr:city": "Köln",
+              "addr:housenumber": "2-8",
+              "addr:postcode": "50667",
+              "addr:street": "Marzellenstraße",
+              "amenity": "fast_food",
+              "brand": "McDonald's",
+              "brand:wikidata": "Q38076",
+              "brand:wikipedia": "en:McDonald's",
+              "check_date:opening_hours": "2025-10-23",
+              "cuisine": "burger",
+              "delivery": "yes",
+              "diet:vegan": "yes",
+              "diet:vegetarian": "yes",
+              "drive_through": "no",
+              "layer": "1",
+              "name": "McDonald's",
+              "opening_hours": "Mo-Th 07:00-02:00; Fr,Sa 07:00-05:00; Su,PH 08:00-02:00",
+              "operator": "Tolan Restaurants GmbH & Co. KG",
+              "outdoor_seating": "no",
+              "payment:cash": "yes",
+              "payment:girocard": "yes",
+              "payment:maestro": "yes",
+              "payment:mastercard": "yes",
+              "payment:v_pay": "yes",
+              "payment:visa": "yes",
+              "phone": "+49 221 1136667",
+              "source": "survey",
+              "takeaway": "yes",
+              "toilets": "yes",
+              "wheelchair": "limited"
+            }
+          }
+        },
+        "source": "openstreetmap_photon",
+        "raw": {
+          "osmType": "node",
+          "osmId": 248283815,
+          "tags": {
+            "addr:city": "Köln",
+            "addr:housenumber": "2-8",
+            "addr:postcode": "50667",
+            "addr:street": "Marzellenstraße",
+            "amenity": "fast_food",
+            "brand": "McDonald's",
+            "brand:wikidata": "Q38076",
+            "brand:wikipedia": "en:McDonald's",
+            "check_date:opening_hours": "2025-10-23",
+            "cuisine": "burger",
+            "delivery": "yes",
+            "diet:vegan": "yes",
+            "diet:vegetarian": "yes",
+            "drive_through": "no",
+            "layer": "1",
+            "name": "McDonald's",
+            "opening_hours": "Mo-Th 07:00-02:00; Fr,Sa 07:00-05:00; Su,PH 08:00-02:00",
+            "operator": "Tolan Restaurants GmbH & Co. KG",
+            "outdoor_seating": "no",
+            "payment:cash": "yes",
+            "payment:girocard": "yes",
+            "payment:maestro": "yes",
+            "payment:mastercard": "yes",
+            "payment:v_pay": "yes",
+            "payment:visa": "yes",
+            "phone": "+49 221 1136667",
+            "source": "survey",
+            "takeaway": "yes",
+            "toilets": "yes",
+            "wheelchair": "limited"
+          }
+        },
+        "searchRelevance": 97,
+        "marketName": "Cologne",
+        "countryName": "Germany",
+        "audit": {
+          "score": 100,
+          "category": "Very High Opportunity",
+          "checks": {
+            "websiteExists": false,
+            "https": false,
+            "mobileFriendly": false,
+            "seoMetadata": false,
+            "contactForm": false,
+            "socialLinksFound": false,
+            "businessEmailDetected": false,
+            "bookingSystem": false,
+            "outdatedDesign": true
+          },
+          "elapsedMs": 0
+        },
+        "opportunityScore": 100,
+        "opportunityCategory": "Very High Opportunity",
+        "discoveredBy": "owner",
+        "discoveredAt": "2026-10-10T20:42:09.093Z",
+        "updatedAt": "2026-10-10T20:42:09.093Z",
+        "createdAt": "2026-10-09T21:46:56.495Z"
+      },
+      {
+        "id": "osm-node-246770151",
+        "name": "Olympia Grill Gyros Haus",
+        "category": "Restaurant",
+        "businessType": "Restaurant",
+        "address": "30, Friedrich-Karl-Straße, Köln, 50739, DE",
+        "phone": "+49 221 7407447",
+        "rating": null,
+        "reviewsCount": 0,
+        "websiteUrl": "",
+        "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=Olympia%20Grill%20Gyros%20Haus%2030%2C%20Friedrich-Karl-Stra%C3%9Fe%2C%20K%C3%B6ln%2C%2050739%2C%20DE",
+        "latitude": 50.9750511,
+        "longitude": 6.9498106,
+        "country": "Germany",
+        "countryCode": "DE",
+        "email": "",
+        "social": "",
+        "openingHours": "PH,Tu-Su 11:00-21:00; Mo off",
+        "details": {
+          "ownerContact": {
+            "publicContactNote": "Owner or direct contact person was not listed in the public map data."
+          },
+          "contact": {
+            "phone": "+49 221 7407447"
+          },
+          "social": {},
+          "location": {
+            "latitude": 50.9750511,
+            "longitude": 6.9498106,
+            "address": "30, Friedrich-Karl-Straße, Köln, 50739, DE",
+            "houseNumber": "30",
+            "street": "Friedrich-Karl-Straße",
+            "city": "Köln",
+            "postcode": "50739",
+            "country": "Germany",
+            "countryCode": "DE",
+            "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=Olympia%20Grill%20Gyros%20Haus%2030%2C%20Friedrich-Karl-Stra%C3%9Fe%2C%20K%C3%B6ln%2C%2050739%2C%20DE"
+          },
+          "business": {
+            "cuisine": "greek"
+          },
+          "operations": {
+            "openingHours": "PH,Tu-Su 11:00-21:00; Mo off",
+            "outdoorSeating": "no",
+            "wheelchair": "yes"
+          },
+          "payments": {},
+          "source": {
+            "provider": "OpenStreetMap Overpass",
+            "osmType": "node",
+            "osmId": 246770151,
+            "osmUrl": "https://www.openstreetmap.org/node/246770151",
+            "rawTags": {
+              "addr:city": "Köln",
+              "addr:country": "DE",
+              "addr:housenumber": "30",
+              "addr:postcode": "50739",
+              "addr:street": "Friedrich-Karl-Straße",
+              "amenity": "fast_food",
+              "check_date": "2026-07-10",
+              "contact:phone": "+49 221 7407447",
+              "cuisine": "greek",
+              "indoor_seating": "yes",
+              "name": "Olympia Grill Gyros Haus",
+              "opening_hours": "PH,Tu-Su 11:00-21:00; Mo off",
+              "outdoor_seating": "no",
+              "source": "knowledge",
+              "toilets:wheelchair": "no",
+              "wheelchair": "yes"
+            }
+          }
+        },
+        "source": "openstreetmap_photon",
+        "raw": {
+          "osmType": "node",
+          "osmId": 246770151,
+          "tags": {
+            "addr:city": "Köln",
+            "addr:country": "DE",
+            "addr:housenumber": "30",
+            "addr:postcode": "50739",
+            "addr:street": "Friedrich-Karl-Straße",
+            "amenity": "fast_food",
+            "check_date": "2026-07-10",
+            "contact:phone": "+49 221 7407447",
+            "cuisine": "greek",
+            "indoor_seating": "yes",
+            "name": "Olympia Grill Gyros Haus",
+            "opening_hours": "PH,Tu-Su 11:00-21:00; Mo off",
+            "outdoor_seating": "no",
+            "source": "knowledge",
+            "toilets:wheelchair": "no",
+            "wheelchair": "yes"
+          }
+        },
+        "searchRelevance": 97,
+        "marketName": "Cologne",
+        "countryName": "Germany",
+        "audit": {
+          "score": 100,
+          "category": "Very High Opportunity",
+          "checks": {
+            "websiteExists": false,
+            "https": false,
+            "mobileFriendly": false,
+            "seoMetadata": false,
+            "contactForm": false,
+            "socialLinksFound": false,
+            "businessEmailDetected": false,
+            "bookingSystem": false,
+            "outdatedDesign": true
+          },
+          "elapsedMs": 0
+        },
+        "opportunityScore": 100,
+        "opportunityCategory": "Very High Opportunity",
+        "discoveredBy": "owner",
+        "discoveredAt": "2026-10-10T20:42:09.093Z",
+        "updatedAt": "2026-10-10T20:42:09.093Z",
+        "createdAt": "2026-10-09T21:46:56.495Z"
+      },
+      {
+        "id": "osm-node-243934863",
+        "name": "op d'r Höh",
+        "category": "Restaurant",
+        "businessType": "Restaurant",
+        "address": "112, Sandweg, Köln, 50827, DE",
+        "phone": "+49 174 4052615",
+        "rating": null,
+        "reviewsCount": 0,
+        "websiteUrl": "",
+        "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=op%20d'r%20H%C3%B6h%20112%2C%20Sandweg%2C%20K%C3%B6ln%2C%2050827%2C%20DE",
+        "latitude": 50.9665163,
+        "longitude": 6.897945,
+        "country": "Germany",
+        "countryCode": "DE",
+        "email": "",
+        "social": "",
+        "openingHours": "Su off; Mo-Fr 07:00-18:00; Sa 09:00-14:00",
+        "details": {
+          "ownerContact": {
+            "publicContactNote": "Owner or direct contact person was not listed in the public map data."
+          },
+          "contact": {
+            "phone": "+49 174 4052615"
+          },
+          "social": {},
+          "location": {
+            "latitude": 50.9665163,
+            "longitude": 6.897945,
+            "address": "112, Sandweg, Köln, 50827, DE",
+            "houseNumber": "112",
+            "street": "Sandweg",
+            "city": "Köln",
+            "postcode": "50827",
+            "country": "Germany",
+            "countryCode": "DE",
+            "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=op%20d'r%20H%C3%B6h%20112%2C%20Sandweg%2C%20K%C3%B6ln%2C%2050827%2C%20DE"
+          },
+          "business": {},
+          "operations": {
+            "openingHours": "Su off; Mo-Fr 07:00-18:00; Sa 09:00-14:00"
+          },
+          "payments": {},
+          "source": {
+            "provider": "OpenStreetMap Overpass",
+            "osmType": "node",
+            "osmId": 243934863,
+            "osmUrl": "https://www.openstreetmap.org/node/243934863",
+            "rawTags": {
+              "addr:city": "Köln",
+              "addr:country": "DE",
+              "addr:housenumber": "112",
+              "addr:postcode": "50827",
+              "addr:street": "Sandweg",
+              "amenity": "pub",
+              "name": "op d'r Höh",
+              "opening_hours": "Su off; Mo-Fr 07:00-18:00; Sa 09:00-14:00",
+              "phone": "+49 174 4052615",
+              "source": "survey"
+            }
+          }
+        },
+        "source": "openstreetmap_photon",
+        "raw": {
+          "osmType": "node",
+          "osmId": 243934863,
+          "tags": {
+            "addr:city": "Köln",
+            "addr:country": "DE",
+            "addr:housenumber": "112",
+            "addr:postcode": "50827",
+            "addr:street": "Sandweg",
+            "amenity": "pub",
+            "name": "op d'r Höh",
+            "opening_hours": "Su off; Mo-Fr 07:00-18:00; Sa 09:00-14:00",
+            "phone": "+49 174 4052615",
+            "source": "survey"
+          }
+        },
+        "searchRelevance": 97,
+        "marketName": "Cologne",
+        "countryName": "Germany",
+        "audit": {
+          "score": 100,
+          "category": "Very High Opportunity",
+          "checks": {
+            "websiteExists": false,
+            "https": false,
+            "mobileFriendly": false,
+            "seoMetadata": false,
+            "contactForm": false,
+            "socialLinksFound": false,
+            "businessEmailDetected": false,
+            "bookingSystem": false,
+            "outdatedDesign": true
+          },
+          "elapsedMs": 0
+        },
+        "opportunityScore": 100,
+        "opportunityCategory": "Very High Opportunity",
+        "discoveredBy": "owner",
+        "discoveredAt": "2026-10-10T20:42:09.093Z",
+        "updatedAt": "2026-10-10T20:42:09.093Z",
+        "createdAt": "2026-10-09T21:46:56.495Z"
+      },
+      {
+        "id": "osm-node-269898957",
+        "name": "Pavillon",
+        "category": "Restaurant",
+        "businessType": "Restaurant",
+        "address": "9, Bei der Reitbahn, Hamburg, 22763, DE",
+        "phone": "+49 4039909330",
+        "rating": null,
+        "reviewsCount": 0,
+        "websiteUrl": "",
+        "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=Pavillon%209%2C%20Bei%20der%20Reitbahn%2C%20Hamburg%2C%2022763%2C%20DE",
+        "latitude": 53.5510058,
+        "longitude": 9.9253374,
+        "country": "Germany",
+        "countryCode": "DE",
+        "email": "",
+        "social": "",
+        "openingHours": "Mo-Su 12:00+",
+        "details": {
+          "ownerContact": {
+            "publicContactNote": "Owner or direct contact person was not listed in the public map data."
+          },
+          "contact": {
+            "phone": "+49 4039909330"
+          },
+          "social": {},
+          "location": {
+            "latitude": 53.5510058,
+            "longitude": 9.9253374,
+            "address": "9, Bei der Reitbahn, Hamburg, 22763, DE",
+            "houseNumber": "9",
+            "street": "Bei der Reitbahn",
+            "city": "Hamburg",
+            "postcode": "22763",
+            "country": "Germany",
+            "countryCode": "DE",
+            "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=Pavillon%209%2C%20Bei%20der%20Reitbahn%2C%20Hamburg%2C%2022763%2C%20DE"
+          },
+          "business": {},
+          "operations": {
+            "openingHours": "Mo-Su 12:00+",
+            "outdoorSeating": "terrace",
+            "wheelchair": "limited"
+          },
+          "payments": {},
+          "source": {
+            "provider": "OpenStreetMap Overpass",
+            "osmType": "node",
+            "osmId": 269898957,
+            "osmUrl": "https://www.openstreetmap.org/node/269898957",
+            "rawTags": {
+              "addr:city": "Hamburg",
+              "addr:country": "DE",
+              "addr:housenumber": "9",
+              "addr:postcode": "22763",
+              "addr:street": "Bei der Reitbahn",
+              "amenity": "cafe",
+              "check_date": "2025-05-25",
+              "check_date:opening_hours": "2024-06-14",
+              "indoor_seating": "yes",
+              "name": "Pavillon",
+              "opening_hours": "Mo-Su 12:00+",
+              "outdoor_seating": "terrace",
+              "phone": "+49 4039909330",
+              "wheelchair": "limited"
+            }
+          }
+        },
+        "source": "openstreetmap_photon",
+        "raw": {
+          "osmType": "node",
+          "osmId": 269898957,
+          "tags": {
+            "addr:city": "Hamburg",
+            "addr:country": "DE",
+            "addr:housenumber": "9",
+            "addr:postcode": "22763",
+            "addr:street": "Bei der Reitbahn",
+            "amenity": "cafe",
+            "check_date": "2025-05-25",
+            "check_date:opening_hours": "2024-06-14",
+            "indoor_seating": "yes",
+            "name": "Pavillon",
+            "opening_hours": "Mo-Su 12:00+",
+            "outdoor_seating": "terrace",
+            "phone": "+49 4039909330",
+            "wheelchair": "limited"
+          }
+        },
+        "searchRelevance": 97,
+        "marketName": "Hamburg",
+        "countryName": "Germany",
+        "audit": {
+          "score": 100,
+          "category": "Very High Opportunity",
+          "checks": {
+            "websiteExists": false,
+            "https": false,
+            "mobileFriendly": false,
+            "seoMetadata": false,
+            "contactForm": false,
+            "socialLinksFound": false,
+            "businessEmailDetected": false,
+            "bookingSystem": false,
+            "outdatedDesign": true
+          },
+          "elapsedMs": 0
+        },
+        "opportunityScore": 100,
+        "opportunityCategory": "Very High Opportunity",
+        "discoveredBy": "owner",
+        "discoveredAt": "2026-10-09T21:46:56.495Z",
+        "updatedAt": "2026-10-09T21:46:56.495Z",
+        "createdAt": "2026-10-09T21:46:56.495Z"
+      },
+      {
+        "id": "photon-node-13972155637",
+        "name": "Restaurant",
+        "category": "Restaurant",
+        "businessType": "Restaurant",
+        "address": "49, Zentralländstraße, Munich, 81379, DE",
+        "phone": "",
+        "rating": null,
+        "reviewsCount": 0,
+        "websiteUrl": "",
+        "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=Restaurant%2049%2C%20Zentrall%C3%A4ndstra%C3%9Fe%2C%20Munich%2C%2081379%2C%20DE",
+        "latitude": 48.0913071,
+        "longitude": 11.5444857,
+        "country": "Germany",
+        "countryCode": "DE",
+        "email": "",
+        "social": "",
+        "openingHours": "",
+        "details": {
+          "ownerContact": {
+            "publicContactNote": "Owner or direct contact person was not listed in the public map data."
+          },
+          "contact": {},
+          "social": {},
+          "location": {
+            "latitude": 48.0913071,
+            "longitude": 11.5444857,
+            "address": "49, Zentralländstraße, Munich, 81379, DE",
+            "houseNumber": "49",
+            "street": "Zentralländstraße",
+            "city": "Munich",
+            "postcode": "81379",
+            "country": "Germany",
+            "countryCode": "DE",
+            "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=Restaurant%2049%2C%20Zentrall%C3%A4ndstra%C3%9Fe%2C%20Munich%2C%2081379%2C%20DE"
+          },
+          "business": {},
+          "operations": {},
+          "payments": {},
+          "source": {
+            "provider": "OpenStreetMap Photon",
+            "osmType": "node",
+            "osmId": 13972155637,
+            "osmUrl": "https://www.openstreetmap.org/node/13972155637",
+            "rawTags": {
+              "name": "Restaurant",
+              "amenity": "restaurant",
+              "addr:housenumber": "49",
+              "addr:street": "Zentralländstraße",
+              "addr:city": "Munich",
+              "addr:postcode": "81379",
+              "addr:country": "DE",
+              "is_in:country": "Germany"
+            },
+            "photonProperties": {
+              "osm_type": "N",
+              "osm_id": 13972155637,
+              "osm_key": "amenity",
+              "osm_value": "restaurant",
+              "type": "house",
+              "housenumber": "49",
+              "name": "Restaurant",
+              "street": "Zentralländstraße",
+              "locality": "Maria Einsiedel",
+              "district": "Thalkirchen",
+              "city": "Munich",
+              "state": "Bavaria",
+              "country": "Germany",
+              "postcode": "81379",
+              "countrycode": "DE"
+            }
+          }
+        },
+        "source": "openstreetmap_photon",
+        "raw": {
+          "osmType": "node",
+          "osmId": 13972155637,
+          "tags": {
+            "name": "Restaurant",
+            "amenity": "restaurant",
+            "addr:housenumber": "49",
+            "addr:street": "Zentralländstraße",
+            "addr:city": "Munich",
+            "addr:postcode": "81379",
+            "addr:country": "DE",
+            "is_in:country": "Germany"
+          },
+          "photon": {
+            "type": "Feature",
+            "properties": {
+              "osm_type": "N",
+              "osm_id": 13972155637,
+              "osm_key": "amenity",
+              "osm_value": "restaurant",
+              "type": "house",
+              "housenumber": "49",
+              "name": "Restaurant",
+              "street": "Zentralländstraße",
+              "locality": "Maria Einsiedel",
+              "district": "Thalkirchen",
+              "city": "Munich",
+              "state": "Bavaria",
+              "country": "Germany",
+              "postcode": "81379",
+              "countrycode": "DE"
+            },
+            "geometry": {
+              "type": "Point",
+              "coordinates": [
+                11.5444857,
+                48.0913071
+              ]
+            }
+          }
+        },
+        "searchRelevance": 77,
+        "marketName": "Munich",
+        "countryName": "Germany",
+        "audit": {
+          "score": 100,
+          "category": "Very High Opportunity",
+          "checks": {
+            "websiteExists": false,
+            "https": false,
+            "mobileFriendly": false,
+            "seoMetadata": false,
+            "contactForm": false,
+            "socialLinksFound": false,
+            "businessEmailDetected": false,
+            "bookingSystem": false,
+            "outdatedDesign": true
+          },
+          "elapsedMs": 0
+        },
+        "opportunityScore": 100,
+        "opportunityCategory": "Very High Opportunity",
+        "discoveredBy": "owner",
+        "discoveredAt": "2026-10-09T21:46:56.495Z",
+        "updatedAt": "2026-10-09T21:46:56.495Z",
+        "createdAt": "2026-10-09T21:46:56.495Z"
+      },
+      {
+        "id": "osm-node-38424534",
+        "name": "Goldener Ochsen",
+        "category": "Hotel",
+        "businessType": "Hotel",
+        "address": "9, Beim Rathaus, Waiblingen, 71336, DE",
+        "phone": "+49 7151 989030",
+        "rating": null,
+        "reviewsCount": 0,
+        "websiteUrl": "",
+        "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=Goldener%20Ochsen%209%2C%20Beim%20Rathaus%2C%20Waiblingen%2C%2071336%2C%20DE",
+        "latitude": 48.8480328,
+        "longitude": 9.3212343,
+        "country": "Germany",
+        "countryCode": "DE",
+        "email": "",
+        "social": "",
+        "openingHours": "",
+        "details": {
+          "ownerContact": {
+            "publicContactNote": "Owner or direct contact person was not listed in the public map data."
+          },
+          "contact": {
+            "phone": "+49 7151 989030"
+          },
+          "social": {},
+          "location": {
+            "latitude": 48.8480328,
+            "longitude": 9.3212343,
+            "address": "9, Beim Rathaus, Waiblingen, 71336, DE",
+            "houseNumber": "9",
+            "street": "Beim Rathaus",
+            "city": "Waiblingen",
+            "postcode": "71336",
+            "country": "Germany",
+            "countryCode": "DE",
+            "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=Goldener%20Ochsen%209%2C%20Beim%20Rathaus%2C%20Waiblingen%2C%2071336%2C%20DE"
+          },
+          "business": {},
+          "operations": {},
+          "payments": {},
+          "source": {
+            "provider": "OpenStreetMap Overpass",
+            "osmType": "node",
+            "osmId": 38424534,
+            "osmUrl": "https://www.openstreetmap.org/node/38424534",
+            "rawTags": {
+              "addr:city": "Waiblingen",
+              "addr:country": "DE",
+              "addr:housenumber": "9",
+              "addr:postcode": "71336",
+              "addr:street": "Beim Rathaus",
+              "name": "Goldener Ochsen",
+              "phone": "+49 7151 989030",
+              "tourism": "hotel"
+            }
+          }
+        },
+        "source": "openstreetmap_photon",
+        "raw": {
+          "osmType": "node",
+          "osmId": 38424534,
+          "tags": {
+            "addr:city": "Waiblingen",
+            "addr:country": "DE",
+            "addr:housenumber": "9",
+            "addr:postcode": "71336",
+            "addr:street": "Beim Rathaus",
+            "name": "Goldener Ochsen",
+            "phone": "+49 7151 989030",
+            "tourism": "hotel"
+          }
+        },
+        "searchRelevance": 93,
+        "marketName": "Stuttgart",
+        "countryName": "Germany",
+        "audit": {
+          "score": 100,
+          "category": "Very High Opportunity",
+          "checks": {
+            "websiteExists": false,
+            "https": false,
+            "mobileFriendly": false,
+            "seoMetadata": false,
+            "contactForm": false,
+            "socialLinksFound": false,
+            "businessEmailDetected": false,
+            "bookingSystem": false,
+            "outdatedDesign": true
+          },
+          "elapsedMs": 0
+        },
+        "opportunityScore": 100,
+        "opportunityCategory": "Very High Opportunity",
+        "discoveredBy": "owner",
+        "discoveredAt": "2026-10-10T20:42:09.093Z",
+        "updatedAt": "2026-10-10T20:42:09.093Z",
+        "createdAt": "2026-10-10T20:42:09.093Z"
+      },
+      {
+        "id": "osm-node-100269010",
+        "name": "Gutshof Menterschwaige",
+        "category": "Restaurant",
+        "businessType": "Restaurant",
+        "address": "4, Menterschwaigstraße, München, 81545, DE",
+        "phone": "",
+        "rating": null,
+        "reviewsCount": 0,
+        "websiteUrl": "",
+        "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=Gutshof%20Menterschwaige%204%2C%20Menterschwaigstra%C3%9Fe%2C%20M%C3%BCnchen%2C%2081545%2C%20DE",
+        "latitude": 48.0817888,
+        "longitude": 11.5451926,
+        "country": "Germany",
+        "countryCode": "DE",
+        "email": "office@augustinermenterschwaige.de",
+        "social": "",
+        "openingHours": "Mo-Su,PH 11:30-22:00",
+        "details": {
+          "ownerContact": {
+            "publicContactNote": "Owner or direct contact person was not listed in the public map data."
+          },
+          "contact": {
+            "email": "office@augustinermenterschwaige.de"
+          },
+          "social": {},
+          "location": {
+            "latitude": 48.0817888,
+            "longitude": 11.5451926,
+            "address": "4, Menterschwaigstraße, München, 81545, DE",
+            "houseNumber": "4",
+            "street": "Menterschwaigstraße",
+            "city": "München",
+            "postcode": "81545",
+            "country": "Germany",
+            "countryCode": "DE",
+            "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=Gutshof%20Menterschwaige%204%2C%20Menterschwaigstra%C3%9Fe%2C%20M%C3%BCnchen%2C%2081545%2C%20DE"
+          },
+          "business": {},
+          "operations": {
+            "openingHours": "Mo-Su,PH 11:30-22:00",
+            "internetAccess": "wlan"
+          },
+          "payments": {},
+          "source": {
+            "provider": "OpenStreetMap Overpass",
+            "osmType": "node",
+            "osmId": 100269010,
+            "osmUrl": "https://www.openstreetmap.org/node/100269010",
+            "rawTags": {
+              "addr:city": "München",
+              "addr:country": "DE",
+              "addr:housenumber": "4",
+              "addr:postcode": "81545",
+              "addr:street": "Menterschwaigstraße",
+              "amenity": "restaurant",
+              "check_date": "2026-07-10",
+              "diet:vegetarian": "yes",
+              "email": "office@augustinermenterschwaige.de",
+              "internet_access": "wlan",
+              "name": "Gutshof Menterschwaige",
+              "opening_hours": "Mo-Su,PH 11:30-22:00",
+              "payment:credit_cards": "yes",
+              "payment:debit_cards": "yes",
+              "self_service": "no",
+              "wikidata": "Q1557297",
+              "wikipedia": "de:Gutshof Menterschwaige"
+            }
+          }
+        },
+        "source": "openstreetmap_photon",
+        "raw": {
+          "osmType": "node",
+          "osmId": 100269010,
+          "tags": {
+            "addr:city": "München",
+            "addr:country": "DE",
+            "addr:housenumber": "4",
+            "addr:postcode": "81545",
+            "addr:street": "Menterschwaigstraße",
+            "amenity": "restaurant",
+            "check_date": "2026-07-10",
+            "diet:vegetarian": "yes",
+            "email": "office@augustinermenterschwaige.de",
+            "internet_access": "wlan",
+            "name": "Gutshof Menterschwaige",
+            "opening_hours": "Mo-Su,PH 11:30-22:00",
+            "payment:credit_cards": "yes",
+            "payment:debit_cards": "yes",
+            "self_service": "no",
+            "wikidata": "Q1557297",
+            "wikipedia": "de:Gutshof Menterschwaige"
+          }
+        },
+        "searchRelevance": 97,
+        "marketName": "Munich",
+        "countryName": "Germany",
+        "audit": {
+          "score": 100,
+          "category": "Very High Opportunity",
+          "checks": {
+            "websiteExists": false,
+            "https": false,
+            "mobileFriendly": false,
+            "seoMetadata": false,
+            "contactForm": false,
+            "socialLinksFound": false,
+            "businessEmailDetected": false,
+            "bookingSystem": false,
+            "outdatedDesign": true
+          },
+          "elapsedMs": 0
+        },
+        "opportunityScore": 100,
+        "opportunityCategory": "Very High Opportunity",
+        "discoveredBy": "owner",
+        "discoveredAt": "2026-10-10T20:42:09.093Z",
+        "updatedAt": "2026-10-10T20:42:09.093Z",
+        "createdAt": "2026-10-10T20:42:09.093Z"
+      },
+      {
+        "id": "osm-node-244218844",
+        "name": "Hot Million",
+        "category": "Restaurant",
+        "businessType": "Restaurant",
+        "address": "37, Korntaler Straße, Stuttgart, 70439, DE",
+        "phone": "+49 711 8001023",
+        "rating": null,
+        "reviewsCount": 0,
+        "websiteUrl": "",
+        "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=Hot%20Million%2037%2C%20Korntaler%20Stra%C3%9Fe%2C%20Stuttgart%2C%2070439%2C%20DE",
+        "latitude": 48.8458037,
+        "longitude": 9.1566291,
+        "country": "Germany",
+        "countryCode": "DE",
+        "email": "",
+        "social": "",
+        "openingHours": "Mo-Fr 10:30-14:00,16:30-23:00; Sa,Su,PH 11:00-23:00",
+        "details": {
+          "ownerContact": {
+            "publicContactNote": "Owner or direct contact person was not listed in the public map data."
+          },
+          "contact": {
+            "phone": "+49 711 8001023"
+          },
+          "social": {},
+          "location": {
+            "latitude": 48.8458037,
+            "longitude": 9.1566291,
+            "address": "37, Korntaler Straße, Stuttgart, 70439, DE",
+            "houseNumber": "37",
+            "street": "Korntaler Straße",
+            "city": "Stuttgart",
+            "postcode": "70439",
+            "country": "Germany",
+            "countryCode": "DE",
+            "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=Hot%20Million%2037%2C%20Korntaler%20Stra%C3%9Fe%2C%20Stuttgart%2C%2070439%2C%20DE"
+          },
+          "business": {
+            "cuisine": "pizza;chinese"
+          },
+          "operations": {
+            "openingHours": "Mo-Fr 10:30-14:00,16:30-23:00; Sa,Su,PH 11:00-23:00",
+            "delivery": "yes",
+            "wheelchair": "limited"
+          },
+          "payments": {},
+          "source": {
+            "provider": "OpenStreetMap Overpass",
+            "osmType": "node",
+            "osmId": 244218844,
+            "osmUrl": "https://www.openstreetmap.org/node/244218844",
+            "rawTags": {
+              "addr:city": "Stuttgart",
+              "addr:country": "DE",
+              "addr:housenumber": "37",
+              "addr:postcode": "70439",
+              "addr:street": "Korntaler Straße",
+              "amenity": "fast_food",
+              "contact:phone": "+49 711 8001023",
+              "cuisine": "pizza;chinese",
+              "delivery": "yes",
+              "fixme": "delivery=only?",
+              "name": "Hot Million",
+              "opening_hours": "Mo-Fr 10:30-14:00,16:30-23:00; Sa,Su,PH 11:00-23:00",
+              "wheelchair": "limited"
+            }
+          }
+        },
+        "source": "openstreetmap_photon",
+        "raw": {
+          "osmType": "node",
+          "osmId": 244218844,
+          "tags": {
+            "addr:city": "Stuttgart",
+            "addr:country": "DE",
+            "addr:housenumber": "37",
+            "addr:postcode": "70439",
+            "addr:street": "Korntaler Straße",
+            "amenity": "fast_food",
+            "contact:phone": "+49 711 8001023",
+            "cuisine": "pizza;chinese",
+            "delivery": "yes",
+            "fixme": "delivery=only?",
+            "name": "Hot Million",
+            "opening_hours": "Mo-Fr 10:30-14:00,16:30-23:00; Sa,Su,PH 11:00-23:00",
+            "wheelchair": "limited"
+          }
+        },
+        "searchRelevance": 97,
+        "marketName": "Stuttgart",
+        "countryName": "Germany",
+        "audit": {
+          "score": 100,
+          "category": "Very High Opportunity",
+          "checks": {
+            "websiteExists": false,
+            "https": false,
+            "mobileFriendly": false,
+            "seoMetadata": false,
+            "contactForm": false,
+            "socialLinksFound": false,
+            "businessEmailDetected": false,
+            "bookingSystem": false,
+            "outdatedDesign": true
+          },
+          "elapsedMs": 0
+        },
+        "opportunityScore": 100,
+        "opportunityCategory": "Very High Opportunity",
+        "discoveredBy": "owner",
+        "discoveredAt": "2026-10-10T20:42:09.093Z",
+        "updatedAt": "2026-10-10T20:42:09.093Z",
+        "createdAt": "2026-10-10T20:42:09.093Z"
+      },
+      {
+        "id": "osm-node-211212107",
+        "name": "La Passione",
+        "category": "Restaurant",
+        "businessType": "Restaurant",
+        "address": "17, Schneckestraße, München, 81737, DE",
+        "phone": "+49 89 87768552",
+        "rating": null,
+        "reviewsCount": 0,
+        "websiteUrl": "",
+        "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=La%20Passione%2017%2C%20Schneckestra%C3%9Fe%2C%20M%C3%BCnchen%2C%2081737%2C%20DE",
+        "latitude": 48.0943417,
+        "longitude": 11.6312156,
+        "country": "Germany",
+        "countryCode": "DE",
+        "email": "",
+        "social": "",
+        "openingHours": "Tu-Sa 11:30-14:30, 17:30-22:30; Su 11:30-21:30",
+        "details": {
+          "ownerContact": {
+            "publicContactNote": "Owner or direct contact person was not listed in the public map data."
+          },
+          "contact": {
+            "phone": "+49 89 87768552"
+          },
+          "social": {},
+          "location": {
+            "latitude": 48.0943417,
+            "longitude": 11.6312156,
+            "address": "17, Schneckestraße, München, 81737, DE",
+            "houseNumber": "17",
+            "street": "Schneckestraße",
+            "city": "München",
+            "postcode": "81737",
+            "country": "Germany",
+            "countryCode": "DE",
+            "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=La%20Passione%2017%2C%20Schneckestra%C3%9Fe%2C%20M%C3%BCnchen%2C%2081737%2C%20DE"
+          },
+          "business": {
+            "cuisine": "italian"
+          },
+          "operations": {
+            "openingHours": "Tu-Sa 11:30-14:30, 17:30-22:30; Su 11:30-21:30",
+            "outdoorSeating": "yes",
+            "wheelchair": "limited"
+          },
+          "payments": {},
+          "source": {
+            "provider": "OpenStreetMap Overpass",
+            "osmType": "node",
+            "osmId": 211212107,
+            "osmUrl": "https://www.openstreetmap.org/node/211212107",
+            "rawTags": {
+              "addr:city": "München",
+              "addr:country": "DE",
+              "addr:housenumber": "17",
+              "addr:postcode": "81737",
+              "addr:street": "Schneckestraße",
+              "amenity": "restaurant",
+              "check_date": "2023-09-01",
+              "cuisine": "italian",
+              "diet:halal": "no",
+              "diet:kosher": "no",
+              "diet:vegan": "no",
+              "diet:vegetarian": "yes",
+              "indoor_seating": "yes",
+              "name": "La Passione",
+              "opening_hours": "Tu-Sa 11:30-14:30, 17:30-22:30; Su 11:30-21:30",
+              "outdoor_seating": "yes",
+              "phone": "+49 89 87768552",
+              "wheelchair": "limited"
+            }
+          }
+        },
+        "source": "openstreetmap_photon",
+        "raw": {
+          "osmType": "node",
+          "osmId": 211212107,
+          "tags": {
+            "addr:city": "München",
+            "addr:country": "DE",
+            "addr:housenumber": "17",
+            "addr:postcode": "81737",
+            "addr:street": "Schneckestraße",
+            "amenity": "restaurant",
+            "check_date": "2023-09-01",
+            "cuisine": "italian",
+            "diet:halal": "no",
+            "diet:kosher": "no",
+            "diet:vegan": "no",
+            "diet:vegetarian": "yes",
+            "indoor_seating": "yes",
+            "name": "La Passione",
+            "opening_hours": "Tu-Sa 11:30-14:30, 17:30-22:30; Su 11:30-21:30",
+            "outdoor_seating": "yes",
+            "phone": "+49 89 87768552",
+            "wheelchair": "limited"
+          }
+        },
+        "searchRelevance": 97,
+        "marketName": "Munich",
+        "countryName": "Germany",
+        "audit": {
+          "score": 100,
+          "category": "Very High Opportunity",
+          "checks": {
+            "websiteExists": false,
+            "https": false,
+            "mobileFriendly": false,
+            "seoMetadata": false,
+            "contactForm": false,
+            "socialLinksFound": false,
+            "businessEmailDetected": false,
+            "bookingSystem": false,
+            "outdatedDesign": true
+          },
+          "elapsedMs": 0
+        },
+        "opportunityScore": 100,
+        "opportunityCategory": "Very High Opportunity",
+        "discoveredBy": "owner",
+        "discoveredAt": "2026-10-10T20:42:09.093Z",
+        "updatedAt": "2026-10-10T20:42:09.093Z",
+        "createdAt": "2026-10-10T20:42:09.093Z"
       }
     ],
     "auditLogs": [
@@ -13726,6 +15529,120 @@
         "id": "3cc174b0-cbb7-4b74-9318-f505f37d4379",
         "createdAt": "2026-10-09T07:25:07.625Z",
         "updatedAt": "2026-10-09T07:25:07.625Z"
+      },
+      {
+        "actor": "owner@matleads.local",
+        "action": "lead_search",
+        "query": {
+          "country": "Germany",
+          "countries": [
+            "Germany"
+          ],
+          "state": "",
+          "city": "",
+          "zip": "",
+          "industry": "restaurants, hotels, boutiques, car_dealers",
+          "keyword": "",
+          "businessTypes": [
+            "restaurants",
+            "hotels",
+            "boutiques",
+            "car_dealers"
+          ],
+          "mapLink": "",
+          "latitude": null,
+          "longitude": null,
+          "radiusMeters": 15000,
+          "limit": 20,
+          "searchDepth": "deep",
+          "leadQuality": "all",
+          "sortBy": "opportunity",
+          "minOpportunityScore": 0,
+          "requireContact": false,
+          "missingWebsiteOnly": false,
+          "bypassCache": false,
+          "refreshSeed": ""
+        },
+        "count": 20,
+        "id": "0a9f766a-a465-40c1-97d9-157f6cd4f237",
+        "createdAt": "2026-10-09T21:47:45.355Z",
+        "updatedAt": "2026-10-09T21:47:45.355Z"
+      },
+      {
+        "actor": "owner@matleads.local",
+        "action": "lead_search_cached",
+        "query": {
+          "country": "Germany",
+          "countries": [
+            "Germany"
+          ],
+          "state": "",
+          "city": "",
+          "zip": "",
+          "industry": "restaurants, hotels, boutiques, car_dealers",
+          "keyword": "",
+          "businessTypes": [
+            "restaurants",
+            "hotels",
+            "boutiques",
+            "car_dealers"
+          ],
+          "mapLink": "",
+          "latitude": null,
+          "longitude": null,
+          "radiusMeters": 15000,
+          "limit": 20,
+          "searchDepth": "deep",
+          "leadQuality": "all",
+          "sortBy": "opportunity",
+          "minOpportunityScore": 0,
+          "requireContact": false,
+          "missingWebsiteOnly": false,
+          "bypassCache": false,
+          "refreshSeed": ""
+        },
+        "count": 20,
+        "id": "21c89497-8e38-4d9f-be0a-5fa31cac7290",
+        "createdAt": "2026-10-09T21:49:49.708Z",
+        "updatedAt": "2026-10-09T21:49:49.708Z"
+      },
+      {
+        "actor": "owner@matleads.local",
+        "action": "lead_search",
+        "query": {
+          "country": "Germany",
+          "countries": [
+            "Germany"
+          ],
+          "state": "",
+          "city": "",
+          "zip": "",
+          "industry": "restaurants, hotels, boutiques, car_dealers",
+          "keyword": "",
+          "businessTypes": [
+            "restaurants",
+            "hotels",
+            "boutiques",
+            "car_dealers"
+          ],
+          "mapLink": "",
+          "latitude": null,
+          "longitude": null,
+          "radiusMeters": 15000,
+          "limit": 20,
+          "searchDepth": "deep",
+          "leadQuality": "all",
+          "sortBy": "opportunity",
+          "minOpportunityScore": 0,
+          "requireContact": false,
+          "missingWebsiteOnly": false,
+          "bypassCache": false,
+          "refreshSeed": ""
+        },
+        "count": 20,
+        "id": "295c9620-fa4f-438c-8de8-9c5d26b4032d",
+        "createdAt": "2026-10-10T20:42:43.291Z",
+        "updatedAt": "2026-10-10T20:42:43.291Z"
       }
     ],
     "activities": [
@@ -13798,6 +15715,84 @@
         ],
         "createdAt": "2026-10-09T06:40:40.377Z",
         "updatedAt": "2026-10-09T06:40:40.377Z"
+      },
+      {
+        "id": "cf3bc853-f8bb-4398-a01f-6ce8ec79efef",
+        "shareToken": "d29ca2171e94434e97059c12",
+        "ownerId": "owner",
+        "leadId": "osm-node-243924634",
+        "leadName": "Anju Korean Tapas",
+        "businessType": "Restaurant",
+        "address": "",
+        "phone": "+49 221 16825210",
+        "email": "",
+        "businessName": "Anju Korean Tapas",
+        "style": "modern",
+        "html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Anju Korean Tapas | Restaurant</title><meta name=\"description\" content=\"Anju Korean Tapas - Restaurant. Call, book and get a quote today.\"><style>*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,Arial,sans-serif;color:#0f172a;background:#f8fafc}header{background:#0b1220;color:#fff;padding:56px 24px;text-align:center}header h1{margin:0 0 8px;font-size:clamp(2rem,5vw,3.4rem)}.btn{display:inline-block;padding:13px 22px;border-radius:10px;font-weight:700;text-decoration:none}.btn-p{background:#22c55e;color:#06281a}.btn-g{border:1px solid rgba(255,255,255,.4);color:#fff;margin-left:10px}.wrap{max-width:1080px;margin:0 auto;padding:28px 20px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}.card{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:20px}footer{background:#0b1220;color:#cbd5e1;text-align:center;padding:22px}form{display:grid;gap:10px;max-width:520px}input,textarea{padding:12px;border:1px solid #cbd5e1;border-radius:10px;font:inherit}</style></head><body><header><p style=\"letter-spacing:2px;text-transform:uppercase;font-size:12px\">Restaurant</p><h1>Anju Korean Tapas</h1><p>Professional mobile-first website built to turn local searches into calls and bookings.</p><div><a class=\"btn btn-p\" href=\"tel:+49 221 16825210\">Call +49 221 16825210</a><a class=\"btn btn-g\" href=\"#quote\">Book Online</a></div></header><div class=\"wrap\"><div class=\"grid\"><div class=\"card\"><h3>Why choose us</h3><p>Trusted local restaurant with fast response and transparent pricing.</p></div><div class=\"card\"><h3>Services</h3><p>Consultation, premium service, bookings and priority support.</p></div><div class=\"card\"><h3>Reviews</h3><p>Loved by local customers for quality and friendly support.</p></div></div><div class=\"card\" id=\"quote\" style=\"margin-top:20px\"><h2>Get a free quote</h2><form onsubmit=\"alert('Thanks! We will contact you shortly.');return false\"><input required placeholder=\"Your name\"><input placeholder=\"Phone or email\"><textarea rows=\"4\" placeholder=\"What do you need?\"></textarea><button class=\"btn btn-p\" type=\"submit\">Request Quote</button></form><p>+49 221 16825210 </p></div></div><footer>Anju Korean Tapas - Restaurant - Built with MAT LEADS AI PRO X</footer></body></html>",
+        "provider": "template",
+        "model": "builtin-template-v1",
+        "aiError": "NVIDIA AI authentication failed. Replace NVIDIA_API_KEY in .env or Vercel, then restart or redeploy.",
+        "revisions": 1,
+        "history": [
+          {
+            "at": "2026-10-09T21:47:56.533Z",
+            "instruction": "Initial AI website build"
+          }
+        ],
+        "createdAt": "2026-10-09T21:47:57.449Z",
+        "updatedAt": "2026-10-09T21:47:57.449Z"
+      },
+      {
+        "id": "b8748642-3ce9-4a25-9eea-6ec12bdcf832",
+        "shareToken": "a265762746d949a6b3268220",
+        "ownerId": "owner",
+        "leadId": "osm-node-243924634",
+        "leadName": "Anju Korean Tapas",
+        "businessType": "Restaurant",
+        "address": "",
+        "phone": "+49 221 16825210",
+        "email": "",
+        "businessName": "Anju Korean Tapas",
+        "style": "modern",
+        "html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Anju Korean Tapas | Restaurant</title><meta name=\"description\" content=\"Anju Korean Tapas - Restaurant. Call, book and get a quote today.\"><style>*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,Arial,sans-serif;color:#0f172a;background:#f8fafc}header{background:#0b1220;color:#fff;padding:56px 24px;text-align:center}header h1{margin:0 0 8px;font-size:clamp(2rem,5vw,3.4rem)}.btn{display:inline-block;padding:13px 22px;border-radius:10px;font-weight:700;text-decoration:none}.btn-p{background:#22c55e;color:#06281a}.btn-g{border:1px solid rgba(255,255,255,.4);color:#fff;margin-left:10px}.wrap{max-width:1080px;margin:0 auto;padding:28px 20px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}.card{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:20px}footer{background:#0b1220;color:#cbd5e1;text-align:center;padding:22px}form{display:grid;gap:10px;max-width:520px}input,textarea{padding:12px;border:1px solid #cbd5e1;border-radius:10px;font:inherit}</style></head><body><header><p style=\"letter-spacing:2px;text-transform:uppercase;font-size:12px\">Restaurant</p><h1>Anju Korean Tapas</h1><p>Professional mobile-first website built to turn local searches into calls and bookings.</p><div><a class=\"btn btn-p\" href=\"tel:+49 221 16825210\">Call +49 221 16825210</a><a class=\"btn btn-g\" href=\"#quote\">Book Online</a></div></header><div class=\"wrap\"><div class=\"grid\"><div class=\"card\"><h3>Why choose us</h3><p>Trusted local restaurant with fast response and transparent pricing.</p></div><div class=\"card\"><h3>Services</h3><p>Consultation, premium service, bookings and priority support.</p></div><div class=\"card\"><h3>Reviews</h3><p>Loved by local customers for quality and friendly support.</p></div></div><div class=\"card\" id=\"quote\" style=\"margin-top:20px\"><h2>Get a free quote</h2><form onsubmit=\"alert('Thanks! We will contact you shortly.');return false\"><input required placeholder=\"Your name\"><input placeholder=\"Phone or email\"><textarea rows=\"4\" placeholder=\"What do you need?\"></textarea><button class=\"btn btn-p\" type=\"submit\">Request Quote</button></form><p>+49 221 16825210 </p></div></div><footer>Anju Korean Tapas - Restaurant - Built with MAT LEADS AI PRO X</footer></body></html>",
+        "provider": "template",
+        "model": "builtin-template-v1",
+        "aiError": "NVIDIA AI authentication failed. Replace NVIDIA_API_KEY in .env or Vercel, then restart or redeploy.",
+        "revisions": 1,
+        "history": [
+          {
+            "at": "2026-10-09T21:50:25.312Z",
+            "instruction": "Initial AI website build"
+          }
+        ],
+        "createdAt": "2026-10-09T21:50:26.184Z",
+        "updatedAt": "2026-10-09T21:50:26.184Z"
+      },
+      {
+        "id": "e9f867ba-787c-4048-9ca3-c092c35a4eaa",
+        "shareToken": "cb72fa921e044562a5b8ba4f",
+        "ownerId": "owner",
+        "leadId": "osm-node-244020964",
+        "leadName": "Ananta",
+        "businessType": "Restaurant",
+        "address": "39, Hauptstraße, Neubiberg, 85579, DE",
+        "phone": "+49 89 66011133",
+        "email": "",
+        "businessName": "Ananta",
+        "style": "modern",
+        "html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Ananta | Restaurant</title><meta name=\"description\" content=\"Ananta - Restaurant. Call, book and get a quote today.\"><style>*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,Arial,sans-serif;color:#0f172a;background:#f8fafc}header{background:#0b1220;color:#fff;padding:56px 24px;text-align:center}header h1{margin:0 0 8px;font-size:clamp(2rem,5vw,3.4rem)}.btn{display:inline-block;padding:13px 22px;border-radius:10px;font-weight:700;text-decoration:none}.btn-p{background:#22c55e;color:#06281a}.btn-g{border:1px solid rgba(255,255,255,.4);color:#fff;margin-left:10px}.wrap{max-width:1080px;margin:0 auto;padding:28px 20px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}.card{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:20px}footer{background:#0b1220;color:#cbd5e1;text-align:center;padding:22px}form{display:grid;gap:10px;max-width:520px}input,textarea{padding:12px;border:1px solid #cbd5e1;border-radius:10px;font:inherit}</style></head><body><header><p style=\"letter-spacing:2px;text-transform:uppercase;font-size:12px\">Restaurant</p><h1>Ananta</h1><p>Professional mobile-first website built to turn local searches into calls and bookings. Visit us at 39, Hauptstraße, Neubiberg, 85579, DE.</p><div><a class=\"btn btn-p\" href=\"tel:+49 89 66011133\">Call +49 89 66011133</a><a class=\"btn btn-g\" href=\"#quote\">Book Online</a></div></header><div class=\"wrap\"><div class=\"grid\"><div class=\"card\"><h3>Why choose us</h3><p>Trusted local restaurant with fast response and transparent pricing.</p></div><div class=\"card\"><h3>Services</h3><p>Consultation, premium service, bookings and priority support.</p></div><div class=\"card\"><h3>Reviews</h3><p>Loved by local customers for quality and friendly support.</p></div></div><div class=\"card\" id=\"quote\" style=\"margin-top:20px\"><h2>Get a free quote</h2><form onsubmit=\"alert('Thanks! We will contact you shortly.');return false\"><input required placeholder=\"Your name\"><input placeholder=\"Phone or email\"><textarea rows=\"4\" placeholder=\"What do you need?\"></textarea><button class=\"btn btn-p\" type=\"submit\">Request Quote</button></form><p>+49 89 66011133 </p></div></div><footer>Ananta - Restaurant - Built with MAT LEADS AI PRO X</footer></body></html>",
+        "provider": "template",
+        "model": "builtin-template-v1",
+        "aiError": "AI key missing (NVIDIA_API_KEY in Vercel). Used premium template.",
+        "revisions": 1,
+        "history": [
+          {
+            "at": "2026-10-10T20:42:55.539Z",
+            "instruction": "Initial AI website build"
+          }
+        ],
+        "createdAt": "2026-10-10T20:42:56.400Z",
+        "updatedAt": "2026-10-10T20:42:56.400Z"
       }
     ]
   }

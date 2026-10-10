@@ -7,17 +7,48 @@ const modelCooldowns = new Map();
 const MAX_CACHE_ENTRIES = 200;
 const MODEL_COOLDOWN_MS = 5 * 60 * 1000;
 
-// Verified live NVIDIA NIM chat IDs (docs 2026): deepseek-v4-flash, z-ai glm-5.3-flash, moonshot kimi-k2, qwen3-next, nemotron nano.
-// Retired — never call these (your error: llama-3.1-8b EOL 2026-08-26).
+// Live-per-probe (Oct 2026): these exist; your key returns 403 until activated on
+// https://build.nvidia.com/<model> ("Get API Key"). Dead IDs never get called.
 const DEFAULT_MODELS = [
   "z-ai/glm-5.3-flash",
-  "deepseek-ai/deepseek-v4-flash",
-  "deepseek-ai/deepseek-v4-flash-0731"
+  "z-ai/glm-5.3",
+  "moonshotai/kimi-k3",
+  "openai/gpt-oss-20b",
+  "nvidia/nemotron-3.5-lightning-30b-a3b"
 ];
 const DEAD_MODELS = new Set([
-  "meta/llama-3.1-8b-instruct",
-  "meta/llama-4-maverick-17b-128e-instruct",
+  "deepseek-ai/deepseek-v4-flash",
+  "deepseek-ai/deepseek-v4-flash-0731",
+  "deepseek-ai/deepseek-v4-pro",
   "deepseek-ai/deepseek-v4.1-flash",
+  "meta/llama-3.1-8b-instruct",
+  "meta/llama-3.1-8b",
+  "meta/llama-3.1-70b-instruct",
+  "meta/llama-3.2-1b-instruct",
+  "meta/llama-3.2-3b-instruct",
+  "meta/llama-3.3-70b-instruct",
+  "meta/llama-4-maverick-17b-128e-instruct",
+  "moonshotai/kimi-k2-instruct",
+  "moonshotai/kimi-k2-thinking",
+  "qwen/qwen3-next-80b-a3b-instruct",
+  "qwen/qwen3-next-80b-a3b-thinking",
+  "qwen/qwen2.5-coder-32b-instruct",
+  "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+  "nvidia/nemotron-3-nano-30b-a3b",
+  "nvidia/nemotron-nano-9b-v2",
+  "openai/gpt-oss-120b",
+  "stepfun-ai/step-3.5-flash",
+  "microsoft/phi-4-mini-instruct",
+  "minimaxai/minimax-m2.5",
+  "minimaxai/minimax-m2.7",
+  "upstage/solar-10.7b-instruct",
+  "sarvamai/sarvam-m",
+  "stockmark/stockmark-2-100b-instruct",
+  "z-ai/glm-5.2",
+  "z-ai/glm4.7",
+  "llama-3.1-8b",
+  "llama-4-maverick",
+  "google/gemma-4-31b-it"
 ]);
 
 function isRetiredModel(id = "") {
@@ -202,14 +233,20 @@ function publicNvidiaError(error) {
   const raw = String(error?.message || "");
   const status = Number(error?.status || 0);
   if (error?.code === "NVIDIA_NOT_CONFIGURED") return error;
-  if (status === 401 || status === 403 || /authorization failed|invalid api key|invalid token|unauthorized/i.test(raw)) {
-    return new AppError("NVIDIA AI authentication failed. Replace NVIDIA_API_KEY in .env or Vercel, then restart or redeploy.", 503, "NVIDIA_AUTH_FAILED");
+  if (status === 401) {
+    return new AppError("NVIDIA rejected the API key (401). Open https://build.nvidia.com, sign in, click 'Get API Key', replace NVIDIA_API_KEY in .env/Vercel, then redeploy.", 503, "NVIDIA_AUTH_FAILED");
+  }
+  if (status === 403 || /authorization failed/i.test(raw)) {
+    return new AppError("Your NVIDIA key is valid but not activated for this model (403). Fix: while signed in at https://build.nvidia.com, open the model page (e.g. https://build.nvidia.com/z-ai/glm-5.3-flash), click 'Get API Key' / activate it, then replace NVIDIA_API_KEY in .env and Vercel and redeploy.", 503, "NVIDIA_MODEL_NOT_ACTIVE");
+  }
+  if (status === 410 || /end of life/i.test(raw)) {
+    return new AppError("This NVIDIA model retired (410). The app auto-rotates to a live model — retry now; if it repeats, activate z-ai/glm-5.3-flash at https://build.nvidia.com and update NVIDIA_API_KEY.", 503, "NVIDIA_MODEL_EOL");
   }
   if (status === 402 || /payment required|insufficient.*credit|billing/i.test(raw)) {
     return new AppError("NVIDIA AI has no available inference credit or model access. Check the NVIDIA account, then try again.", 503, "NVIDIA_CREDIT_REQUIRED");
   }
   if (isEndOfLifeError(error) || status === 404) {
-    return new AppError("No configured NVIDIA model is available. Set NVIDIA_MODEL to deepseek-ai/deepseek-v4-flash, then restart or redeploy.", 503, "NVIDIA_MODEL_UNAVAILABLE");
+    return new AppError("No configured NVIDIA model is available. Set NVIDIA_MODEL=z-ai/glm-5.3-flash, activate it at https://build.nvidia.com, then restart or redeploy.", 503, "NVIDIA_MODEL_UNAVAILABLE");
   }
   if (error?.code === "NVIDIA_TIMEOUT" || status === 408 || status === 504) {
     return new AppError("NVIDIA AI timed out. Please try again in a moment.", 503, "NVIDIA_TIMEOUT");
@@ -301,7 +338,7 @@ export class NvidiaService {
     const queue = [...new Set([...(preferred && preferred.length ? preferred : []), ...modelsToTry()])]
       .filter((m) => !isRetiredModel(m))
       .slice(0, Math.max(1, Math.min(Number(maxAttempts) || 2, 2)));
-    if (!queue.length) throw new AppError("No usable NVIDIA model is configured. Set NVIDIA_MODEL=deepseek-ai/deepseek-v4-flash, then restart or redeploy.", 503, "NVIDIA_NO_LIVE_MODEL");
+    if (!queue.length) throw new AppError("No usable NVIDIA model is configured. Set NVIDIA_MODEL=z-ai/glm-5.3-flash and activate it at https://build.nvidia.com, then restart or redeploy.", 503, "NVIDIA_NO_LIVE_MODEL");
     const deadlineAt = Date.now() + requestBudget(timeoutMs, 24000);
     for (let index = 0; index < queue.length; index += 1) {
       const model = queue[index];
@@ -466,7 +503,7 @@ export class NvidiaService {
         role: "user",
         content: `${String(prompt || "").slice(0, 1200)}\n\nLead context: ${ctx}`
       }
-    ], { temperature: 0.5, topP: 1, maxTokens: 360, timeoutMs: env.nvidia.timeoutMs, cacheTtlMs: 600000, preferredModels: [env.nvidia.tycoonModel, "z-ai/glm-5.3-flash", "deepseek-ai/deepseek-v4-flash"], maxAttempts: 2 });
+    ], { temperature: 0.5, topP: 1, maxTokens: 360, timeoutMs: env.nvidia.timeoutMs, cacheTtlMs: 600000, preferredModels: [env.nvidia.tycoonModel, "z-ai/glm-5.3-flash", "z-ai/glm-5.3"], maxAttempts: 2 });
   }
 
   async completeRaw(messages, { temperature = 0.5, topP = 1, maxTokens = 2200, timeoutMs = 0 } = {}) {
