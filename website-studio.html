@@ -27,8 +27,22 @@
             <form id="studioBuildForm" class="form-grid compact">
               <div class="field" style="grid-column:1 / -1;"><label for="studioBusiness">Business name</label><input id="studioBusiness" name="businessName" placeholder="e.g. Lakeside Dental Studio"></div>
               <div class="field"><label for="studioStyle">Style</label><select id="studioStyle" name="style"><option value="modern">Modern premium</option><option value="luxury">Luxury dark</option><option value="medical">Clean medical</option><option value="restaurant">Warm restaurant</option><option value="bold">Bold agency</option></select></div>
-              <div class="field"><label for="studioPalette">Color theme</label><select id="studioPalette" name="palette"><option value="emerald">Emerald</option><option value="blue">Royal blue</option><option value="gold">Gold + black</option><option value="rose">Rose</option><option value="teal">Teal</option></select></div>
+              <div class="field"><label for="studioPalette">Color theme</label><select id="studioPalette" name="palette"><option value="emerald">Emerald</option><option value="blue">Royal blue</option><option value="gold">Gold + black</option><option value="rose">Rose</option><option value="teal">Teal</option><option value="purple">Purple</option><option value="orange">Orange</option></select></div>
+              <div class="field"><label for="studioPages">Number of pages</label><select id="studioPages" name="pages"><option value="1">1 page — Landing</option><option value="2">2 pages — Home + About</option><option value="3">3 pages — Home, About, Services</option><option value="4">4 pages — Home, About, Services, Contact</option></select></div>
               <div class="field" style="grid-column:1 / -1;"><label for="studioLeadId">Lead ID (optional - auto-filled from leads)</label><input id="studioLeadId" name="leadId" placeholder="Paste lead id or open Studio from a lead"></div>
+              <div class="field" style="grid-column:1 / -1;"><label for="studioHeroImg">Hero image — paste a URL or upload a file</label>
+                <div class="toolbar" style="flex-wrap:wrap;margin-bottom:6px;">
+                  <input id="studioHeroImg" placeholder="https://.../hero.jpg" style="flex:1;min-width:220px;">
+                  <label class="btn btn-secondary" for="studioHeroFile" style="cursor:pointer;">Upload hero</label>
+                  <input id="studioHeroFile" type="file" accept="image/*" hidden>
+                </div>
+              </div>
+              <div class="field" style="grid-column:1 / -1;"><label for="studioGallery">Gallery images — paste URLs (one per line) or upload files (up to 6)</label>
+                <textarea id="studioGallery" rows="3" placeholder="https://.../photo1.jpg&#10;https://.../photo2.jpg&#10;https://.../photo3.jpg"></textarea>
+                <label class="btn btn-secondary" for="studioGalleryFiles" style="cursor:pointer;margin-top:6px;">Upload gallery images</label>
+                <input id="studioGalleryFiles" type="file" accept="image/*" multiple hidden>
+                <div id="studioUploadMsg" class="notice" style="margin-top:6px;"></div>
+              </div>
               <button class="btn btn-primary" type="submit" id="studioBuildBtn">Generate Website</button>
             </form>
             <div id="studioStatus" class="notice" style="margin-top:12px;">Paste a lead or type a business name to start.</div>
@@ -38,10 +52,28 @@
               <button class="btn btn-secondary" type="submit">Apply Change</button>
             </form>
             <div class="toolbar" style="margin-top:14px;flex-wrap:wrap;">
+              <button class="btn btn-secondary" type="button" id="studioOpenPreview">Open Preview</button>
               <button class="btn btn-secondary" type="button" id="studioDownload">Download HTML</button>
               <button class="btn btn-secondary" type="button" id="studioCopyLink">Copy Share Link</button>
               <a class="btn btn-secondary" id="studioOpenLive" href="#" target="_blank" rel="noopener">Open Live Link</a>
             </div>
+            <h2 style="margin-top:18px;">Visual Editor — no code needed</h2>
+            <div class="form-grid compact">
+              <div class="field"><label for="editBiz">Business name</label><input id="editBiz" placeholder="e.g. Maria's Bakery"></div>
+              <div class="field"><label for="editHead">Headline</label><input id="editHead" placeholder="e.g. Fresh bread daily"></div>
+              <div class="field"><label for="editPhone">Phone</label><input id="editPhone" placeholder="+1 555 123 4567"></div>
+              <div class="field"><label for="editEmail">Email</label><input id="editEmail" type="email" placeholder="hello@biz.com"></div>
+              <div class="field"><label for="editCta">Button text</label><input id="editCta" placeholder="Get a Free Quote"></div>
+              <div class="field"><label for="editAccent">Button color</label><input id="editAccent" type="color" value="#22c55e"></div>
+              <div class="field" style="grid-column:1 / -1;"><label for="editImageUrl">Add an image to the page (URL)</label><input id="editImageUrl" placeholder="https://.../photo.jpg"></div>
+            </div>
+            <div class="toolbar" style="margin-top:10px;flex-wrap:wrap;">
+              <button class="btn btn-primary" type="button" id="editApply">Apply Changes</button>
+              <button class="btn btn-secondary" type="button" id="editAddImage">Add Image</button>
+              <button class="btn btn-secondary" type="button" id="editMode">Edit Text On Page</button>
+              <button class="btn btn-secondary" type="button" id="editSave">Save to Server</button>
+            </div>
+            <div class="notice" id="editMsg" style="margin-top:10px;">1) Fill the fields above and click Apply, or 2) click Edit Text On Page and type directly on the preview. Then Save to Server so your share link shows the edits.</div>
           </article>
           <article class="panel">
             <h2>Live Preview</h2>

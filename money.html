@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Money Toolkit | MAT LEADS AI PRO X</title>
+    <meta name="description" content="AI money tools: ad copy, social media packs, cold email, freelance gigs, pricing advice and a profit calculator. Earn online with every lead.">
+    <link rel="icon" href="/assets/logo-mark.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="/css/style.css">
+  </head>
+  <body data-page="money">
+    <div class="app-layout" data-app-shell>
+      <main class="workspace">
+        <section class="workspace-header">
+          <div>
+            <h1>Money Toolkit</h1>
+            <p>AI tools that turn skills + leads into cash: sell ads, social packs, emails and gigs — or plan your profit. Copy anything straight to WhatsApp.</p>
+          </div>
+          <div class="toolbar">
+            <a class="btn btn-secondary" href="/earn.html">Earn Hub</a>
+            <a class="btn btn-primary" href="/dashboard.html">Find Leads</a>
+          </div>
+        </section>
+
+        <div class="toolbar" id="moneyTabs" role="tablist" aria-label="Money tools" style="flex-wrap:wrap;gap:8px;margin-bottom:14px;">
+          <button class="btn btn-secondary is-active" type="button" data-tool="ads">Ad Copy</button>
+          <button class="btn btn-secondary" type="button" data-tool="social">Social Pack</button>
+          <button class="btn btn-secondary" type="button" data-tool="email">Cold Email</button>
+          <button class="btn btn-secondary" type="button" data-tool="gig">Freelance Gig</button>
+          <button class="btn btn-secondary" type="button" data-tool="pricing">Pricing Advice</button>
+          <button class="btn btn-secondary" type="button" data-tool="calc">Profit Calculator</button>
+        </div>
+
+        <section class="detail-layout">
+          <article class="panel">
+            <h2 id="moneyTitle">Ad Copy Generator</h2>
+            <p class="muted-value" id="moneyHint">Write high-converting Facebook / Google ad copy for a business you can charge for.</p>
+            <form id="moneyForm" class="form-grid compact">
+              <div class="field"><label for="moneyBusiness">Business / niche</label><input id="moneyBusiness" placeholder="e.g. Lagos restaurant with no online orders"></div>
+              <div class="field"><label for="moneyAudience" id="moneyAudienceLabel">Target audience</label><input id="moneyAudience" placeholder="e.g. hungry locals aged 18-35"></div>
+              <div class="field" style="grid-column:1 / -1;"><label for="moneyGoal">Goal / offer</label><input id="moneyGoal" placeholder="e.g. drive WhatsApp orders, 20% off first order"></div>
+              <button class="btn btn-primary" type="submit" id="moneySubmit">Generate</button>
+            </form>
+            <div class="toolbar" style="margin-top:12px;">
+              <button class="btn btn-secondary" type="button" id="moneyCopy">Copy</button>
+              <button class="btn btn-secondary" type="button" id="moneyWhats">Share to WhatsApp</button>
+            </div>
+          </article>
+
+          <article class="panel">
+            <h2>Result</h2>
+            <div id="moneyOut" class="notice">Pick a tool, fill the fields, and Generate. Everything here is built to be sold or pasted to a client.</div>
+          </article>
+        </section>
+
+        <section class="panel" id="calcPanel" hidden>
+          <h2>Profit Calculator</h2>
+          <p class="muted-value">Works offline — no AI needed. Know your real profit before you quote a client.</p>
+          <div class="form-grid compact">
+            <div class="field"><label for="calcPrice">Price you charge (USD)</label><input id="calcPrice" type="number" min="0" value="500"></div>
+            <div class="field"><label for="calcHours">Hours per job</label><input id="calcHours" type="number" min="0" value="6"></div>
+            <div class="field"><label for="calcHourCost">Your cost / hour (USD)</label><input id="calcHourCost" type="number" min="0" value="5"></div>
+            <div class="field"><label for="calcFixed">Monthly fixed costs (USD)</label><input id="calcFixed" type="number" min="0" value="50"></div>
+            <div class="field"><label for="calcClients">Clients per month</label><input id="calcClients" type="number" min="0" value="8"></div>
+            <div class="field"><label for="calcGoal">Monthly income goal (USD)</label><input id="calcGoal" type="number" min="0" value="4000"></div>
+          </div>
+          <div class="metrics-grid" id="calcOut" style="margin-top:14px;"></div>
+        </section>
+      </main>
+    </div>
+    <script type="module" src="/components/layout.js"></script>
+    <script type="module" src="/js/money.js"></script>
+  </body>
+</html>

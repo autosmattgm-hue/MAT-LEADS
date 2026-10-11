@@ -11,6 +11,16 @@
   <url><loc>https://matleads.example.com/learn.html</loc><priority>0.8</priority></url>
   <url><loc>https://matleads.example.com/outreach.html</loc><priority>0.8</priority></url>
   <url><loc>https://matleads.example.com/proposals.html</loc><priority>0.8</priority></url>
+  <url><loc>https://matleads.example.com/money.html</loc><priority>0.8</priority></url>
+  <url><loc>https://matleads.example.com/freelance.html</loc><priority>0.8</priority></url>
+  <url><loc>https://matleads.example.com/digital.html</loc><priority>0.8</priority></url>
+  <url><loc>https://matleads.example.com/content.html</loc><priority>0.8</priority></url>
+  <url><loc>https://matleads.example.com/sales.html</loc><priority>0.8</priority></url>
+  <url><loc>https://matleads.example.com/students.html</loc><priority>0.8</priority></url>
+  <url><loc>https://matleads.example.com/ecommerce.html</loc><priority>0.8</priority></url>
+  <url><loc>https://matleads.example.com/affiliate.html</loc><priority>0.8</priority></url>
+  <url><loc>https://matleads.example.com/coaching.html</loc><priority>0.8</priority></url>
+  <url><loc>https://matleads.example.com/social.html</loc><priority>0.8</priority></url>
   <url><loc>https://matleads.example.com/pay.html</loc><priority>0.5</priority></url>
   <url><loc>https://matleads.example.com/login.html</loc><priority>0.6</priority></url>
   <url><loc>https://matleads.example.com/signup.html</loc><priority>0.6</priority></url>
