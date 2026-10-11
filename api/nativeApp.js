@@ -93,6 +93,16 @@ const publicFiles = new Set([
   "/learn.html",
   "/outreach.html",
   "/proposals.html",
+  "/money.html",
+  "/freelance.html",
+  "/digital.html",
+  "/content.html",
+  "/sales.html",
+  "/students.html",
+  "/ecommerce.html",
+  "/affiliate.html",
+  "/coaching.html",
+  "/social.html",
   "/pay.html",
   "/manifest.webmanifest",
   "/sw.js",
@@ -445,7 +455,7 @@ const routes = [
       let lead = payload.lead && Object.keys(payload.lead).length ? payload.lead : null;
       if (!lead && payload.leadId) lead = await leadService.getById(payload.leadId);
       if (!lead) lead = { id: payload.leadId || "lead", name: payload.businessName || "Business" };
-      const result = await websiteService.build({ lead, options: { businessName: payload.businessName, style: payload.style, palette: payload.palette }, user });
+      const result = await websiteService.build({ lead, options: { businessName: payload.businessName, style: payload.style, palette: payload.palette, pages: payload.pages || 1, images: payload.images || {} }, user });
       return { websiteId: result.website.id, shareToken: result.website.shareToken, shareUrl: `/s/${result.website.shareToken}`, studioUrl: `/website-studio.html?id=${encodeURIComponent(result.website.id)}`, website: result.website };
     }
   },
@@ -459,6 +469,17 @@ const routes = [
       const payload = validate(aiSchemas.websiteRefine, { ...body, websiteId: params.id });
       const result = await websiteService.refine({ id: params.id, instruction: payload.instruction, user });
       return { websiteId: result.website.id, shareToken: result.website.shareToken, shareUrl: `/s/${result.website.shareToken}`, website: result.website };
+    }
+  },
+  {
+    method: "POST",
+    regex: /^\/api\/ai\/websites\/([^/]+)\/html$/,
+    keys: ["id"],
+    handler: async ({ req, body, params }) => {
+      const user = await getUser(req);
+      requireProAi(user);
+      const payload = validate(aiSchemas.websiteHtml, body);
+      return websiteService.saveHtml(params.id, payload.html, user);
     }
   },
   {

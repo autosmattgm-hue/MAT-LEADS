@@ -247,11 +247,16 @@ export const aiSchemas = {
     lead: input.lead && typeof input.lead === "object" ? input.lead : {},
     businessName: stringField(input, "businessName", { max: 160, truncate: true }),
     style: stringField(input, "style", { max: 80, truncate: true }),
-    palette: stringField(input, "palette", { max: 80, truncate: true })
+    palette: stringField(input, "palette", { max: 80, truncate: true }),
+    pages: numberField(input, "pages", { int: true, min: 1, max: 4, clamp: true, default: 1 }),
+    images: input.images && typeof input.images === "object" ? { hero: String(input.images.hero || "").slice(0, 2000), gallery: Array.isArray(input.images.gallery) ? input.images.gallery.map((g) => String(g || "").slice(0, 2000)).filter(Boolean).slice(0, 6) : [] } : { hero: "", gallery: [] }
   })),
   websiteRefine: schema((input) => ({
     websiteId: stringField(input, "websiteId", { required: true, min: 1, max: 160 }),
     instruction: stringField(input, "instruction", { required: true, min: 1, max: 2000 })
+  })),
+  websiteHtml: schema((input) => ({
+    html: stringField(input, "html", { required: true, min: 100, max: 500000 })
   }))
 };
 

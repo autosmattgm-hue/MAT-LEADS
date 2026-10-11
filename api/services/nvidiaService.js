@@ -10,10 +10,10 @@ const MODEL_COOLDOWN_MS = 5 * 60 * 1000;
 // Live-per-probe (Oct 2026): these exist; your key returns 403 until activated on
 // https://build.nvidia.com/<model> ("Get API Key"). Dead IDs never get called.
 const DEFAULT_MODELS = [
-  "z-ai/glm-5.3-flash",
-  "z-ai/glm-5.3",
   "moonshotai/kimi-k3",
   "openai/gpt-oss-20b",
+  "z-ai/glm-5.3-flash",
+  "z-ai/glm-5.3",
   "nvidia/nemotron-3.5-lightning-30b-a3b"
 ];
 const DEAD_MODELS = new Set([
@@ -197,7 +197,28 @@ function modelRequestOptions(model) {
       chat_template_kwargs: { clear_thinking: true }
     };
   }
+  // gpt-oss is a reasoning model; keep thinking minimal so it answers fast.
+  if (/gpt-oss/i.test(model)) {
+    return { reasoning_effort: "low" };
+  }
   return {};
+}
+
+// Kimi K3 pins top_p to 0.95 and rejects any override — respect that.
+function modelTopP(model, requested) {
+  if (/kimi-k3/i.test(model)) return 0.95;
+  return Number(requested ?? 1);
+}
+
+function extractMessageContent(payload) {
+  const choice = payload?.choices?.[0] || {};
+  return choice.message?.content || choice.delta?.content || "";
+}
+
+function isReasoningExhausted(payload) {
+  const choice = payload?.choices?.[0] || {};
+  const message = choice.message || {};
+  return !extractMessageContent(payload) && (Boolean(message.reasoning_content) || choice.finish_reason === "length");
 }
 
 function requestBudget(timeoutMs, maxTotalMs) {
@@ -344,7 +365,7 @@ export class NvidiaService {
       const model = queue[index];
       const attemptTimeoutMs = nextAttemptTimeout(deadlineAt, queue.length - index, 12000);
       if (!attemptTimeoutMs) break;
-      const requestPayload = { ...basePayload, ...modelRequestOptions(model), model };
+      const requestPayload = { ...basePayload, ...modelRequestOptions(model), model, top_p: modelTopP(model, topP) };
       const cacheKey = !stream && cacheTtlMs > 0 ? cacheKeyFor(requestPayload) : "";
       const cached = cacheKey ? getCachedResult(cacheKey) : null;
       if (cached) return cached;
@@ -398,8 +419,34 @@ export class NvidiaService {
         throw lastError;
       }
 
-      const payload = await response.json();
-      const content = payload.choices?.[0]?.message?.content || payload.choices?.[0]?.delta?.content || "";
+      let payload = await response.json();
+      let content = extractMessageContent(payload);
+      // GLM reasoning models can burn max_tokens thinking before answering.
+      if (isReasoningExhausted(payload) && Date.now() < deadlineAt - 2500) {
+        const retryController = new AbortController();
+        const retryTimeout = setTimeout(() => retryController.abort(), Math.min(14000, Math.max(3000, deadlineAt - Date.now() - 500)));
+        try {
+          const retryResponse = await fetch(invokeUrl, {
+            method: "POST",
+            signal: retryController.signal,
+            headers: {
+              "Content-Type": "application/json",
+              "Accept": "application/json",
+              "Authorization": `Bearer ${env.nvidia.apiKey}`
+            },
+            body: JSON.stringify({ ...requestPayload, top_p: modelTopP(model, topP), max_tokens: Math.min(Math.max(maxTokens * 2, 900), 2600) })
+          });
+          if (retryResponse.ok) {
+            const retryPayload = await retryResponse.json();
+            const retryContent = extractMessageContent(retryPayload);
+            if (retryContent) { payload = retryPayload; content = retryContent; }
+          }
+        } catch {
+          // Keep the original payload; empty content path handles the failure.
+        } finally {
+          clearTimeout(retryTimeout);
+        }
+      }
       const result = {
         configured: true,
         provider: "nvidia",
@@ -515,12 +562,12 @@ export class NvidiaService {
     const websiteModels = [...new Set([env.nvidia.websiteModel, ...(env.nvidia.websiteFallbacks || []), ...models].map((model) => String(model || "").trim()).filter(Boolean))]
       .filter((model) => !isRetiredModel(model))
       .slice(0, 2);
-    const deadlineAt = Date.now() + requestBudget(timeoutMs || env.nvidia.websiteTimeoutMs, 20000);
+    const deadlineAt = Date.now() + requestBudget(timeoutMs || env.nvidia.websiteTimeoutMs, 55000);
     const cleanMessages = this.sanitizeMessages(messages);
     let lastError = null;
     for (let index = 0; index < websiteModels.length; index += 1) {
       const model = websiteModels[index];
-      const attemptTimeoutMs = nextAttemptTimeout(deadlineAt, websiteModels.length - index, 14000);
+      const attemptTimeoutMs = nextAttemptTimeout(deadlineAt, websiteModels.length - index, 46000);
       if (!attemptTimeoutMs) break;
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(), attemptTimeoutMs);
@@ -529,7 +576,7 @@ export class NvidiaService {
           method: "POST",
           signal: controller.signal,
           headers: { "Content-Type": "application/json", Accept: "application/json", Authorization: `Bearer ${env.nvidia.apiKey}` },
-          body: JSON.stringify({ model, ...modelRequestOptions(model), messages: cleanMessages, max_tokens: maxTokens, temperature: Number(temperature ?? 0.5), top_p: topP ?? 1, stream: false })
+          body: JSON.stringify({ model, ...modelRequestOptions(model), messages: cleanMessages, max_tokens: maxTokens, temperature: Number(temperature ?? 0.5), top_p: modelTopP(model, topP), stream: false })
         });
         clearTimeout(timeout);
         if (!response.ok) {
@@ -542,8 +589,30 @@ export class NvidiaService {
           if (isRetryableNvidiaFailure(lastError)) continue;
           throw lastError;
         }
-        const payload = await response.json();
-        const content = payload.choices?.[0]?.message?.content || "";
+        let payload = await response.json();
+        let content = extractMessageContent(payload);
+        // GLM reasoning models can burn max_tokens thinking before answering.
+        if (isReasoningExhausted(payload) && Date.now() < deadlineAt - 2500) {
+          const retryController = new AbortController();
+          const retryTimeout = setTimeout(() => retryController.abort(), Math.min(14000, Math.max(3000, deadlineAt - Date.now() - 500)));
+          try {
+            const retryResponse = await fetch(invokeUrl, {
+              method: "POST",
+              signal: retryController.signal,
+              headers: { "Content-Type": "application/json", Accept: "application/json", Authorization: `Bearer ${env.nvidia.apiKey}` },
+              body: JSON.stringify({ model, ...modelRequestOptions(model), messages: cleanMessages, max_tokens: Math.min(Math.max(maxTokens * 2, 1400), 3000), temperature: Number(temperature ?? 0.5), top_p: modelTopP(model, topP), stream: false })
+            });
+            if (retryResponse.ok) {
+              const retryPayload = await retryResponse.json();
+              const retryContent = extractMessageContent(retryPayload);
+              if (retryContent) { payload = retryPayload; content = retryContent; }
+            }
+          } catch {
+            // Keep the original payload; empty content path handles the failure.
+          } finally {
+            clearTimeout(retryTimeout);
+          }
+        }
         if (!content) { lastError = new AppError("Empty NVIDIA response", 503, "NVIDIA_EMPTY"); continue; }
         markProviderSuccess();
         return { configured: true, provider: "nvidia", model, content, usage: payload.usage || null, cached: false };
@@ -569,18 +638,86 @@ export class NvidiaService {
     return html.slice(0, 120000);
   }
 
-  buildWebsite(lead = {}, options = {}) {
-    const brief = JSON.stringify({ business: lead.name || options.businessName, type: lead.businessType || lead.category, address: lead.address, phone: lead.phone, email: lead.email, style: options.style || "modern", colors: options.palette || "emerald", sections: options.sections || ["hero", "services", "reviews", "quote", "contact"] }).slice(0, 1500);
-    return this.completeRaw([
-      { role: "system", content: "You are an elite website builder AI. Output ONLY a complete, concise, production-ready one-page HTML file with inline CSS and minimal inline JS. Mobile-first and conversion-focused: hero, proof, services, offer, contact form, footer. Keep the complete response under 1100 tokens. No markdown or explanations." },
-      { role: "user", content: `Build a premium client website for: ${brief}. Include click-to-call or WhatsApp-style CTA, one clear conversion form, SEO title/meta and only the needed sections. Return only complete HTML.` }
-    ], { temperature: 0.3, maxTokens: 1100, timeoutMs: 18000 })
-      .then((r) => ({ ...r, html: this.cleanHtml(r.content) }))
-      .catch((error) => {
-        const publicError = publicNvidiaError(error);
-        markProviderFailure(publicError);
-        throw publicError;
-      });
+  cleanFragment(raw) {
+    return String(raw || "")
+      .replace(/```html/gi, "").replace(/```/g, "")
+      .replace(/<!doctype[^>]*>/i, "")
+      .replace(/<html[^>]*>/i, "").replace(/<\/html>/i, "")
+      .replace(/<head[^>]*>[\s\S]*?<\/head>/i, "")
+      .replace(/<body[^>]*>/i, "").replace(/<\/body>/i, "")
+      .trim();
+  }
+
+  assembleMultiPage(pages, business, accent) {
+    const e = (v) => String(v ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+    const navLinks = pages.map((p, i) => `<a href="#" class="nav-a${i === 0 ? " active" : ""}" onclick="return showPage(${i})">${e(p.title)}</a>`).join("");
+    const sections = pages.map((p, i) => `<section class="pg" id="pg-${i}"${i === 0 ? "" : ' style="display:none"'}>${p.body}</section>`).join("\n");
+    return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${e(business)}</title><meta name="description" content="${e(business)} — a professional website built to turn visitors into customers."><style>*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,Arial,sans-serif;color:#0f172a;background:#f8fafc;line-height:1.55}.nav{position:sticky;top:0;z-index:50;background:#0b1220;display:flex;gap:4px;align-items:center;padding:10px 16px;flex-wrap:wrap;box-shadow:0 2px 10px rgba(0,0,0,.15)}.nav .brand{color:#fff;font-weight:800;margin-right:auto;font-size:1.05rem}.nav-a{color:#cbd5e1;text-decoration:none;padding:8px 13px;border-radius:8px;font-weight:600;cursor:pointer;font-size:.95rem}.nav-a:hover{background:rgba(255,255,255,.1);color:#fff}.nav-a.active{background:${accent};color:#06281a}img{max-width:100%;height:auto}.wrap{max-width:1080px;margin:0 auto;padding:30px 20px}input,textarea{font:inherit}footer{background:#0b1220;color:#cbd5e1;text-align:center;padding:20px;font-size:.9rem}</style></head><body><nav class="nav"><span class="brand">${e(business)}</span>${navLinks}</nav>${sections}<footer>© ${new Date().getFullYear()} ${e(business)}. All rights reserved.</footer><script>function showPage(i){document.querySelectorAll('.pg').forEach(function(s,idx){s.style.display=idx===i?'block':'none'});document.querySelectorAll('.nav-a').forEach(function(a,idx){a.classList.toggle('active',idx===i)});window.scrollTo(0,0);return false;}</script></body></html>`;
+  }
+
+  fallbackPageFragment(spec, lead, hero, gallery, isHome) {
+    const name = String(lead?.name || "Your Business");
+    const type = String(lead?.businessType || lead?.category || "Local Business");
+    const address = String(lead?.address || "");
+    const phone = String(lead?.phone || "");
+    const email = String(lead?.email || "");
+    const e = (v) => String(v ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+    const card = (h, p) => `<div style="background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:20px"><h3 style="margin:.1em 0 .3em">${e(h)}</h3><p style="margin:0;color:#475569">${e(p)}</p></div>`;
+    const gal = gallery.slice(0, 3).map((u) => `<img src="${e(u)}" alt="${e(name)}" style="width:100%;height:180px;object-fit:cover;border-radius:12px">`).join("");
+    if (isHome) return `<img src="${e(hero)}" alt="${e(name)}" style="width:100%;max-height:440px;object-fit:cover;display:block"><div class="wrap" style="text-align:center"><p style="letter-spacing:2px;text-transform:uppercase;font-size:12px;color:#64748b;margin:0">${e(type)}</p><h1 style="font-size:clamp(2rem,5vw,3.2rem);margin:.25em 0">${e(name)}</h1><p style="max-width:640px;margin:0 auto 20px;color:#475569">A trusted ${e(type.toLowerCase())} delivering quality, reliability and friendly service.${address ? ` Visit us at ${e(address)}.` : ""}</p>${phone ? `<a href="tel:${e(phone)}" style="display:inline-block;padding:13px 24px;border-radius:10px;background:#22c55e;color:#06281a;font-weight:700;text-decoration:none">Call ${e(phone)}</a>` : ""}</div><div class="wrap"><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px">${gal || card("Welcome", "We are glad you found us.")}</div></div>`;
+    if (spec.id === "about") return `<div class="wrap"><h2>About ${e(name)}</h2><p>We are a dedicated ${e(type.toLowerCase())} committed to quality and honest service. Our experienced team treats every customer like a neighbour.</p><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-top:16px">${card("Trusted", "Loved by local customers.")}${card("Experienced", "Years of hands-on expertise.")}${card("Fair pricing", "Transparent, no surprises.")}</div></div>`;
+    if (spec.id === "services") return `<div class="wrap"><h2>Our Services</h2><p>Everything you need, done right the first time.</p><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-top:16px">${card("Service One", "Professional work delivered on time.")}${card("Service Two", "Solutions tailored to your needs.")}${card("Service Three", "Great value, every single time.")}${card("Service Four", "Friendly support before and after.")}</div></div>`;
+    if (spec.id === "contact") return `<div class="wrap"><h2>Contact Us</h2><p>${phone ? `Call <a href="tel:${e(phone)}"><strong>${e(phone)}</strong></a>. ` : ""}${email ? `Email <a href="mailto:${e(email)}">${e(email)}</a>. ` : ""}${address ? e(address) : ""}</p><form style="display:grid;gap:10px;max-width:520px;margin-top:12px"><input placeholder="Your name" style="padding:12px;border:1px solid #cbd5e1;border-radius:10px"><input type="email" placeholder="Your email" style="padding:12px;border:1px solid #cbd5e1;border-radius:10px"><textarea rows="4" placeholder="How can we help?" style="padding:12px;border:1px solid #cbd5e1;border-radius:10px"></textarea><button type="submit" style="padding:13px 24px;border:0;border-radius:10px;background:#22c55e;color:#06281a;font-weight:700">Send message</button></form></div>`;
+    return `<div class="wrap"><h2>${e(spec.title)}</h2><p>${e(name)} — ${e(type)}.</p></div>`;
+  }
+
+  async buildWebsite(lead = {}, options = {}) {
+    const imgs = options.images || {};
+    const heroImg = String(imgs.hero || "").trim();
+    const galleryImgs = Array.isArray(imgs.gallery) ? imgs.gallery.map((g) => String(g || "").trim()).filter(Boolean).slice(0, 6) : [];
+    const seedWord = String(lead.businessType || lead.category || options.businessName || "business").toLowerCase().replace(/[^a-z0-9]+/g, "-").slice(0, 24) || "business";
+    const autoHero = `https://picsum.photos/seed/${encodeURIComponent(seedWord)}/1600/900`;
+    const autoGallery = [1, 2, 3].map((n) => `https://picsum.photos/seed/${encodeURIComponent(seedWord + "-" + n)}/800/600`);
+    const hero = heroImg || autoHero;
+    const gallery = galleryImgs.length ? galleryImgs : autoGallery;
+    const accentMap = { emerald: "#22c55e", blue: "#2563eb", gold: "#d4af37", rose: "#e11d48", teal: "#14b8a6", purple: "#7c3aed", orange: "#f97316" };
+    const accent = accentMap[options.palette] || "#22c55e";
+    const pageCount = Math.min(4, Math.max(1, parseInt(options.pages, 10) || 1));
+    const allSpecs = [
+      { id: "home", title: "Home", focus: "a full-width hero image + headline + call button, a short intro, a 3-item highlights row, and the gallery images in one responsive row" },
+      { id: "about", title: "About", focus: "our story, why choose us, trust points and a values/team section" },
+      { id: "services", title: "Services", focus: "a detailed services grid (4-6 services with short descriptions) plus a packages/pricing row" },
+      { id: "contact", title: "Contact", focus: "a contact form (name, email, message), a click-to-call button, address and hours" },
+    ];
+    const pageSpecs = allSpecs.slice(0, pageCount);
+    const business = String(lead.name || options.businessName || "Your Business");
+    const brief = JSON.stringify({
+      business, type: lead.businessType || lead.category, address: lead.address,
+      phone: lead.phone, email: lead.email, style: options.style || "modern",
+      colors: options.palette || "emerald", images: { hero, gallery }
+    }).slice(0, 1500);
+    // ONE request generates ALL pages as fragments separated by <!--PAGE--> so we
+    // stay inside the model's token/time budget. The shell + navigation are
+    // assembled in code, so the site always renders and the pages always switch.
+    const request = (maxTokens, note) => this.completeRaw([
+      { role: "system", content: `You are an elite website builder. Output ONLY the inner content for a ${pageCount}-page business website. RULES: (1) Separate each page with the exact marker <!--PAGE--> on its own line, and emit exactly ${pageCount} page(s) in this order: ${pageSpecs.map((p) => p.title).join(", ")}. (2) Do NOT output <!doctype>, <html>, <head>, <body> or <nav> — only the page content (headings, paragraphs, images, buttons, forms). (3) You MAY put ONE compact single-line <style> block at the very top for shared styles. (4) Use the exact image URLs from the brief in real <img> tags; never leave src empty. (5) Be CONCISE: the ENTIRE output under ~1500 tokens; few sections per page; finish cleanly. (6) No markdown, no explanations, no code fences.` },
+      { role: "user", content: `Build the ${pageCount} page section(s) for: ${brief}. Page focuses: ${pageSpecs.map((p) => `${p.title} = ${p.focus}`).join("; ")}. Hero uses images.hero; put images.gallery URLs in an <img> row on the Home page. Separate every page with <!--PAGE-->. ${note || ""}` }
+    ], { temperature: 0.3, maxTokens, timeoutMs: Math.max(30000, env.nvidia.websiteTimeoutMs || 50000) });
+    let result = await request(1500);
+    let content = String(result.content || "");
+    if (content.replace(/<!--PAGE-->/gi, "").trim().length < 300) {
+      try {
+        const retry = await request(2200, "Remember to separate each page with <!--PAGE--> and end cleanly.");
+        if (String(retry.content || "").length > content.length) { result = retry; content = String(retry.content || ""); }
+      } catch { /* keep first attempt */ }
+    }
+    const fragments = content.split(/<!--PAGE-->/i).map((s) => this.cleanFragment(s)).filter(Boolean);
+    const pages = pageSpecs.map((spec, i) => ({
+      ...spec,
+      body: fragments[i] && fragments[i].length > 40 ? fragments[i] : this.fallbackPageFragment(spec, lead, hero, gallery, i === 0),
+    }));
+    const html = this.assembleMultiPage(pages, business, accent);
+    return { ...result, html, pageCount: pages.length };
   }
 
   refineWebsite(currentHtml, instruction, meta = {}) {

@@ -1,6 +1,922 @@
 {
-  "updatedAt": "2026-10-10T20:42:56.400Z",
+  "updatedAt": "2026-10-11T23:22:54.640Z",
   "collections": {
+    "aiWebsites": [
+      {
+        "id": "cbcba759-f0b4-4b17-90d2-5714b2b084c3",
+        "shareToken": "dbb3908eb01a4a84ab7abb39",
+        "ownerId": "owner",
+        "leadId": "lead",
+        "leadName": "AI Test Dental",
+        "businessType": "",
+        "address": "",
+        "phone": "",
+        "email": "",
+        "businessName": "AI Test Dental",
+        "style": "medical",
+        "html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>AI Test Dental | Local Business</title><meta name=\"description\" content=\"AI Test Dental - Local Business. Call, book and get a quote today.\"><style>*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,Arial,sans-serif;color:#0f172a;background:#f8fafc}header{background:#0b1220;color:#fff;padding:56px 24px;text-align:center}header h1{margin:0 0 8px;font-size:clamp(2rem,5vw,3.4rem)}.btn{display:inline-block;padding:13px 22px;border-radius:10px;font-weight:700;text-decoration:none}.btn-p{background:#22c55e;color:#06281a}.btn-g{border:1px solid rgba(255,255,255,.4);color:#fff;margin-left:10px}.wrap{max-width:1080px;margin:0 auto;padding:28px 20px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}.card{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:20px}footer{background:#0b1220;color:#cbd5e1;text-align:center;padding:22px}form{display:grid;gap:10px;max-width:520px}input,textarea{padding:12px;border:1px solid #cbd5e1;border-radius:10px;font:inherit}</style></head><body><header><p style=\"letter-spacing:2px;text-transform:uppercase;font-size:12px\">Local Business</p><h1>AI Test Dental</h1><p>Professional mobile-first website built to turn local searches into calls and bookings.</p><div><a class=\"btn btn-p\" href=\"#quote\">Get a Free Quote</a><a class=\"btn btn-g\" href=\"#quote\">Book Online</a></div></header><div class=\"wrap\"><div class=\"grid\"><div class=\"card\"><h3>Why choose us</h3><p>Trusted local local business with fast response and transparent pricing.</p></div><div class=\"card\"><h3>Services</h3><p>Consultation, premium service, bookings and priority support.</p></div><div class=\"card\"><h3>Reviews</h3><p>Loved by local customers for quality and friendly support.</p></div></div><div class=\"card\" id=\"quote\" style=\"margin-top:20px\"><h2>Get a free quote</h2><form onsubmit=\"alert('Thanks! We will contact you shortly.');return false\"><input required placeholder=\"Your name\"><input placeholder=\"Phone or email\"><textarea rows=\"4\" placeholder=\"What do you need?\"></textarea><button class=\"btn btn-p\" type=\"submit\">Request Quote</button></form><p> </p></div></div><footer>AI Test Dental - Local Business - Built with MAT LEADS AI PRO X</footer></body></html>",
+        "provider": "template",
+        "model": "builtin-template-v1",
+        "aiError": "NVIDIA AI authentication failed. Replace NVIDIA_API_KEY in .env or Vercel, then restart or redeploy.",
+        "revisions": 1,
+        "history": [
+          {
+            "at": "2026-10-09T06:40:39.956Z",
+            "instruction": "Initial AI website build"
+          }
+        ],
+        "createdAt": "2026-10-09T06:40:40.377Z",
+        "updatedAt": "2026-10-09T06:40:40.377Z"
+      },
+      {
+        "id": "cf3bc853-f8bb-4398-a01f-6ce8ec79efef",
+        "shareToken": "d29ca2171e94434e97059c12",
+        "ownerId": "owner",
+        "leadId": "osm-node-243924634",
+        "leadName": "Anju Korean Tapas",
+        "businessType": "Restaurant",
+        "address": "",
+        "phone": "+49 221 16825210",
+        "email": "",
+        "businessName": "Anju Korean Tapas",
+        "style": "modern",
+        "html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Anju Korean Tapas | Restaurant</title><meta name=\"description\" content=\"Anju Korean Tapas - Restaurant. Call, book and get a quote today.\"><style>*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,Arial,sans-serif;color:#0f172a;background:#f8fafc}header{background:#0b1220;color:#fff;padding:56px 24px;text-align:center}header h1{margin:0 0 8px;font-size:clamp(2rem,5vw,3.4rem)}.btn{display:inline-block;padding:13px 22px;border-radius:10px;font-weight:700;text-decoration:none}.btn-p{background:#22c55e;color:#06281a}.btn-g{border:1px solid rgba(255,255,255,.4);color:#fff;margin-left:10px}.wrap{max-width:1080px;margin:0 auto;padding:28px 20px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}.card{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:20px}footer{background:#0b1220;color:#cbd5e1;text-align:center;padding:22px}form{display:grid;gap:10px;max-width:520px}input,textarea{padding:12px;border:1px solid #cbd5e1;border-radius:10px;font:inherit}</style></head><body><header><p style=\"letter-spacing:2px;text-transform:uppercase;font-size:12px\">Restaurant</p><h1>Anju Korean Tapas</h1><p>Professional mobile-first website built to turn local searches into calls and bookings.</p><div><a class=\"btn btn-p\" href=\"tel:+49 221 16825210\">Call +49 221 16825210</a><a class=\"btn btn-g\" href=\"#quote\">Book Online</a></div></header><div class=\"wrap\"><div class=\"grid\"><div class=\"card\"><h3>Why choose us</h3><p>Trusted local restaurant with fast response and transparent pricing.</p></div><div class=\"card\"><h3>Services</h3><p>Consultation, premium service, bookings and priority support.</p></div><div class=\"card\"><h3>Reviews</h3><p>Loved by local customers for quality and friendly support.</p></div></div><div class=\"card\" id=\"quote\" style=\"margin-top:20px\"><h2>Get a free quote</h2><form onsubmit=\"alert('Thanks! We will contact you shortly.');return false\"><input required placeholder=\"Your name\"><input placeholder=\"Phone or email\"><textarea rows=\"4\" placeholder=\"What do you need?\"></textarea><button class=\"btn btn-p\" type=\"submit\">Request Quote</button></form><p>+49 221 16825210 </p></div></div><footer>Anju Korean Tapas - Restaurant - Built with MAT LEADS AI PRO X</footer></body></html>",
+        "provider": "template",
+        "model": "builtin-template-v1",
+        "aiError": "NVIDIA AI authentication failed. Replace NVIDIA_API_KEY in .env or Vercel, then restart or redeploy.",
+        "revisions": 1,
+        "history": [
+          {
+            "at": "2026-10-09T21:47:56.533Z",
+            "instruction": "Initial AI website build"
+          }
+        ],
+        "createdAt": "2026-10-09T21:47:57.449Z",
+        "updatedAt": "2026-10-09T21:47:57.449Z"
+      },
+      {
+        "id": "b8748642-3ce9-4a25-9eea-6ec12bdcf832",
+        "shareToken": "a265762746d949a6b3268220",
+        "ownerId": "owner",
+        "leadId": "osm-node-243924634",
+        "leadName": "Anju Korean Tapas",
+        "businessType": "Restaurant",
+        "address": "",
+        "phone": "+49 221 16825210",
+        "email": "",
+        "businessName": "Anju Korean Tapas",
+        "style": "modern",
+        "html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Anju Korean Tapas | Restaurant</title><meta name=\"description\" content=\"Anju Korean Tapas - Restaurant. Call, book and get a quote today.\"><style>*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,Arial,sans-serif;color:#0f172a;background:#f8fafc}header{background:#0b1220;color:#fff;padding:56px 24px;text-align:center}header h1{margin:0 0 8px;font-size:clamp(2rem,5vw,3.4rem)}.btn{display:inline-block;padding:13px 22px;border-radius:10px;font-weight:700;text-decoration:none}.btn-p{background:#22c55e;color:#06281a}.btn-g{border:1px solid rgba(255,255,255,.4);color:#fff;margin-left:10px}.wrap{max-width:1080px;margin:0 auto;padding:28px 20px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}.card{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:20px}footer{background:#0b1220;color:#cbd5e1;text-align:center;padding:22px}form{display:grid;gap:10px;max-width:520px}input,textarea{padding:12px;border:1px solid #cbd5e1;border-radius:10px;font:inherit}</style></head><body><header><p style=\"letter-spacing:2px;text-transform:uppercase;font-size:12px\">Restaurant</p><h1>Anju Korean Tapas</h1><p>Professional mobile-first website built to turn local searches into calls and bookings.</p><div><a class=\"btn btn-p\" href=\"tel:+49 221 16825210\">Call +49 221 16825210</a><a class=\"btn btn-g\" href=\"#quote\">Book Online</a></div></header><div class=\"wrap\"><div class=\"grid\"><div class=\"card\"><h3>Why choose us</h3><p>Trusted local restaurant with fast response and transparent pricing.</p></div><div class=\"card\"><h3>Services</h3><p>Consultation, premium service, bookings and priority support.</p></div><div class=\"card\"><h3>Reviews</h3><p>Loved by local customers for quality and friendly support.</p></div></div><div class=\"card\" id=\"quote\" style=\"margin-top:20px\"><h2>Get a free quote</h2><form onsubmit=\"alert('Thanks! We will contact you shortly.');return false\"><input required placeholder=\"Your name\"><input placeholder=\"Phone or email\"><textarea rows=\"4\" placeholder=\"What do you need?\"></textarea><button class=\"btn btn-p\" type=\"submit\">Request Quote</button></form><p>+49 221 16825210 </p></div></div><footer>Anju Korean Tapas - Restaurant - Built with MAT LEADS AI PRO X</footer></body></html>",
+        "provider": "template",
+        "model": "builtin-template-v1",
+        "aiError": "NVIDIA AI authentication failed. Replace NVIDIA_API_KEY in .env or Vercel, then restart or redeploy.",
+        "revisions": 1,
+        "history": [
+          {
+            "at": "2026-10-09T21:50:25.312Z",
+            "instruction": "Initial AI website build"
+          }
+        ],
+        "createdAt": "2026-10-09T21:50:26.184Z",
+        "updatedAt": "2026-10-09T21:50:26.184Z"
+      },
+      {
+        "id": "e9f867ba-787c-4048-9ca3-c092c35a4eaa",
+        "shareToken": "cb72fa921e044562a5b8ba4f",
+        "ownerId": "owner",
+        "leadId": "osm-node-244020964",
+        "leadName": "Ananta",
+        "businessType": "Restaurant",
+        "address": "39, Hauptstraße, Neubiberg, 85579, DE",
+        "phone": "+49 89 66011133",
+        "email": "",
+        "businessName": "Ananta",
+        "style": "modern",
+        "html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Ananta | Restaurant</title><meta name=\"description\" content=\"Ananta - Restaurant. Call, book and get a quote today.\"><style>*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,Arial,sans-serif;color:#0f172a;background:#f8fafc}header{background:#0b1220;color:#fff;padding:56px 24px;text-align:center}header h1{margin:0 0 8px;font-size:clamp(2rem,5vw,3.4rem)}.btn{display:inline-block;padding:13px 22px;border-radius:10px;font-weight:700;text-decoration:none}.btn-p{background:#22c55e;color:#06281a}.btn-g{border:1px solid rgba(255,255,255,.4);color:#fff;margin-left:10px}.wrap{max-width:1080px;margin:0 auto;padding:28px 20px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}.card{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:20px}footer{background:#0b1220;color:#cbd5e1;text-align:center;padding:22px}form{display:grid;gap:10px;max-width:520px}input,textarea{padding:12px;border:1px solid #cbd5e1;border-radius:10px;font:inherit}</style></head><body><header><p style=\"letter-spacing:2px;text-transform:uppercase;font-size:12px\">Restaurant</p><h1>Ananta</h1><p>Professional mobile-first website built to turn local searches into calls and bookings. Visit us at 39, Hauptstraße, Neubiberg, 85579, DE.</p><div><a class=\"btn btn-p\" href=\"tel:+49 89 66011133\">Call +49 89 66011133</a><a class=\"btn btn-g\" href=\"#quote\">Book Online</a></div></header><div class=\"wrap\"><div class=\"grid\"><div class=\"card\"><h3>Why choose us</h3><p>Trusted local restaurant with fast response and transparent pricing.</p></div><div class=\"card\"><h3>Services</h3><p>Consultation, premium service, bookings and priority support.</p></div><div class=\"card\"><h3>Reviews</h3><p>Loved by local customers for quality and friendly support.</p></div></div><div class=\"card\" id=\"quote\" style=\"margin-top:20px\"><h2>Get a free quote</h2><form onsubmit=\"alert('Thanks! We will contact you shortly.');return false\"><input required placeholder=\"Your name\"><input placeholder=\"Phone or email\"><textarea rows=\"4\" placeholder=\"What do you need?\"></textarea><button class=\"btn btn-p\" type=\"submit\">Request Quote</button></form><p>+49 89 66011133 </p></div></div><footer>Ananta - Restaurant - Built with MAT LEADS AI PRO X</footer></body></html>",
+        "provider": "template",
+        "model": "builtin-template-v1",
+        "aiError": "AI key missing (NVIDIA_API_KEY in Vercel). Used premium template.",
+        "revisions": 1,
+        "history": [
+          {
+            "at": "2026-10-10T20:42:55.539Z",
+            "instruction": "Initial AI website build"
+          }
+        ],
+        "createdAt": "2026-10-10T20:42:56.400Z",
+        "updatedAt": "2026-10-10T20:42:56.400Z"
+      },
+      {
+        "id": "ea0e58ab-f2c6-44ed-a6ed-cd43563e1b1c",
+        "shareToken": "dea5f431bc224b6dae74082c",
+        "ownerId": "owner",
+        "leadId": "osm-node-244020964",
+        "leadName": "Ananta",
+        "businessType": "Restaurant",
+        "address": "39, Hauptstraße, Neubiberg, 85579, DE",
+        "phone": "+49 89 66011133",
+        "email": "",
+        "businessName": "Ananta",
+        "style": "modern",
+        "html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Ananta | Restaurant</title><meta name=\"description\" content=\"Ananta - Restaurant. Call, book and get a quote today.\"><style>*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,Arial,sans-serif;color:#0f172a;background:#f8fafc}header{background:#0b1220;color:#fff;padding:56px 24px;text-align:center}header h1{margin:0 0 8px;font-size:clamp(2rem,5vw,3.4rem)}.btn{display:inline-block;padding:13px 22px;border-radius:10px;font-weight:700;text-decoration:none}.btn-p{background:#22c55e;color:#06281a}.btn-g{border:1px solid rgba(255,255,255,.4);color:#fff;margin-left:10px}.wrap{max-width:1080px;margin:0 auto;padding:28px 20px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}.card{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:20px}footer{background:#0b1220;color:#cbd5e1;text-align:center;padding:22px}form{display:grid;gap:10px;max-width:520px}input,textarea{padding:12px;border:1px solid #cbd5e1;border-radius:10px;font:inherit}</style></head><body><header><p style=\"letter-spacing:2px;text-transform:uppercase;font-size:12px\">Restaurant</p><h1>Ananta</h1><p>Professional mobile-first website built to turn local searches into calls and bookings. Visit us at 39, Hauptstraße, Neubiberg, 85579, DE.</p><div><a class=\"btn btn-p\" href=\"tel:+49 89 66011133\">Call +49 89 66011133</a><a class=\"btn btn-g\" href=\"#quote\">Book Online</a></div></header><div class=\"wrap\"><div class=\"grid\"><div class=\"card\"><h3>Why choose us</h3><p>Trusted local restaurant with fast response and transparent pricing.</p></div><div class=\"card\"><h3>Services</h3><p>Consultation, premium service, bookings and priority support.</p></div><div class=\"card\"><h3>Reviews</h3><p>Loved by local customers for quality and friendly support.</p></div></div><div class=\"card\" id=\"quote\" style=\"margin-top:20px\"><h2>Get a free quote</h2><form onsubmit=\"alert('Thanks! We will contact you shortly.');return false\"><input required placeholder=\"Your name\"><input placeholder=\"Phone or email\"><textarea rows=\"4\" placeholder=\"What do you need?\"></textarea><button class=\"btn btn-p\" type=\"submit\">Request Quote</button></form><p>+49 89 66011133 </p></div></div><footer>Ananta - Restaurant - Built with MAT LEADS AI PRO X</footer></body></html>",
+        "provider": "template",
+        "model": "builtin-template-v1",
+        "aiError": "AI key missing (NVIDIA_API_KEY in Vercel). Used premium template.",
+        "revisions": 1,
+        "history": [
+          {
+            "at": "2026-10-10T20:50:27.350Z",
+            "instruction": "Initial AI website build"
+          }
+        ],
+        "createdAt": "2026-10-10T20:50:28.304Z",
+        "updatedAt": "2026-10-10T20:50:28.304Z"
+      },
+      {
+        "id": "344cf55f-c3e4-4cd1-8d78-f4d12b67556c",
+        "shareToken": "1eeb65f82c5e47748f173803",
+        "ownerId": "owner",
+        "leadId": "osm-node-280740265",
+        "leadName": "Asia House",
+        "businessType": "Restaurant",
+        "address": "10, Schulterblatt, Hamburg, 20357, DE",
+        "phone": "+49 40 43095712",
+        "email": "",
+        "businessName": "Asia House",
+        "style": "modern",
+        "html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Asia House | Restaurant</title><meta name=\"description\" content=\"Asia House - Restaurant. Call, book and get a quote today.\"><style>*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,Arial,sans-serif;color:#0f172a;background:#f8fafc}header{background:#0b1220;color:#fff;padding:56px 24px;text-align:center}header h1{margin:0 0 8px;font-size:clamp(2rem,5vw,3.4rem)}.btn{display:inline-block;padding:13px 22px;border-radius:10px;font-weight:700;text-decoration:none}.btn-p{background:#22c55e;color:#06281a}.btn-g{border:1px solid rgba(255,255,255,.4);color:#fff;margin-left:10px}.wrap{max-width:1080px;margin:0 auto;padding:28px 20px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}.card{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:20px}footer{background:#0b1220;color:#cbd5e1;text-align:center;padding:22px}form{display:grid;gap:10px;max-width:520px}input,textarea{padding:12px;border:1px solid #cbd5e1;border-radius:10px;font:inherit}</style></head><body><header><p style=\"letter-spacing:2px;text-transform:uppercase;font-size:12px\">Restaurant</p><h1>Asia House</h1><p>Professional mobile-first website built to turn local searches into calls and bookings. Visit us at 10, Schulterblatt, Hamburg, 20357, DE.</p><div><a class=\"btn btn-p\" href=\"tel:+49 40 43095712\">Call +49 40 43095712</a><a class=\"btn btn-g\" href=\"#quote\">Book Online</a></div></header><div class=\"wrap\"><div class=\"grid\"><div class=\"card\"><h3>Why choose us</h3><p>Trusted local restaurant with fast response and transparent pricing.</p></div><div class=\"card\"><h3>Services</h3><p>Consultation, premium service, bookings and priority support.</p></div><div class=\"card\"><h3>Reviews</h3><p>Loved by local customers for quality and friendly support.</p></div></div><div class=\"card\" id=\"quote\" style=\"margin-top:20px\"><h2>Get a free quote</h2><form onsubmit=\"alert('Thanks! We will contact you shortly.');return false\"><input required placeholder=\"Your name\"><input placeholder=\"Phone or email\"><textarea rows=\"4\" placeholder=\"What do you need?\"></textarea><button class=\"btn btn-p\" type=\"submit\">Request Quote</button></form><p>+49 40 43095712 </p></div></div><footer>Asia House - Restaurant - Built with MAT LEADS AI PRO X</footer></body></html>",
+        "provider": "template",
+        "model": "builtin-template-v1",
+        "aiError": "Your NVIDIA key is valid but not activated for this model (403). Fix: while signed in at https://build.nvidia.com, open the model page (e.g. https://build.nvidia.com/z-ai/glm-5.3-flash), click 'Get API Key' / activate it Used premium template — click Generate again after fixing the AI key/model.",
+        "revisions": 1,
+        "history": [
+          {
+            "at": "2026-10-10T21:29:32.488Z",
+            "instruction": "Initial AI website build"
+          }
+        ],
+        "createdAt": "2026-10-10T21:29:33.351Z",
+        "updatedAt": "2026-10-10T21:29:33.351Z"
+      },
+      {
+        "id": "3bb58978-6624-42ff-9b0e-7a21f2017b33",
+        "shareToken": "a910d811da3a4ff490ba1235",
+        "ownerId": "owner",
+        "leadId": "osm-node-244020964",
+        "leadName": "Ananta",
+        "businessType": "Restaurant",
+        "address": "39, Hauptstraße, Neubiberg, 85579, DE",
+        "phone": "+49 89 66011133",
+        "email": "",
+        "businessName": "Ananta",
+        "style": "modern",
+        "html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Ananta | Restaurant</title><meta name=\"description\" content=\"Ananta - Restaurant. Call, book and get a quote today.\"><style>*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,Arial,sans-serif;color:#0f172a;background:#f8fafc}header{background:#0b1220;color:#fff;padding:56px 24px;text-align:center}header h1{margin:0 0 8px;font-size:clamp(2rem,5vw,3.4rem)}.btn{display:inline-block;padding:13px 22px;border-radius:10px;font-weight:700;text-decoration:none}.btn-p{background:#22c55e;color:#06281a}.btn-g{border:1px solid rgba(255,255,255,.4);color:#fff;margin-left:10px}.wrap{max-width:1080px;margin:0 auto;padding:28px 20px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}.card{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:20px}footer{background:#0b1220;color:#cbd5e1;text-align:center;padding:22px}form{display:grid;gap:10px;max-width:520px}input,textarea{padding:12px;border:1px solid #cbd5e1;border-radius:10px;font:inherit}</style></head><body><header><p style=\"letter-spacing:2px;text-transform:uppercase;font-size:12px\">Restaurant</p><h1>Ananta</h1><p>Professional mobile-first website built to turn local searches into calls and bookings. Visit us at 39, Hauptstraße, Neubiberg, 85579, DE.</p><div><a class=\"btn btn-p\" href=\"tel:+49 89 66011133\">Call +49 89 66011133</a><a class=\"btn btn-g\" href=\"#quote\">Book Online</a></div></header><div class=\"wrap\"><div class=\"grid\"><div class=\"card\"><h3>Why choose us</h3><p>Trusted local restaurant with fast response and transparent pricing.</p></div><div class=\"card\"><h3>Services</h3><p>Consultation, premium service, bookings and priority support.</p></div><div class=\"card\"><h3>Reviews</h3><p>Loved by local customers for quality and friendly support.</p></div></div><div class=\"card\" id=\"quote\" style=\"margin-top:20px\"><h2>Get a free quote</h2><form onsubmit=\"alert('Thanks! We will contact you shortly.');return false\"><input required placeholder=\"Your name\"><input placeholder=\"Phone or email\"><textarea rows=\"4\" placeholder=\"What do you need?\"></textarea><button class=\"btn btn-p\" type=\"submit\">Request Quote</button></form><p>+49 89 66011133 </p></div></div><footer>Ananta - Restaurant - Built with MAT LEADS AI PRO X</footer></body></html>",
+        "provider": "template",
+        "model": "builtin-template-v1",
+        "aiError": "Your NVIDIA key is valid but not activated for this model (403). Fix: while signed in at https://build.nvidia.com, open the model page (e.g. https://build.nvidia.com/z-ai/glm-5.3-flash), click 'Get API Key' / activate it Used premium template — click Generate again after fixing the AI key/model.",
+        "revisions": 1,
+        "history": [
+          {
+            "at": "2026-10-10T21:42:25.609Z",
+            "instruction": "Initial AI website build"
+          }
+        ],
+        "createdAt": "2026-10-10T21:42:26.692Z",
+        "updatedAt": "2026-10-10T21:42:26.692Z"
+      },
+      {
+        "id": "f7225ffa-61ec-41a1-b5b2-289a04634c0a",
+        "shareToken": "e3b0e2397f404d8b95b81df4",
+        "ownerId": "owner",
+        "leadId": "osm-node-244020964",
+        "leadName": "Ananta",
+        "businessType": "Restaurant",
+        "address": "39, Hauptstraße, Neubiberg, 85579, DE",
+        "phone": "+49 89 66011133",
+        "email": "",
+        "businessName": "Ananta",
+        "style": "modern",
+        "html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Ananta | Restaurant</title><meta name=\"description\" content=\"Ananta - Restaurant. Call, book and get a quote today.\"><style>*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,Arial,sans-serif;color:#0f172a;background:#f8fafc}header{background:#0b1220;color:#fff;padding:56px 24px;text-align:center}header h1{margin:0 0 8px;font-size:clamp(2rem,5vw,3.4rem)}.btn{display:inline-block;padding:13px 22px;border-radius:10px;font-weight:700;text-decoration:none}.btn-p{background:#22c55e;color:#06281a}.btn-g{border:1px solid rgba(255,255,255,.4);color:#fff;margin-left:10px}.wrap{max-width:1080px;margin:0 auto;padding:28px 20px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}.card{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:20px}footer{background:#0b1220;color:#cbd5e1;text-align:center;padding:22px}form{display:grid;gap:10px;max-width:520px}input,textarea{padding:12px;border:1px solid #cbd5e1;border-radius:10px;font:inherit}</style></head><body><header><p style=\"letter-spacing:2px;text-transform:uppercase;font-size:12px\">Restaurant</p><h1>Ananta</h1><p>Professional mobile-first website built to turn local searches into calls and bookings. Visit us at 39, Hauptstraße, Neubiberg, 85579, DE.</p><div><a class=\"btn btn-p\" href=\"tel:+49 89 66011133\">Call +49 89 66011133</a><a class=\"btn btn-g\" href=\"#quote\">Book Online</a></div></header><div class=\"wrap\"><div class=\"grid\"><div class=\"card\"><h3>Why choose us</h3><p>Trusted local restaurant with fast response and transparent pricing.</p></div><div class=\"card\"><h3>Services</h3><p>Consultation, premium service, bookings and priority support.</p></div><div class=\"card\"><h3>Reviews</h3><p>Loved by local customers for quality and friendly support.</p></div></div><div class=\"card\" id=\"quote\" style=\"margin-top:20px\"><h2>Get a free quote</h2><form onsubmit=\"alert('Thanks! We will contact you shortly.');return false\"><input required placeholder=\"Your name\"><input placeholder=\"Phone or email\"><textarea rows=\"4\" placeholder=\"What do you need?\"></textarea><button class=\"btn btn-p\" type=\"submit\">Request Quote</button></form><p>+49 89 66011133 </p></div></div><footer>Ananta - Restaurant - Built with MAT LEADS AI PRO X</footer></body></html>",
+        "provider": "template",
+        "model": "builtin-template-v1",
+        "aiError": "Your NVIDIA key is valid but not activated for this model (403). Fix: while signed in at https://build.nvidia.com, open the model page (e.g. https://build.nvidia.com/z-ai/glm-5.3-flash), click 'Get API Key' / activate it Used premium template — click Generate again after fixing the AI key/model.",
+        "revisions": 1,
+        "history": [
+          {
+            "at": "2026-10-10T21:51:11.425Z",
+            "instruction": "Initial AI website build"
+          }
+        ],
+        "createdAt": "2026-10-10T21:51:12.236Z",
+        "updatedAt": "2026-10-10T21:51:12.236Z"
+      },
+      {
+        "id": "050a81ef-5a44-4a10-9c8f-d439d312ab53",
+        "shareToken": "a7164224c4594ac1aca233c2",
+        "ownerId": "owner",
+        "leadId": "osm-node-244020964",
+        "leadName": "Ananta",
+        "businessType": "Restaurant",
+        "address": "39, Hauptstraße, Neubiberg, 85579, DE",
+        "phone": "+49 89 66011133",
+        "email": "",
+        "businessName": "Ananta",
+        "style": "modern",
+        "html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Ananta | Restaurant</title><meta name=\"description\" content=\"Ananta - Restaurant. Call, book and get a quote today.\"><style>*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,Arial,sans-serif;color:#0f172a;background:#f8fafc}header{background:#0b1220;color:#fff;padding:56px 24px;text-align:center}header h1{margin:0 0 8px;font-size:clamp(2rem,5vw,3.4rem)}.btn{display:inline-block;padding:13px 22px;border-radius:10px;font-weight:700;text-decoration:none}.btn-p{background:#22c55e;color:#06281a}.btn-g{border:1px solid rgba(255,255,255,.4);color:#fff;margin-left:10px}.wrap{max-width:1080px;margin:0 auto;padding:28px 20px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}.card{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:20px}footer{background:#0b1220;color:#cbd5e1;text-align:center;padding:22px}form{display:grid;gap:10px;max-width:520px}input,textarea{padding:12px;border:1px solid #cbd5e1;border-radius:10px;font:inherit}</style></head><body><header><p style=\"letter-spacing:2px;text-transform:uppercase;font-size:12px\">Restaurant</p><h1>Ananta</h1><p>Professional mobile-first website built to turn local searches into calls and bookings. Visit us at 39, Hauptstraße, Neubiberg, 85579, DE.</p><div><a class=\"btn btn-p\" href=\"tel:+49 89 66011133\">Call +49 89 66011133</a><a class=\"btn btn-g\" href=\"#quote\">Book Online</a></div></header><div class=\"wrap\"><div class=\"grid\"><div class=\"card\"><h3>Why choose us</h3><p>Trusted local restaurant with fast response and transparent pricing.</p></div><div class=\"card\"><h3>Services</h3><p>Consultation, premium service, bookings and priority support.</p></div><div class=\"card\"><h3>Reviews</h3><p>Loved by local customers for quality and friendly support.</p></div></div><div class=\"card\" id=\"quote\" style=\"margin-top:20px\"><h2>Get a free quote</h2><form onsubmit=\"alert('Thanks! We will contact you shortly.');return false\"><input required placeholder=\"Your name\"><input placeholder=\"Phone or email\"><textarea rows=\"4\" placeholder=\"What do you need?\"></textarea><button class=\"btn btn-p\" type=\"submit\">Request Quote</button></form><p>+49 89 66011133 </p></div></div><footer>Ananta - Restaurant - Built with MAT LEADS AI PRO X</footer></body></html>",
+        "provider": "template",
+        "model": "builtin-template-v1",
+        "aiError": "Your NVIDIA key is valid but not activated for this model (403). Fix: while signed in at https://build.nvidia.com, open the model page (e.g. https://build.nvidia.com/z-ai/glm-5.3-flash), click 'Get API Key' / activate it Used premium template — click Generate again after fixing the AI key/model.",
+        "revisions": 1,
+        "history": [
+          {
+            "at": "2026-10-10T21:54:59.268Z",
+            "instruction": "Initial AI website build"
+          }
+        ],
+        "createdAt": "2026-10-10T21:54:59.974Z",
+        "updatedAt": "2026-10-10T21:54:59.974Z"
+      },
+      {
+        "id": "641b5cc6-c08f-4f4e-8a43-858654101586",
+        "shareToken": "88c35970feb74afcb3e4cab0",
+        "ownerId": "owner",
+        "leadId": "osm-node-244020964",
+        "leadName": "Ananta",
+        "businessType": "Restaurant",
+        "address": "39, Hauptstraße, Neubiberg, 85579, DE",
+        "phone": "+49 89 66011133",
+        "email": "",
+        "businessName": "Ananta",
+        "style": "modern",
+        "html": "<!DOCTYPE html>\n<html lang=\"de\">\n<head>\n<meta charset=\"UTF-8\">\n<meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">\n<title>Ananta – Restaurant in Neubiberg | Asiatische Küche &amp; Reservierung</title>\n<meta name=\"description\" content=\"Ananta Restaurant in Neubiberg – frische, moderne Küche an der Hauptstraße 39. Jetzt Tisch reservieren: ☎ +49 89 66011133\">\n<meta property=\"og:title\" content=\"Ananta – Restaurant Neubiberg\">\n<meta property=\"og:description\" content=\"Moderne Küche in Neubiberg. Tisch reservieren: +49 89 66011133\">\n<style>\n*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',system-ui,sans-serif}\n:root{--e:#0b7a4b;--ed:#065f38;--el:#e8f6ef;--ink:#12241c;--gold:#c9a24b}\nbody{color:var(--ink);line-height:1.6}\n.wrap{max-width:1080px;margin:0 auto;padding:0 20px}\nheader{position:sticky;top:0;background:#fff;box-shadow:0 1px 8px rgba(0,0,0,.06);z-index:50}\n.nav{display:flex;justify-content:space-between;align-items:center;padding:14px 0}\n.logo{font-size:1.4rem;font-weight:800;color:var(--ed);letter-spacing:1px}\n.logo span{color:var(--gold)}\n.btn{display:inline-block;background:var(--e);color:#fff;padding:12px 22px;border-radius:40px;text-decoration:none;font-weight:700;transition:.2s}\n.btn:hover{background:var(--ed)}\n.btn.wa{background:#25d366}\n.hero{background:linear-gradient(rgba(4,40,25,.72),rgba(4,40,25,.72)),url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1600&q=70') center/cover;color:#fff;text-align:center;padding:90px 20px}\n.hero h1{font-size:clamp(2rem,5vw,3.2rem);margin-bottom:12px}\n.hero p{font-size:1.15rem;max-width:560px;margin:0 auto 26px;opacity:.92}\n.cta-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}\nsection{padding:64px 0}\nh2{text-align:center;font-size:1.9rem;color:var(--ed);margin-bottom:8px}\n.sub{text-align:center;color:#5a6f64;margin-bottom:36px}\n.grid{display:grid;gap:20px;grid-template-columns:1fr}\n.card{background:var(--el);border-radius:14px;padding:26px;text-align:center}\n.card .ic{font-size:2rem}\n.card h3{color:var(--ed);margin:8px 0 6px}\n@media(min-width:760px){.grid{grid-template-columns:repeat(3,1fr)}}\n.reviews{background:var(--el)}\n.rev{background:#fff;border-radius:14px;padding:22px;box-shadow:0 2px 10px rgba(0,0,0,.05)}\n.stars{color:var(--gold);letter-spacing:2px}\n.rev p{font-style:italic;margin:8px 0}\n.rev b{color:var(--ed)}\n.quote{background:var(--ed);color:#fff;text-align:center}\n.quote blockquote{font-size:clamp(1.2rem,3vw,1.7rem);font-style:italic;max-width:700px;margin:0 auto}\n.quote cite{display:block;margin-top:14px;color:var(--gold);font-style:normal;font-weight:700}\n.contact{background:var(--el)}\n.form{max-width:560px;margin:0 auto;background:#fff;padding:28px;border-radius:16px;box-shadow:0 4px 18px rgba(0,0,0,.08)}\nlabel{font-weight:600;font-size:.9rem;display:block;margin:12px 0 4px}\ninput,select,textarea{width:100%;padding:12px;border:1px solid #cfe3d8;border-radius:8px;font-size:1rem}\ntextarea{resize:vertical;min-height:80px}\n.form .btn{width:100%;margin-top:18px;border:none;cursor:pointer;font-size:1.05rem}\n.ok{display:none;background:#d9f4e6;color:var(--ed);padding:12px;border-radius:8px;margin-top:14px;text-align:center;font-weight:600}\n.info{text-align:center;margin:22px 0 0;color:#41564b;font-size:.95rem}\nfooter{background:var(--ink);color:#cfe3d8;text-align:center;padding:28px",
+        "provider": "nvidia",
+        "model": "z-ai/glm-5.3-flash",
+        "aiError": "",
+        "revisions": 1,
+        "history": [
+          {
+            "at": "2026-10-10T22:42:44.319Z",
+            "instruction": "Initial AI website build"
+          }
+        ],
+        "createdAt": "2026-10-10T22:42:56.384Z",
+        "updatedAt": "2026-10-10T22:42:56.384Z"
+      },
+      {
+        "id": "a394a1b0-aa5c-4c6e-88e8-f91e7b5665e5",
+        "shareToken": "61d53256432740d7824066d3",
+        "ownerId": "owner",
+        "leadId": "osm-node-244020964",
+        "leadName": "Ananta",
+        "businessType": "Restaurant",
+        "address": "39, Hauptstraße, Neubiberg, 85579, DE",
+        "phone": "+49 89 66011133",
+        "email": "",
+        "businessName": "Ananta",
+        "style": "medical",
+        "html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Ananta | Restaurant</title><meta name=\"description\" content=\"Ananta - Restaurant. Call, book and get a quote today.\"><style>*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,Arial,sans-serif;color:#0f172a;background:#f8fafc}header{background:#0b1220;color:#fff;padding:56px 24px;text-align:center}header h1{margin:0 0 8px;font-size:clamp(2rem,5vw,3.4rem)}.btn{display:inline-block;padding:13px 22px;border-radius:10px;font-weight:700;text-decoration:none}.btn-p{background:#22c55e;color:#06281a}.btn-g{border:1px solid rgba(255,255,255,.4);color:#fff;margin-left:10px}.wrap{max-width:1080px;margin:0 auto;padding:28px 20px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}.card{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:20px}footer{background:#0b1220;color:#cbd5e1;text-align:center;padding:22px}form{display:grid;gap:10px;max-width:520px}input,textarea{padding:12px;border:1px solid #cbd5e1;border-radius:10px;font:inherit}</style></head><body><header><p style=\"letter-spacing:2px;text-transform:uppercase;font-size:12px\">Restaurant</p><h1>Ananta</h1><p>Professional mobile-first website built to turn local searches into calls and bookings. Visit us at 39, Hauptstraße, Neubiberg, 85579, DE.</p><div><a class=\"btn btn-p\" href=\"tel:+49 89 66011133\">Call +49 89 66011133</a><a class=\"btn btn-g\" href=\"#quote\">Book Online</a></div></header><div class=\"wrap\"><div class=\"grid\"><div class=\"card\"><h3>Why choose us</h3><p>Trusted local restaurant with fast response and transparent pricing.</p></div><div class=\"card\"><h3>Services</h3><p>Consultation, premium service, bookings and priority support.</p></div><div class=\"card\"><h3>Reviews</h3><p>Loved by local customers for quality and friendly support.</p></div></div><div class=\"card\" id=\"quote\" style=\"margin-top:20px\"><h2>Get a free quote</h2><form onsubmit=\"alert('Thanks! We will contact you shortly.');return false\"><input required placeholder=\"Your name\"><input placeholder=\"Phone or email\"><textarea rows=\"4\" placeholder=\"What do you need?\"></textarea><button class=\"btn btn-p\" type=\"submit\">Request Quote</button></form><p>+49 89 66011133 </p></div></div><footer>Ananta - Restaurant - Built with MAT LEADS AI PRO X</footer></body></html>",
+        "provider": "template",
+        "model": "builtin-template-v1",
+        "aiError": "NVIDIA AI timed out. Please try again in a moment. Used premium template — click Generate again after fixing the AI key/model.",
+        "revisions": 1,
+        "history": [
+          {
+            "at": "2026-10-10T22:43:14.386Z",
+            "instruction": "Initial AI website build"
+          }
+        ],
+        "createdAt": "2026-10-10T22:43:32.392Z",
+        "updatedAt": "2026-10-10T22:43:32.392Z"
+      },
+      {
+        "id": "cc588b76-581a-4d06-ac2b-0e4f28184576",
+        "shareToken": "69d193981c234de78eac5594",
+        "ownerId": "owner",
+        "leadId": "osm-node-244020964",
+        "leadName": "Ananta",
+        "businessType": "Restaurant",
+        "address": "39, Hauptstraße, Neubiberg, 85579, DE",
+        "phone": "+49 89 66011133",
+        "email": "",
+        "businessName": "Ananta",
+        "style": "medical",
+        "html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Ananta | Restaurant</title><meta name=\"description\" content=\"Ananta - Restaurant. Call, book and get a quote today.\"><style>*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,Arial,sans-serif;color:#0f172a;background:#f8fafc}header{background:#0b1220;color:#fff;padding:56px 24px;text-align:center}header h1{margin:0 0 8px;font-size:clamp(2rem,5vw,3.4rem)}.btn{display:inline-block;padding:13px 22px;border-radius:10px;font-weight:700;text-decoration:none}.btn-p{background:#22c55e;color:#06281a}.btn-g{border:1px solid rgba(255,255,255,.4);color:#fff;margin-left:10px}.wrap{max-width:1080px;margin:0 auto;padding:28px 20px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}.card{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:20px}footer{background:#0b1220;color:#cbd5e1;text-align:center;padding:22px}form{display:grid;gap:10px;max-width:520px}input,textarea{padding:12px;border:1px solid #cbd5e1;border-radius:10px;font:inherit}</style></head><body><header><p style=\"letter-spacing:2px;text-transform:uppercase;font-size:12px\">Restaurant</p><h1>Ananta</h1><p>Professional mobile-first website built to turn local searches into calls and bookings. Visit us at 39, Hauptstraße, Neubiberg, 85579, DE.</p><div><a class=\"btn btn-p\" href=\"tel:+49 89 66011133\">Call +49 89 66011133</a><a class=\"btn btn-g\" href=\"#quote\">Book Online</a></div></header><div class=\"wrap\"><div class=\"grid\"><div class=\"card\"><h3>Why choose us</h3><p>Trusted local restaurant with fast response and transparent pricing.</p></div><div class=\"card\"><h3>Services</h3><p>Consultation, premium service, bookings and priority support.</p></div><div class=\"card\"><h3>Reviews</h3><p>Loved by local customers for quality and friendly support.</p></div></div><div class=\"card\" id=\"quote\" style=\"margin-top:20px\"><h2>Get a free quote</h2><form onsubmit=\"alert('Thanks! We will contact you shortly.');return false\"><input required placeholder=\"Your name\"><input placeholder=\"Phone or email\"><textarea rows=\"4\" placeholder=\"What do you need?\"></textarea><button class=\"btn btn-p\" type=\"submit\">Request Quote</button></form><p>+49 89 66011133 </p></div></div><footer>Ananta - Restaurant - Built with MAT LEADS AI PRO X</footer></body></html>",
+        "provider": "template",
+        "model": "builtin-template-v1",
+        "aiError": "NVIDIA AI timed out. Please try again in a moment. Used premium template — click Generate again after fixing the AI key/model.",
+        "revisions": 1,
+        "history": [
+          {
+            "at": "2026-10-10T22:43:39.599Z",
+            "instruction": "Initial AI website build"
+          }
+        ],
+        "createdAt": "2026-10-10T22:43:57.604Z",
+        "updatedAt": "2026-10-10T22:43:57.604Z"
+      },
+      {
+        "id": "6c20f036-3b06-442b-b1c5-8cd1ffa34531",
+        "shareToken": "b6f4d40be4314727ad4528f8",
+        "ownerId": "owner",
+        "leadId": "osm-node-244020964",
+        "leadName": "Ananta",
+        "businessType": "Restaurant",
+        "address": "39, Hauptstraße, Neubiberg, 85579, DE",
+        "phone": "+49 89 66011133",
+        "email": "",
+        "businessName": "Ananta",
+        "style": "modern",
+        "html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Ananta | Restaurant</title><meta name=\"description\" content=\"Ananta - Restaurant. Call, book and get a quote today.\"><style>*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,Arial,sans-serif;color:#0f172a;background:#f8fafc}header{background:#0b1220;color:#fff;padding:56px 24px;text-align:center}header h1{margin:0 0 8px;font-size:clamp(2rem,5vw,3.4rem)}.btn{display:inline-block;padding:13px 22px;border-radius:10px;font-weight:700;text-decoration:none}.btn-p{background:#22c55e;color:#06281a}.btn-g{border:1px solid rgba(255,255,255,.4);color:#fff;margin-left:10px}.wrap{max-width:1080px;margin:0 auto;padding:28px 20px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}.card{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:20px}footer{background:#0b1220;color:#cbd5e1;text-align:center;padding:22px}form{display:grid;gap:10px;max-width:520px}input,textarea{padding:12px;border:1px solid #cbd5e1;border-radius:10px;font:inherit}</style></head><body><header><p style=\"letter-spacing:2px;text-transform:uppercase;font-size:12px\">Restaurant</p><h1>Ananta</h1><p>Professional mobile-first website built to turn local searches into calls and bookings. Visit us at 39, Hauptstraße, Neubiberg, 85579, DE.</p><div><a class=\"btn btn-p\" href=\"tel:+49 89 66011133\">Call +49 89 66011133</a><a class=\"btn btn-g\" href=\"#quote\">Book Online</a></div></header><div class=\"wrap\"><div class=\"grid\"><div class=\"card\"><h3>Why choose us</h3><p>Trusted local restaurant with fast response and transparent pricing.</p></div><div class=\"card\"><h3>Services</h3><p>Consultation, premium service, bookings and priority support.</p></div><div class=\"card\"><h3>Reviews</h3><p>Loved by local customers for quality and friendly support.</p></div></div><div class=\"card\" id=\"quote\" style=\"margin-top:20px\"><h2>Get a free quote</h2><form onsubmit=\"alert('Thanks! We will contact you shortly.');return false\"><input required placeholder=\"Your name\"><input placeholder=\"Phone or email\"><textarea rows=\"4\" placeholder=\"What do you need?\"></textarea><button class=\"btn btn-p\" type=\"submit\">Request Quote</button></form><p>+49 89 66011133 </p></div></div><footer>Ananta - Restaurant - Built with MAT LEADS AI PRO X</footer></body></html>",
+        "provider": "template",
+        "model": "builtin-template-v1",
+        "aiError": "NVIDIA model z-ai/glm-5.3 timed out. Used premium template — click Generate again after fixing the AI key/model.",
+        "revisions": 1,
+        "history": [
+          {
+            "at": "2026-10-11T11:21:03.683Z",
+            "instruction": "Initial AI website build"
+          }
+        ],
+        "createdAt": "2026-10-11T11:21:48.707Z",
+        "updatedAt": "2026-10-11T11:21:48.707Z"
+      },
+      {
+        "id": "04af8dcd-c9f7-4d80-8efb-263e2d41a9f9",
+        "shareToken": "130696dec399435a923d00ec",
+        "ownerId": "owner",
+        "leadId": "osm-node-244020964",
+        "leadName": "Ananta",
+        "businessType": "Restaurant",
+        "address": "39, Hauptstraße, Neubiberg, 85579, DE",
+        "phone": "+49 89 66011133",
+        "email": "",
+        "businessName": "Ananta",
+        "style": "modern",
+        "html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Ananta | Restaurant</title><meta name=\"description\" content=\"Ananta - Restaurant. Call, book and get a quote today.\"><style>*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,Arial,sans-serif;color:#0f172a;background:#f8fafc}header{background:#0b1220;color:#fff;padding:56px 24px;text-align:center}header h1{margin:0 0 8px;font-size:clamp(2rem,5vw,3.4rem)}.btn{display:inline-block;padding:13px 22px;border-radius:10px;font-weight:700;text-decoration:none}.btn-p{background:#22c55e;color:#06281a}.btn-g{border:1px solid rgba(255,255,255,.4);color:#fff;margin-left:10px}.wrap{max-width:1080px;margin:0 auto;padding:28px 20px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}.card{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:20px}footer{background:#0b1220;color:#cbd5e1;text-align:center;padding:22px}form{display:grid;gap:10px;max-width:520px}input,textarea{padding:12px;border:1px solid #cbd5e1;border-radius:10px;font:inherit}</style></head><body><header><p style=\"letter-spacing:2px;text-transform:uppercase;font-size:12px\">Restaurant</p><h1>Ananta</h1><p>Professional mobile-first website built to turn local searches into calls and bookings. Visit us at 39, Hauptstraße, Neubiberg, 85579, DE.</p><div><a class=\"btn btn-p\" href=\"tel:+49 89 66011133\">Call +49 89 66011133</a><a class=\"btn btn-g\" href=\"#quote\">Book Online</a></div></header><div class=\"wrap\"><div class=\"grid\"><div class=\"card\"><h3>Why choose us</h3><p>Trusted local restaurant with fast response and transparent pricing.</p></div><div class=\"card\"><h3>Services</h3><p>Consultation, premium service, bookings and priority support.</p></div><div class=\"card\"><h3>Reviews</h3><p>Loved by local customers for quality and friendly support.</p></div></div><div class=\"card\" id=\"quote\" style=\"margin-top:20px\"><h2>Get a free quote</h2><form onsubmit=\"alert('Thanks! We will contact you shortly.');return false\"><input required placeholder=\"Your name\"><input placeholder=\"Phone or email\"><textarea rows=\"4\" placeholder=\"What do you need?\"></textarea><button class=\"btn btn-p\" type=\"submit\">Request Quote</button></form><p>+49 89 66011133 </p></div></div><footer>Ananta - Restaurant - Built with MAT LEADS AI PRO X</footer></body></html>",
+        "provider": "template",
+        "model": "builtin-template-v1",
+        "aiError": "NVIDIA model z-ai/glm-5.3 timed out. Used premium template — click Generate again after fixing the AI key/model.",
+        "revisions": 1,
+        "history": [
+          {
+            "at": "2026-10-11T12:22:11.633Z",
+            "instruction": "Initial AI website build"
+          }
+        ],
+        "createdAt": "2026-10-11T12:22:56.644Z",
+        "updatedAt": "2026-10-11T12:22:56.644Z"
+      },
+      {
+        "id": "1cdd5076-42c0-47f7-80c1-445c74508ded",
+        "shareToken": "c0ce93c4b6744e98b191687b",
+        "ownerId": "owner",
+        "leadId": "osm-node-244020964",
+        "leadName": "Ananta",
+        "businessType": "Restaurant",
+        "address": "39, Hauptstraße, Neubiberg, 85579, DE",
+        "phone": "+49 89 66011133",
+        "email": "",
+        "businessName": "Ananta",
+        "style": "modern",
+        "html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Ananta | Restaurant</title><meta name=\"description\" content=\"Ananta - Restaurant. Call, book and get a quote today.\"><style>*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,Arial,sans-serif;color:#0f172a;background:#f8fafc}header{background:#0b1220;color:#fff;padding:56px 24px;text-align:center}header h1{margin:0 0 8px;font-size:clamp(2rem,5vw,3.4rem)}.btn{display:inline-block;padding:13px 22px;border-radius:10px;font-weight:700;text-decoration:none}.btn-p{background:#22c55e;color:#06281a}.btn-g{border:1px solid rgba(255,255,255,.4);color:#fff;margin-left:10px}.wrap{max-width:1080px;margin:0 auto;padding:28px 20px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}.card{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:20px}footer{background:#0b1220;color:#cbd5e1;text-align:center;padding:22px}form{display:grid;gap:10px;max-width:520px}input,textarea{padding:12px;border:1px solid #cbd5e1;border-radius:10px;font:inherit}</style></head><body><header><p style=\"letter-spacing:2px;text-transform:uppercase;font-size:12px\">Restaurant</p><h1>Ananta</h1><p>Professional mobile-first website built to turn local searches into calls and bookings. Visit us at 39, Hauptstraße, Neubiberg, 85579, DE.</p><div><a class=\"btn btn-p\" href=\"tel:+49 89 66011133\">Call +49 89 66011133</a><a class=\"btn btn-g\" href=\"#quote\">Book Online</a></div></header><div class=\"wrap\"><div class=\"grid\"><div class=\"card\"><h3>Why choose us</h3><p>Trusted local restaurant with fast response and transparent pricing.</p></div><div class=\"card\"><h3>Services</h3><p>Consultation, premium service, bookings and priority support.</p></div><div class=\"card\"><h3>Reviews</h3><p>Loved by local customers for quality and friendly support.</p></div></div><div class=\"card\" id=\"quote\" style=\"margin-top:20px\"><h2>Get a free quote</h2><form onsubmit=\"alert('Thanks! We will contact you shortly.');return false\"><input required placeholder=\"Your name\"><input placeholder=\"Phone or email\"><textarea rows=\"4\" placeholder=\"What do you need?\"></textarea><button class=\"btn btn-p\" type=\"submit\">Request Quote</button></form><p>+49 89 66011133 </p></div></div><footer>Ananta - Restaurant - Built with MAT LEADS AI PRO X</footer></body></html>",
+        "provider": "template",
+        "model": "builtin-template-v1",
+        "aiError": "NVIDIA model z-ai/glm-5.3 timed out. Used premium template — click Generate again after fixing the AI key/model.",
+        "revisions": 1,
+        "history": [
+          {
+            "at": "2026-10-11T12:25:25.617Z",
+            "instruction": "Initial AI website build"
+          }
+        ],
+        "createdAt": "2026-10-11T12:26:10.629Z",
+        "updatedAt": "2026-10-11T12:26:10.629Z"
+      },
+      {
+        "id": "b582d198-58ef-4f08-a62a-9294f168d5e8",
+        "shareToken": "d1bcd8f95628447b950e18ef",
+        "ownerId": "owner",
+        "leadId": "osm-node-244020964",
+        "leadName": "Ananta",
+        "businessType": "Restaurant",
+        "address": "39, Hauptstraße, Neubiberg, 85579, DE",
+        "phone": "+49 89 66011133",
+        "email": "",
+        "businessName": "Ananta",
+        "style": "luxury",
+        "html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Ananta | Restaurant</title><meta name=\"description\" content=\"Ananta - Restaurant. Call, book and get a quote today.\"><style>*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,Arial,sans-serif;color:#0f172a;background:#f8fafc}header{background:#0b1220;color:#fff;padding:56px 24px;text-align:center}header h1{margin:0 0 8px;font-size:clamp(2rem,5vw,3.4rem)}.btn{display:inline-block;padding:13px 22px;border-radius:10px;font-weight:700;text-decoration:none}.btn-p{background:#22c55e;color:#06281a}.btn-g{border:1px solid rgba(255,255,255,.4);color:#fff;margin-left:10px}.wrap{max-width:1080px;margin:0 auto;padding:28px 20px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}.card{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:20px}footer{background:#0b1220;color:#cbd5e1;text-align:center;padding:22px}form{display:grid;gap:10px;max-width:520px}input,textarea{padding:12px;border:1px solid #cbd5e1;border-radius:10px;font:inherit}</style></head><body><header><p style=\"letter-spacing:2px;text-transform:uppercase;font-size:12px\">Restaurant</p><h1>Ananta</h1><p>Professional mobile-first website built to turn local searches into calls and bookings. Visit us at 39, Hauptstraße, Neubiberg, 85579, DE.</p><div><a class=\"btn btn-p\" href=\"tel:+49 89 66011133\">Call +49 89 66011133</a><a class=\"btn btn-g\" href=\"#quote\">Book Online</a></div></header><div class=\"wrap\"><div class=\"grid\"><div class=\"card\"><h3>Why choose us</h3><p>Trusted local restaurant with fast response and transparent pricing.</p></div><div class=\"card\"><h3>Services</h3><p>Consultation, premium service, bookings and priority support.</p></div><div class=\"card\"><h3>Reviews</h3><p>Loved by local customers for quality and friendly support.</p></div></div><div class=\"card\" id=\"quote\" style=\"margin-top:20px\"><h2>Get a free quote</h2><form onsubmit=\"alert('Thanks! We will contact you shortly.');return false\"><input required placeholder=\"Your name\"><input placeholder=\"Phone or email\"><textarea rows=\"4\" placeholder=\"What do you need?\"></textarea><button class=\"btn btn-p\" type=\"submit\">Request Quote</button></form><p>+49 89 66011133 </p></div></div><footer>Ananta - Restaurant - Built with MAT LEADS AI PRO X</footer></body></html>",
+        "provider": "template",
+        "model": "builtin-template-v1",
+        "aiError": "NVIDIA model z-ai/glm-5.3 timed out. Used premium template — click Generate again after fixing the AI key/model.",
+        "revisions": 1,
+        "history": [
+          {
+            "at": "2026-10-11T16:37:53.180Z",
+            "instruction": "Initial AI website build"
+          }
+        ],
+        "createdAt": "2026-10-11T16:38:38.182Z",
+        "updatedAt": "2026-10-11T16:38:38.182Z"
+      },
+      {
+        "id": "cb6005c1-09e0-49f5-ac20-06b1b282d2af",
+        "shareToken": "552dcf50131d4329b0221632",
+        "ownerId": "owner",
+        "leadId": "osm-node-244020964",
+        "leadName": "Ananta",
+        "businessType": "Restaurant",
+        "address": "39, Hauptstraße, Neubiberg, 85579, DE",
+        "phone": "+49 89 66011133",
+        "email": "",
+        "businessName": "Ananta",
+        "style": "modern",
+        "html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Ananta | Restaurant</title><meta name=\"description\" content=\"Ananta - Restaurant. Call, book and get a quote today.\"><style>*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,Arial,sans-serif;color:#0f172a;background:#f8fafc}header{background:#0b1220;color:#fff;padding:56px 24px;text-align:center}header h1{margin:0 0 8px;font-size:clamp(2rem,5vw,3.4rem)}.btn{display:inline-block;padding:13px 22px;border-radius:10px;font-weight:700;text-decoration:none}.btn-p{background:#22c55e;color:#06281a}.btn-g{border:1px solid rgba(255,255,255,.4);color:#fff;margin-left:10px}.wrap{max-width:1080px;margin:0 auto;padding:28px 20px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}.card{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:20px}footer{background:#0b1220;color:#cbd5e1;text-align:center;padding:22px}form{display:grid;gap:10px;max-width:520px}input,textarea{padding:12px;border:1px solid #cbd5e1;border-radius:10px;font:inherit}</style></head><body><header><p style=\"letter-spacing:2px;text-transform:uppercase;font-size:12px\">Restaurant</p><h1>Ananta</h1><p>Professional mobile-first website built to turn local searches into calls and bookings. Visit us at 39, Hauptstraße, Neubiberg, 85579, DE.</p><div><a class=\"btn btn-p\" href=\"tel:+49 89 66011133\">Call +49 89 66011133</a><a class=\"btn btn-g\" href=\"#quote\">Book Online</a></div></header><div class=\"wrap\"><div class=\"grid\"><div class=\"card\"><h3>Why choose us</h3><p>Trusted local restaurant with fast response and transparent pricing.</p></div><div class=\"card\"><h3>Services</h3><p>Consultation, premium service, bookings and priority support.</p></div><div class=\"card\"><h3>Reviews</h3><p>Loved by local customers for quality and friendly support.</p></div></div><div class=\"card\" id=\"quote\" style=\"margin-top:20px\"><h2>Get a free quote</h2><form onsubmit=\"alert('Thanks! We will contact you shortly.');return false\"><input required placeholder=\"Your name\"><input placeholder=\"Phone or email\"><textarea rows=\"4\" placeholder=\"What do you need?\"></textarea><button class=\"btn btn-p\" type=\"submit\">Request Quote</button></form><p>+49 89 66011133 </p></div></div><footer>Ananta - Restaurant - Built with MAT LEADS AI PRO X</footer></body></html>",
+        "provider": "template",
+        "model": "builtin-template-v1",
+        "aiError": "NVIDIA model z-ai/glm-5.3 timed out. Used premium template — click Generate again after fixing the AI key/model.",
+        "revisions": 1,
+        "history": [
+          {
+            "at": "2026-10-11T17:36:35.579Z",
+            "instruction": "Initial AI website build"
+          }
+        ],
+        "createdAt": "2026-10-11T17:37:20.585Z",
+        "updatedAt": "2026-10-11T17:37:20.585Z"
+      },
+      {
+        "id": "f2110c42-e296-44c8-9fb5-324bd32527e5",
+        "shareToken": "1b298f5bca2845f897c37502",
+        "ownerId": "owner",
+        "leadId": "osm-node-244020964",
+        "leadName": "Ananta",
+        "businessType": "Restaurant",
+        "address": "39, Hauptstraße, Neubiberg, 85579, DE",
+        "phone": "+49 89 66011133",
+        "email": "",
+        "businessName": "Ananta",
+        "style": "modern",
+        "html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Ananta | Restaurant</title><meta name=\"description\" content=\"Ananta - Restaurant. Call, book and get a quote today.\"><style>*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,Arial,sans-serif;color:#0f172a;background:#f8fafc}header{background:#0b1220;color:#fff;padding:56px 24px;text-align:center}header h1{margin:0 0 8px;font-size:clamp(2rem,5vw,3.4rem)}.btn{display:inline-block;padding:13px 22px;border-radius:10px;font-weight:700;text-decoration:none}.btn-p{background:#22c55e;color:#06281a}.btn-g{border:1px solid rgba(255,255,255,.4);color:#fff;margin-left:10px}.wrap{max-width:1080px;margin:0 auto;padding:28px 20px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}.card{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:20px}footer{background:#0b1220;color:#cbd5e1;text-align:center;padding:22px}form{display:grid;gap:10px;max-width:520px}input,textarea{padding:12px;border:1px solid #cbd5e1;border-radius:10px;font:inherit}</style></head><body><header><p style=\"letter-spacing:2px;text-transform:uppercase;font-size:12px\">Restaurant</p><h1>Ananta</h1><p>Professional mobile-first website built to turn local searches into calls and bookings. Visit us at 39, Hauptstraße, Neubiberg, 85579, DE.</p><div><a class=\"btn btn-p\" href=\"tel:+49 89 66011133\">Call +49 89 66011133</a><a class=\"btn btn-g\" href=\"#quote\">Book Online</a></div></header><div class=\"wrap\"><div class=\"grid\"><div class=\"card\"><h3>Why choose us</h3><p>Trusted local restaurant with fast response and transparent pricing.</p></div><div class=\"card\"><h3>Services</h3><p>Consultation, premium service, bookings and priority support.</p></div><div class=\"card\"><h3>Reviews</h3><p>Loved by local customers for quality and friendly support.</p></div></div><div class=\"card\" id=\"quote\" style=\"margin-top:20px\"><h2>Get a free quote</h2><form onsubmit=\"alert('Thanks! We will contact you shortly.');return false\"><input required placeholder=\"Your name\"><input placeholder=\"Phone or email\"><textarea rows=\"4\" placeholder=\"What do you need?\"></textarea><button class=\"btn btn-p\" type=\"submit\">Request Quote</button></form><p>+49 89 66011133 </p></div></div><footer>Ananta - Restaurant - Built with MAT LEADS AI PRO X</footer></body></html>",
+        "provider": "template",
+        "model": "builtin-template-v1",
+        "aiError": "NVIDIA model openai/gpt-oss-20b timed out. Used premium template — click Generate again after fixing the AI key/model.",
+        "revisions": 1,
+        "history": [
+          {
+            "at": "2026-10-11T18:39:57.924Z",
+            "instruction": "Initial AI website build"
+          }
+        ],
+        "createdAt": "2026-10-11T18:40:25.040Z",
+        "updatedAt": "2026-10-11T18:40:25.040Z"
+      },
+      {
+        "id": "da81991f-30b3-4d33-a4cb-b889dc18515a",
+        "shareToken": "f27b01ac7a8c4eeba5c46968",
+        "ownerId": "owner",
+        "leadId": "",
+        "leadName": "Lakeside Dental Studio",
+        "businessType": "dentist",
+        "address": "",
+        "phone": "+15551234567",
+        "email": "",
+        "businessName": "Lakeside Dental Studio",
+        "style": "modern",
+        "html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Lakeside Dental Studio | dentist</title><meta name=\"description\" content=\"Lakeside Dental Studio - dentist. Call, book and get a quote today.\"><style>*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,Arial,sans-serif;color:#0f172a;background:#f8fafc}header{background:#0b1220;color:#fff;padding:56px 24px;text-align:center}header h1{margin:0 0 8px;font-size:clamp(2rem,5vw,3.4rem)}.btn{display:inline-block;padding:13px 22px;border-radius:10px;font-weight:700;text-decoration:none}.btn-p{background:#22c55e;color:#06281a}.btn-g{border:1px solid rgba(255,255,255,.4);color:#fff;margin-left:10px}.wrap{max-width:1080px;margin:0 auto;padding:28px 20px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}.card{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:20px}footer{background:#0b1220;color:#cbd5e1;text-align:center;padding:22px}form{display:grid;gap:10px;max-width:520px}input,textarea{padding:12px;border:1px solid #cbd5e1;border-radius:10px;font:inherit}</style></head><body><header><img src=\"https://picsum.photos/seed/dentist/1600/900\" alt=\"Lakeside Dental Studio\" style=\"width:100%;max-height:420px;object-fit:cover;display:block\"><div style=\"padding:0 24px\"><p style=\"letter-spacing:2px;text-transform:uppercase;font-size:12px\">dentist</p><h1>Lakeside Dental Studio</h1><p>Professional mobile-first website built to turn local searches into calls and bookings.</p><div><a class=\"btn btn-p\" href=\"tel:+15551234567\">Call +15551234567</a><a class=\"btn btn-g\" href=\"#quote\">Book Online</a></div></div></header><div class=\"wrap\"><div class=\"grid\"><div class=\"card\"><h3>Why choose us</h3><p>Trusted local dentist with fast response and transparent pricing.</p></div><div class=\"card\"><h3>Services</h3><p>Consultation, premium service, bookings and priority support.</p></div><div class=\"card\"><h3>Reviews</h3><p>Loved by local customers for quality and friendly support.</p></div></div><div class=\"card\" id=\"quote\" style=\"margin-top:20px\"><h2>Get a free quote</h2><form onsubmit=\"alert('Thanks! We will contact you shortly.');return false\"><input required placeholder=\"Your name\"><input placeholder=\"Phone or email\"><textarea rows=\"4\" placeholder=\"What do you need?\"></textarea><button class=\"btn btn-p\" type=\"submit\">Request Quote</button></form><p>+15551234567 </p></div></div><div class=\"wrap\" style=\"padding-top:0\"><h2 style=\"text-align:center\">Our Work</h2><div class=\"grid\"><img src=\"https://picsum.photos/seed/dentist-1/800/600\" alt=\"Lakeside Dental Studio photo\" style=\"width:100%;height:200px;object-fit:cover;border-radius:12px\"><img src=\"https://picsum.photos/seed/dentist-2/800/600\" alt=\"Lakeside Dental Studio photo\" style=\"width:100%;height:200px;object-fit:cover;border-radius:12px\"><img src=\"https://picsum.photos/seed/dentist-3/800/600\" alt=\"Lakeside Dental Studio photo\" style=\"width:100%;height:200px;object-fit:cover;border-radius:12px\"></div></div><footer>Lakeside Dental Studio - dentist - Built with MAT LEADS AI PRO X</footer></body></html>",
+        "provider": "template",
+        "model": "builtin-template-v1",
+        "aiError": "NVIDIA model openai/gpt-oss-20b timed out. Used premium template — click Generate again after fixing the AI key/model.",
+        "revisions": 1,
+        "history": [
+          {
+            "at": "2026-10-11T20:00:09.158Z",
+            "instruction": "Initial AI website build"
+          }
+        ],
+        "createdAt": "2026-10-11T20:00:54.167Z",
+        "updatedAt": "2026-10-11T20:00:54.167Z"
+      },
+      {
+        "id": "c6191f57-821a-4d50-9a8a-b7e5446ccb5f",
+        "shareToken": "629fe3027ab149d2bf932829",
+        "ownerId": "owner",
+        "leadId": "",
+        "leadName": "Lakeside Dental Studio",
+        "businessType": "dentist",
+        "address": "",
+        "phone": "+15551234567",
+        "email": "",
+        "businessName": "Lakeside Dental Studio",
+        "style": "modern",
+        "html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Lakeside Dental Studio | dentist</title><meta name=\"description\" content=\"Lakeside Dental Studio - dentist. Call, book and get a quote today.\"><style>*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,Arial,sans-serif;color:#0f172a;background:#f8fafc}header{background:#0b1220;color:#fff;padding:56px 24px;text-align:center}header h1{margin:0 0 8px;font-size:clamp(2rem,5vw,3.4rem)}.btn{display:inline-block;padding:13px 22px;border-radius:10px;font-weight:700;text-decoration:none}.btn-p{background:#22c55e;color:#06281a}.btn-g{border:1px solid rgba(255,255,255,.4);color:#fff;margin-left:10px}.wrap{max-width:1080px;margin:0 auto;padding:28px 20px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}.card{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:20px}footer{background:#0b1220;color:#cbd5e1;text-align:center;padding:22px}form{display:grid;gap:10px;max-width:520px}input,textarea{padding:12px;border:1px solid #cbd5e1;border-radius:10px;font:inherit}</style></head><body><header><img src=\"https://picsum.photos/seed/dentist/1600/900\" alt=\"Lakeside Dental Studio\" style=\"width:100%;max-height:420px;object-fit:cover;display:block\"><div style=\"padding:0 24px\"><p style=\"letter-spacing:2px;text-transform:uppercase;font-size:12px\">dentist</p><h1>Lakeside Dental Studio</h1><p>Professional mobile-first website built to turn local searches into calls and bookings.</p><div><a class=\"btn btn-p\" href=\"tel:+15551234567\">Call +15551234567</a><a class=\"btn btn-g\" href=\"#quote\">Book Online</a></div></div></header><div class=\"wrap\"><div class=\"grid\"><div class=\"card\"><h3>Why choose us</h3><p>Trusted local dentist with fast response and transparent pricing.</p></div><div class=\"card\"><h3>Services</h3><p>Consultation, premium service, bookings and priority support.</p></div><div class=\"card\"><h3>Reviews</h3><p>Loved by local customers for quality and friendly support.</p></div></div><div class=\"card\" id=\"quote\" style=\"margin-top:20px\"><h2>Get a free quote</h2><form onsubmit=\"alert('Thanks! We will contact you shortly.');return false\"><input required placeholder=\"Your name\"><input placeholder=\"Phone or email\"><textarea rows=\"4\" placeholder=\"What do you need?\"></textarea><button class=\"btn btn-p\" type=\"submit\">Request Quote</button></form><p>+15551234567 </p></div></div><div class=\"wrap\" style=\"padding-top:0\"><h2 style=\"text-align:center\">Our Work</h2><div class=\"grid\"><img src=\"https://picsum.photos/seed/dentist-1/800/600\" alt=\"Lakeside Dental Studio photo\" style=\"width:100%;height:200px;object-fit:cover;border-radius:12px\"><img src=\"https://picsum.photos/seed/dentist-2/800/600\" alt=\"Lakeside Dental Studio photo\" style=\"width:100%;height:200px;object-fit:cover;border-radius:12px\"><img src=\"https://picsum.photos/seed/dentist-3/800/600\" alt=\"Lakeside Dental Studio photo\" style=\"width:100%;height:200px;object-fit:cover;border-radius:12px\"></div></div><footer>Lakeside Dental Studio - dentist - Built with MAT LEADS AI PRO X</footer></body></html>",
+        "provider": "template",
+        "model": "builtin-template-v1",
+        "aiError": "NVIDIA model openai/gpt-oss-20b timed out. Used premium template — click Generate again after fixing the AI key/model.",
+        "revisions": 1,
+        "history": [
+          {
+            "at": "2026-10-11T20:00:27.120Z",
+            "instruction": "Initial AI website build"
+          }
+        ],
+        "createdAt": "2026-10-11T20:01:12.123Z",
+        "updatedAt": "2026-10-11T20:01:12.123Z"
+      },
+      {
+        "id": "b36fce9b-48b3-433d-9ead-eab0208bb35f",
+        "shareToken": "ad58c57fe29547218ad6e82b",
+        "ownerId": "owner",
+        "leadId": "",
+        "leadName": "Lakeside Dental Studio",
+        "businessType": "dentist",
+        "address": "",
+        "phone": "+15551234567",
+        "email": "",
+        "businessName": "Lakeside Dental Studio",
+        "style": "modern",
+        "html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Lakeside Dental Studio | dentist</title><meta name=\"description\" content=\"Lakeside Dental Studio - dentist. Call, book and get a quote today.\"><style>*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,Arial,sans-serif;color:#0f172a;background:#f8fafc}header{background:#0b1220;color:#fff;padding:56px 24px;text-align:center}header h1{margin:0 0 8px;font-size:clamp(2rem,5vw,3.4rem)}.btn{display:inline-block;padding:13px 22px;border-radius:10px;font-weight:700;text-decoration:none}.btn-p{background:#22c55e;color:#06281a}.btn-g{border:1px solid rgba(255,255,255,.4);color:#fff;margin-left:10px}.wrap{max-width:1080px;margin:0 auto;padding:28px 20px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}.card{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:20px}footer{background:#0b1220;color:#cbd5e1;text-align:center;padding:22px}form{display:grid;gap:10px;max-width:520px}input,textarea{padding:12px;border:1px solid #cbd5e1;border-radius:10px;font:inherit}</style></head><body><header><img src=\"https://picsum.photos/seed/dentist/1600/900\" alt=\"Lakeside Dental Studio\" style=\"width:100%;max-height:420px;object-fit:cover;display:block\"><div style=\"padding:0 24px\"><p style=\"letter-spacing:2px;text-transform:uppercase;font-size:12px\">dentist</p><h1>Lakeside Dental Studio</h1><p>Professional mobile-first website built to turn local searches into calls and bookings.</p><div><a class=\"btn btn-p\" href=\"tel:+15551234567\">Call +15551234567</a><a class=\"btn btn-g\" href=\"#quote\">Book Online</a></div></div></header><div class=\"wrap\"><div class=\"grid\"><div class=\"card\"><h3>Why choose us</h3><p>Trusted local dentist with fast response and transparent pricing.</p></div><div class=\"card\"><h3>Services</h3><p>Consultation, premium service, bookings and priority support.</p></div><div class=\"card\"><h3>Reviews</h3><p>Loved by local customers for quality and friendly support.</p></div></div><div class=\"card\" id=\"quote\" style=\"margin-top:20px\"><h2>Get a free quote</h2><form onsubmit=\"alert('Thanks! We will contact you shortly.');return false\"><input required placeholder=\"Your name\"><input placeholder=\"Phone or email\"><textarea rows=\"4\" placeholder=\"What do you need?\"></textarea><button class=\"btn btn-p\" type=\"submit\">Request Quote</button></form><p>+15551234567 </p></div></div><div class=\"wrap\" style=\"padding-top:0\"><h2 style=\"text-align:center\">Our Work</h2><div class=\"grid\"><img src=\"https://picsum.photos/seed/dentist-1/800/600\" alt=\"Lakeside Dental Studio photo\" style=\"width:100%;height:200px;object-fit:cover;border-radius:12px\"><img src=\"https://picsum.photos/seed/dentist-2/800/600\" alt=\"Lakeside Dental Studio photo\" style=\"width:100%;height:200px;object-fit:cover;border-radius:12px\"><img src=\"https://picsum.photos/seed/dentist-3/800/600\" alt=\"Lakeside Dental Studio photo\" style=\"width:100%;height:200px;object-fit:cover;border-radius:12px\"></div></div><footer>Lakeside Dental Studio - dentist - Built with MAT LEADS AI PRO X</footer></body></html>",
+        "provider": "template",
+        "model": "builtin-template-v1",
+        "aiError": "NVIDIA model openai/gpt-oss-20b timed out. Used premium template — click Generate again after fixing the AI key/model.",
+        "revisions": 1,
+        "history": [
+          {
+            "at": "2026-10-11T20:08:18.343Z",
+            "instruction": "Initial AI website build"
+          }
+        ],
+        "createdAt": "2026-10-11T20:09:03.396Z",
+        "updatedAt": "2026-10-11T20:09:03.396Z"
+      },
+      {
+        "id": "d810a016-2db5-4799-bd7a-111c812156a9",
+        "shareToken": "680dee97a1454be9ab1f14e5",
+        "ownerId": "owner",
+        "leadId": "",
+        "leadName": "Lakeside Dental Studio",
+        "businessType": "dentist",
+        "address": "",
+        "phone": "+15551234567",
+        "email": "",
+        "businessName": "Lakeside Dental Studio",
+        "style": "modern",
+        "html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Lakeside Dental Studio | dentist</title><meta name=\"description\" content=\"Lakeside Dental Studio - dentist. Call, book and get a quote today.\"><style>*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,Arial,sans-serif;color:#0f172a;background:#f8fafc}header{background:#0b1220;color:#fff;padding:56px 24px;text-align:center}header h1{margin:0 0 8px;font-size:clamp(2rem,5vw,3.4rem)}.btn{display:inline-block;padding:13px 22px;border-radius:10px;font-weight:700;text-decoration:none}.btn-p{background:#22c55e;color:#06281a}.btn-g{border:1px solid rgba(255,255,255,.4);color:#fff;margin-left:10px}.wrap{max-width:1080px;margin:0 auto;padding:28px 20px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}.card{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:20px}footer{background:#0b1220;color:#cbd5e1;text-align:center;padding:22px}form{display:grid;gap:10px;max-width:520px}input,textarea{padding:12px;border:1px solid #cbd5e1;border-radius:10px;font:inherit}</style></head><body><header><img src=\"https://picsum.photos/seed/dentist/1600/900\" alt=\"Lakeside Dental Studio\" style=\"width:100%;max-height:420px;object-fit:cover;display:block\"><div style=\"padding:0 24px\"><p style=\"letter-spacing:2px;text-transform:uppercase;font-size:12px\">dentist</p><h1>Lakeside Dental Studio</h1><p>Professional mobile-first website built to turn local searches into calls and bookings.</p><div><a class=\"btn btn-p\" href=\"tel:+15551234567\">Call +15551234567</a><a class=\"btn btn-g\" href=\"#quote\">Book Online</a></div></div></header><div class=\"wrap\"><div class=\"grid\"><div class=\"card\"><h3>Why choose us</h3><p>Trusted local dentist with fast response and transparent pricing.</p></div><div class=\"card\"><h3>Services</h3><p>Consultation, premium service, bookings and priority support.</p></div><div class=\"card\"><h3>Reviews</h3><p>Loved by local customers for quality and friendly support.</p></div></div><div class=\"card\" id=\"quote\" style=\"margin-top:20px\"><h2>Get a free quote</h2><form onsubmit=\"alert('Thanks! We will contact you shortly.');return false\"><input required placeholder=\"Your name\"><input placeholder=\"Phone or email\"><textarea rows=\"4\" placeholder=\"What do you need?\"></textarea><button class=\"btn btn-p\" type=\"submit\">Request Quote</button></form><p>+15551234567 </p></div></div><div class=\"wrap\" style=\"padding-top:0\"><h2 style=\"text-align:center\">Our Work</h2><div class=\"grid\"><img src=\"https://picsum.photos/seed/dentist-1/800/600\" alt=\"Lakeside Dental Studio photo\" style=\"width:100%;height:200px;object-fit:cover;border-radius:12px\"><img src=\"https://picsum.photos/seed/dentist-2/800/600\" alt=\"Lakeside Dental Studio photo\" style=\"width:100%;height:200px;object-fit:cover;border-radius:12px\"><img src=\"https://picsum.photos/seed/dentist-3/800/600\" alt=\"Lakeside Dental Studio photo\" style=\"width:100%;height:200px;object-fit:cover;border-radius:12px\"></div></div><footer>Lakeside Dental Studio - dentist - Built with MAT LEADS AI PRO X</footer></body></html>",
+        "provider": "template",
+        "model": "builtin-template-v1",
+        "aiError": "NVIDIA model openai/gpt-oss-20b timed out. Used premium template — click Generate again after fixing the AI key/model.",
+        "revisions": 1,
+        "history": [
+          {
+            "at": "2026-10-11T20:09:53.821Z",
+            "instruction": "Initial AI website build"
+          }
+        ],
+        "createdAt": "2026-10-11T20:10:38.826Z",
+        "updatedAt": "2026-10-11T20:10:38.826Z"
+      },
+      {
+        "id": "43df286a-8630-484e-bbd6-c42705a4c3f0",
+        "shareToken": "a3702d9f328a457581750dac",
+        "ownerId": "owner",
+        "leadId": "osm-node-244020964",
+        "leadName": "Ananta",
+        "businessType": "Restaurant",
+        "address": "39, Hauptstraße, Neubiberg, 85579, DE",
+        "phone": "+49 89 66011133",
+        "email": "",
+        "businessName": "Ananta",
+        "style": "modern",
+        "html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Ananta | Restaurant</title><meta name=\"description\" content=\"Ananta - Restaurant. Call, book and get a quote today.\"><style>*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,Arial,sans-serif;color:#0f172a;background:#f8fafc}header{background:#0b1220;color:#fff;padding:56px 24px;text-align:center}header h1{margin:0 0 8px;font-size:clamp(2rem,5vw,3.4rem)}.btn{display:inline-block;padding:13px 22px;border-radius:10px;font-weight:700;text-decoration:none}.btn-p{background:#22c55e;color:#06281a}.btn-g{border:1px solid rgba(255,255,255,.4);color:#fff;margin-left:10px}.wrap{max-width:1080px;margin:0 auto;padding:28px 20px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}.card{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:20px}footer{background:#0b1220;color:#cbd5e1;text-align:center;padding:22px}form{display:grid;gap:10px;max-width:520px}input,textarea{padding:12px;border:1px solid #cbd5e1;border-radius:10px;font:inherit}</style></head><body><header><img src=\"https://picsum.photos/seed/restaurant/1600/900\" alt=\"Ananta\" style=\"width:100%;max-height:420px;object-fit:cover;display:block\"><div style=\"padding:0 24px\"><p style=\"letter-spacing:2px;text-transform:uppercase;font-size:12px\">Restaurant</p><h1>Ananta</h1><p>Professional mobile-first website built to turn local searches into calls and bookings. Visit us at 39, Hauptstraße, Neubiberg, 85579, DE.</p><div><a class=\"btn btn-p\" href=\"tel:+49 89 66011133\">Call +49 89 66011133</a><a class=\"btn btn-g\" href=\"#quote\">Book Online</a></div></div></header><div class=\"wrap\"><div class=\"grid\"><div class=\"card\"><h3>Why choose us</h3><p>Trusted local restaurant with fast response and transparent pricing.</p></div><div class=\"card\"><h3>Services</h3><p>Consultation, premium service, bookings and priority support.</p></div><div class=\"card\"><h3>Reviews</h3><p>Loved by local customers for quality and friendly support.</p></div></div><div class=\"card\" id=\"quote\" style=\"margin-top:20px\"><h2>Get a free quote</h2><form onsubmit=\"alert('Thanks! We will contact you shortly.');return false\"><input required placeholder=\"Your name\"><input placeholder=\"Phone or email\"><textarea rows=\"4\" placeholder=\"What do you need?\"></textarea><button class=\"btn btn-p\" type=\"submit\">Request Quote</button></form><p>+49 89 66011133 </p></div></div><div class=\"wrap\" style=\"padding-top:0\"><h2 style=\"text-align:center\">Our Work</h2><div class=\"grid\"><img src=\"https://picsum.photos/seed/restaurant-1/800/600\" alt=\"Ananta photo\" style=\"width:100%;height:200px;object-fit:cover;border-radius:12px\"><img src=\"https://picsum.photos/seed/restaurant-2/800/600\" alt=\"Ananta photo\" style=\"width:100%;height:200px;object-fit:cover;border-radius:12px\"><img src=\"https://picsum.photos/seed/restaurant-3/800/600\" alt=\"Ananta photo\" style=\"width:100%;height:200px;object-fit:cover;border-radius:12px\"></div></div><footer>Ananta - Restaurant - Built with MAT LEADS AI PRO X</footer></body></html>",
+        "provider": "template",
+        "model": "builtin-template-v1",
+        "aiError": "NVIDIA model moonshotai/kimi-k3 timed out. Used premium template — click Generate again after fixing the AI key/model.",
+        "revisions": 1,
+        "history": [
+          {
+            "at": "2026-10-11T21:48:38.016Z",
+            "instruction": "Initial AI website build"
+          }
+        ],
+        "createdAt": "2026-10-11T21:49:28.056Z",
+        "updatedAt": "2026-10-11T21:49:28.056Z"
+      },
+      {
+        "id": "83c1d018-3be4-4a4c-a39b-857af7f0c4a2",
+        "shareToken": "0f9c7b193192437c86947271",
+        "ownerId": "owner",
+        "leadId": "lead",
+        "leadName": "Anju Korean Tapas",
+        "businessType": "",
+        "address": "",
+        "phone": "",
+        "email": "",
+        "businessName": "Anju Korean Tapas",
+        "style": "modern",
+        "html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Anju Korean Tapas – Modern Korean Tapas Experience</title><meta name=\"description\" content=\"Anju Korean Tapas offers authentic Korean tapas in a modern setting. Enjoy fresh, flavorful dishes with an emerald-themed ambiance.\"><style>body{margin:0;font-family:Arial,sans-serif;background:#f4f4f4;color:#333}header{position:relative;width:100%;height:60vh;overflow:hidden}header img{width:100%;height:100%;object-fit:cover}section{padding:2rem 1rem}h1,h2{color:#006400}h2{margin-top:0}p{line-height:1.6}#why{background:#e0f7e9;padding:1rem 0;text-align:center}#services{display:flex;flex-wrap:wrap;gap:1rem}.card{background:#fff;border-radius:8px;box-shadow:0 2px 5px rgba(0,0,0,.1);flex:1 1 calc(33.333% - 1rem);display:flex;flex-direction:column}card img{width:100%;height:200px;object-fit:cover;border-top-left-radius:8px;border-top-right-radius:8px}card h3{margin:1rem}card p{flex:1;margin:0 1rem 1rem}#gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem}#gallery img{width:100%;height:200px;object-fit:cover;border-radius:8px}#cta{background:#006400;color:#fff;text-align:center;padding:1.5rem 0;margin:2rem 0}#cta a{color:#fff;text-decoration:none;font-weight:bold}#contact{background:#fff;border-radius:8px;padding:1.5rem;max-width:600px;margin:auto}#contact form{display:flex;flex-direction:column}#contact input,#contact textarea{margin-bottom:1rem;padding:.5rem;border:1px solid #ccc;border-radius:4px}#contact button{background:#006400;color:#fff;border:none;padding:.75rem;border-radius:4px;cursor:pointer}footer{background:#222;color:#ccc;text-align:center;padding:1rem 0;font-size:.9rem}</style></head><body><header><img src=\"https://picsum.photos/seed/anju-korean-tapas/1600/900\" alt=\"Anju Korean Tapas\"></header><section id=\"why\"><h2>Why Anju Korean Tapas?</h2><p>Experience the vibrant flavors of Korea in a modern, emerald-themed setting.</p></section><section id=\"services\"><div class=\"card\"><img src=\"https://picsum.photos/seed/anju-korean-tapas-1/800/600\" alt=\"Service 1\"><h3>Signature Dishes</h3><p>Delicious, authentic Korean tapas crafted with fresh ingredients.</p></div><div class=\"card\"><img src=\"https://picsum.photos/seed/anju-korean-tapas-2/800/600\" alt=\"Service 2\"><h3>Cozy Ambiance</h3><p>Modern décor with an emerald touch for a relaxed dining experience.</p></div><div class=\"card\"><img src=\"https://picsum.photos/seed/anju-korean-tapas-3/800/600\" alt=\"Service 3\"><h3>Live Music</h3><p>Enjoy live performances while savoring your favorite dishes.</p></div></section><section id=\"gallery\"><img src=\"https://picsum.photos/seed/anju-korean-tapas-1/800/600\" alt=\"Gallery 1\"><img src=\"https://picsum.photos/seed/anju-korean-tapas-2/800/600\" alt=\"Gallery 2\"><img src=\"https://picsum.photos/seed/anju-korean-tapas-3/800/600\" alt=\"Gallery 3\"></section><section id=\"cta\"><h2>Ready to Taste?</h2><p>Call us now for reservations or inquiries.</p><a href=\"tel:+1234567890\">+1 (234) 567-890</a></section><section id=\"contact\"><h2>Contact Us</h2><form action=\"#\" method=\"post\"><input type=\"text\" name=\"name\" placeholder=\"Your Name\" required><input type=\"email\" name=\"email\" placeholder=\"Your Email\" required><textarea name=\"message\" rows=\"4\" placeholder=\"Your Message\" required></textarea><button type=\"submit\">Send Message</button></form></section><footer>&copy; 2026 Anju Korean Tapas. All rights reserved.</footer></body></html>",
+        "provider": "nvidia",
+        "model": "openai/gpt-oss-20b",
+        "aiError": "",
+        "revisions": 1,
+        "history": [
+          {
+            "at": "2026-10-11T21:53:29.252Z",
+            "instruction": "Initial AI website build"
+          }
+        ],
+        "createdAt": "2026-10-11T21:53:52.658Z",
+        "updatedAt": "2026-10-11T21:53:52.658Z"
+      },
+      {
+        "id": "e64a64e0-348a-4bb2-a3db-68febb2ed516",
+        "shareToken": "c134f5bf21ac47b8908aee53",
+        "ownerId": "owner",
+        "leadId": "lead",
+        "leadName": "Anju Korean Tapas",
+        "businessType": "",
+        "address": "",
+        "phone": "",
+        "email": "",
+        "businessName": "Anju Korean Tapas",
+        "style": "modern",
+        "html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Anju Korean Tapas | Local Business</title><meta name=\"description\" content=\"Anju Korean Tapas - Local Business. Call, book and get a quote today.\"><style>*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,Arial,sans-serif;color:#0f172a;background:#f8fafc}header{background:#0b1220;color:#fff;padding:56px 24px;text-align:center}header h1{margin:0 0 8px;font-size:clamp(2rem,5vw,3.4rem)}.btn{display:inline-block;padding:13px 22px;border-radius:10px;font-weight:700;text-decoration:none}.btn-p{background:#22c55e;color:#06281a}.btn-g{border:1px solid rgba(255,255,255,.4);color:#fff;margin-left:10px}.wrap{max-width:1080px;margin:0 auto;padding:28px 20px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}.card{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:20px}footer{background:#0b1220;color:#cbd5e1;text-align:center;padding:22px}form{display:grid;gap:10px;max-width:520px}input,textarea{padding:12px;border:1px solid #cbd5e1;border-radius:10px;font:inherit}</style></head><body><header><img src=\"https://picsum.photos/seed/anju-korean-tapas/1600/900\" alt=\"Anju Korean Tapas\" style=\"width:100%;max-height:420px;object-fit:cover;display:block\"><div style=\"padding:0 24px\"><p style=\"letter-spacing:2px;text-transform:uppercase;font-size:12px\">Local Business</p><h1>Anju Korean Tapas</h1><p>Professional mobile-first website built to turn local searches into calls and bookings.</p><div><a class=\"btn btn-p\" href=\"#quote\">Get a Free Quote</a><a class=\"btn btn-g\" href=\"#quote\">Book Online</a></div></div></header><div class=\"wrap\"><div class=\"grid\"><div class=\"card\"><h3>Why choose us</h3><p>Trusted local local business with fast response and transparent pricing.</p></div><div class=\"card\"><h3>Services</h3><p>Consultation, premium service, bookings and priority support.</p></div><div class=\"card\"><h3>Reviews</h3><p>Loved by local customers for quality and friendly support.</p></div></div><div class=\"card\" id=\"quote\" style=\"margin-top:20px\"><h2>Get a free quote</h2><form onsubmit=\"alert('Thanks! We will contact you shortly.');return false\"><input required placeholder=\"Your name\"><input placeholder=\"Phone or email\"><textarea rows=\"4\" placeholder=\"What do you need?\"></textarea><button class=\"btn btn-p\" type=\"submit\">Request Quote</button></form><p> </p></div></div><div class=\"wrap\" style=\"padding-top:0\"><h2 style=\"text-align:center\">Our Work</h2><div class=\"grid\"><img src=\"https://picsum.photos/seed/anju-korean-tapas-1/800/600\" alt=\"Anju Korean Tapas photo\" style=\"width:100%;height:200px;object-fit:cover;border-radius:12px\"><img src=\"https://picsum.photos/seed/anju-korean-tapas-2/800/600\" alt=\"Anju Korean Tapas photo\" style=\"width:100%;height:200px;object-fit:cover;border-radius:12px\"><img src=\"https://picsum.photos/seed/anju-korean-tapas-3/800/600\" alt=\"Anju Korean Tapas photo\" style=\"width:100%;height:200px;object-fit:cover;border-radius:12px\"></div></div><footer>Anju Korean Tapas - Local Business - Built with MAT LEADS AI PRO X</footer></body></html>",
+        "provider": "template",
+        "model": "builtin-template-v1",
+        "aiError": "The AI model was slow to answer this time (a reasoning model occasionally needs a retry). This is NOT an API key problem — your key is valid. Click Generate again to retry. Used premium template so you still have a working site.",
+        "revisions": 1,
+        "history": [
+          {
+            "at": "2026-10-11T21:56:09.607Z",
+            "instruction": "Initial AI website build"
+          }
+        ],
+        "createdAt": "2026-10-11T21:56:59.615Z",
+        "updatedAt": "2026-10-11T21:56:59.615Z"
+      },
+      {
+        "id": "8554c71e-e46b-4c51-804b-3d0268ebce78",
+        "shareToken": "b4e1cb3f8645433d9bd618c5",
+        "ownerId": "owner",
+        "leadId": "lead",
+        "leadName": "Anju Korean Tapas",
+        "businessType": "",
+        "address": "",
+        "phone": "",
+        "email": "",
+        "businessName": "Anju Korean Tapas",
+        "style": "modern",
+        "html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Anju Korean Tapas</title><style>body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f4f4f4;color:#333}header{position:relative;overflow:hidden}header img{width:100%;height:auto;object-fit:cover}header h1{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:#fff;font-size:3rem;margin:0}header a{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);background:#50c878;color:#fff;padding:10px 20px;text-decoration:none;border-radius:5px;font-size:1.2rem}section{padding:40px 20px;text-align:center}section h2{color:#50c878;margin-bottom:20px}ul{list-style:none;padding:0;margin:0 auto;max-width:600px;text-align:left}ul li{margin-bottom:10px;font-size:1.1rem}.gallery{display:flex;gap:10px;flex-wrap:wrap}.gallery img{width:calc(33.333% - 6.666px);height:auto;border-radius:5px}footer{background:#333;color:#fff;padding:20px;text-align:center;font-size:0.9rem}</style></head><body><header><img src=\"https://picsum.photos/seed/anju-korean-tapas/1600/900\" alt=\"Anju Korean Tapas\"><h1>Anju Korean Tapas</h1><a href=\"#menu\">Explore Menu</a></header><section><h2>Our Services</h2><ul><li>Tapas & Small Plates</li><li>Authentic Korean Flavors</li><li>Cozy Dining Experience</li></ul></section><section class=\"gallery\"><img src=\"https://picsum.photos/seed/anju-korean-tapas-1/800/600\" alt=\"Gallery 1\"><img src=\"https://picsum.photos/seed/anju-korean-tapas-2/800/600\" alt=\"Gallery 2\"><img src=\"https://picsum.photos/seed/anju-korean-tapas-3/800/600\" alt=\"Gallery 3\"></section><footer>© 2026 Anju Korean Tapas. All rights reserved.</footer></body></html>",
+        "provider": "nvidia",
+        "model": "openai/gpt-oss-20b",
+        "aiError": "",
+        "revisions": 1,
+        "history": [
+          {
+            "at": "2026-10-11T22:01:35.053Z",
+            "instruction": "Initial AI website build"
+          }
+        ],
+        "createdAt": "2026-10-11T22:01:41.539Z",
+        "updatedAt": "2026-10-11T22:01:41.539Z"
+      },
+      {
+        "id": "634acb10-2e9f-49f3-b4b2-f7fbdaff5141",
+        "shareToken": "ae0ed8b9ab624d68a4231b51",
+        "ownerId": "owner",
+        "leadId": "osm-node-244020964",
+        "leadName": "Ananta",
+        "businessType": "Restaurant",
+        "address": "39, Hauptstraße, Neubiberg, 85579, DE",
+        "phone": "+49 89 66011133",
+        "email": "",
+        "businessName": "Ananta",
+        "style": "modern",
+        "html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Ananta Restaurant</title><style>body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f4f4f4;color:#333}header{position:relative;text-align:center;color:white}header img{width:100%;height:auto;object-fit:cover}header h1{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:3rem;margin:0}header a{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);background:#50c878;color:white;padding:10px 20px;text-decoration:none;border-radius:5px;font-size:1rem}section{padding:40px 20px}section h2{color:#50c878;margin-bottom:10px}ul{list-style:none;padding:0}ul li{margin-bottom:10px}.gallery{display:flex;gap:10px;overflow-x:auto}.gallery img{height:200px;object-fit:cover;border-radius:5px}footer{background:#333;color:white;text-align:center;padding:20px;font-size:.9rem}</style></head><body><header><img src=\"https://picsum.photos/seed/restaurant/1600/900\" alt=\"Ananta Restaurant\"><h1>Ananta</h1><a href=\"tel:+498966011133\">Reserve Now</a></header><section><h2>Our Services</h2><ul><li>Fine Dining Experience</li><li>Private Events & Catering</li><li>Seasonal Menu Specials</li></ul></section><section><h2>Gallery</h2><div class=\"gallery\"><img src=\"https://picsum.photos/seed/restaurant-1/800/600\" alt=\"Gallery 1\"><img src=\"https://picsum.photos/seed/restaurant-2/800/600\" alt=\"Gallery 2\"><img src=\"https://picsum.photos/seed/restaurant-3/800/600\" alt=\"Gallery 3\"></div></section><footer>39, Hauptstraße, Neubiberg, 85579, DE | Tel: +49 89 66011133</footer></body></html>",
+        "provider": "nvidia",
+        "model": "openai/gpt-oss-20b",
+        "aiError": "",
+        "revisions": 1,
+        "history": [
+          {
+            "at": "2026-10-11T22:23:48.358Z",
+            "instruction": "Initial AI website build"
+          }
+        ],
+        "createdAt": "2026-10-11T22:23:55.455Z",
+        "updatedAt": "2026-10-11T22:23:55.455Z"
+      },
+      {
+        "id": "2447566d-9a10-4bf2-9224-82d140d4d232",
+        "shareToken": "b85def94efc14893be7d609a",
+        "ownerId": "owner",
+        "leadId": "osm-node-244020964",
+        "leadName": "Ananta",
+        "businessType": "Restaurant",
+        "address": "39, Hauptstraße, Neubiberg, 85579, DE",
+        "phone": "+49 89 66011133",
+        "email": "",
+        "businessName": "Ananta",
+        "style": "modern",
+        "html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Ananta Restaurant</title><style>body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f4f4f4;color:#333}header{position:relative;text-align:center;color:white}header img{width:100%;height:auto;object-fit:cover}header h1{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:3rem;margin:0}header a{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);background:#50c878;color:white;padding:10px 20px;text-decoration:none;border-radius:5px;font-size:1rem}section{padding:20px}section h2{color:#50c878}ul{list-style:none;padding:0}ul li{margin-bottom:10px}.gallery{display:flex;gap:10px;flex-wrap:wrap}.gallery img{width:calc(33.333% - 6.666px);height:auto}footer{background:#333;color:white;text-align:center;padding:10px;font-size:.9rem}@media(max-width:600px){header h1{font-size:2rem}gallery img{width:100%}}</style></head><body><header><img src=\"https://picsum.photos/seed/restaurant/1600/900\" alt=\"Ananta Restaurant\"><h1>Ananta Restaurant</h1><a href=\"#menu\">Reserve Now</a></header><section><h2>Our Services</h2><ul><li>Fine Dining</li><li>Private Events</li><li>Catering</li></ul></section><section class=\"gallery\"><img src=\"https://picsum.photos/seed/restaurant-1/800/600\" alt=\"Gallery 1\"><img src=\"https://picsum.photos/seed/restaurant-2/800/600\" alt=\"Gallery 2\"><img src=\"https://picsum.photos/seed/restaurant-3/800/600\" alt=\"Gallery 3\"></section><footer>39, Hauptstraße, Neubiberg, 85579, DE | +49 89 66011133</footer></body></html>",
+        "provider": "nvidia",
+        "model": "openai/gpt-oss-20b",
+        "aiError": "",
+        "revisions": 1,
+        "history": [
+          {
+            "at": "2026-10-11T22:24:19.760Z",
+            "instruction": "Initial AI website build"
+          }
+        ],
+        "createdAt": "2026-10-11T22:24:43.665Z",
+        "updatedAt": "2026-10-11T22:24:43.665Z"
+      },
+      {
+        "id": "b6731693-c39c-4635-8623-2f6a054d6ec4",
+        "shareToken": "f2d18c59fe504bf1b1e2e13c",
+        "ownerId": "owner",
+        "leadId": "osm-node-244020964",
+        "leadName": "Ananta",
+        "businessType": "Restaurant",
+        "address": "39, Hauptstraße, Neubiberg, 85579, DE",
+        "phone": "+49 89 66011133",
+        "email": "",
+        "businessName": "Ananta",
+        "style": "modern",
+        "html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Ananta Restaurant</title><style>body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f4f4f4;color:#333}header{position:relative;text-align:center;color:white}header img{width:100%;height:auto;object-fit:cover}header h1{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:3rem;margin:0}header a{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);background:#50c878;color:white;padding:10px 20px;text-decoration:none;border-radius:5px}section{padding:20px}section h2{color:#50c878}ul{list-style:none;padding:0}ul li{margin-bottom:10px}.gallery{display:flex;gap:10px;flex-wrap:wrap}gallery img{width:calc(33.333% - 10px);height:auto}footer{background:#333;color:white;text-align:center;padding:10px;font-size:0.9rem}</style></head><body><header><img src=\"https://picsum.photos/seed/restaurant/1600/900\" alt=\"Ananta Restaurant\"><h1>Ananta</h1><a href=\"tel:+498966011133\">Reserve Now</a></header><section><h2>Our Services</h2><ul><li>Fine Dining</li><li>Private Events</li><li>Takeaway</li></ul></section><section class=\"gallery\"><img src=\"https://picsum.photos/seed/restaurant-1/800/600\" alt=\"Gallery 1\"><img src=\"https://picsum.photos/seed/restaurant-2/800/600\" alt=\"Gallery 2\"><img src=\"https://picsum.photos/seed/restaurant-3/800/600\" alt=\"Gallery 3\"></section><footer>39 Hauptstraße, Neubiberg, 85579, DE | Phone: +49 89 66011133</footer></body></html>",
+        "provider": "nvidia",
+        "model": "openai/gpt-oss-20b",
+        "aiError": "",
+        "revisions": 1,
+        "history": [
+          {
+            "at": "2026-10-11T22:33:47.075Z",
+            "instruction": "Initial AI website build"
+          }
+        ],
+        "createdAt": "2026-10-11T22:33:55.932Z",
+        "updatedAt": "2026-10-11T22:33:55.932Z"
+      },
+      {
+        "id": "353e8933-0fb3-46b6-93b2-0966ec656582",
+        "shareToken": "2e5d13e7acb94431a04652f7",
+        "ownerId": "owner",
+        "leadId": "osm-node-244020964",
+        "leadName": "Ananta",
+        "businessType": "Restaurant",
+        "address": "39, Hauptstraße, Neubiberg, 85579, DE",
+        "phone": "+49 89 66011133",
+        "email": "",
+        "businessName": "Ananta",
+        "style": "medical",
+        "html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Ananta Restaurant</title><style>body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#fdfdfd;color:#333}header{position:relative;text-align:center;color:white}header img{width:100%;height:100vh;object-fit:cover}header h1{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:3rem;margin:0}header a{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);padding:12px 24px;background:#e91e63;color:white;text-decoration:none;border-radius:4px}section{padding:40px 20px}section h2{font-size:2rem;margin-bottom:20px}ul{list-style:none;padding:0}ul li{margin-bottom:10px}.gallery{display:flex;gap:10px;overflow-x:auto}.gallery img{flex:1 1 calc(33.333% - 10px);height:200px;object-fit:cover}footer{background:#e91e63;color:white;text-align:center;padding:20px}@media(max-width:600px){header h1{font-size:2rem}gallery img{height:150px}}</style></head><body><header><img src=\"https://picsum.photos/seed/restaurant/1600/900\" alt=\"Ananta Restaurant\"><h1>Ananta Restaurant</h1><a href=\"tel:+498966011133\">Reserve Now</a></header><section><h2>Our Services</h2><ul><li>Fine Dining Experience</li><li>Private Events & Catering</li><li>Seasonal Menu Specials</li></ul></section><section class=\"gallery\"><img src=\"https://picsum.photos/seed/restaurant-1/800/600\" alt=\"Gallery 1\"><img src=\"https://picsum.photos/seed/restaurant-2/800/600\" alt=\"Gallery 2\"><img src=\"https://picsum.photos/seed/restaurant-3/800/600\" alt=\"Gallery 3\"></section><footer>39 Hauptstraße, Neubiberg, 85579, DE | Tel: +49 89 66011133</footer></body></html>",
+        "provider": "nvidia",
+        "model": "openai/gpt-oss-20b",
+        "aiError": "",
+        "revisions": 1,
+        "history": [
+          {
+            "at": "2026-10-11T22:37:22.948Z",
+            "instruction": "Initial AI website build"
+          }
+        ],
+        "createdAt": "2026-10-11T22:37:28.032Z",
+        "updatedAt": "2026-10-11T22:37:28.032Z"
+      },
+      {
+        "id": "de134588-5829-4205-a84e-1d89c98d3998",
+        "shareToken": "777f45a1fefe4c51a62a01be",
+        "ownerId": "owner",
+        "leadId": "osm-node-244020964",
+        "leadName": "Ananta",
+        "businessType": "Restaurant",
+        "address": "39, Hauptstraße, Neubiberg, 85579, DE",
+        "phone": "+49 89 66011133",
+        "email": "",
+        "businessName": "Ananta",
+        "style": "medical",
+        "html": "<!doctype html><html lang=\"de\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Ananta Restaurant</title><style>body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f8f8f8;color:#333}header{position:relative;width:100%;height:60vh;overflow:hidden}header img{width:100%;height:100%;object-fit:cover}header h1{position:absolute;bottom:20%;left:5%;color:#fff;font-size:3rem;text-shadow:2px2px4px rgba(0,0,0,.5)}header a{position:absolute;bottom:10%;left:5%;padding:12px 24px;background:#ff4d7e;color:#fff;text-decoration:none;border-radius:4px}section{padding:2rem 5%}section h2{color:#ff4d7e;margin-bottom:1rem}ul{list-style:none;padding:0}ul li{margin-bottom:.5rem}.gallery{display:flex;gap:1rem;overflow-x:auto}.gallery img{flex:1 1 calc(33.333% - 1rem);height:auto;border-radius:8px}footer{background:#222;color:#fff;padding:1rem 5%;text-align:center}footer a{color:#ff4d7e;text-decoration:none}</style></head><body><header><img src=\"https://picsum.photos/seed/restaurant/1600/900\" alt=\"Ananta Restaurant\"><h1>Ananta Restaurant</h1><a href=\"#contact\">Reservieren</a></header><section><h2>Dienstleistungen</h2><ul><li>Frische mediterrane Küche</li><li>Ambiente im medizinischen Stil</li><li>Reservierungen & Events</li></ul></section><section class=\"gallery\"><img src=\"https://picsum.photos/seed/restaurant-1/800/600\" alt=\"Gallery 1\"><img src=\"https://picsum.photos/seed/restaurant-2/800/600\" alt=\"Gallery 2\"><img src=\"https://picsum.photos/seed/restaurant-3/800/600\" alt=\"Gallery 3\"></section><footer><p>39 Hauptstraße, Neubiberg, 85579, DE | Tel: +49 89 66011133</p></footer></body></html>",
+        "provider": "nvidia",
+        "model": "openai/gpt-oss-20b",
+        "aiError": "",
+        "revisions": 1,
+        "history": [
+          {
+            "at": "2026-10-11T22:38:01.132Z",
+            "instruction": "Initial AI website build"
+          }
+        ],
+        "createdAt": "2026-10-11T22:38:07.423Z",
+        "updatedAt": "2026-10-11T22:38:07.423Z"
+      },
+      {
+        "id": "a0e431b7-5938-4be7-81c0-765854e873d0",
+        "shareToken": "833f99963660481ab2f3eb91",
+        "ownerId": "owner",
+        "leadId": "",
+        "leadName": "Lakeside Dental Studio",
+        "businessType": "Dentist",
+        "address": "",
+        "phone": "555-0100",
+        "email": "",
+        "businessName": "Lakeside Dental Studio",
+        "style": "modern",
+        "html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Lakeside Dental Studio</title><meta name=\"description\" content=\"Lakeside Dental Studio — a professional website built to turn visitors into customers.\"><style>*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,Arial,sans-serif;color:#0f172a;background:#f8fafc;line-height:1.55}.nav{position:sticky;top:0;z-index:50;background:#0b1220;display:flex;gap:4px;align-items:center;padding:10px 16px;flex-wrap:wrap;box-shadow:0 2px 10px rgba(0,0,0,.15)}.nav .brand{color:#fff;font-weight:800;margin-right:auto;font-size:1.05rem}.nav-a{color:#cbd5e1;text-decoration:none;padding:8px 13px;border-radius:8px;font-weight:600;cursor:pointer;font-size:.95rem}.nav-a:hover{background:rgba(255,255,255,.1);color:#fff}.nav-a.active{background:#22c55e;color:#06281a}img{max-width:100%;height:auto}.wrap{max-width:1080px;margin:0 auto;padding:30px 20px}input,textarea{font:inherit}footer{background:#0b1220;color:#cbd5e1;text-align:center;padding:20px;font-size:.9rem}</style></head><body><nav class=\"nav\"><span class=\"brand\">Lakeside Dental Studio</span><a href=\"#\" class=\"nav-a active\" onclick=\"return showPage(0)\">Home</a></nav><section class=\"pg\" id=\"pg-0\"><style>\nbody{margin:0;font-family:Arial,sans-serif;background:#f4f4f4;color:#333;}\nh1{font-size:2.5rem;margin:0.5em 0;}\nh2{font-size:1.75rem;margin:0.5em 0;}\np{line-height:1.6;}\nbutton{background:#009688;color:#fff;border:none;padding:0.75em 1.5em;font-size:1rem;cursor:pointer;border-radius:4px;}\nsection{padding:2em 1em;}\n.hero{background:url('https://picsum.photos/seed/dentist/1600/900') center/cover no-repeat;height:60vh;display:flex;flex-direction:column;justify-content:center;align-items:center;color:#fff;text-align:center;}\n.hero h1{font-size:3rem;text-shadow:2px 2px 4px rgba(0,0,0,0.5);}\n.hero button{margin-top:1em;}\n.highlights{display:flex;justify-content:space-around;flex-wrap:wrap;}\n.highlight{flex:1 1 30%;margin:1em;background:#fff;padding:1em;border-radius:8px;box-shadow:0 2px 5px rgba(0,0,0,0.1);}\n.gallery{display:flex;flex-wrap:wrap;gap:1em;}\n.gallery img{flex:1 1 calc(33% - 1em);height:auto;border-radius:8px;}\n@media(max-width:768px){.highlights{flex-direction:column;align-items:center;} .highlight{flex:1 1 80%;} .gallery img{flex:1 1 100%;}}\n</style></section><footer>© 2026 Lakeside Dental Studio. All rights reserved.</footer><script>function showPage(i){document.querySelectorAll('.pg').forEach(function(s,idx){s.style.display=idx===i?'block':'none'});document.querySelectorAll('.nav-a').forEach(function(a,idx){a.classList.toggle('active',idx===i)});window.scrollTo(0,0);return false;}</script></body></html>",
+        "provider": "nvidia",
+        "model": "openai/gpt-oss-20b",
+        "pageCount": 1,
+        "aiError": "",
+        "revisions": 1,
+        "history": [
+          {
+            "at": "2026-10-11T23:13:19.867Z",
+            "instruction": "Initial AI website build"
+          }
+        ],
+        "createdAt": "2026-10-11T23:13:28.439Z",
+        "updatedAt": "2026-10-11T23:13:28.439Z"
+      },
+      {
+        "id": "db1a7783-44e2-47c3-a7e4-b96b9398169e",
+        "shareToken": "5551b8e60e834937b122873d",
+        "ownerId": "owner",
+        "leadId": "",
+        "leadName": "Lakeside Dental Studio",
+        "businessType": "Dentist",
+        "address": "",
+        "phone": "555-0100",
+        "email": "",
+        "businessName": "Lakeside Dental Studio",
+        "style": "modern",
+        "html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Lakeside Dental Studio</title><meta name=\"description\" content=\"Lakeside Dental Studio — a professional website built to turn visitors into customers.\"><style>*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,Arial,sans-serif;color:#0f172a;background:#f8fafc;line-height:1.55}.nav{position:sticky;top:0;z-index:50;background:#0b1220;display:flex;gap:4px;align-items:center;padding:10px 16px;flex-wrap:wrap;box-shadow:0 2px 10px rgba(0,0,0,.15)}.nav .brand{color:#fff;font-weight:800;margin-right:auto;font-size:1.05rem}.nav-a{color:#cbd5e1;text-decoration:none;padding:8px 13px;border-radius:8px;font-weight:600;cursor:pointer;font-size:.95rem}.nav-a:hover{background:rgba(255,255,255,.1);color:#fff}.nav-a.active{background:#22c55e;color:#06281a}img{max-width:100%;height:auto}.wrap{max-width:1080px;margin:0 auto;padding:30px 20px}input,textarea{font:inherit}footer{background:#0b1220;color:#cbd5e1;text-align:center;padding:20px;font-size:.9rem}</style></head><body><nav class=\"nav\"><span class=\"brand\">Lakeside Dental Studio</span><a href=\"#\" class=\"nav-a active\" onclick=\"return showPage(0)\">Home</a><a href=\"#\" class=\"nav-a\" onclick=\"return showPage(1)\">About</a><a href=\"#\" class=\"nav-a\" onclick=\"return showPage(2)\">Services</a></nav><section class=\"pg\" id=\"pg-0\"><style>body{font-family:Arial,Helvetica,sans-serif;margin:0;padding:0;background:#f4f4f4;color:#333}h1,h2,h3{color:#004d40}button{background:#004d40;color:#fff;border:none;padding:12px 24px;border-radius:4px;cursor:pointer}button:hover{background:#00332b}section{padding:60px 20px}section.hero{background:url(https://picsum.photos/seed/dentist/1600/900) center/cover no-repeat;height:60vh;display:flex;align-items:center;justify-content:center;color:#fff;text-align:center}section.hero h1{font-size:3rem;margin:0}section.hero button{margin-top:20px}section.intro{max-width:800px;margin:auto;text-align:center}section.highlights{display:flex;justify-content:space-around;margin-top:40px}section.highlights div{flex:1;max-width:200px;text-align:center}section.gallery{display:flex;overflow-x:auto;margin-top:40px}section.gallery img{height:200px;margin-right:10px;border-radius:8px}section.about{max-width:800px;margin:auto}section.values{display:flex;justify-content:space-around;margin-top:40px}section.values div{flex:1;max-width:200px;text-align:center}section.services-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px;margin-top:40px}section.packages{display:flex;justify-content:space-around;margin-top:40px}section.packages div{flex:1;max-width:250px;text-align:center;background:#e0f2f1;padding:20px;border-radius:8px}section.packages h3{margin-top:0}section.packages button{margin-top:10px}</style>\n<section class=\"hero\">\n<h1>Lakeside Dental Studio</h1>\n<button>Book an Appointment</button>\n</section>\n<section class=\"intro\">\n<p>Modern dental care with a personal touch. Experience the emerald calm of Lakeside Dental Studio.</p>\n</section>\n<section class=\"highlights\">\n<div>\n<h3>State‑of‑the‑Art</h3>\n<p>Advanced technology for precise care.</p>\n</div>\n<div>\n<h3>Comfort First</h3>\n<p>Relaxing environment and friendly staff.</p>\n</div>\n<div>\n<h3>Personalized Plans</h3>\n<p>Tailored treatments for every smile.</p>\n</div>\n</section>\n<section class=\"gallery\">\n<img src=\"https://picsum.photos/seed/dentist-1/800/600\" alt=\"Gallery 1\">\n<img src=\"https://picsum.photos/seed/dentist-2/800/600\" alt=\"Gallery 2\">\n<img src=\"https://picsum.photos/seed/dentist-3/800/600\" alt=\"Gallery 3\">\n</section></section>\n<section class=\"pg\" id=\"pg-1\" style=\"display:none\"><section class=\"about\">\n<h2>Our Story</h2>\n<p>Founded by Dr. Elena Rivera, Lakeside Dental Studio blends modern techniques with compassionate care. We grew from a small practice into a community hub for healthy smiles.</p>\n<h2>Why Choose Us</h2>\n<p>Our commitment to continuous learning, patient education, and a welcoming atmosphere sets us apart.</p>\n<h2>Trust Points</h2>\n<p>• 15+ years of experience<br>• 4.9/5 patient rating<br>• Accredited by the American Dental Association</p>\n<h2>Values & Team</h2>\n<div class=\"values\">\n<div>\n<h3>Integrity</h3>\n<p>Transparent communication and honest care.</p>\n</div>\n<div>\n<h3>Innovation</h3>\n<p>Adopting the latest dental advancements.</p>\n</div>\n<div>\n<h3>Compassion</h3>\n<p>Patient‑first approach in every visit.</p>\n</div>\n</div>\n</section></section>\n<section class=\"pg\" id=\"pg-2\" style=\"display:none\"><section class=\"services-grid\">\n<div>\n<h3>General Dentistry</h3>\n<p>Comprehensive exams, cleanings, and preventive care.</p>\n</div>\n<div>\n<h3>Cosmetic Dentistry</h3>\n<p>Whitening, veneers, and smile design.</p>\n</div>\n<div>\n<h3>Orthodontics</h3>\n<p>Invisalign and traditional braces for all ages.</p>\n</div>\n<div>\n<h3>Restorative Dentistry</h3>\n<p>Fillings, crowns, and dental implants.</p>\n</div>\n<div>\n<h3>Periodontics</h3>\n<p>Advanced gum care and treatments.</p>\n</div>\n<div>\n<h3>Emergency Care</h3>\n<p>Rapid response for urgent dental issues.</p>\n</div>\n</section>\n<section class=\"packages\">\n<div>\n<h3>Basic Care</h3>\n<p>Annual exam + cleaning.</p>\n<button>$120</button>\n</div>\n<div>\n<h3>Smile Makeover</h3>\n<p>Whitening + veneers.</p>\n<button>$850</button>\n</div>\n<div>\n<h3>Full Restore</h3>\n<p>Implants + crowns.</p>\n<button>$2,500</button>\n</div>\n</section></section><footer>© 2026 Lakeside Dental Studio. All rights reserved.</footer><script>function showPage(i){document.querySelectorAll('.pg').forEach(function(s,idx){s.style.display=idx===i?'block':'none'});document.querySelectorAll('.nav-a').forEach(function(a,idx){a.classList.toggle('active',idx===i)});window.scrollTo(0,0);return false;}</script></body></html>",
+        "provider": "nvidia",
+        "model": "openai/gpt-oss-20b",
+        "pageCount": 3,
+        "aiError": "",
+        "revisions": 1,
+        "history": [
+          {
+            "at": "2026-10-11T23:17:57.362Z",
+            "instruction": "Initial AI website build"
+          }
+        ],
+        "createdAt": "2026-10-11T23:18:11.100Z",
+        "updatedAt": "2026-10-11T23:18:11.100Z"
+      },
+      {
+        "id": "41430f22-7e12-474d-92d7-2e5762d7effd",
+        "shareToken": "d39447a4a6f74fc6ae7c9d57",
+        "ownerId": "owner",
+        "leadId": "osm-node-244020964",
+        "leadName": "Ananta",
+        "businessType": "Restaurant",
+        "address": "39, Hauptstraße, Neubiberg, 85579, DE",
+        "phone": "+49 89 66011133",
+        "email": "",
+        "businessName": "Ananta",
+        "style": "modern",
+        "html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Ananta</title><meta name=\"description\" content=\"Ananta — a professional website built to turn visitors into customers.\"><style>*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,Arial,sans-serif;color:#0f172a;background:#f8fafc;line-height:1.55}.nav{position:sticky;top:0;z-index:50;background:#0b1220;display:flex;gap:4px;align-items:center;padding:10px 16px;flex-wrap:wrap;box-shadow:0 2px 10px rgba(0,0,0,.15)}.nav .brand{color:#fff;font-weight:800;margin-right:auto;font-size:1.05rem}.nav-a{color:#cbd5e1;text-decoration:none;padding:8px 13px;border-radius:8px;font-weight:600;cursor:pointer;font-size:.95rem}.nav-a:hover{background:rgba(255,255,255,.1);color:#fff}.nav-a.active{background:#22c55e;color:#06281a}img{max-width:100%;height:auto}.wrap{max-width:1080px;margin:0 auto;padding:30px 20px}input,textarea{font:inherit}footer{background:#0b1220;color:#cbd5e1;text-align:center;padding:20px;font-size:.9rem}</style></head><body><nav class=\"nav\"><span class=\"brand\">Ananta</span><a href=\"#\" class=\"nav-a active\" onclick=\"return showPage(0)\">Home</a></nav><section class=\"pg\" id=\"pg-0\"><style>body{font-family:Arial,sans-serif;margin:0;padding:0;background:#f5f5f5;color:#333}h1{color:#006400;font-size:2.5rem;margin:0.5em 0}h2{color:#006400;font-size:1.8rem;margin:0.5em 0}section{padding:2rem 1rem}button{background:#006400;color:#fff;border:none;padding:0.75rem 1.5rem;font-size:1rem;cursor:pointer;border-radius:4px}button:hover{background:#004d00}img{max-width:100%;height:auto;border-radius:8px}#hero{position:relative;background:url('https://picsum.photos/seed/restaurant/1600/900') center/cover no-repeat;height:60vh;display:flex;align-items:center;justify-content:center;color:#fff;text-align:center}#hero h1{font-size:3rem}#hero button{margin-top:1rem}#highlights{display:flex;gap:1rem;flex-wrap:wrap}#highlights div{flex:1 1 calc(33% - 1rem);background:#fff;padding:1rem;border-radius:8px;text-align:center}#gallery{display:flex;gap:1rem;flex-wrap:wrap}#gallery img{flex:1 1 calc(33% - 1rem)}@media(max-width:768px){#highlights div{flex:1 1 100%}#gallery img{flex:1 1 100%}}</style></section><footer>© 2026 Ananta. All rights reserved.</footer><script>function showPage(i){document.querySelectorAll('.pg').forEach(function(s,idx){s.style.display=idx===i?'block':'none'});document.querySelectorAll('.nav-a').forEach(function(a,idx){a.classList.toggle('active',idx===i)});window.scrollTo(0,0);return false;}</script></body></html>",
+        "provider": "nvidia",
+        "model": "openai/gpt-oss-20b",
+        "pageCount": 1,
+        "aiError": "",
+        "revisions": 1,
+        "history": [
+          {
+            "at": "2026-10-11T23:21:44.336Z",
+            "instruction": "Initial AI website build"
+          }
+        ],
+        "createdAt": "2026-10-11T23:21:55.435Z",
+        "updatedAt": "2026-10-11T23:21:55.435Z"
+      },
+      {
+        "id": "f0fedd4d-c649-47e4-921e-cdda5d72ebb6",
+        "shareToken": "2deb6e34c22d4310956e57eb",
+        "ownerId": "owner",
+        "leadId": "osm-node-244020964",
+        "leadName": "Ananta",
+        "businessType": "Restaurant",
+        "address": "39, Hauptstraße, Neubiberg, 85579, DE",
+        "phone": "+49 89 66011133",
+        "email": "",
+        "businessName": "Ananta",
+        "style": "modern",
+        "html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Ananta</title><meta name=\"description\" content=\"Ananta — a professional website built to turn visitors into customers.\"><style>*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,Arial,sans-serif;color:#0f172a;background:#f8fafc;line-height:1.55}.nav{position:sticky;top:0;z-index:50;background:#0b1220;display:flex;gap:4px;align-items:center;padding:10px 16px;flex-wrap:wrap;box-shadow:0 2px 10px rgba(0,0,0,.15)}.nav .brand{color:#fff;font-weight:800;margin-right:auto;font-size:1.05rem}.nav-a{color:#cbd5e1;text-decoration:none;padding:8px 13px;border-radius:8px;font-weight:600;cursor:pointer;font-size:.95rem}.nav-a:hover{background:rgba(255,255,255,.1);color:#fff}.nav-a.active{background:#22c55e;color:#06281a}img{max-width:100%;height:auto}.wrap{max-width:1080px;margin:0 auto;padding:30px 20px}input,textarea{font:inherit}footer{background:#0b1220;color:#cbd5e1;text-align:center;padding:20px;font-size:.9rem}</style></head><body><nav class=\"nav\"><span class=\"brand\">Ananta</span><a href=\"#\" class=\"nav-a active\" onclick=\"return showPage(0)\">Home</a><a href=\"#\" class=\"nav-a\" onclick=\"return showPage(1)\">About</a><a href=\"#\" class=\"nav-a\" onclick=\"return showPage(2)\">Services</a><a href=\"#\" class=\"nav-a\" onclick=\"return showPage(3)\">Contact</a></nav><section class=\"pg\" id=\"pg-0\"><style>\nbody{font-family:Arial,Helvetica,sans-serif;margin:0;padding:0;color:#333;background:#f9f9f9;}\nh1,h2,h3{color:#004d40;}\na{color:#004d40;text-decoration:none;}\nbutton{background:#004d40;color:#fff;padding:10px 20px;border:none;border-radius:4px;cursor:pointer;}\nsection{padding:60px 20px;max-width:1200px;margin:auto;}\n.hero{background:url(https://picsum.photos/seed/restaurant/1600/900) center/cover no-repeat;height:90vh;display:flex;align-items:center;justify-content:center;flex-direction:column;color:#fff;text-align:center;}\n.hero h1{font-size:3rem;margin:0;}\n.hero button{margin-top:20px;}\n.intro{font-size:1.2rem;line-height:1.5;margin-top:20px;}\n.highlights{display:flex;gap:20px;margin-top:40px;}\n.highlight{flex:1;background:#e0f2f1;padding:20px;border-radius:8px;text-align:center;}\n.gallery{display:flex;gap:10px;margin-top:40px;overflow-x:auto;}\n.gallery img{height:200px;border-radius:8px;}\n.about p{margin:20px 0;}\n.values{display:flex;gap:20px;margin-top:30px;}\n.values div{flex:1;background:#e0f2f1;padding:20px;border-radius:8px;}\n.services-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px;margin-top:40px;}\n.service{background:#e0f2f1;padding:20px;border-radius:8px;}\n.packages{display:flex;gap:20px;margin-top:40px;}\n.package{flex:1;background:#e0f2f1;padding:20px;border-radius:8px;text-align:center;}\nform{display:flex;flex-direction:column;gap:15px;margin-top:20px;}\nform input,form textarea{padding:10px;border:1px solid #ccc;border-radius:4px;}\nform button{align-self:flex-start;}\n.contact-info{margin-top:30px;}\n</style>\n<section class=\"hero\">\n<h1>Welcome to Ananta</h1>\n<button>Reserve a Table</button>\n</section>\n<section>\n<p class=\"intro\">Experience modern dining in the heart of Neubiberg. Fresh flavors, elegant atmosphere.</p>\n<div class=\"highlights\">\n<div class=\"highlight\"><h3>Farm Fresh</h3><p>Locally sourced ingredients.</p></div>\n<div class=\"highlight\"><h3>Chef's Specials</h3><p>Seasonal menu crafted by our head chef.</p></div>\n<div class=\"highlight\"><h3>Cozy Ambience</h3><p>Modern décor with warm lighting.</p></div>\n</div>\n<div class=\"gallery\">\n<img src=\"https://picsum.photos/seed/restaurant-1/800/600\" alt=\"Dish 1\">\n<img src=\"https://picsum.photos/seed/restaurant-2/800/600\" alt=\"Dish 2\">\n<img src=\"https://picsum.photos/seed/restaurant-3/800/600\" alt=\"Dish 3\">\n</div>\n</section></section>\n<section class=\"pg\" id=\"pg-1\" style=\"display:none\"><section>\n<h2>Our Story</h2>\n<p>Founded in 2020, Ananta blends contemporary culinary techniques with traditional German flavors, creating a unique dining experience.</p>\n<h3>Why Choose Us</h3>\n<p>We prioritize sustainability, local sourcing, and impeccable service to ensure every visit is memorable.</p>\n<h3>Trust Points</h3>\n<ul>\n<li>Certified organic ingredients</li>\n<li>Positive reviews on TripAdvisor</li>\n<li>Awarded Best Modern Restaurant 2023</li>\n</ul>\n<h3>Values & Team</h3>\n<div class=\"values\">\n<div><h4>Integrity</h4><p>Transparent practices and honest pricing.</p></div>\n<div><h4>Innovation</h4><p>Constant menu evolution.</p></div>\n<div><h4>Community</h4><p>Supporting local farmers.</p></div>\n</div>\n</section></section>\n<section class=\"pg\" id=\"pg-2\" style=\"display:none\"><section>\n<h2>Our Services</h2>\n<div class=\"services-grid\">\n<div class=\"service\"><h3>Fine Dining</h3><p>Elegant table settings for special occasions.</p></div>\n<div class=\"service\"><h3>Private Events</h3><p>Venue for weddings, corporate events.</p></div>\n<div class=\"service\"><h3>Takeaway</h3><p>Freshly prepared meals for home.</p></div>\n<div class=\"service\"><h3>Catering</h3><p>Custom menus for parties.</p></div>\n<div class=\"service\"><h3>Wine Pairing</h3><p>Expert selections to complement dishes.</p></div>\n<div class=\"service\"><h3>Chef's Table</h3><p>Intimate experience with the chef.</p></div>\n</div>\n<h3>Packages & Pricing</h3>\n<div class=\"packages\">\n<div class=\"package\"><h4>Starter</h4><p>€25 per person</p></div>\n<div class=\"package\"><h4>Standard</h4><p>€45 per person</p></div>\n<div class=\"package\"><h4>Premium</h4><p>€65 per person</p></div>\n</div>\n</section></section>\n<section class=\"pg\" id=\"pg-3\" style=\"display:none\"><section>\n<h2>Contact Us</h2>\n<form action=\"#\" method=\"post\">\n<input type=\"text\" name=\"name\" placeholder=\"Your Name\" required>\n<input type=\"email\" name=\"email\" placeholder=\"Your Email\" required>\n<textarea name=\"message\" rows=\"5\" placeholder=\"Your Message\" required></textarea>\n<button type=\"submit\">Send Message</button>\n</form>\n<div class=\"contact-info\">\n<p>Phone: <a href=\"tel:+498966011133\">+49 89 66011133</a></p>\n<p>Address: 39, Hauptstraße, Neubiberg, 85579, DE</p>\n<p>Hours: Mon-Fri 11:00-22:00, Sat-Sun 10:00-23:00</p>\n<button onclick=\"window.location='tel:+498966011133'\">Call Now</button>\n</div>\n</section></section><footer>© 2026 Ananta. All rights reserved.</footer><script>function showPage(i){document.querySelectorAll('.pg').forEach(function(s,idx){s.style.display=idx===i?'block':'none'});document.querySelectorAll('.nav-a').forEach(function(a,idx){a.classList.toggle('active',idx===i)});window.scrollTo(0,0);return false;}</script></body></html>",
+        "provider": "nvidia",
+        "model": "openai/gpt-oss-20b",
+        "pageCount": 4,
+        "aiError": "",
+        "revisions": 1,
+        "history": [
+          {
+            "at": "2026-10-11T23:22:15.194Z",
+            "instruction": "Initial AI website build"
+          }
+        ],
+        "createdAt": "2026-10-11T23:22:54.640Z",
+        "updatedAt": "2026-10-11T23:22:54.640Z"
+      }
+    ],
     "users": [
       {
         "name": "mat autos",
@@ -190,6 +1106,52 @@
           "upgradeRequiredAfterTrial": true
         },
         "emailVerified": false
+      },
+      {
+        "email": "owner@matleads.local",
+        "role": "admin",
+        "settings": {
+          "leadAlerts": true,
+          "weeklyDigest": true,
+          "emailNotifications": true,
+          "smsNotifications": false,
+          "browserNotifications": true,
+          "defaultCountry": "United States",
+          "defaultResults": 20,
+          "defaultRadius": 15000,
+          "defaultSearchDepth": "deep",
+          "defaultSortBy": "opportunity",
+          "defaultLeadQuality": "all",
+          "brandName": "MAT Leads AI Pro X",
+          "bookingUrl": "",
+          "primaryOffer": "Website + local lead growth audit",
+          "proposalPrice": 2500,
+          "followUpCadence": "Day 1, Day 3, Day 7",
+          "noWebsiteWeight": 50,
+          "poorMobileWeight": 20,
+          "weakSeoWeight": 20,
+          "noSslWeight": 10,
+          "socialPresenceWeight": 15,
+          "lowReviewWeight": 10,
+          "senderName": "",
+          "replyToEmail": "",
+          "bccEmail": "",
+          "emailSignature": "",
+          "exportFormat": "csv",
+          "dateFormat": "MM/DD/YYYY",
+          "timezone": "America/Los_Angeles",
+          "exportHeaders": true,
+          "autoExport": false,
+          "aiModel": "moonshotai/kimi-k3",
+          "outreachTone": "professional",
+          "maxFollowUps": 3,
+          "autoFollowUp": true,
+          "aiSuggestions": true,
+          "autoScore": true
+        },
+        "id": "owner",
+        "updatedAt": "2026-10-11T22:37:55.425Z",
+        "createdAt": "2026-10-11T22:37:55.425Z"
       }
     ],
     "leads": [
@@ -330,8 +1292,8 @@
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
         "discoveredBy": "owner",
-        "discoveredAt": "2026-07-05T22:05:52.296Z",
-        "updatedAt": "2026-07-05T22:05:52.296Z",
+        "discoveredAt": "2026-10-10T20:49:00.965Z",
+        "updatedAt": "2026-10-10T20:49:00.965Z",
         "createdAt": "2026-07-05T20:50:35.805Z"
       },
       {
@@ -605,8 +1567,8 @@
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
         "discoveredBy": "owner",
-        "discoveredAt": "2026-07-05T22:05:52.296Z",
-        "updatedAt": "2026-07-05T22:05:52.296Z",
+        "discoveredAt": "2026-10-10T21:28:18.266Z",
+        "updatedAt": "2026-10-10T21:28:18.266Z",
         "createdAt": "2026-07-05T20:50:35.805Z"
       },
       {
@@ -755,8 +1717,8 @@
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
         "discoveredBy": "owner",
-        "discoveredAt": "2026-10-09T21:46:56.495Z",
-        "updatedAt": "2026-10-09T21:46:56.495Z",
+        "discoveredAt": "2026-10-10T21:28:18.266Z",
+        "updatedAt": "2026-10-10T21:28:18.266Z",
         "createdAt": "2026-07-05T20:50:35.805Z"
       },
       {
@@ -894,8 +1856,8 @@
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
         "discoveredBy": "owner",
-        "discoveredAt": "2026-07-05T22:05:52.296Z",
-        "updatedAt": "2026-07-05T22:05:52.296Z",
+        "discoveredAt": "2026-10-10T21:28:18.266Z",
+        "updatedAt": "2026-10-10T21:28:18.266Z",
         "createdAt": "2026-07-05T20:50:35.805Z"
       },
       {
@@ -8589,9 +9551,12 @@
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
         "discoveredBy": "owner",
-        "discoveredAt": "2026-10-10T20:42:09.092Z",
-        "updatedAt": "2026-10-10T20:42:09.092Z",
-        "createdAt": "2026-07-06T21:15:06.148Z"
+        "discoveredAt": "2026-10-10T21:40:54.235Z",
+        "updatedAt": "2026-10-10T21:42:13.386Z",
+        "createdAt": "2026-07-06T21:15:06.148Z",
+        "ownerId": "owner",
+        "stage": "New",
+        "savedAt": "2026-10-10T21:42:13.386Z"
       },
       {
         "id": "osm-node-185598898",
@@ -8701,8 +9666,8 @@
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
         "discoveredBy": "owner",
-        "discoveredAt": "2026-10-10T20:42:09.093Z",
-        "updatedAt": "2026-10-10T20:42:09.093Z",
+        "discoveredAt": "2026-10-10T21:40:54.235Z",
+        "updatedAt": "2026-10-10T21:40:54.235Z",
         "createdAt": "2026-07-06T21:15:06.148Z"
       },
       {
@@ -8820,8 +9785,8 @@
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
         "discoveredBy": "owner",
-        "discoveredAt": "2026-07-06T21:15:06.148Z",
-        "updatedAt": "2026-07-06T21:15:06.148Z",
+        "discoveredAt": "2026-10-10T21:40:54.235Z",
+        "updatedAt": "2026-10-10T21:40:54.235Z",
         "createdAt": "2026-07-06T21:15:06.148Z"
       },
       {
@@ -8942,8 +9907,8 @@
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
         "discoveredBy": "owner",
-        "discoveredAt": "2026-07-06T21:15:06.148Z",
-        "updatedAt": "2026-07-06T21:15:06.148Z",
+        "discoveredAt": "2026-10-10T21:40:54.235Z",
+        "updatedAt": "2026-10-10T21:40:54.235Z",
         "createdAt": "2026-07-06T21:15:06.148Z"
       },
       {
@@ -8951,12 +9916,12 @@
         "name": "City Kebap",
         "category": "Restaurant",
         "businessType": "Restaurant",
-        "address": "62, Robert-Bosch-Straße, Karben, 61184",
+        "address": "62, Robert-Bosch-Straße, Karben, 61184, DE",
         "phone": "+49 6039 1821",
         "rating": null,
         "reviewsCount": 0,
         "websiteUrl": "",
-        "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=City%20Kebap%2062%2C%20Robert-Bosch-Stra%C3%9Fe%2C%20Karben%2C%2061184",
+        "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=City%20Kebap%2062%2C%20Robert-Bosch-Stra%C3%9Fe%2C%20Karben%2C%2061184%2C%20DE",
         "latitude": 50.2332668,
         "longitude": 8.7571785,
         "country": "Germany",
@@ -8975,14 +9940,14 @@
           "location": {
             "latitude": 50.2332668,
             "longitude": 8.7571785,
-            "address": "62, Robert-Bosch-Straße, Karben, 61184",
+            "address": "62, Robert-Bosch-Straße, Karben, 61184, DE",
             "houseNumber": "62",
             "street": "Robert-Bosch-Straße",
             "city": "Karben",
             "postcode": "61184",
             "country": "Germany",
             "countryCode": "DE",
-            "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=City%20Kebap%2062%2C%20Robert-Bosch-Stra%C3%9Fe%2C%20Karben%2C%2061184"
+            "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=City%20Kebap%2062%2C%20Robert-Bosch-Stra%C3%9Fe%2C%20Karben%2C%2061184%2C%20DE"
           },
           "business": {
             "cuisine": "kebab",
@@ -9006,10 +9971,11 @@
             "osmUrl": "https://www.openstreetmap.org/node/91277389",
             "rawTags": {
               "addr:city": "Karben",
+              "addr:country": "DE",
               "addr:housenumber": "62",
               "addr:postcode": "61184",
               "addr:street": "Robert-Bosch-Straße",
-              "addr:suburb": "Klein-Karben",
+              "addr:suburb": "Kloppenheim",
               "alt_name": "City Kebap-Haus Klein Istanbul",
               "amenity": "fast_food",
               "cuisine": "kebab",
@@ -9036,10 +10002,11 @@
           "osmId": 91277389,
           "tags": {
             "addr:city": "Karben",
+            "addr:country": "DE",
             "addr:housenumber": "62",
             "addr:postcode": "61184",
             "addr:street": "Robert-Bosch-Straße",
-            "addr:suburb": "Klein-Karben",
+            "addr:suburb": "Kloppenheim",
             "alt_name": "City Kebap-Haus Klein Istanbul",
             "amenity": "fast_food",
             "cuisine": "kebab",
@@ -9081,8 +10048,8 @@
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
         "discoveredBy": "owner",
-        "discoveredAt": "2026-07-06T21:15:06.148Z",
-        "updatedAt": "2026-07-06T21:15:06.148Z",
+        "discoveredAt": "2026-10-10T21:40:54.235Z",
+        "updatedAt": "2026-10-10T21:40:54.235Z",
         "createdAt": "2026-07-06T21:15:06.148Z"
       },
       {
@@ -9420,8 +10387,8 @@
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
         "discoveredBy": "owner",
-        "discoveredAt": "2026-07-06T21:15:06.148Z",
-        "updatedAt": "2026-07-06T21:15:06.148Z",
+        "discoveredAt": "2026-10-10T21:40:54.235Z",
+        "updatedAt": "2026-10-10T21:40:54.235Z",
         "createdAt": "2026-07-06T21:15:06.148Z"
       },
       {
@@ -9536,8 +10503,8 @@
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
         "discoveredBy": "owner",
-        "discoveredAt": "2026-07-06T21:15:06.148Z",
-        "updatedAt": "2026-07-06T21:15:06.148Z",
+        "discoveredAt": "2026-10-10T20:49:37.826Z",
+        "updatedAt": "2026-10-10T20:49:37.826Z",
         "createdAt": "2026-07-06T21:15:06.148Z"
       },
       {
@@ -9648,8 +10615,8 @@
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
         "discoveredBy": "owner",
-        "discoveredAt": "2026-07-06T21:15:06.148Z",
-        "updatedAt": "2026-07-06T21:15:06.148Z",
+        "discoveredAt": "2026-10-10T21:40:54.235Z",
+        "updatedAt": "2026-10-10T21:40:54.235Z",
         "createdAt": "2026-07-06T21:15:06.148Z"
       },
       {
@@ -9802,8 +10769,8 @@
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
         "discoveredBy": "owner",
-        "discoveredAt": "2026-07-06T21:15:06.148Z",
-        "updatedAt": "2026-07-06T21:15:06.148Z",
+        "discoveredAt": "2026-10-10T20:49:37.826Z",
+        "updatedAt": "2026-10-10T20:49:37.826Z",
         "createdAt": "2026-07-06T21:15:06.148Z"
       },
       {
@@ -10044,8 +11011,8 @@
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
         "discoveredBy": "owner",
-        "discoveredAt": "2026-07-06T21:15:06.148Z",
-        "updatedAt": "2026-07-06T21:15:06.148Z",
+        "discoveredAt": "2026-10-10T21:40:54.235Z",
+        "updatedAt": "2026-10-10T21:40:54.235Z",
         "createdAt": "2026-07-06T21:15:06.148Z"
       },
       {
@@ -10164,8 +11131,8 @@
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
         "discoveredBy": "owner",
-        "discoveredAt": "2026-10-10T20:42:09.093Z",
-        "updatedAt": "2026-10-10T20:42:09.093Z",
+        "discoveredAt": "2026-10-10T21:40:54.235Z",
+        "updatedAt": "2026-10-10T21:40:54.235Z",
         "createdAt": "2026-07-06T21:15:06.148Z"
       },
       {
@@ -10281,8 +11248,8 @@
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
         "discoveredBy": "owner",
-        "discoveredAt": "2026-07-06T21:15:06.148Z",
-        "updatedAt": "2026-07-06T21:15:06.148Z",
+        "discoveredAt": "2026-10-10T20:49:37.826Z",
+        "updatedAt": "2026-10-10T20:49:37.826Z",
         "createdAt": "2026-07-06T21:15:06.148Z"
       },
       {
@@ -10302,7 +11269,7 @@
         "countryCode": "DE",
         "email": "",
         "social": "",
-        "openingHours": "Mo-Su,PH 15:00+",
+        "openingHours": "Tu-Su,PH 15:00+",
         "details": {
           "ownerContact": {
             "publicContactNote": "Owner or direct contact person was not listed in the public map data."
@@ -10327,7 +11294,7 @@
             "cuisine": "regional"
           },
           "operations": {
-            "openingHours": "Mo-Su,PH 15:00+",
+            "openingHours": "Tu-Su,PH 15:00+",
             "outdoorSeating": "yes",
             "wheelchair": "yes"
           },
@@ -10345,11 +11312,11 @@
               "addr:street": "Lindenallee",
               "addr:suburb": "Westend",
               "amenity": "restaurant",
-              "check_date:opening_hours": "2023-06-10",
+              "check_date:opening_hours": "2026-07-11",
               "cuisine": "regional",
               "indoor_seating": "yes",
               "name": "Lindenwirtin",
-              "opening_hours": "Mo-Su,PH 15:00+",
+              "opening_hours": "Tu-Su,PH 15:00+",
               "outdoor_seating": "yes",
               "phone": "+49 30 3027747",
               "toilets:wheelchair": "yes",
@@ -10369,11 +11336,11 @@
             "addr:street": "Lindenallee",
             "addr:suburb": "Westend",
             "amenity": "restaurant",
-            "check_date:opening_hours": "2023-06-10",
+            "check_date:opening_hours": "2026-07-11",
             "cuisine": "regional",
             "indoor_seating": "yes",
             "name": "Lindenwirtin",
-            "opening_hours": "Mo-Su,PH 15:00+",
+            "opening_hours": "Tu-Su,PH 15:00+",
             "outdoor_seating": "yes",
             "phone": "+49 30 3027747",
             "toilets:wheelchair": "yes",
@@ -10402,8 +11369,8 @@
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
         "discoveredBy": "owner",
-        "discoveredAt": "2026-07-06T21:15:06.148Z",
-        "updatedAt": "2026-07-06T21:15:06.148Z",
+        "discoveredAt": "2026-10-10T20:49:37.827Z",
+        "updatedAt": "2026-10-10T20:49:37.827Z",
         "createdAt": "2026-07-06T21:15:06.148Z"
       },
       {
@@ -10525,8 +11492,8 @@
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
         "discoveredBy": "owner",
-        "discoveredAt": "2026-10-10T20:42:09.093Z",
-        "updatedAt": "2026-10-10T20:42:09.093Z",
+        "discoveredAt": "2026-10-10T20:49:37.827Z",
+        "updatedAt": "2026-10-10T20:49:37.827Z",
         "createdAt": "2026-07-06T21:15:06.148Z"
       },
       {
@@ -10641,8 +11608,8 @@
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
         "discoveredBy": "owner",
-        "discoveredAt": "2026-07-06T21:15:06.148Z",
-        "updatedAt": "2026-07-06T21:15:06.148Z",
+        "discoveredAt": "2026-10-10T21:28:18.266Z",
+        "updatedAt": "2026-10-10T21:28:18.266Z",
         "createdAt": "2026-07-06T21:15:06.148Z"
       },
       {
@@ -10755,8 +11722,8 @@
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
         "discoveredBy": "owner",
-        "discoveredAt": "2026-07-06T21:15:06.148Z",
-        "updatedAt": "2026-07-06T21:15:06.148Z",
+        "discoveredAt": "2026-10-10T20:49:37.827Z",
+        "updatedAt": "2026-10-10T20:49:37.827Z",
         "createdAt": "2026-07-06T21:15:06.148Z"
       },
       {
@@ -10877,8 +11844,8 @@
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
         "discoveredBy": "owner",
-        "discoveredAt": "2026-10-10T20:42:09.093Z",
-        "updatedAt": "2026-10-10T20:42:09.093Z",
+        "discoveredAt": "2026-10-10T20:49:37.827Z",
+        "updatedAt": "2026-10-10T20:49:37.827Z",
         "createdAt": "2026-07-06T21:15:06.148Z"
       },
       {
@@ -10978,8 +11945,8 @@
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
         "discoveredBy": "owner",
-        "discoveredAt": "2026-10-10T20:42:09.093Z",
-        "updatedAt": "2026-10-10T20:42:09.093Z",
+        "discoveredAt": "2026-10-10T21:40:54.235Z",
+        "updatedAt": "2026-10-10T21:40:54.235Z",
         "createdAt": "2026-07-06T22:42:12.853Z"
       },
       {
@@ -11092,8 +12059,8 @@
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
         "discoveredBy": "owner",
-        "discoveredAt": "2026-10-09T21:46:56.494Z",
-        "updatedAt": "2026-10-09T21:46:56.494Z",
+        "discoveredAt": "2026-10-10T21:40:54.235Z",
+        "updatedAt": "2026-10-10T21:40:54.235Z",
         "createdAt": "2026-07-06T22:42:12.853Z"
       },
       {
@@ -11202,8 +12169,8 @@
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
         "discoveredBy": "owner",
-        "discoveredAt": "2026-10-09T21:46:56.494Z",
-        "updatedAt": "2026-10-09T21:46:56.494Z",
+        "discoveredAt": "2026-10-10T21:40:54.235Z",
+        "updatedAt": "2026-10-10T21:40:54.235Z",
         "createdAt": "2026-07-06T22:42:12.853Z"
       },
       {
@@ -11344,8 +12311,8 @@
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
         "discoveredBy": "owner",
-        "discoveredAt": "2026-10-10T20:42:09.093Z",
-        "updatedAt": "2026-10-10T20:42:09.093Z",
+        "discoveredAt": "2026-10-10T21:40:54.235Z",
+        "updatedAt": "2026-10-10T21:40:54.235Z",
         "createdAt": "2026-07-06T22:42:12.853Z"
       },
       {
@@ -11467,8 +12434,8 @@
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
         "discoveredBy": "owner",
-        "discoveredAt": "2026-10-10T20:42:09.093Z",
-        "updatedAt": "2026-10-10T20:42:09.093Z",
+        "discoveredAt": "2026-10-10T21:40:54.235Z",
+        "updatedAt": "2026-10-10T21:40:54.235Z",
         "createdAt": "2026-07-06T22:42:12.853Z"
       },
       {
@@ -13200,8 +14167,8 @@
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
         "discoveredBy": "owner",
-        "discoveredAt": "2026-10-10T20:42:09.093Z",
-        "updatedAt": "2026-10-10T20:42:09.093Z",
+        "discoveredAt": "2026-10-10T21:40:54.235Z",
+        "updatedAt": "2026-10-10T21:40:54.235Z",
         "createdAt": "2026-10-09T21:46:56.494Z"
       },
       {
@@ -13318,8 +14285,8 @@
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
         "discoveredBy": "owner",
-        "discoveredAt": "2026-10-09T21:46:56.494Z",
-        "updatedAt": "2026-10-09T21:46:56.494Z",
+        "discoveredAt": "2026-10-10T21:40:54.235Z",
+        "updatedAt": "2026-10-10T21:40:54.235Z",
         "createdAt": "2026-10-09T21:46:56.494Z"
       },
       {
@@ -13435,8 +14402,8 @@
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
         "discoveredBy": "owner",
-        "discoveredAt": "2026-10-09T21:46:56.495Z",
-        "updatedAt": "2026-10-09T21:46:56.495Z",
+        "discoveredAt": "2026-10-10T21:40:54.235Z",
+        "updatedAt": "2026-10-10T21:40:54.235Z",
         "createdAt": "2026-10-09T21:46:56.495Z"
       },
       {
@@ -13554,8 +14521,8 @@
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
         "discoveredBy": "owner",
-        "discoveredAt": "2026-10-09T21:46:56.495Z",
-        "updatedAt": "2026-10-09T21:46:56.495Z",
+        "discoveredAt": "2026-10-10T21:40:54.235Z",
+        "updatedAt": "2026-10-10T21:40:54.235Z",
         "createdAt": "2026-10-09T21:46:56.495Z"
       },
       {
@@ -13688,8 +14655,8 @@
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
         "discoveredBy": "owner",
-        "discoveredAt": "2026-10-09T21:46:56.495Z",
-        "updatedAt": "2026-10-09T21:46:56.495Z",
+        "discoveredAt": "2026-10-10T21:40:54.235Z",
+        "updatedAt": "2026-10-10T21:40:54.235Z",
         "createdAt": "2026-10-09T21:46:56.495Z"
       },
       {
@@ -14304,8 +15271,8 @@
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
         "discoveredBy": "owner",
-        "discoveredAt": "2026-10-09T21:46:56.495Z",
-        "updatedAt": "2026-10-09T21:46:56.495Z",
+        "discoveredAt": "2026-10-10T21:28:18.266Z",
+        "updatedAt": "2026-10-10T21:28:18.266Z",
         "createdAt": "2026-10-09T21:46:56.495Z"
       },
       {
@@ -14445,8 +15412,8 @@
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
         "discoveredBy": "owner",
-        "discoveredAt": "2026-10-09T21:46:56.495Z",
-        "updatedAt": "2026-10-09T21:46:56.495Z",
+        "discoveredAt": "2026-10-10T21:28:18.266Z",
+        "updatedAt": "2026-10-10T21:28:18.266Z",
         "createdAt": "2026-10-09T21:46:56.495Z"
       },
       {
@@ -14664,8 +15631,8 @@
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
         "discoveredBy": "owner",
-        "discoveredAt": "2026-10-10T20:42:09.093Z",
-        "updatedAt": "2026-10-10T20:42:09.093Z",
+        "discoveredAt": "2026-10-10T21:40:54.235Z",
+        "updatedAt": "2026-10-10T21:40:54.235Z",
         "createdAt": "2026-10-10T20:42:09.093Z"
       },
       {
@@ -14904,9 +15871,333 @@
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
         "discoveredBy": "owner",
-        "discoveredAt": "2026-10-10T20:42:09.093Z",
-        "updatedAt": "2026-10-10T20:42:09.093Z",
+        "discoveredAt": "2026-10-10T20:49:37.826Z",
+        "updatedAt": "2026-10-10T20:49:37.826Z",
         "createdAt": "2026-10-10T20:42:09.093Z"
+      },
+      {
+        "id": "osm-node-34148062",
+        "name": "Pizzeria Da Angelo",
+        "category": "Restaurant",
+        "businessType": "Restaurant",
+        "address": "413, Homburger Landstraße, Frankfurt am Main, 60433, DE",
+        "phone": "+49 69 545406",
+        "rating": null,
+        "reviewsCount": 0,
+        "websiteUrl": "",
+        "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=Pizzeria%20Da%20Angelo%20413%2C%20Homburger%20Landstra%C3%9Fe%2C%20Frankfurt%20am%20Main%2C%2060433%2C%20DE",
+        "latitude": 50.1667271,
+        "longitude": 8.6792857,
+        "country": "Germany",
+        "countryCode": "DE",
+        "email": "",
+        "social": "",
+        "openingHours": "Mo off, Tu 17:00-23:00, We-Fr 12:00-14:30, We-Sa 17:00-23:00, Su 12:00-22:00",
+        "details": {
+          "ownerContact": {
+            "publicContactNote": "Owner or direct contact person was not listed in the public map data."
+          },
+          "contact": {
+            "phone": "+49 69 545406"
+          },
+          "social": {},
+          "location": {
+            "latitude": 50.1667271,
+            "longitude": 8.6792857,
+            "address": "413, Homburger Landstraße, Frankfurt am Main, 60433, DE",
+            "houseNumber": "413",
+            "street": "Homburger Landstraße",
+            "city": "Frankfurt am Main",
+            "postcode": "60433",
+            "country": "Germany",
+            "countryCode": "DE",
+            "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=Pizzeria%20Da%20Angelo%20413%2C%20Homburger%20Landstra%C3%9Fe%2C%20Frankfurt%20am%20Main%2C%2060433%2C%20DE"
+          },
+          "business": {
+            "cuisine": "italian"
+          },
+          "operations": {
+            "openingHours": "Mo off, Tu 17:00-23:00, We-Fr 12:00-14:30, We-Sa 17:00-23:00, Su 12:00-22:00",
+            "wheelchair": "limited"
+          },
+          "payments": {},
+          "source": {
+            "provider": "OpenStreetMap Overpass",
+            "osmType": "node",
+            "osmId": 34148062,
+            "osmUrl": "https://www.openstreetmap.org/node/34148062",
+            "rawTags": {
+              "addr:city": "Frankfurt am Main",
+              "addr:country": "DE",
+              "addr:housenumber": "413",
+              "addr:postcode": "60433",
+              "addr:street": "Homburger Landstraße",
+              "amenity": "fast_food",
+              "cuisine": "italian",
+              "diet:vegan": "no",
+              "diet:vegetarian": "yes",
+              "name": "Pizzeria Da Angelo",
+              "opening_hours": "Mo off, Tu 17:00-23:00, We-Fr 12:00-14:30, We-Sa 17:00-23:00, Su 12:00-22:00",
+              "phone": "+49 69 545406",
+              "smoking": "no",
+              "wheelchair": "limited",
+              "wheelchair:description": "Etwas eng"
+            }
+          }
+        },
+        "source": "openstreetmap_photon",
+        "raw": {
+          "osmType": "node",
+          "osmId": 34148062,
+          "tags": {
+            "addr:city": "Frankfurt am Main",
+            "addr:country": "DE",
+            "addr:housenumber": "413",
+            "addr:postcode": "60433",
+            "addr:street": "Homburger Landstraße",
+            "amenity": "fast_food",
+            "cuisine": "italian",
+            "diet:vegan": "no",
+            "diet:vegetarian": "yes",
+            "name": "Pizzeria Da Angelo",
+            "opening_hours": "Mo off, Tu 17:00-23:00, We-Fr 12:00-14:30, We-Sa 17:00-23:00, Su 12:00-22:00",
+            "phone": "+49 69 545406",
+            "smoking": "no",
+            "wheelchair": "limited",
+            "wheelchair:description": "Etwas eng"
+          }
+        },
+        "searchRelevance": 97,
+        "marketName": "Frankfurt",
+        "countryName": "Germany",
+        "audit": {
+          "score": 100,
+          "category": "Very High Opportunity",
+          "checks": {
+            "websiteExists": false,
+            "https": false,
+            "mobileFriendly": false,
+            "seoMetadata": false,
+            "contactForm": false,
+            "socialLinksFound": false,
+            "businessEmailDetected": false,
+            "bookingSystem": false,
+            "outdatedDesign": true
+          },
+          "elapsedMs": 0
+        },
+        "opportunityScore": 100,
+        "opportunityCategory": "Very High Opportunity",
+        "discoveredBy": "owner",
+        "discoveredAt": "2026-10-10T21:28:18.266Z",
+        "updatedAt": "2026-10-10T21:28:18.266Z",
+        "createdAt": "2026-10-10T20:49:00.965Z"
+      },
+      {
+        "id": "osm-node-266792956",
+        "name": "Pizzeria Il Cavallino",
+        "category": "Restaurant",
+        "businessType": "Restaurant",
+        "address": "46, Koselstraße, Frankfurt am Main, 60318",
+        "phone": "+49 69 5963331",
+        "rating": null,
+        "reviewsCount": 0,
+        "websiteUrl": "",
+        "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=Pizzeria%20Il%20Cavallino%2046%2C%20Koselstra%C3%9Fe%2C%20Frankfurt%20am%20Main%2C%2060318",
+        "latitude": 50.1231669,
+        "longitude": 8.6875514,
+        "country": "Germany",
+        "countryCode": "DE",
+        "email": "",
+        "social": "",
+        "openingHours": "",
+        "details": {
+          "ownerContact": {
+            "publicContactNote": "Owner or direct contact person was not listed in the public map data."
+          },
+          "contact": {
+            "phone": "+49 69 5963331"
+          },
+          "social": {},
+          "location": {
+            "latitude": 50.1231669,
+            "longitude": 8.6875514,
+            "address": "46, Koselstraße, Frankfurt am Main, 60318",
+            "houseNumber": "46",
+            "street": "Koselstraße",
+            "city": "Frankfurt am Main",
+            "postcode": "60318",
+            "country": "Germany",
+            "countryCode": "DE",
+            "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=Pizzeria%20Il%20Cavallino%2046%2C%20Koselstra%C3%9Fe%2C%20Frankfurt%20am%20Main%2C%2060318"
+          },
+          "business": {
+            "cuisine": "italian_pizza;italian"
+          },
+          "operations": {
+            "wheelchair": "no"
+          },
+          "payments": {},
+          "source": {
+            "provider": "OpenStreetMap Overpass",
+            "osmType": "node",
+            "osmId": 266792956,
+            "osmUrl": "https://www.openstreetmap.org/node/266792956",
+            "rawTags": {
+              "addr:city": "Frankfurt am Main",
+              "addr:housenumber": "46",
+              "addr:postcode": "60318",
+              "addr:street": "Koselstraße",
+              "amenity": "restaurant",
+              "cuisine": "italian_pizza;italian",
+              "name": "Pizzeria Il Cavallino",
+              "phone": "+49 69 5963331",
+              "wheelchair": "no"
+            }
+          }
+        },
+        "source": "openstreetmap_photon",
+        "raw": {
+          "osmType": "node",
+          "osmId": 266792956,
+          "tags": {
+            "addr:city": "Frankfurt am Main",
+            "addr:housenumber": "46",
+            "addr:postcode": "60318",
+            "addr:street": "Koselstraße",
+            "amenity": "restaurant",
+            "cuisine": "italian_pizza;italian",
+            "name": "Pizzeria Il Cavallino",
+            "phone": "+49 69 5963331",
+            "wheelchair": "no"
+          }
+        },
+        "searchRelevance": 93,
+        "marketName": "Frankfurt",
+        "countryName": "Germany",
+        "audit": {
+          "score": 100,
+          "category": "Very High Opportunity",
+          "checks": {
+            "websiteExists": false,
+            "https": false,
+            "mobileFriendly": false,
+            "seoMetadata": false,
+            "contactForm": false,
+            "socialLinksFound": false,
+            "businessEmailDetected": false,
+            "bookingSystem": false,
+            "outdatedDesign": true
+          },
+          "elapsedMs": 0
+        },
+        "opportunityScore": 100,
+        "opportunityCategory": "Very High Opportunity",
+        "discoveredBy": "owner",
+        "discoveredAt": "2026-10-10T21:28:18.266Z",
+        "updatedAt": "2026-10-10T21:28:18.266Z",
+        "createdAt": "2026-10-10T20:49:00.965Z"
+      },
+      {
+        "id": "osm-node-137549008",
+        "name": "Old Sloth",
+        "category": "Restaurant",
+        "businessType": "Restaurant",
+        "address": "67a, Auguste-Viktoria-Allee, Berlin, 13403, DE",
+        "phone": "+49 30 81868255",
+        "rating": null,
+        "reviewsCount": 0,
+        "websiteUrl": "",
+        "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=Old%20Sloth%2067a%2C%20Auguste-Viktoria-Allee%2C%20Berlin%2C%2013403%2C%20DE",
+        "latitude": 52.5708788,
+        "longitude": 13.3158208,
+        "country": "Germany",
+        "countryCode": "DE",
+        "email": "",
+        "social": "",
+        "openingHours": "",
+        "details": {
+          "ownerContact": {
+            "publicContactNote": "Owner or direct contact person was not listed in the public map data."
+          },
+          "contact": {
+            "phone": "+49 30 81868255"
+          },
+          "social": {},
+          "location": {
+            "latitude": 52.5708788,
+            "longitude": 13.3158208,
+            "address": "67a, Auguste-Viktoria-Allee, Berlin, 13403, DE",
+            "houseNumber": "67a",
+            "street": "Auguste-Viktoria-Allee",
+            "city": "Berlin",
+            "postcode": "13403",
+            "country": "Germany",
+            "countryCode": "DE",
+            "googleMapsLink": "https://www.google.com/maps/search/?api=1&query=Old%20Sloth%2067a%2C%20Auguste-Viktoria-Allee%2C%20Berlin%2C%2013403%2C%20DE"
+          },
+          "business": {},
+          "operations": {},
+          "payments": {},
+          "source": {
+            "provider": "OpenStreetMap Overpass",
+            "osmType": "node",
+            "osmId": 137549008,
+            "osmUrl": "https://www.openstreetmap.org/node/137549008",
+            "rawTags": {
+              "addr:city": "Berlin",
+              "addr:country": "DE",
+              "addr:housenumber": "67a",
+              "addr:postcode": "13403",
+              "addr:street": "Auguste-Viktoria-Allee",
+              "addr:suburb": "Reinickendorf",
+              "amenity": "pub",
+              "name": "Old Sloth",
+              "phone": "+49 30 81868255"
+            }
+          }
+        },
+        "source": "openstreetmap_photon",
+        "raw": {
+          "osmType": "node",
+          "osmId": 137549008,
+          "tags": {
+            "addr:city": "Berlin",
+            "addr:country": "DE",
+            "addr:housenumber": "67a",
+            "addr:postcode": "13403",
+            "addr:street": "Auguste-Viktoria-Allee",
+            "addr:suburb": "Reinickendorf",
+            "amenity": "pub",
+            "name": "Old Sloth",
+            "phone": "+49 30 81868255"
+          }
+        },
+        "searchRelevance": 93,
+        "marketName": "Berlin",
+        "countryName": "Germany",
+        "audit": {
+          "score": 100,
+          "category": "Very High Opportunity",
+          "checks": {
+            "websiteExists": false,
+            "https": false,
+            "mobileFriendly": false,
+            "seoMetadata": false,
+            "contactForm": false,
+            "socialLinksFound": false,
+            "businessEmailDetected": false,
+            "bookingSystem": false,
+            "outdatedDesign": true
+          },
+          "elapsedMs": 0
+        },
+        "opportunityScore": 100,
+        "opportunityCategory": "Very High Opportunity",
+        "discoveredBy": "owner",
+        "discoveredAt": "2026-10-10T20:49:37.827Z",
+        "updatedAt": "2026-10-10T20:49:37.827Z",
+        "createdAt": "2026-10-10T20:49:37.827Z"
       }
     ],
     "auditLogs": [
@@ -15643,6 +16934,158 @@
         "id": "295c9620-fa4f-438c-8de8-9c5d26b4032d",
         "createdAt": "2026-10-10T20:42:43.291Z",
         "updatedAt": "2026-10-10T20:42:43.291Z"
+      },
+      {
+        "actor": "owner@matleads.local",
+        "action": "lead_search",
+        "query": {
+          "country": "Germany",
+          "countries": [
+            "Germany"
+          ],
+          "state": "",
+          "city": "",
+          "zip": "",
+          "industry": "restaurants, hotels, boutiques, car_dealers",
+          "keyword": "",
+          "businessTypes": [
+            "restaurants",
+            "hotels",
+            "boutiques",
+            "car_dealers"
+          ],
+          "mapLink": "",
+          "latitude": null,
+          "longitude": null,
+          "radiusMeters": 15000,
+          "limit": 20,
+          "searchDepth": "deep",
+          "leadQuality": "all",
+          "sortBy": "opportunity",
+          "minOpportunityScore": 0,
+          "requireContact": false,
+          "missingWebsiteOnly": false,
+          "bypassCache": false,
+          "refreshSeed": ""
+        },
+        "count": 20,
+        "id": "0bb7e980-a22a-4101-937f-9824e942f32f",
+        "createdAt": "2026-10-10T20:49:33.706Z",
+        "updatedAt": "2026-10-10T20:49:33.706Z"
+      },
+      {
+        "actor": "owner@matleads.local",
+        "action": "lead_search",
+        "query": {
+          "country": "Germany",
+          "countries": [
+            "Germany"
+          ],
+          "state": "",
+          "city": "",
+          "zip": "",
+          "industry": "restaurants, hotels, boutiques, car_dealers",
+          "keyword": "",
+          "businessTypes": [
+            "restaurants",
+            "hotels",
+            "boutiques",
+            "car_dealers"
+          ],
+          "mapLink": "",
+          "latitude": null,
+          "longitude": null,
+          "radiusMeters": 15000,
+          "limit": 20,
+          "searchDepth": "deep",
+          "leadQuality": "all",
+          "sortBy": "opportunity",
+          "minOpportunityScore": 0,
+          "requireContact": false,
+          "missingWebsiteOnly": false,
+          "bypassCache": false,
+          "refreshSeed": ""
+        },
+        "count": 20,
+        "id": "6af538ad-015a-4f58-bc9d-3bdb2f645fdb",
+        "createdAt": "2026-10-10T20:50:11.208Z",
+        "updatedAt": "2026-10-10T20:50:11.208Z"
+      },
+      {
+        "actor": "owner@matleads.local",
+        "action": "lead_search",
+        "query": {
+          "country": "Germany",
+          "countries": [
+            "Germany"
+          ],
+          "state": "",
+          "city": "",
+          "zip": "",
+          "industry": "restaurants, hotels, boutiques, car_dealers",
+          "keyword": "",
+          "businessTypes": [
+            "restaurants",
+            "hotels",
+            "boutiques",
+            "car_dealers"
+          ],
+          "mapLink": "",
+          "latitude": null,
+          "longitude": null,
+          "radiusMeters": 15000,
+          "limit": 20,
+          "searchDepth": "deep",
+          "leadQuality": "all",
+          "sortBy": "opportunity",
+          "minOpportunityScore": 0,
+          "requireContact": false,
+          "missingWebsiteOnly": false,
+          "bypassCache": false,
+          "refreshSeed": ""
+        },
+        "count": 20,
+        "id": "f302f8b2-afa0-4131-8c74-f4bf2f4e7fdf",
+        "createdAt": "2026-10-10T21:28:55.806Z",
+        "updatedAt": "2026-10-10T21:28:55.806Z"
+      },
+      {
+        "actor": "owner@matleads.local",
+        "action": "lead_search",
+        "query": {
+          "country": "Germany",
+          "countries": [
+            "Germany"
+          ],
+          "state": "",
+          "city": "",
+          "zip": "",
+          "industry": "restaurants, hotels, boutiques, car_dealers",
+          "keyword": "",
+          "businessTypes": [
+            "restaurants",
+            "hotels",
+            "boutiques",
+            "car_dealers"
+          ],
+          "mapLink": "",
+          "latitude": null,
+          "longitude": null,
+          "radiusMeters": 15000,
+          "limit": 20,
+          "searchDepth": "deep",
+          "leadQuality": "all",
+          "sortBy": "opportunity",
+          "minOpportunityScore": 0,
+          "requireContact": false,
+          "missingWebsiteOnly": false,
+          "bypassCache": false,
+          "refreshSeed": ""
+        },
+        "count": 20,
+        "id": "c35655c6-6371-489c-8c20-ac180617859d",
+        "createdAt": "2026-10-10T21:41:26.456Z",
+        "updatedAt": "2026-10-10T21:41:26.456Z"
       }
     ],
     "activities": [
@@ -15687,112 +17130,6 @@
         "createdAt": "2026-07-07T14:20:58.568Z",
         "updatedAt": "2026-07-07T14:20:59.126Z",
         "returnUrl": "http://localhost:3000/billing-success.html?provider=paypal&plan=growth_plus&session=ada472dd-6e04-44b0-8356-3aa8c03c92d2"
-      }
-    ],
-    "aiWebsites": [
-      {
-        "id": "cbcba759-f0b4-4b17-90d2-5714b2b084c3",
-        "shareToken": "dbb3908eb01a4a84ab7abb39",
-        "ownerId": "owner",
-        "leadId": "lead",
-        "leadName": "AI Test Dental",
-        "businessType": "",
-        "address": "",
-        "phone": "",
-        "email": "",
-        "businessName": "AI Test Dental",
-        "style": "medical",
-        "html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>AI Test Dental | Local Business</title><meta name=\"description\" content=\"AI Test Dental - Local Business. Call, book and get a quote today.\"><style>*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,Arial,sans-serif;color:#0f172a;background:#f8fafc}header{background:#0b1220;color:#fff;padding:56px 24px;text-align:center}header h1{margin:0 0 8px;font-size:clamp(2rem,5vw,3.4rem)}.btn{display:inline-block;padding:13px 22px;border-radius:10px;font-weight:700;text-decoration:none}.btn-p{background:#22c55e;color:#06281a}.btn-g{border:1px solid rgba(255,255,255,.4);color:#fff;margin-left:10px}.wrap{max-width:1080px;margin:0 auto;padding:28px 20px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}.card{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:20px}footer{background:#0b1220;color:#cbd5e1;text-align:center;padding:22px}form{display:grid;gap:10px;max-width:520px}input,textarea{padding:12px;border:1px solid #cbd5e1;border-radius:10px;font:inherit}</style></head><body><header><p style=\"letter-spacing:2px;text-transform:uppercase;font-size:12px\">Local Business</p><h1>AI Test Dental</h1><p>Professional mobile-first website built to turn local searches into calls and bookings.</p><div><a class=\"btn btn-p\" href=\"#quote\">Get a Free Quote</a><a class=\"btn btn-g\" href=\"#quote\">Book Online</a></div></header><div class=\"wrap\"><div class=\"grid\"><div class=\"card\"><h3>Why choose us</h3><p>Trusted local local business with fast response and transparent pricing.</p></div><div class=\"card\"><h3>Services</h3><p>Consultation, premium service, bookings and priority support.</p></div><div class=\"card\"><h3>Reviews</h3><p>Loved by local customers for quality and friendly support.</p></div></div><div class=\"card\" id=\"quote\" style=\"margin-top:20px\"><h2>Get a free quote</h2><form onsubmit=\"alert('Thanks! We will contact you shortly.');return false\"><input required placeholder=\"Your name\"><input placeholder=\"Phone or email\"><textarea rows=\"4\" placeholder=\"What do you need?\"></textarea><button class=\"btn btn-p\" type=\"submit\">Request Quote</button></form><p> </p></div></div><footer>AI Test Dental - Local Business - Built with MAT LEADS AI PRO X</footer></body></html>",
-        "provider": "template",
-        "model": "builtin-template-v1",
-        "aiError": "NVIDIA AI authentication failed. Replace NVIDIA_API_KEY in .env or Vercel, then restart or redeploy.",
-        "revisions": 1,
-        "history": [
-          {
-            "at": "2026-10-09T06:40:39.956Z",
-            "instruction": "Initial AI website build"
-          }
-        ],
-        "createdAt": "2026-10-09T06:40:40.377Z",
-        "updatedAt": "2026-10-09T06:40:40.377Z"
-      },
-      {
-        "id": "cf3bc853-f8bb-4398-a01f-6ce8ec79efef",
-        "shareToken": "d29ca2171e94434e97059c12",
-        "ownerId": "owner",
-        "leadId": "osm-node-243924634",
-        "leadName": "Anju Korean Tapas",
-        "businessType": "Restaurant",
-        "address": "",
-        "phone": "+49 221 16825210",
-        "email": "",
-        "businessName": "Anju Korean Tapas",
-        "style": "modern",
-        "html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Anju Korean Tapas | Restaurant</title><meta name=\"description\" content=\"Anju Korean Tapas - Restaurant. Call, book and get a quote today.\"><style>*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,Arial,sans-serif;color:#0f172a;background:#f8fafc}header{background:#0b1220;color:#fff;padding:56px 24px;text-align:center}header h1{margin:0 0 8px;font-size:clamp(2rem,5vw,3.4rem)}.btn{display:inline-block;padding:13px 22px;border-radius:10px;font-weight:700;text-decoration:none}.btn-p{background:#22c55e;color:#06281a}.btn-g{border:1px solid rgba(255,255,255,.4);color:#fff;margin-left:10px}.wrap{max-width:1080px;margin:0 auto;padding:28px 20px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}.card{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:20px}footer{background:#0b1220;color:#cbd5e1;text-align:center;padding:22px}form{display:grid;gap:10px;max-width:520px}input,textarea{padding:12px;border:1px solid #cbd5e1;border-radius:10px;font:inherit}</style></head><body><header><p style=\"letter-spacing:2px;text-transform:uppercase;font-size:12px\">Restaurant</p><h1>Anju Korean Tapas</h1><p>Professional mobile-first website built to turn local searches into calls and bookings.</p><div><a class=\"btn btn-p\" href=\"tel:+49 221 16825210\">Call +49 221 16825210</a><a class=\"btn btn-g\" href=\"#quote\">Book Online</a></div></header><div class=\"wrap\"><div class=\"grid\"><div class=\"card\"><h3>Why choose us</h3><p>Trusted local restaurant with fast response and transparent pricing.</p></div><div class=\"card\"><h3>Services</h3><p>Consultation, premium service, bookings and priority support.</p></div><div class=\"card\"><h3>Reviews</h3><p>Loved by local customers for quality and friendly support.</p></div></div><div class=\"card\" id=\"quote\" style=\"margin-top:20px\"><h2>Get a free quote</h2><form onsubmit=\"alert('Thanks! We will contact you shortly.');return false\"><input required placeholder=\"Your name\"><input placeholder=\"Phone or email\"><textarea rows=\"4\" placeholder=\"What do you need?\"></textarea><button class=\"btn btn-p\" type=\"submit\">Request Quote</button></form><p>+49 221 16825210 </p></div></div><footer>Anju Korean Tapas - Restaurant - Built with MAT LEADS AI PRO X</footer></body></html>",
-        "provider": "template",
-        "model": "builtin-template-v1",
-        "aiError": "NVIDIA AI authentication failed. Replace NVIDIA_API_KEY in .env or Vercel, then restart or redeploy.",
-        "revisions": 1,
-        "history": [
-          {
-            "at": "2026-10-09T21:47:56.533Z",
-            "instruction": "Initial AI website build"
-          }
-        ],
-        "createdAt": "2026-10-09T21:47:57.449Z",
-        "updatedAt": "2026-10-09T21:47:57.449Z"
-      },
-      {
-        "id": "b8748642-3ce9-4a25-9eea-6ec12bdcf832",
-        "shareToken": "a265762746d949a6b3268220",
-        "ownerId": "owner",
-        "leadId": "osm-node-243924634",
-        "leadName": "Anju Korean Tapas",
-        "businessType": "Restaurant",
-        "address": "",
-        "phone": "+49 221 16825210",
-        "email": "",
-        "businessName": "Anju Korean Tapas",
-        "style": "modern",
-        "html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Anju Korean Tapas | Restaurant</title><meta name=\"description\" content=\"Anju Korean Tapas - Restaurant. Call, book and get a quote today.\"><style>*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,Arial,sans-serif;color:#0f172a;background:#f8fafc}header{background:#0b1220;color:#fff;padding:56px 24px;text-align:center}header h1{margin:0 0 8px;font-size:clamp(2rem,5vw,3.4rem)}.btn{display:inline-block;padding:13px 22px;border-radius:10px;font-weight:700;text-decoration:none}.btn-p{background:#22c55e;color:#06281a}.btn-g{border:1px solid rgba(255,255,255,.4);color:#fff;margin-left:10px}.wrap{max-width:1080px;margin:0 auto;padding:28px 20px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}.card{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:20px}footer{background:#0b1220;color:#cbd5e1;text-align:center;padding:22px}form{display:grid;gap:10px;max-width:520px}input,textarea{padding:12px;border:1px solid #cbd5e1;border-radius:10px;font:inherit}</style></head><body><header><p style=\"letter-spacing:2px;text-transform:uppercase;font-size:12px\">Restaurant</p><h1>Anju Korean Tapas</h1><p>Professional mobile-first website built to turn local searches into calls and bookings.</p><div><a class=\"btn btn-p\" href=\"tel:+49 221 16825210\">Call +49 221 16825210</a><a class=\"btn btn-g\" href=\"#quote\">Book Online</a></div></header><div class=\"wrap\"><div class=\"grid\"><div class=\"card\"><h3>Why choose us</h3><p>Trusted local restaurant with fast response and transparent pricing.</p></div><div class=\"card\"><h3>Services</h3><p>Consultation, premium service, bookings and priority support.</p></div><div class=\"card\"><h3>Reviews</h3><p>Loved by local customers for quality and friendly support.</p></div></div><div class=\"card\" id=\"quote\" style=\"margin-top:20px\"><h2>Get a free quote</h2><form onsubmit=\"alert('Thanks! We will contact you shortly.');return false\"><input required placeholder=\"Your name\"><input placeholder=\"Phone or email\"><textarea rows=\"4\" placeholder=\"What do you need?\"></textarea><button class=\"btn btn-p\" type=\"submit\">Request Quote</button></form><p>+49 221 16825210 </p></div></div><footer>Anju Korean Tapas - Restaurant - Built with MAT LEADS AI PRO X</footer></body></html>",
-        "provider": "template",
-        "model": "builtin-template-v1",
-        "aiError": "NVIDIA AI authentication failed. Replace NVIDIA_API_KEY in .env or Vercel, then restart or redeploy.",
-        "revisions": 1,
-        "history": [
-          {
-            "at": "2026-10-09T21:50:25.312Z",
-            "instruction": "Initial AI website build"
-          }
-        ],
-        "createdAt": "2026-10-09T21:50:26.184Z",
-        "updatedAt": "2026-10-09T21:50:26.184Z"
-      },
-      {
-        "id": "e9f867ba-787c-4048-9ca3-c092c35a4eaa",
-        "shareToken": "cb72fa921e044562a5b8ba4f",
-        "ownerId": "owner",
-        "leadId": "osm-node-244020964",
-        "leadName": "Ananta",
-        "businessType": "Restaurant",
-        "address": "39, Hauptstraße, Neubiberg, 85579, DE",
-        "phone": "+49 89 66011133",
-        "email": "",
-        "businessName": "Ananta",
-        "style": "modern",
-        "html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Ananta | Restaurant</title><meta name=\"description\" content=\"Ananta - Restaurant. Call, book and get a quote today.\"><style>*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,Arial,sans-serif;color:#0f172a;background:#f8fafc}header{background:#0b1220;color:#fff;padding:56px 24px;text-align:center}header h1{margin:0 0 8px;font-size:clamp(2rem,5vw,3.4rem)}.btn{display:inline-block;padding:13px 22px;border-radius:10px;font-weight:700;text-decoration:none}.btn-p{background:#22c55e;color:#06281a}.btn-g{border:1px solid rgba(255,255,255,.4);color:#fff;margin-left:10px}.wrap{max-width:1080px;margin:0 auto;padding:28px 20px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}.card{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:20px}footer{background:#0b1220;color:#cbd5e1;text-align:center;padding:22px}form{display:grid;gap:10px;max-width:520px}input,textarea{padding:12px;border:1px solid #cbd5e1;border-radius:10px;font:inherit}</style></head><body><header><p style=\"letter-spacing:2px;text-transform:uppercase;font-size:12px\">Restaurant</p><h1>Ananta</h1><p>Professional mobile-first website built to turn local searches into calls and bookings. Visit us at 39, Hauptstraße, Neubiberg, 85579, DE.</p><div><a class=\"btn btn-p\" href=\"tel:+49 89 66011133\">Call +49 89 66011133</a><a class=\"btn btn-g\" href=\"#quote\">Book Online</a></div></header><div class=\"wrap\"><div class=\"grid\"><div class=\"card\"><h3>Why choose us</h3><p>Trusted local restaurant with fast response and transparent pricing.</p></div><div class=\"card\"><h3>Services</h3><p>Consultation, premium service, bookings and priority support.</p></div><div class=\"card\"><h3>Reviews</h3><p>Loved by local customers for quality and friendly support.</p></div></div><div class=\"card\" id=\"quote\" style=\"margin-top:20px\"><h2>Get a free quote</h2><form onsubmit=\"alert('Thanks! We will contact you shortly.');return false\"><input required placeholder=\"Your name\"><input placeholder=\"Phone or email\"><textarea rows=\"4\" placeholder=\"What do you need?\"></textarea><button class=\"btn btn-p\" type=\"submit\">Request Quote</button></form><p>+49 89 66011133 </p></div></div><footer>Ananta - Restaurant - Built with MAT LEADS AI PRO X</footer></body></html>",
-        "provider": "template",
-        "model": "builtin-template-v1",
-        "aiError": "AI key missing (NVIDIA_API_KEY in Vercel). Used premium template.",
-        "revisions": 1,
-        "history": [
-          {
-            "at": "2026-10-10T20:42:55.539Z",
-            "instruction": "Initial AI website build"
-          }
-        ],
-        "createdAt": "2026-10-10T20:42:56.400Z",
-        "updatedAt": "2026-10-10T20:42:56.400Z"
       }
     ]
   }

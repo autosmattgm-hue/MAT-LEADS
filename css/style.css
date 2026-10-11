@@ -1590,3 +1590,27 @@ label:has([data-ai-website-toggle]) {
   white-space: pre-wrap;
   min-height: 220px;
 }
+/* Round loading spinner (playbook / tools) */
+.spinner {
+  width: 42px;
+  height: 42px;
+  margin: 14px auto;
+  border: 4px solid var(--surface-2, #2a2f3a);
+  border-top-color: var(--accent, #4f8cff);
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+.loading-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+  text-align: center;
+}
+.loading-row .spinner {
+  margin: 0;
+}
