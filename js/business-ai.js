@@ -22,9 +22,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (!prompt) return;
     const btn = e.target.querySelector("[type=submit]");
     btn.disabled = true; btn.textContent = "Tycoon thinking...";
-    byId("tycoonOut").textContent = "Tycoon is crafting your winning script (fast mode: max 12s)...";
+    byId("tycoonOut").innerHTML = `<div class="loading-row"><div class="spinner" role="status" aria-label="Loading"></div><span class="muted-value">Tycoon is crafting your winning script (fast mode: max 12s)...</span></div>`;
     const timeout = setTimeout(() => {
-      if (btn.disabled) byId("tycoonOut").textContent += "\nStill working... if this exceeds 15s, your Vercel key or network is slow — try again.";
+      if (btn.disabled) byId("tycoonOut").innerHTML = `<div class="loading-row"><div class="spinner" role="status" aria-label="Loading"></div><span class="muted-value">Still working... if this exceeds 15s, your Vercel key or network is slow - try again.</span></div>`;
     }, 8000);
     try {
       const status = await apiFetch("/api/ai/status").catch(() => null);
