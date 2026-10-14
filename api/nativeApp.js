@@ -107,7 +107,8 @@ const publicFiles = new Set([
   "/manifest.webmanifest",
   "/sw.js",
   "/robots.txt",
-  "/sitemap.xml"
+  "/sitemap.xml",
+  "/favicon.ico"
 ]);
 const publicFolders = ["/css/", "/js/", "/assets/", "/components/"];
 
@@ -117,10 +118,10 @@ function securityHeaders(extra = {}) {
       "default-src 'self'",
       "script-src 'self' 'unsafe-inline'",
       "style-src 'self' 'unsafe-inline'",
-        "img-src 'self' data: https:",
-        "connect-src 'self'",
-        "frame-src 'self' https://www.google.com https://maps.google.com",
-        "font-src 'self' data:",
+      "img-src 'self' data: https:",
+      "connect-src 'self'",
+      "frame-src 'self' https://www.google.com https://maps.google.com",
+      "font-src 'self' data:",
       "object-src 'none'",
       "base-uri 'self'",
       "frame-ancestors 'self'"

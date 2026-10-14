@@ -71,6 +71,10 @@ export const env = {
     cacheTtlMs: number(process.env.NVIDIA_CACHE_TTL_MS, 600000),
     maxTokens: number(process.env.NVIDIA_MAX_TOKENS, 420)
   },
+  pollinations: {
+    apiKey: process.env.POLLINATIONS_API_KEY || "",
+    baseUrl: process.env.POLLINATIONS_BASE_URL || "https://gen.pollinations.ai"
+  },
   stripe: {
     secretKey: process.env.STRIPE_SECRET_KEY || "",
     webhookSecret: process.env.STRIPE_WEBHOOK_SECRET || ""
@@ -105,6 +109,7 @@ export function assertProductionSecrets() {
     ["JWT_REFRESH_SECRET", env.jwtRefreshSecret],
     ["GOOGLE_PLACES_API_KEY", env.google.placesApiKey],
     ["NVIDIA_API_KEY", env.nvidia.apiKey],
+    ["POLLINATIONS_API_KEY", env.pollinations.apiKey],
     ["FIREBASE_PROJECT_ID", env.firebase.projectId],
     ["FIREBASE_CLIENT_EMAIL", env.firebase.clientEmail],
     ["FIREBASE_PRIVATE_KEY", env.firebase.privateKey]

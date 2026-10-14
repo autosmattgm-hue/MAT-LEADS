@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-11T23:22:54.640Z",
+  "updatedAt": "2026-10-13T22:36:02.181Z",
   "collections": {
     "aiWebsites": [
       {
@@ -915,6 +915,33 @@
         ],
         "createdAt": "2026-10-11T23:22:54.640Z",
         "updatedAt": "2026-10-11T23:22:54.640Z"
+      },
+      {
+        "id": "5d9add15-f154-46d2-8ce3-92db0bf464e4",
+        "shareToken": "b8e62bb17a024059a5fdccf2",
+        "ownerId": "owner",
+        "leadId": "osm-node-244020964",
+        "leadName": "Ananta",
+        "businessType": "Restaurant",
+        "address": "39, Hauptstraße, Neubiberg, 85579, DE",
+        "phone": "+49 89 66011133",
+        "email": "",
+        "businessName": "Ananta",
+        "style": "modern",
+        "html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Ananta</title><meta name=\"description\" content=\"Ananta — a professional website built to turn visitors into customers.\"><style>*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,Arial,sans-serif;color:#0f172a;background:#f8fafc;line-height:1.55}.nav{position:sticky;top:0;z-index:50;background:#0b1220;display:flex;gap:4px;align-items:center;padding:10px 16px;flex-wrap:wrap;box-shadow:0 2px 10px rgba(0,0,0,.15)}.nav .brand{color:#fff;font-weight:800;margin-right:auto;font-size:1.05rem}.nav-a{color:#cbd5e1;text-decoration:none;padding:8px 13px;border-radius:8px;font-weight:600;cursor:pointer;font-size:.95rem}.nav-a:hover{background:rgba(255,255,255,.1);color:#fff}.nav-a.active{background:#22c55e;color:#06281a}img{max-width:100%;height:auto}.wrap{max-width:1080px;margin:0 auto;padding:30px 20px}input,textarea{font:inherit}footer{background:#0b1220;color:#cbd5e1;text-align:center;padding:20px;font-size:.9rem}</style></head><body><nav class=\"nav\"><span class=\"brand\">Ananta</span><a href=\"#\" class=\"nav-a active\" onclick=\"return showPage(0)\">Home</a></nav><section class=\"pg\" id=\"pg-0\"><style>\nbody{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f4f4f4;color:#333;}\nh1{font-size:3rem;margin:0.5em 0;}\nh2{font-size:1.5rem;margin:0.5em 0;}\np{line-height:1.6;}\nbutton{background:#006400;color:#fff;border:none;padding:0.75em 1.5em;font-size:1rem;cursor:pointer;}\nsection{padding:2rem 1rem;}\n.hero{background:url('https://picsum.photos/seed/restaurant/1600/900') center/cover no-repeat;height:60vh;display:flex;align-items:center;justify-content:center;color:#fff;text-align:center;}\n.hero h1{font-size:4rem;text-shadow:2px 2px 4px rgba(0,0,0,0.5);}\n.hero button{margin-top:1rem;}\n.highlights{display:flex;gap:1rem;justify-content:center;}\n.highlight{background:#fff;padding:1rem;flex:1;text-align:center;border-radius:8px;}\n.gallery{display:flex;gap:1rem;overflow-x:auto;}\n.gallery img{width:100%;max-width:300px;border-radius:8px;}\n@media(min-width:600px){.gallery{flex-wrap:wrap;justify-content:center;}}\n</style></section><footer>© 2026 Ananta. All rights reserved.</footer><script>function showPage(i){document.querySelectorAll('.pg').forEach(function(s,idx){s.style.display=idx===i?'block':'none'});document.querySelectorAll('.nav-a').forEach(function(a,idx){a.classList.toggle('active',idx===i)});window.scrollTo(0,0);return false;}</script></body></html>",
+        "provider": "nvidia",
+        "model": "openai/gpt-oss-20b",
+        "pageCount": 1,
+        "aiError": "",
+        "revisions": 1,
+        "history": [
+          {
+            "at": "2026-10-13T22:34:51.248Z",
+            "instruction": "Initial AI website build"
+          }
+        ],
+        "createdAt": "2026-10-13T22:35:14.165Z",
+        "updatedAt": "2026-10-13T22:35:14.165Z"
       }
     ],
     "users": [
@@ -1152,6 +1179,60 @@
         "id": "owner",
         "updatedAt": "2026-10-11T22:37:55.425Z",
         "createdAt": "2026-10-11T22:37:55.425Z"
+      },
+      {
+        "name": "Smoke Tester",
+        "email": "smoke-1791929234535@example.com",
+        "passwordHash": "scrypt$8b26491f6267433f80606615e8bc8306$fdd70bfd9ca2dc4d2b0d699d76a0b272ccf1d118bca0ebfdec41ca6430def31e3cf6947e8442c99eb2b911916b5bd46b69a20c546bcde34f5d5dbb62cbd81d6f",
+        "role": "user",
+        "tokenVersion": 1,
+        "id": "4421462a-a320-4f32-af0b-67b6ac9fe0f5",
+        "createdAt": "2026-10-13T22:07:14.883Z",
+        "updatedAt": "2026-10-13T22:07:16.213Z",
+        "uid": "4421462a-a320-4f32-af0b-67b6ac9fe0f5",
+        "subscription": "trial",
+        "planName": "Free Trial",
+        "monthlyLeadLimit": 5,
+        "trialSearchLimit": 2,
+        "trialLeadLimit": 5,
+        "billingStatus": "trial",
+        "trialSearchesUsed": 0,
+        "entitlements": {
+          "billingRequired": true,
+          "trial": true,
+          "trialSearchesUsed": 0,
+          "trialSearchLimit": 2,
+          "trialLeadLimit": 5,
+          "upgradeRequiredAfterTrial": true
+        },
+        "emailVerified": false
+      },
+      {
+        "name": "Smoke Tester",
+        "email": "smoke-1791929252835@example.com",
+        "passwordHash": "scrypt$77f8d8bbe4c6884e3c5ee207fd76f67d$11e0999723746c03bfe55d720a2242a7d98f861d0659d03c684124cc5b8e5ced1334fff8b0c4b4924a372c416a60ea2776b0eb456328ff32c3498c39be4043c2",
+        "role": "user",
+        "tokenVersion": 1,
+        "id": "08f2619a-58f9-4526-bfd2-56c1eb6d637f",
+        "createdAt": "2026-10-13T22:07:33.035Z",
+        "updatedAt": "2026-10-13T22:07:36.557Z",
+        "uid": "08f2619a-58f9-4526-bfd2-56c1eb6d637f",
+        "subscription": "trial",
+        "planName": "Free Trial",
+        "monthlyLeadLimit": 5,
+        "trialSearchLimit": 2,
+        "trialLeadLimit": 5,
+        "billingStatus": "trial",
+        "trialSearchesUsed": 0,
+        "entitlements": {
+          "billingRequired": true,
+          "trial": true,
+          "trialSearchesUsed": 0,
+          "trialSearchLimit": 2,
+          "trialLeadLimit": 5,
+          "upgradeRequiredAfterTrial": true
+        },
+        "emailVerified": false
       }
     ],
     "leads": [
@@ -1292,8 +1373,8 @@
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
         "discoveredBy": "owner",
-        "discoveredAt": "2026-10-10T20:49:00.965Z",
-        "updatedAt": "2026-10-10T20:49:00.965Z",
+        "discoveredAt": "2026-10-13T22:35:09.252Z",
+        "updatedAt": "2026-10-13T22:35:09.252Z",
         "createdAt": "2026-07-05T20:50:35.805Z"
       },
       {
@@ -1567,8 +1648,8 @@
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
         "discoveredBy": "owner",
-        "discoveredAt": "2026-10-10T21:28:18.266Z",
-        "updatedAt": "2026-10-10T21:28:18.266Z",
+        "discoveredAt": "2026-10-13T22:35:09.252Z",
+        "updatedAt": "2026-10-13T22:35:09.252Z",
         "createdAt": "2026-07-05T20:50:35.805Z"
       },
       {
@@ -1717,8 +1798,8 @@
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
         "discoveredBy": "owner",
-        "discoveredAt": "2026-10-10T21:28:18.266Z",
-        "updatedAt": "2026-10-10T21:28:18.266Z",
+        "discoveredAt": "2026-10-13T22:35:09.252Z",
+        "updatedAt": "2026-10-13T22:35:09.252Z",
         "createdAt": "2026-07-05T20:50:35.805Z"
       },
       {
@@ -1856,8 +1937,8 @@
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
         "discoveredBy": "owner",
-        "discoveredAt": "2026-10-10T21:28:18.266Z",
-        "updatedAt": "2026-10-10T21:28:18.266Z",
+        "discoveredAt": "2026-10-13T22:35:09.252Z",
+        "updatedAt": "2026-10-13T22:35:09.252Z",
         "createdAt": "2026-07-05T20:50:35.805Z"
       },
       {
@@ -9551,8 +9632,8 @@
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
         "discoveredBy": "owner",
-        "discoveredAt": "2026-10-10T21:40:54.235Z",
-        "updatedAt": "2026-10-10T21:42:13.386Z",
+        "discoveredAt": "2026-10-13T22:35:09.251Z",
+        "updatedAt": "2026-10-13T22:35:09.251Z",
         "createdAt": "2026-07-06T21:15:06.148Z",
         "ownerId": "owner",
         "stage": "New",
@@ -9666,8 +9747,8 @@
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
         "discoveredBy": "owner",
-        "discoveredAt": "2026-10-10T21:40:54.235Z",
-        "updatedAt": "2026-10-10T21:40:54.235Z",
+        "discoveredAt": "2026-10-13T22:35:09.251Z",
+        "updatedAt": "2026-10-13T22:35:09.251Z",
         "createdAt": "2026-07-06T21:15:06.148Z"
       },
       {
@@ -9785,8 +9866,8 @@
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
         "discoveredBy": "owner",
-        "discoveredAt": "2026-10-10T21:40:54.235Z",
-        "updatedAt": "2026-10-10T21:40:54.235Z",
+        "discoveredAt": "2026-10-13T22:35:09.251Z",
+        "updatedAt": "2026-10-13T22:35:09.251Z",
         "createdAt": "2026-07-06T21:15:06.148Z"
       },
       {
@@ -9907,8 +9988,8 @@
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
         "discoveredBy": "owner",
-        "discoveredAt": "2026-10-10T21:40:54.235Z",
-        "updatedAt": "2026-10-10T21:40:54.235Z",
+        "discoveredAt": "2026-10-13T22:35:09.251Z",
+        "updatedAt": "2026-10-13T22:35:09.251Z",
         "createdAt": "2026-07-06T21:15:06.148Z"
       },
       {
@@ -10048,8 +10129,8 @@
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
         "discoveredBy": "owner",
-        "discoveredAt": "2026-10-10T21:40:54.235Z",
-        "updatedAt": "2026-10-10T21:40:54.235Z",
+        "discoveredAt": "2026-10-13T22:35:09.251Z",
+        "updatedAt": "2026-10-13T22:35:09.251Z",
         "createdAt": "2026-07-06T21:15:06.148Z"
       },
       {
@@ -10387,8 +10468,8 @@
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
         "discoveredBy": "owner",
-        "discoveredAt": "2026-10-10T21:40:54.235Z",
-        "updatedAt": "2026-10-10T21:40:54.235Z",
+        "discoveredAt": "2026-10-13T22:35:09.251Z",
+        "updatedAt": "2026-10-13T22:35:09.251Z",
         "createdAt": "2026-07-06T21:15:06.148Z"
       },
       {
@@ -10615,8 +10696,8 @@
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
         "discoveredBy": "owner",
-        "discoveredAt": "2026-10-10T21:40:54.235Z",
-        "updatedAt": "2026-10-10T21:40:54.235Z",
+        "discoveredAt": "2026-10-13T22:35:09.251Z",
+        "updatedAt": "2026-10-13T22:35:09.251Z",
         "createdAt": "2026-07-06T21:15:06.148Z"
       },
       {
@@ -11011,8 +11092,8 @@
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
         "discoveredBy": "owner",
-        "discoveredAt": "2026-10-10T21:40:54.235Z",
-        "updatedAt": "2026-10-10T21:40:54.235Z",
+        "discoveredAt": "2026-10-13T22:35:09.251Z",
+        "updatedAt": "2026-10-13T22:35:09.251Z",
         "createdAt": "2026-07-06T21:15:06.148Z"
       },
       {
@@ -11131,8 +11212,8 @@
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
         "discoveredBy": "owner",
-        "discoveredAt": "2026-10-10T21:40:54.235Z",
-        "updatedAt": "2026-10-10T21:40:54.235Z",
+        "discoveredAt": "2026-10-13T22:35:09.251Z",
+        "updatedAt": "2026-10-13T22:35:09.252Z",
         "createdAt": "2026-07-06T21:15:06.148Z"
       },
       {
@@ -11492,8 +11573,8 @@
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
         "discoveredBy": "owner",
-        "discoveredAt": "2026-10-10T20:49:37.827Z",
-        "updatedAt": "2026-10-10T20:49:37.827Z",
+        "discoveredAt": "2026-10-13T22:35:09.252Z",
+        "updatedAt": "2026-10-13T22:35:09.252Z",
         "createdAt": "2026-07-06T21:15:06.148Z"
       },
       {
@@ -11608,8 +11689,8 @@
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
         "discoveredBy": "owner",
-        "discoveredAt": "2026-10-10T21:28:18.266Z",
-        "updatedAt": "2026-10-10T21:28:18.266Z",
+        "discoveredAt": "2026-10-13T22:35:09.252Z",
+        "updatedAt": "2026-10-13T22:35:09.252Z",
         "createdAt": "2026-07-06T21:15:06.148Z"
       },
       {
@@ -11844,8 +11925,8 @@
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
         "discoveredBy": "owner",
-        "discoveredAt": "2026-10-10T20:49:37.827Z",
-        "updatedAt": "2026-10-10T20:49:37.827Z",
+        "discoveredAt": "2026-10-13T22:35:09.252Z",
+        "updatedAt": "2026-10-13T22:35:09.252Z",
         "createdAt": "2026-07-06T21:15:06.148Z"
       },
       {
@@ -15631,8 +15712,8 @@
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
         "discoveredBy": "owner",
-        "discoveredAt": "2026-10-10T21:40:54.235Z",
-        "updatedAt": "2026-10-10T21:40:54.235Z",
+        "discoveredAt": "2026-10-13T22:35:09.251Z",
+        "updatedAt": "2026-10-13T22:35:09.251Z",
         "createdAt": "2026-10-10T20:42:09.093Z"
       },
       {
@@ -15871,8 +15952,8 @@
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
         "discoveredBy": "owner",
-        "discoveredAt": "2026-10-10T20:49:37.826Z",
-        "updatedAt": "2026-10-10T20:49:37.826Z",
+        "discoveredAt": "2026-10-13T22:35:09.252Z",
+        "updatedAt": "2026-10-13T22:35:09.252Z",
         "createdAt": "2026-10-10T20:42:09.093Z"
       },
       {
@@ -15989,8 +16070,8 @@
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
         "discoveredBy": "owner",
-        "discoveredAt": "2026-10-10T21:28:18.266Z",
-        "updatedAt": "2026-10-10T21:28:18.266Z",
+        "discoveredAt": "2026-10-13T22:35:09.252Z",
+        "updatedAt": "2026-10-13T22:35:09.252Z",
         "createdAt": "2026-10-10T20:49:00.965Z"
       },
       {
@@ -16094,8 +16175,8 @@
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
         "discoveredBy": "owner",
-        "discoveredAt": "2026-10-10T21:28:18.266Z",
-        "updatedAt": "2026-10-10T21:28:18.266Z",
+        "discoveredAt": "2026-10-13T22:35:09.252Z",
+        "updatedAt": "2026-10-13T22:35:09.252Z",
         "createdAt": "2026-10-10T20:49:00.965Z"
       },
       {
@@ -17086,6 +17167,44 @@
         "id": "c35655c6-6371-489c-8c20-ac180617859d",
         "createdAt": "2026-10-10T21:41:26.456Z",
         "updatedAt": "2026-10-10T21:41:26.456Z"
+      },
+      {
+        "actor": "owner@matleads.local",
+        "action": "lead_search",
+        "query": {
+          "country": "Germany",
+          "countries": [
+            "Germany"
+          ],
+          "state": "",
+          "city": "",
+          "zip": "",
+          "industry": "restaurants, hotels, boutiques, car_dealers",
+          "keyword": "",
+          "businessTypes": [
+            "restaurants",
+            "hotels",
+            "boutiques",
+            "car_dealers"
+          ],
+          "mapLink": "",
+          "latitude": null,
+          "longitude": null,
+          "radiusMeters": 15000,
+          "limit": 20,
+          "searchDepth": "deep",
+          "leadQuality": "all",
+          "sortBy": "opportunity",
+          "minOpportunityScore": 0,
+          "requireContact": false,
+          "missingWebsiteOnly": false,
+          "bypassCache": false,
+          "refreshSeed": ""
+        },
+        "count": 20,
+        "id": "06e952f1-1de2-45ff-8023-94058bd299f4",
+        "createdAt": "2026-10-13T22:35:59.248Z",
+        "updatedAt": "2026-10-13T22:35:59.248Z"
       }
     ],
     "activities": [
