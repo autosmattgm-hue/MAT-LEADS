@@ -179,6 +179,8 @@ export async function apiFetch(path, options = {}) {
   const response = await fetch(path, {
     ...options,
     headers
+  }).catch(() => {
+    throw new Error("Cannot reach the server. Check your internet connection, then reload the page. If this is the live site, the API may still be deploying — wait a minute and retry.");
   });
 
   const contentType = response.headers.get("content-type") || "";
