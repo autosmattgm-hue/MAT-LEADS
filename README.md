@@ -36,6 +36,7 @@ New free accounts start on the Free Trial plan. The API allows 2 lead searches t
 
 1. Create a Firebase project with Authentication and Firestore enabled.
 2. Add Firebase Admin credentials and the Firebase Web API key to Vercel environment variables.
+3. Add `JWT_SECRET` and `JWT_REFRESH_SECRET` (long random strings — same values on every deploy, or all sessions invalidate) plus `OWNER_EMAIL` and `OWNER_PASSWORD` for the always-working owner login.
 3. Optional: enable Google Places API (New) and restrict the server key to your backend if you want Google Places results instead of the no-key OpenStreetMap fallback.
 4. Add the NVIDIA API key, base URL, and selected NVIDIA NIM model ID.
 5. Add Stripe credentials and either PayPal API credentials or hosted PayPal plan links.
