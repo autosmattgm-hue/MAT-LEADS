@@ -170,9 +170,18 @@ function applyCors(req, res) {
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, PATCH, OPTIONS");
 }
 
+function clientIp(req) {
+  const forwarded = getHeader(req, "x-forwarded-for");
+  if (forwarded) {
+    const first = String(forwarded).split(",")[0].trim();
+    if (first) return first;
+  }
+  return req.socket.remoteAddress || "unknown";
+}
+
 function rateLimit(req) {
   const now = Date.now();
-  const ip = req.socket.remoteAddress || "unknown";
+  const ip = clientIp(req);
   const bucket = rateBuckets.get(ip) || { count: 0, resetAt: now + env.rateLimit.windowMs };
   if (bucket.resetAt <= now) {
     bucket.count = 0;
@@ -243,6 +252,11 @@ const routes = [
       status: "ok",
       service: "mat-leads-ai-pro-x",
       environment: env.nodeEnv,
+      auth: {
+        ownerLoginConfigured: Boolean(env.owner.email && env.owner.password),
+        userStore: isFirebaseConfigured() ? "firestore" : (process.env.VERCEL ? "ephemeral-memory (register on every cold start; set Firebase vars for persistent users)" : "local-json"),
+        jwtConfigured: !String(env.jwtSecret || "").startsWith("development-")
+      },
       integrations: {
         firebase: isFirebaseConfigured(),
         googlePlaces: Boolean(env.google.placesApiKey),
@@ -265,6 +279,20 @@ const routes = [
         !env.stripe.secretKey && "........",
         !(env.paypal.clientId && env.paypal.clientSecret) && !Object.values(env.paypal.paymentLinks).every(Boolean) && "PAYPAL_CLIENT_ID/PAYPAL_CLIENT_SECRET or hosted PayPal payment links"
       ].filter(Boolean)
+    })
+  },
+  {
+    method: "GET",
+    regex: /^\/api\/auth\/debug$/,
+    keys: [],
+    handler: async () => ({
+      ownerEmailSet: Boolean(env.owner.email),
+      ownerEmailValue: env.owner.email ? `${String(env.owner.email).slice(0, 3)}***` : "(missing)",
+      ownerPasswordSet: Boolean(env.owner.password),
+      ownerPasswordLength: String(env.owner.password || "").length,
+      jwtConfigured: !String(env.jwtSecret || "").startsWith("development-"),
+      userStore: isFirebaseConfigured() ? "firestore" : (process.env.VERCEL ? "ephemeral-memory" : "local-json"),
+      hint: "Set OWNER_EMAIL + OWNER_PASSWORD in Vercel env vars (Production + Preview + Development), then redeploy. Values are case-sensitive for the password; email is lowercased."
     })
   },
   {

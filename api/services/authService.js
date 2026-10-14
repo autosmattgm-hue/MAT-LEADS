@@ -260,7 +260,13 @@ export class AuthService {
       limit: 1
     });
     const user = users[0];
-    if (!user || !user.passwordHash) throw new AppError("Invalid email or password.", 401, "INVALID_CREDENTIALS");
+    if (!user) {
+      if (process.env.VERCEL && !this.users.client()) {
+        throw new AppError("No account found on this server instance. On Vercel without Firebase, registered accounts are ephemeral — please sign up again, or add Firebase vars for persistent users.", 401, "INVALID_CREDENTIALS");
+      }
+      throw new AppError("Invalid email or password.", 401, "INVALID_CREDENTIALS");
+    }
+    if (!user.passwordHash) throw new AppError("Invalid email or password.", 401, "INVALID_CREDENTIALS");
 
     const valid = await verifyPassword(password, user.passwordHash);
     if (!valid) throw new AppError("Invalid email or password.", 401, "INVALID_CREDENTIALS");
