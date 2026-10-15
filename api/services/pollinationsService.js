@@ -5,11 +5,13 @@ const POLLINATIONS = {
   GEN_BASE: "https://gen.pollinations.ai",
   MODELS: {
     // Cheap, fast, non-reasoning flagship default for interactive workloads.
+    // Overridable via POLLINATIONS_TEXT_MODEL so owners can pin a model their key allows.
     TEXT_DEFAULT: "openai/gpt-5.4-nano",
-    TEXT_FALLBACKS: ["openai/gpt-5-nano", "google/gemini-3-flash-preview", "openai/gpt-4o-mini"],
+    TEXT_FALLBACKS: ["openai/gpt-5-nano", "openai/gpt-oss-20b", "google/gemini-3-flash-preview", "openai/gpt-4o-mini", "mistralai/mistral-small-3.2", "meta/llama-3.3-70b-instruct"],
     // Website builds want large, reliable instruction followers.
+    // Overridable via POLLINATIONS_WEBSITE_MODEL.
     WEBSITE_DEFAULT: "openai/gpt-5.4",
-    WEBSITE_FALLBACKS: ["openai/gpt-5.4-mini", "google/gemini-3-flash-preview", "openai/gpt-4o-mini"],
+    WEBSITE_FALLBACKS: ["openai/gpt-5.4-mini", "openai/gpt-5-nano", "openai/gpt-oss-20b", "google/gemini-3-flash-preview", "openai/gpt-4o-mini", "mistralai/mistral-small-3.2"],
     IMAGE_DEFAULT: "black-forest-labs/flux.1-schnell",
     VIDEO_DEFAULT: "google/veo-3.1-fast",
     EMBEDDING_DEFAULT: "openai/text-embedding-3-small",
@@ -31,6 +33,7 @@ const POLLINATIONS = {
 const PROVIDER = "pollinations";
 
 function publicPollinationsError(error) {
+  if (error instanceof AppError) return error;
   const m = String(error?.message || "").toLowerCase();
   if (m.includes("end of life") || m.includes("end-of-life") || m.includes("decommissioned") || m.includes("retired") || m.includes("no longer supported") || m.includes("not found")) {
     return new AppError("The AI provider endpoint is no longer available. Check POLLINATIONS_API_KEY and retry.", 503, "POLLINATIONS_EOL");
@@ -109,7 +112,7 @@ export class PollinationsService {
     const models = [requested, ...(Array.isArray(fallbackPool) ? fallbackPool : [])]
       .map((m) => String(m || "").trim())
       .filter(Boolean);
-    return [...new Set(models)].slice(0, 3);
+    return [...new Set(models)].slice(0, 7);
   }
 
   async send(domain, payload = {}, options = {}) {
@@ -139,7 +142,7 @@ export class PollinationsService {
       temperature = 0.5,
       maxTokens = 2000,
       topP = 1,
-      model = POLLINATIONS.MODELS.TEXT_DEFAULT,
+      model = process.env.POLLINATIONS_TEXT_MODEL || POLLINATIONS.MODELS.TEXT_DEFAULT,
       fallbackModels = POLLINATIONS.MODELS.TEXT_FALLBACKS,
       timeoutMs = 60000,
       safe = undefined,
@@ -148,6 +151,7 @@ export class PollinationsService {
     const queue = this.resolveTextModels(model, fallbackModels);
     const safety = safe === undefined || safe === null || safe === false || safe === 0 ? {} : { safe: Array.isArray(safe) ? safe.join(",") : String(safe) };
     let lastError = null;
+    const deniedModels = [];
     for (const attempt of queue) {
       const controller = new AbortController();
       const timer = setTimeout(() => controller.abort(), Math.max(5000, Number(timeoutMs) || 60000));
@@ -180,6 +184,14 @@ export class PollinationsService {
         if (!content || !String(content).trim()) {
           throw new AppError("Pollinations AI returned an empty response.", 503, "POLLINATIONS_EMPTY");
         }
+        // Pollinations returns HTTP 200 with a block notice embedded in the message
+        // content when the model allow-list of the key does not include the requested model.
+        if (/isn.t allowed to use|is not allowed to use|allow it for this key/i.test(String(content))) {
+          const grantMatch = String(content).match(/https:\/\/enter\.pollinations\.ai\/grant\?[^\s)\]">]+/);
+          deniedModels.push({ model: attempt, grant: grantMatch ? grantMatch[0] : "https://enter.pollinations.ai/keys" });
+          lastError = new AppError("Pollinations key cannot use " + attempt + "; its model allow-list does not include it.", 503, "POLLINATIONS_MODEL_DENIED");
+          continue;
+        }
         return { configured: true, provider: PROVIDER, model: attempt, content, usage: response.usage || null, cached: false };
       } catch (error) {
         lastError = error;
@@ -189,6 +201,9 @@ export class PollinationsService {
       } finally {
         clearTimeout(timer);
       }
+    }
+    if (deniedModels.length && deniedModels.length === queue.length) {
+      throw new AppError("Pollinations key is not allowed to use any of: " + queue.join(", ") + " (its model allow-list covers none of them). Owner fix: open " + deniedModels[0].grant + " and allow the text category for this key - or set a full-access secret (sk_) key as POLLINATIONS_API_KEY. You can also pin one allowed model via POLLINATIONS_TEXT_MODEL / POLLINATIONS_WEBSITE_MODEL, then retry.", 503, "POLLINATIONS_MODEL_DENIED");
     }
     throw publicPollinationsError(lastError || new Error("Pollinations AI request failed."));
   }
@@ -388,7 +403,7 @@ export class PollinationsService {
     const request = (maxTokens, note) => {
       const system = "You are an elite website builder. Output ONLY the inner content for a " + pageCount + "-page business website. RULES: (1) Separate each page with the exact marker <!--PAGE--> on its own line, and emit exactly " + pageCount + " page(s) in this order: " + pageSpecs.map((p) => p.title).join(", ") + ". (2) Do NOT output <!doctype>, <html>, <head>, <body> or <nav> — only the page content. (3) You MAY put ONE compact single-line <style> block at the very top. (4) Use the exact image URLs from the brief in real <img> tags; never leave src empty. (5) Be CONCISE: the ENTIRE output under ~1500 tokens. (6) No markdown, no explanations, no code fences.";
       const user = "Build the " + pageCount + " page section(s) for: " + brief + ". Page focuses: " + pageSpecs.map((p) => p.title + " = " + p.focus).join("; ") + ". Hero uses images.hero; put images.gallery URLs in an <img> row on the Home page. Separate every page with <!--PAGE-->. " + (note || "");
-      return this.text([{ role: "system", content: system }, { role: "user", content: user }], { temperature: 0.3, maxTokens, timeoutMs: Math.max(30000, 50000) });
+      return this.text([{ role: "system", content: system }, { role: "user", content: user }], { temperature: 0.3, maxTokens, timeoutMs: Math.max(30000, 50000), model: process.env.POLLINATIONS_WEBSITE_MODEL || POLLINATIONS.MODELS.WEBSITE_DEFAULT, fallbackModels: POLLINATIONS.MODELS.WEBSITE_FALLBACKS });
     };
     let result = await request(1500);
     let content = String(result.content || "");

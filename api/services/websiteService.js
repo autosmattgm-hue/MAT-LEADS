@@ -80,6 +80,9 @@ export class WebsiteService {
         reason = "No AI key is set yet. Add POLLINATIONS_API_KEY in .env (get one at enter.pollinations.ai/keys), then restart.";
       } else if (/authorization failed|403|missing or invalid/i.test(raw)) {
         reason = raw.slice(0, 320) + " Add or replace POLLINATIONS_API_KEY in .env, then restart.";
+      } else if (/POLLINATIONS_MODEL_DENIED|Pollinations key cannot use|Pollinations key is not allowed to use any of|model allow-list|isn.t allowed to use|allow it for this key/i.test(raw)) {
+        const grantMatch = raw.match(/https:\/\/enter\.pollinations\.ai\/grant\?[^\s)\]">]+/);
+        reason = "Pollinations key is blocked from the AI model (its model allow-list is empty). Owner fix: log in at enter.pollinations.ai and open " + (grantMatch ? grantMatch[0] : "https://enter.pollinations.ai/keys") + " to allow the text category - or set a full-access secret (sk_) key as POLLINATIONS_API_KEY. Then click Generate again.";
       } else {
         reason = `${raw.slice(0, 320)}. Click Generate again to retry; if it repeats, check POLLINATIONS_API_KEY.`;
       }
