@@ -1,0 +1,81 @@
+﻿
+
+ProcessId   : 6552
+CommandLine : C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe 
+              -noexit -command "try { . 
+              \"c:\Users\John\AppData\Local\Programs\Microsoft VS Code\b6a47e94
+              e3\resources\app\out\vs\workbench\contrib\terminal\common\scripts
+              \shellIntegration.ps1\" } catch {}"
+
+ProcessId   : 10740
+CommandLine : C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe 
+              -noexit -command "try { . 
+              \"c:\Users\John\AppData\Local\Programs\Microsoft VS Code\b6a47e94
+              e3\resources\app\out\vs\workbench\contrib\terminal\common\scripts
+              \shellIntegration.ps1\" } catch {}"
+
+ProcessId   : 13032
+CommandLine : C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe 
+              -noexit -command "try { . 
+              \"c:\Users\John\AppData\Local\Programs\Microsoft VS Code\b6a47e94
+              e3\resources\app\out\vs\workbench\contrib\terminal\common\scripts
+              \shellIntegration.ps1\" } catch {}"
+
+ProcessId   : 13708
+CommandLine : C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe 
+              -noexit -command "try { . 
+              \"c:\Users\John\AppData\Local\Programs\Microsoft VS Code\b6a47e94
+              e3\resources\app\out\vs\workbench\contrib\terminal\common\scripts
+              \shellIntegration.ps1\" } catch {}"
+
+ProcessId   : 11552
+CommandLine : C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe 
+              -noexit -command "try { . 
+              \"c:\Users\John\AppData\Local\Programs\Microsoft VS Code\b6a47e94
+              e3\resources\app\out\vs\workbench\contrib\terminal\common\scripts
+              \shellIntegration.ps1\" } catch {}"
+
+ProcessId   : 11876
+CommandLine : C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe 
+              -noexit -command "try { . 
+              \"c:\Users\John\AppData\Local\Programs\Microsoft VS Code\b6a47e94
+              e3\resources\app\out\vs\workbench\contrib\terminal\common\scripts
+              \shellIntegration.ps1\" } catch {}"
+
+ProcessId   : 9096
+CommandLine : C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe 
+              -noexit -command "try { . 
+              \"c:\Users\John\AppData\Local\Programs\Microsoft VS Code\b6a47e94
+              e3\resources\app\out\vs\workbench\contrib\terminal\common\scripts
+              \shellIntegration.ps1\" } catch {}"
+
+ProcessId   : 12096
+CommandLine : C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe 
+              -noexit -command "try { . 
+              \"c:\Users\John\AppData\Local\Programs\Microsoft VS Code\b6a47e94
+              e3\resources\app\out\vs\workbench\contrib\terminal\common\scripts
+              \shellIntegration.ps1\" } catch {}"
+
+ProcessId   : 14428
+CommandLine : C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe 
+              -noexit -command "try { . 
+              \"c:\Users\John\AppData\Local\Programs\Microsoft VS Code\b6a47e94
+              e3\resources\app\out\vs\workbench\contrib\terminal\common\scripts
+              \shellIntegration.ps1\" } catch {}"
+
+ProcessId   : 7536
+CommandLine : C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe 
+              -noexit -command "try { . 
+              \"c:\Users\John\AppData\Local\Programs\Microsoft VS Code\b6a47e94
+              e3\resources\app\out\vs\workbench\contrib\terminal\common\scripts
+              \shellIntegration.ps1\" } catch {}"
+
+ProcessId   : 17956
+CommandLine : C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe 
+              -noexit -command "try { . 
+              \"c:\Users\John\AppData\Local\Programs\Microsoft VS Code\b6a47e94
+              e3\resources\app\out\vs\workbench\contrib\terminal\common\scripts
+              \shellIntegration.ps1\" } catch {}"
+
+
+

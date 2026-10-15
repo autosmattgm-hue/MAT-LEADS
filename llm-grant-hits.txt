@@ -1,0 +1,32 @@
+﻿87: Every text model that lists `/v1/chat/completions` in `supported_endpoints` from [`GET /v1/models`](/v1/models) or [`GET /text/models`](/text/models) also lists `/v1/responses`. Models with a Responses upstream (configured built-in provider
+153: Requests run as Chat Completions requests: balance checks, key permissions, rate limits, caching and billing are the same. Streaming, tools, images, PDF documents (base64 `document` blocks, sent as Chat `file` parts), system prompts and sto
+441: it does not change generation permissions.
+489: remain available. Authentication, key permissions, paid access and manual
+534: API key model permissions list model categories and model IDs. A category (`text`, `image`, `video`, `audio`, `3d`, `embedding` or `realtime`) allows every model in it, including models added later. A model ID or alias allows only that mode
+553: | `max_duration` / `min_duration` / `allowed_durations` | Video length caps in seconds |
+554: | `resolutions` | Allowed output resolutions when Pollinations restricts them |
+618: `account:usage` is the read-only account-state scope for balances, usage, quests, and earnings. `account:keys` is account admin: a key with it can create keys with any limits, edit or revoke every key on the account, and, where enabled, man
+622: | `GET /account/profile` | GitHub username, image, and community model access |
+630: | `GET /account/key` | API key validity, type, and permissions |
+634: Returns user profile. `githubUsername`, `image`, and `communityEndpointsAllowed` are always included. `name` and `email` are included only when the API key has `account:profile`.
+640: - Budgeted API keys always get the key's remaining budget in `balance` (no extra scope).
+641: - Sessions and unbudgeted keys get the account total (Quest Pollen + paid) in `balance`. That path requires `account:usage` for API keys.
+643: When the caller can view account usage (dashboard session or `account:usage`), the response also includes `accountBalance: { total, tier, paid }` so clients can see Quest Pollen vs paid Pollen. Budgeted keys without `account:usage` do **not
+663: Returns the current API key's validity, type, and permissions.
+686: Public publishing requires `communityEndpointsAllowed: true`; [request account-level publisher access](https://github.com/pollinations/pollinations/issues/new?template=community-model-allowlist.yml) with the allowlist form. Inspecting and t
+782: Users stay in control of their balance, budgets, and revocation; your app never has to pay for their usage.
+850: https://enter.pollinations.ai/authorize?response_type=code&redirect_uri=https://myapp.com/callback&client_id=pk_yourkey&scope=usage&models=image,text&expiry=7&budget=10&state=random&code_challenge=...&code_challenge_method=S256
+863: | `budget` | Numeric Pollen cap. Defaults to `5`; users can clear the budget field on the consent screen for unlimited. | `10` |
+866: Legacy names `app_key`, `redirect_url`, and `permissions` are still accepted for backwards compatibility.
+893: Scopes: `profile` (name + email), `usage` (account balance + usage), `keys` (account admin — create/list/revoke keys). The response's `scope` echoes what the user actually granted, which may be narrower than requested. Generation needs no s
+1262: The callback also receives `request`, `pollinations(path, init)`, `mcp.listTools(server)`, and `mcp(server, tool, arguments)` for direct request and tool handling. It must return a `Response`; ordinary Worker APIs, including timers and stre
+1454: polli keys create --name mybot --budget 100                    # secret (default)
+1463: `--models` takes categories (`text`, `image`, ...) and model IDs from `polli models`; a category includes models added later, a model ID allows only that model. To change a key's name or budget, use the dashboard or revoke and recreate. Pub
+1498: `polli auth login` creates a key with all account permissions Polli needs: `profile`, `usage`, `keys`, and `machines`. Use `account:usage` for narrow read-only account state like usage and quests. Use `account:keys` to manage keys and, wher
+1795: Files written by Polli use owner-only permissions on Unix. Do not share or commit
+1933: ### Billing and permissions
+1941: An MCP server can only use models and account features allowed by the caller's
+1942: key and cannot spend beyond that key's budget. Configure both in
+1966: - With a timeout longer than 10 minutes, gen keeps the sandbox running until then, 10 minutes at a time: every 5 minutes it pays to bring the paid time back up to 10 minutes, with the key that set the timeout, or from your account when you 
+1971: - Both come logged in when the key that creates it has the `keys` permission, as polli's own key does. polli inside uses a key of the sandbox's own, `polli-sandbox-<id>`, created like any other key, with polli's usual permissions except `ke
+1984: - A new sandbox needs enough balance, and enough key budget, for its first block; otherwise it is stopped with a 402.

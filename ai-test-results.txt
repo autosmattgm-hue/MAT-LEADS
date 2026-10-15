@@ -1,0 +1,6 @@
+﻿openai/gpt-5.4-nano : OK 200
+openai/gpt-5-nano : OK 200
+google/gemini-3-flash-preview : OK 200
+openai/gpt-4o-mini : OK 200
+openai/gpt-5.4 : OK 200
+openai/gpt-5.4-mini : OK 200

@@ -1,0 +1,71 @@
+﻿```bash
+curl -X POST "https://media.pollinations.ai/upload" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"data": "<base64-or-data-uri>", "contentType": "image/png", "name": "image.png"}'
+```
+
+**Custom IDs.** Add `id` to either format (for example, `-F id=cover.png` or `"id": "cover.png"`). IDs are case-sensitive, start with a letter or digit, and contain up to 128 letters, digits, dots, underscores, or hyphens. A user-owned API key is required. The returned id includes an opaque account prefix; use the returned URL for retrieval. The same ID works independently for different accounts. Existing files or gallery entries return `409` without replacement, including on retries.
+
+Untagged files cannot be deleted. They expire after 30 days, but reads refresh retention once a file is at least 15 days old. An ID can be reused only once its file and any gallery entry are gone. A failed upload can still leave its ID occupied, so a retry may return `409`. Custom-ID files are served with `Cache-Control: no-store`.
+
+**Tags publish (alpha).** An optional `tags` field (comma-separated string, or a JSON array in the JSON format) publishes the upload into each tag's public gallery, where anyone can list it via `GET /media?tag={tag}`. Untagged uploads stay unlisted; all retrieval URLs are public, not access-controlled. Knowing one custom URL makes other predictable names in that account guessable. Full endpoint reference: https://media.pollinations.ai/openapi.json
+
+## Account
+
+Self-service endpoints for the authenticated user. Endpoints require authentication (API key or session) unless their schema says otherwise. API keys need the relevant `account:<scope>` permission. Base path: `/account`.
+
+`account:usage` is the read-only account-state scope for balances, usage, quests, and earnings. `account:keys` is account admin: a key with it can create keys with any limits, edit or revoke every key on the account, and, where enabled, manage my-models. Grant it only to tools that administer the account. These permissions are independent; request both when a client needs both. Agent run tokens (`ag_`) carry the same account permissions as the key the agent was called with.
+
+| Endpoint | Description |
+|----------|-------------|
+| `GET /account/profile` | GitHub username, image, and community model access |
+| `GET /account/balance` | Current pollen balance |
+| `GET /account/quests` | Read-only quest status |
+| `GET /account/usage` | Per-request usage history with costs (account-wide) |
+| `GET /account/usage/daily` | Daily aggregated usage for dashboards |
+| `GET /account/key/usage` | Usage history for the calling API key only |
+| `/account/agents` | Managed agent configuration |
+| `/account/my-models` | Private community model registration and allowlisted public publishing |
+| `GET /account/key` | API key validity, type, and permissions |
+
+### GET /account/profile
+
+Returns user profile. `githubUsername`, `image`, and `communityEndpointsAllowed` are always included. `name` and `email` are included only when the API key has `account:profile`.
+
+### GET /account/balance
+
+`balance` is the amount visible to this caller and is kept stable for existing clients:
+
+- Budgeted API keys always get the key's remaining budget in `balance` (no extra scope).
+- Sessions and unbudgeted keys get the account total (Quest Pollen + paid) in `balance`. That path requires `account:usage` for API keys.
+
+When the caller can view account usage (dashboard session or `account:usage`), the response also includes `accountBalance: { total, tier, paid }` so clients can see Quest Pollen vs paid Pollen. Budgeted keys without `account:usage` do **not** receive `accountBalance` â€” that would leak the owner's wallet.
+
+### GET /account/key/usage
+
+Usage history for the API key used in the request. No extra scope â€” a key can always read its own usage. For account-wide usage across all keys, use `GET /account/usage` with `account:usage`.
+
+### GET /account/quests
+
+Returns the quest catalog with account status. `completed` includes both globally completed quests and quests earned by the account. Requires `account:usage`. Claiming rewards is dashboard-only.
+
+### GET /account/usage
+
+Per-request usage history: model, token counts, cost, response time. Requires `account:usage`.
+
+### GET /account/usage/daily
+
+Daily aggregated usage suitable for dashboards. Requires `account:usage`.
+
+### GET /account/key
+
+Returns the current API key's validity, type, and permissions.
+
+### /account/agents
+
+Create and manage managed agents and their callable `community/owner/name` model listings. Private agents are available to any account with linked GitHub; public listing requires community publisher access. Managed agents are text-only and free at the outer layer; their model and tool calls consume the caller's Pollen.
+
+- **Prompt agent**: instructions, a base model, and optional MCP servers.
+- **Code agent**: a public GitHub repository with `agent.ts` at its root. Pollinations deploys the current default-branch revision; the repository name becomes the model ID and title. The bundled Vercel AI SDK (`ai`, `@ai-sdk/openai-compatible`) is importable; other dependencies are not installed. The callback receives `model(id)`, `mcp.tools(server)`, `respond(config)`, `pollinations(path, init)`, `mcp.listTools(server)`, and `mcp(server, tool, arguments)`.
+

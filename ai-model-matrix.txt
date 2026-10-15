@@ -1,0 +1,5 @@
+﻿openai/gpt-5.4-nano : BLOCKED
+openai/gpt-4o-mini : BLOCKED
+google/gemini-3-flash-preview : BLOCKED
+openai/gpt-5.4 : BLOCKED
+mistralai/mistral-small-3.1-24b-instruct : REQUEST FAIL: The remote server returned an error: (400) Bad Request.
