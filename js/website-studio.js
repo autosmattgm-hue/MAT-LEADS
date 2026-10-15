@@ -252,7 +252,7 @@ document.addEventListener("DOMContentLoaded", () => {
       setPreview(withUploads);
       const pageLabel = r.website.pageCount && r.website.pageCount > 1 ? ` • ${r.website.pageCount} pages` : "";
       byId("studioMeta").textContent = `${r.website.businessName} • built with ${r.website.model}${pageLabel}${r.website.aiError ? ` • Note: ${r.website.aiError}` : ""}`;
-      byId("studioStatus").textContent = r.website.provider === "nvidia" ? `Done. Real AI ${r.website.pageCount || 1}-page site built. Use the site's top menu to switch pages; chat to refine, download, or share.` : `Done with premium template. ${r.website.aiError || "AI unavailable."}`;
+      byId("studioStatus").textContent = (r.website.provider === "pollinations" || r.website.provider === "nvidia") && !r.website.aiError ? `Done. Real AI ${r.website.pageCount || 1}-page site built. Use the site's top menu to switch pages; chat to refine, download, or share.` : `Done with premium template. ${r.website.aiError || "AI unavailable."}`;
       updateShare();
       history.replaceState(null, "", `/website-studio.html?id=${encodeURIComponent(websiteId)}`);
     } catch (err) {

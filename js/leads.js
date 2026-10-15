@@ -1998,7 +1998,7 @@ function initLeadActions() {
       }
       await apiFetch(`/api/leads/${encodeURIComponent(button.dataset.saveLead)}/save`, {
         method: "POST",
-        body: JSON.stringify({})
+        body: JSON.stringify({ lead })
       });
       button.textContent = "Saved";
     } catch (error) {
@@ -2043,7 +2043,7 @@ function initBulkLeadActions() {
         await Promise.all(batch.map((lead) => (
           apiFetch(`/api/leads/${encodeURIComponent(lead.id)}/save`, {
             method: "POST",
-            body: JSON.stringify({})
+            body: JSON.stringify({ lead })
           })
         )));
       }

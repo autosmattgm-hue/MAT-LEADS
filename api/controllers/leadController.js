@@ -8,7 +8,10 @@ export async function searchLeads(req, res) {
 }
 
 export async function saveLead(req, res) {
-  const lead = await leadService.save(req.params.id, req.user);
+  const fallback = req.body && typeof req.body === "object" && (req.body.lead || req.body.id || req.body.name)
+    ? (req.body.lead && typeof req.body.lead === "object" ? req.body.lead : req.body)
+    : null;
+  const lead = await leadService.save(req.params.id, req.user, fallback);
   if (!lead) return res.status(404).json({ error: { code: "LEAD_NOT_FOUND", message: "Lead not found." } });
   res.json({ lead });
 }

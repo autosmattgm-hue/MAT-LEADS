@@ -1151,9 +1151,12 @@ export class LeadService {
     return response;
   }
 
-  async save(leadId, user) {
-    const existing = await this.getById(leadId);
-    const lead = existing;
+  async save(leadId, user, fallbackLead = null) {
+    let existing = null;
+    try { existing = await this.getById(leadId); } catch { existing = null; }
+    // Search-result leads live in a short-lived cache, not Firestore — if the
+    // cache missed, persist the client-sent copy instead of 404ing the save.
+    const lead = existing || fallbackLead;
     if (!lead) return null;
     return this.leads.upsert(lead.id, {
       ...lead,
