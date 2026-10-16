@@ -1,5 +1,6 @@
 import { env } from "../config/env.js";
 import { AppError } from "../utils/errors.js";
+import { isCreatorQuestion, creatorAnswer, identityLine } from "../utils/brand.js";
 
 const POLLINATIONS = {
   GEN_BASE: "https://gen.pollinations.ai",
@@ -178,6 +179,13 @@ export class PollinationsService {
       safe = undefined,
     } = options;
     const cleanMessages = Array.isArray(messages) ? messages : [{ role: "user", content: String(messages ?? "") }];
+    // Creator-identity questions are answered locally: guaranteed correct,
+    // zero token cost, works even when the upstream key has no model access.
+    const lastUser = [...cleanMessages].reverse().find((m) => m && m.role === "user");
+    if (lastUser && isCreatorQuestion(lastUser.content)) {
+      const a = creatorAnswer();
+      return { provider: PROVIDER, model: "brand-identity", content: a.content, usage: null, cached: false, intent: a.intent };
+    }
     const queue = this.resolveTextModels(model, fallbackModels);
     const safety = safe === undefined || safe === null || safe === false || safe === 0 ? {} : { safe: Array.isArray(safe) ? safe.join(",") : String(safe) };
     let lastError = null;

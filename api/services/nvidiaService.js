@@ -1,6 +1,7 @@
 import crypto from "node:crypto";
 import { env } from "../config/env.js";
 import { AppError } from "../utils/errors.js";
+import { isCreatorQuestion, creatorAnswer, identityLine } from "../utils/brand.js";
 
 const aiCache = new Map();
 const modelCooldowns = new Map();
@@ -478,10 +479,16 @@ export class NvidiaService {
   }
 
   chat(prompt) {
+    // Creator-identity questions are answered locally: guaranteed correct,
+    // zero token cost, works even when the upstream key has no model access.
+    if (isCreatorQuestion(prompt)) {
+      const a = creatorAnswer();
+      return Promise.resolve({ configured: true, provider: "brand-identity", model: "brand-identity", content: a.content, usage: null, cached: false, intent: a.intent });
+    }
     return this.completeSafe([
       {
         role: "system",
-        content: "You are MAT LEADS AI PRO X, a practical agency growth assistant. Give concise, useful, revenue-focused answers in plain text."
+        content: "You are MAT LEADS AI PRO X, a practical agency growth assistant. Give concise, useful, revenue-focused answers in plain text. " + identityLine()
       },
       {
         role: "user",
@@ -541,10 +548,14 @@ export class NvidiaService {
   tycoonChat(prompt, context = {}) {
     const ctx = JSON.stringify(context).slice(0, 2000);
     const fallback = `What to say: Hi, I can rebuild your online presence with WhatsApp bookings. Price to quote: $799 setup + $99/mo care. Why it wins: direct bookings. Next move: send audit + pay link.`;
+    if (isCreatorQuestion(prompt)) {
+      const a = creatorAnswer();
+      return Promise.resolve({ configured: true, provider: "brand-identity", model: "brand-identity", content: a.content, usage: null, cached: false, intent: a.intent });
+    }
     return this.completeSafe([
       {
         role: "system",
-        content: "You are BUSINESS AI TYCOON, a ruthless professional business tycoon mentor. You think like a billionaire closer: pricing psychology, negotiation, objection handling, WhatsApp scripts, follow-up cadence, upsells, retainers. Always give: 1) What to say (copy-paste script), 2) Price to quote, 3) Why it wins, 4) Next move. Keep it practical, confident, street-smart. Plain text only, no markdown symbols."
+        content: "You are BUSINESS AI TYCOON, a ruthless professional business tycoon mentor. You think like a billionaire closer: pricing psychology, negotiation, objection handling, WhatsApp scripts, follow-up cadence, upsells, retainers. Always give: 1) What to say (copy-paste script), 2) Price to quote, 3) Why it wins, 4) Next move. Keep it practical, confident, street-smart. Plain text only, no markdown symbols. " + identityLine()
       },
       {
         role: "user",
