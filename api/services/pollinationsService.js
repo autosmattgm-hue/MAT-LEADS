@@ -11,7 +11,37 @@ const POLLINATIONS = {
     // Website builds want large, reliable instruction followers.
     // Overridable via POLLINATIONS_WEBSITE_MODEL.
     WEBSITE_DEFAULT: "openai/gpt-5.4",
-    WEBSITE_FALLBACKS: ["openai/gpt-5.4-mini", "openai/gpt-5-nano", "openai/gpt-oss-20b", "google/gemini-3-flash-preview", "openai/gpt-4o-mini", "mistralai/mistral-small-3.2"],
+    WEBSITE_FALLBACKS: ["qwen/qwen3-coder-30b-a3b-instruct", "openai/gpt-5.4-mini", "openai/gpt-5.5", "moonshotai/kimi-k2.6", "openai/gpt-5-nano", "google/gemini-3-flash-preview", "openai/gpt-4o-mini", "mistralai/mistral-small-3.2"],
+    // Output budget for a COMPLETE professional multi-page site (fragments, not full docs).
+    WEBSITE_TOKENS_FIRST: 4000,
+    WEBSITE_TOKENS_RETRY: 5200,
+    WEBSITE_TIMEOUT_MS: 120000,
+    // Minimum body chars per page before we call the build incomplete.
+    WEBSITE_MIN_PAGE_CHARS: 1200,
+    // Minimum total fragment chars before we retry the build.
+    WEBSITE_MIN_TOTAL_CHARS: 2600,
+    DESIGN_ARCHETYPES: [
+      { id: "luxe-dark", label: "Luxe dark", vibe: "deep charcoal plus gold accents, big serif headlines, generous whitespace", hero: "full-bleed image with dark overlay and centered serif headline", sections: "stats row first, then image plus text split, then process steps" },
+      { id: "editorial", label: "Editorial", vibe: "off-white paper background, strong typographic hierarchy, thin rules", hero: "left-aligned oversized headline with small kickers and inline image", sections: "image plus text split first, then services grid, then testimonial band" },
+      { id: "bold-agency", label: "Bold agency", vibe: "high-contrast blocks of brand color, chunky headings, badges", hero: "split-screen hero with headline left and image collage right", sections: "services grid first, then stats row, then process steps" },
+      { id: "minimal-swiss", label: "Minimal Swiss", vibe: "white space, small uppercase labels, grid lines, one accent used sparingly", hero: "centered compact hero with thin divider and dual buttons", sections: "process steps first, then image plus text split, then services grid" },
+      { id: "warm-artisan", label: "Warm artisan", vibe: "cream plus terracotta plus deep green, rounded cards, friendly voice", hero: "rounded image card hero with warm gradient wash", sections: "testimonial band first, then services grid, then image plus text split" },
+      { id: "glass-modern", label: "Glass modern", vibe: "gradient mesh background, frosted-glass cards, soft glows", hero: "gradient mesh hero with glass CTA card overlay", sections: "stats row first, then services grid, then FAQ accordion" },
+      { id: "split-story", label: "Split story", vibe: "alternating left right storytelling rows, photo-forward rhythm", hero: "asymmetric split hero with overlapping image", sections: "alternating image plus text rows first, then process steps, then stats row" },
+      { id: "compact-local", label: "Compact local", vibe: "mobile-first, sticky call bar, click-to-call prominent, trust badges", hero: "compact hero with phone CTA primary and trust chips", sections: "trust strip first, then services grid, then FAQ accordion" },
+    ],
+    // Rotating professional design archetypes — one is picked per build so no two
+    // sites share the same look unless the user repeats the same choices.
+    DESIGN_ARCHETYPES: [
+      { id: "luxe-dark", label: "Luxe dark", vibe: "deep charcoal + gold accents, big serif headlines, generous whitespace, premium feel", hero: "full-bleed image with dark overlay and centered serif headline", sections: "stats row first, then image+text split, then process steps" },
+      { id: "editorial", label: "Editorial", vibe: "off-white paper background, strong typographic hierarchy, thin rules, magazine rhythm", hero: "left-aligned oversized headline with small kickers and an inline image", sections: "image+text split first, then services grid, then testimonial band" },
+      { id: "bold-agency", label: "Bold agency", vibe: "high-contrast blocks of brand color, chunky headings, playful shapes and badges", hero: "split-screen hero with headline left and image collage right", sections: "services grid first, then stats row, then process steps" },
+      { id: "minimal-swiss", label: "Minimal Swiss", vibe: "white space, small uppercase labels, grid lines, one accent color used sparingly", hero: "centered compact hero with thin divider and dual buttons", sections: "process steps first, then image+text split, then services grid" },
+      { id: "warm-artisan", label: "Warm artisan", vibe: "cream + terracotta + deep green, rounded cards, friendly human voice", hero: "rounded image card hero with warm gradient wash", sections: "testimonial band first, then services grid, then image+text split" },
+      { id: "glass-modern", label: "Glass modern", vibe: "gradient mesh background, frosted-glass cards, soft glows, tech-forward", hero: "gradient mesh hero with glass CTA card overlay", sections: "stats row first, then services grid, then FAQ accordion" },
+      { id: "split-story", label: "Split story", vibe: "alternating left/right storytelling rows, sticky-feel rhythm, photo-forward", hero: "asymmetric split hero with overlapping image", sections: "alternating image+text rows first, then process steps, then stats row" },
+      { id: "compact-local", label: "Compact local", vibe: "mobile-first, sticky call bar, click-to-call prominent, trust badges near CTAs", hero: "compact hero with phone CTA primary and review-style trust chips", sections: "trust strip first, then services grid, then FAQ accordion" },
+    ],
     IMAGE_DEFAULT: "black-forest-labs/flux.1-schnell",
     VIDEO_DEFAULT: "google/veo-3.1-fast",
     EMBEDDING_DEFAULT: "openai/text-embedding-3-small",
@@ -415,7 +445,7 @@ export class PollinationsService {
     ];
     const pageSpecs = allSpecs.slice(0, pageCount);
     const business = String(lead.name || options.businessName || "Your Business");
-    const designDirection = this.pickDesignSystem(options.style, options.palette);
+    const designDirection = this.pickDesignSystem(options.style, options.palette) + " Design archetype this build: " + archPick + ". Commit fully to that archetype's vibe — a returning customer must see a visibly different design, not the same template with new words.";
     const varietySeed = Math.floor(Math.random() * 9000) + 1000;
     const layoutVariants = ["split hero (text left, image right)", "full-bleed image hero with overlay headline", "centered type hero with image band below"];
     const layoutPick = layoutVariants[varietySeed % layoutVariants.length];
