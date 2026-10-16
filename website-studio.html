@@ -9,12 +9,15 @@
     <link rel="stylesheet" href="/css/style.css">
     <style>
       .studio-shell{max-width:1280px;margin:0 auto;padding:18px 16px 40px}
-      .studio-top{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}
-      .studio-top h1{margin:0;font-size:1.35rem}
-      .studio-top .sub{color:var(--muted);font-size:.9rem;margin:2px 0 0}
+      .studio-top{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+      .studio-top h1{margin:0;font-size:clamp(1.1rem,2.5vw,1.4rem)}
+      .studio-top .sub{color:var(--muted);font-size:.88rem;margin:2px 0 0}
+      .studio-top .spacer{flex:1}
+      .btn-edit{display:inline-flex;align-items:center;gap:6px;padding:6px 13px;font-size:.82rem;border-radius:999px}
       .edit-jump{margin-left:auto;display:flex;gap:8px;align-items:center}
       .btn-edit{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;font-size:.85rem;border-radius:999px;border:1px solid var(--border-strong);background:var(--surface);cursor:pointer;font-weight:700}
-      .studio-grid{display:grid;grid-template-columns:380px 1fr;gap:16px;align-items:start}
+      .studio-grid{display:grid;grid-template-columns:minmax(320px,380px) minmax(0,1fr);gap:16px;align-items:start}
+      @media(max-width:1020px){.studio-grid{grid-template-columns:minmax(0,1fr)}}
       .chat-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow);display:flex;flex-direction:column;overflow:hidden;min-height:520px}
       .chat-head{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
       .ai-dot{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#d97757,#b3543f);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800}
@@ -46,6 +49,24 @@
       #studioPreview.mobile{max-width:400px;border-left:1px solid var(--border);border-right:1px solid var(--border)}
       .gen-overlay{display:none;padding:34px 20px;text-align:center;color:var(--muted)}
       .hidden-old{display:none!important}
+      @media(max-width:1020px){
+        .studio-shell{padding:14px 12px 32px}
+        .chat-card{min-height:0}
+        .chat-log{max-height:38vh}
+        .preview-bar{gap:6px}
+        .preview-url{flex-basis:100%;order:5}
+        .preview-actions{flex-wrap:wrap}
+        .chip-btn{padding:8px 14px;font-size:.82rem}
+        #studioPreview{min-height:70vh}
+      }
+      @media(max-width:560px){
+        .studio-top h1{font-size:1.15rem}
+        .edit-jump{width:100%;justify-content:flex-start}
+        .brief-grid{grid-template-columns:1fr}
+        .composer textarea{font-size:16px}
+        .device-toggle{display:none}
+        .chip-btn.primary{flex:1;text-align:center}
+      }
     </style>
   </head>
   <body data-page="website-studio">
@@ -59,9 +80,6 @@
             </div>
             <div class="edit-jump">
               <span class="plan-pill" id="studioPlan">Pro / Admin</span>
-              <button class="btn-edit" id="openManualBuilder" type="button" title="Open the manual no-code website builder">✎ Edit</button>
-            </div>
-          </div>
               <button class="btn-edit" id="openManualBuilder" type="button" title="Open the manual no-code website builder">✎ Edit</button>
             </div>
           </div>
