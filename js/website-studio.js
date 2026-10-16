@@ -281,6 +281,14 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   byId("studioOpenPreview").addEventListener("click", openPreviewWindow);
+  const jumpToManual = () => {
+    if (!websiteId || !currentHtml) { byId("studioStatus").textContent = "Generate the website first, then edit it."; return; }
+    byId("manualEditBox").open = true;
+    byId("manualEditBox").scrollIntoView({ behavior: "smooth", block: "start" });
+    byId("editMsg").textContent = "Edit text, images, colors and sections below — no code needed — then Apply edits.";
+  };
+  byId("openManualBuilder").addEventListener("click", jumpToManual);
+  byId("studioEditManual").addEventListener("click", jumpToManual);
   byId("editApply").addEventListener("click", applyManualEdits);
   byId("editAddImage").addEventListener("click", addManualImage);
   byId("editMode").addEventListener("click", toggleEditOnPage);
