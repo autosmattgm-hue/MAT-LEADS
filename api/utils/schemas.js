@@ -249,6 +249,12 @@ export const aiSchemas = {
     style: stringField(input, "style", { max: 80, truncate: true }),
     palette: stringField(input, "palette", { max: 80, truncate: true }),
     pages: numberField(input, "pages", { int: true, min: 1, max: 4, clamp: true, default: 1 }),
+    design: stringField(input, "design", { max: 40, truncate: true }),
+    tone: stringField(input, "tone", { max: 40, truncate: true }),
+    services: stringField(input, "services", { max: 1200, truncate: true }),
+    cta: stringField(input, "cta", { max: 160, truncate: true }),
+    about: stringField(input, "about", { max: 1200, truncate: true }),
+    language: stringField(input, "language", { max: 40, truncate: true }),
     images: input.images && typeof input.images === "object" ? { hero: String(input.images.hero || "").slice(0, 2000), gallery: Array.isArray(input.images.gallery) ? input.images.gallery.map((g) => String(g || "").slice(0, 2000)).filter(Boolean).slice(0, 6) : [] } : { hero: "", gallery: [] }
   })),
   websiteRefine: schema((input) => ({
