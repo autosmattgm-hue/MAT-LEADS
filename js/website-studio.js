@@ -4,9 +4,22 @@ let websiteId = "";
 let shareToken = "";
 let shareUrl = "";
 let currentHtml = "";
+// Follow-design-brief toggle (ON = strict brief, OFF = free pro design).
+let followBrief = true;
 // Uploaded images are stored client-side as data URLs and injected into the
 // final HTML after generation (too large to send through the AI prompt).
 const uploaded = { hero: "", gallery: [] };
+
+function paintFollowToggle() {
+  const btn = byId("followBriefToggle");
+  const hint = byId("followHint");
+  if (!btn) return;
+  btn.classList.toggle("on", followBrief);
+  btn.setAttribute("aria-pressed", followBrief ? "true" : "false");
+  const tick = btn.querySelector(".tick");
+  if (tick) tick.textContent = followBrief ? "✓" : "";
+  if (hint) hint.textContent = followBrief ? "ON — AI follows your brief exactly." : "OFF — AI freely designs the best site for this business.";
+}
 
 function readFileAsDataUrl(file) {
   return new Promise((resolve, reject) => {
@@ -245,7 +258,7 @@ document.addEventListener("DOMContentLoaded", () => {
       try { lead = JSON.parse(sessionStorage.getItem("mat_studio_lead") || "null"); } catch {}
       const leadId = byId("studioLeadId").value.trim();
       if (!lead && leadId) { try { const r = await apiFetch(`/api/leads/${encodeURIComponent(leadId)}/report`); lead = r.lead; } catch {} }
-      const payload = { leadId, lead: lead || {}, businessName: byId("studioBusiness").value.trim() || lead?.name || "Business", style: byId("studioStyle").value, palette: byId("studioPalette").value, pages: parseInt(byId("studioPages")?.value, 10) || 1, images: { hero: byId("studioHeroImg")?.value.trim() || "", gallery: (byId("studioGallery")?.value || "").split(/\n+/).map((s) => s.trim()).filter(Boolean).slice(0, 6) } };
+      const payload = { followBrief, leadId, lead: lead || {}, businessName: byId("studioBusiness").value.trim() || lead?.name || "Business", style: byId("studioStyle").value, palette: byId("studioPalette").value, pages: parseInt(byId("studioPages")?.value, 10) || 1, images: { hero: byId("studioHeroImg")?.value.trim() || "", gallery: (byId("studioGallery")?.value || "").split(/\n+/).map((s) => s.trim()).filter(Boolean).slice(0, 6) } };
       const r = await apiFetch("/api/ai/websites", { method: "POST", body: JSON.stringify(payload) });
       websiteId = r.websiteId; shareToken = r.shareToken; shareUrl = r.shareUrl;
       const withUploads = (uploaded.hero || uploaded.gallery.length) ? injectUploadedImages(r.website.html) : r.website.html;
@@ -281,6 +294,8 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   byId("studioOpenPreview").addEventListener("click", openPreviewWindow);
+  byId("followBriefToggle")?.addEventListener("click", () => { followBrief = !followBrief; paintFollowToggle(); });
+  paintFollowToggle();
   const jumpToManual = () => {
     if (!websiteId || !currentHtml) { byId("studioStatus").textContent = "Generate the website first, then edit it."; return; }
     byId("manualEditBox").open = true;

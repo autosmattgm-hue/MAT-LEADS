@@ -255,6 +255,7 @@ export const aiSchemas = {
     cta: stringField(input, "cta", { max: 160, truncate: true }),
     about: stringField(input, "about", { max: 1200, truncate: true }),
     language: stringField(input, "language", { max: 40, truncate: true }),
+    followBrief: booleanField(input, "followBrief", { default: true }),
     images: input.images && typeof input.images === "object" ? { hero: String(input.images.hero || "").slice(0, 2000), gallery: Array.isArray(input.images.gallery) ? input.images.gallery.map((g) => String(g || "").slice(0, 2000)).filter(Boolean).slice(0, 6) : [] } : { hero: "", gallery: [] }
   })),
   websiteRefine: schema((input) => ({

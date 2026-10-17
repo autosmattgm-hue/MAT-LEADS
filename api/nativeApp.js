@@ -485,7 +485,7 @@ const routes = [
       let lead = payload.lead && Object.keys(payload.lead).length ? payload.lead : null;
       if (!lead && payload.leadId) lead = await leadService.getById(payload.leadId);
       if (!lead) lead = { id: payload.leadId || "lead", name: payload.businessName || "Business" };
-      const result = await websiteService.build({ lead, options: { businessName: payload.businessName, style: payload.style, palette: payload.palette, pages: payload.pages || 1, images: payload.images || {}, design: payload.design, tone: payload.tone, services: payload.services, cta: payload.cta, about: payload.about, language: payload.language }, user });
+      const result = await websiteService.build({ lead, options: { businessName: payload.businessName, style: payload.style, palette: payload.palette, pages: payload.pages || 1, images: payload.images || {}, design: payload.design, tone: payload.tone, services: payload.services, cta: payload.cta, about: payload.about, language: payload.language, followBrief: payload.followBrief }, user });
       return { websiteId: result.website.id, shareToken: result.website.shareToken, shareUrl: `/s/${result.website.shareToken}`, studioUrl: `/website-studio.html?id=${encodeURIComponent(result.website.id)}`, website: result.website };
     }
   },

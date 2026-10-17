@@ -456,8 +456,9 @@ export class PollinationsService {
     const archList = POLLINATIONS.MODELS.DESIGN_ARCHETYPES;
     const archWanted = String(options.design || "").trim().toLowerCase();
     const archFound = archList.find((a) => String(a.id || "").toLowerCase() === archWanted || String(a.label || "").toLowerCase() === archWanted);
-    const archPick = archFound || archList[Math.floor(Math.random() * archList.length)];
-    const designDirection = this.pickDesignSystem(options.style, options.palette) + " Design archetype this build: " + archPick.label + " (" + archPick.vibe + "). Commit fully to that archetype's vibe — a returning customer must see a visibly different design, not the same template with new words.";
+    const briefObedient = options.followBrief !== false;
+    const archPick = briefObedient ? (archFound || archList[Math.floor(Math.random() * archList.length)]) : archList[Math.floor(Math.random() * archList.length)];
+    const designDirection = this.pickDesignSystem(options.style, options.palette) + " Design archetype this build: " + archPick.label + " (" + archPick.vibe + "). " + (briefObedient ? "STRICT BRIEF MODE: obey every design/style/page/EXTRA instruction exactly — the user ticked Follow, so fidelity to their brief outranks novelty." : "FREE PRO MODE: the user unticked Follow — ignore rigid brief constraints and freely design the single best website for this specific business type and audience: choose the most persuasive sections, the strongest offer framing, and the highest-converting layout you know. Commit fully to that archetype's vibe — a returning customer must see a visibly different design, not the same template with new words.");
     const varietySeed = Math.floor(Math.random() * 9000) + 1000;
     const layoutVariants = ["split hero (text left, image right)", "full-bleed image hero with overlay headline", "centered type hero with image band below"];
     const layoutPick = layoutVariants[varietySeed % layoutVariants.length];
