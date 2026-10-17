@@ -39,6 +39,11 @@
       .composer textarea{flex:1;min-height:44px;resize:vertical;padding:10px 12px;border:1px solid var(--border-strong);border-radius:12px;font:inherit;font-size:.9rem;background:var(--surface);color:var(--text)}
       .composer button{border:none;background:#d97757;color:#fff;border-radius:12px;padding:11px 16px;font-weight:700;cursor:pointer}
       .composer button:disabled{opacity:.6;cursor:wait}
+      .follow-wrap{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:.8rem;color:var(--muted)}
+      .follow-toggle{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--border-strong);background:var(--surface);color:var(--text);border-radius:999px;padding:6px 13px;font-size:.8rem;font-weight:700;cursor:pointer}
+      .follow-toggle .tick{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;border:2px solid var(--border-strong);font-size:.65rem;line-height:1}
+      .follow-toggle.on{border-color:#16a34a;background:#f0fdf4;color:#166534}
+      .follow-toggle.on .tick{border-color:#16a34a;background:#16a34a;color:#fff}
       .preview-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow);overflow:hidden}
       .preview-bar{display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--border);flex-wrap:wrap}
       .preview-url{flex:1;min-width:140px;font-size:.78rem;color:var(--muted);background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:6px 10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -107,6 +112,10 @@
                 <div class="composer">
                   <textarea id="studioInstruction" placeholder="Describe the site… e.g. A 3-page site for a Lagos bakery, warm luxury style, with menu, order form and WhatsApp button"></textarea>
                   <button type="submit" id="studioBuildBtn">➤</button>
+                </div>
+                <div class="follow-wrap">
+                  <button type="button" id="followBriefToggle" class="follow-toggle on" aria-pressed="true" title="When ON, the AI strictly follows your style, pages and design brief. When OFF, it freely designs the best site for that business."><span class="tick">✓</span> Follow design brief</button>
+                  <span id="followHint">ON — AI follows your brief exactly.</span>
                 </div>
               </form>
               <form id="studioRefineForm" class="hidden-old" aria-hidden="true"><textarea id="studioInstructionHidden"></textarea></form>
