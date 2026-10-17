@@ -21,27 +21,21 @@ const POLLINATIONS = {
     WEBSITE_MIN_PAGE_CHARS: 1200,
     // Minimum total fragment chars before we retry the build.
     WEBSITE_MIN_TOTAL_CHARS: 2600,
-    DESIGN_ARCHETYPES: [
-      { id: "luxe-dark", label: "Luxe dark", vibe: "deep charcoal plus gold accents, big serif headlines, generous whitespace", hero: "full-bleed image with dark overlay and centered serif headline", sections: "stats row first, then image plus text split, then process steps" },
-      { id: "editorial", label: "Editorial", vibe: "off-white paper background, strong typographic hierarchy, thin rules", hero: "left-aligned oversized headline with small kickers and inline image", sections: "image plus text split first, then services grid, then testimonial band" },
-      { id: "bold-agency", label: "Bold agency", vibe: "high-contrast blocks of brand color, chunky headings, badges", hero: "split-screen hero with headline left and image collage right", sections: "services grid first, then stats row, then process steps" },
-      { id: "minimal-swiss", label: "Minimal Swiss", vibe: "white space, small uppercase labels, grid lines, one accent used sparingly", hero: "centered compact hero with thin divider and dual buttons", sections: "process steps first, then image plus text split, then services grid" },
-      { id: "warm-artisan", label: "Warm artisan", vibe: "cream plus terracotta plus deep green, rounded cards, friendly voice", hero: "rounded image card hero with warm gradient wash", sections: "testimonial band first, then services grid, then image plus text split" },
-      { id: "glass-modern", label: "Glass modern", vibe: "gradient mesh background, frosted-glass cards, soft glows", hero: "gradient mesh hero with glass CTA card overlay", sections: "stats row first, then services grid, then FAQ accordion" },
-      { id: "split-story", label: "Split story", vibe: "alternating left right storytelling rows, photo-forward rhythm", hero: "asymmetric split hero with overlapping image", sections: "alternating image plus text rows first, then process steps, then stats row" },
-      { id: "compact-local", label: "Compact local", vibe: "mobile-first, sticky call bar, click-to-call prominent, trust badges", hero: "compact hero with phone CTA primary and trust chips", sections: "trust strip first, then services grid, then FAQ accordion" },
-    ],
     // Rotating professional design archetypes — one is picked per build so no two
     // sites share the same look unless the user repeats the same choices.
     DESIGN_ARCHETYPES: [
-      { id: "luxe-dark", label: "Luxe dark", vibe: "deep charcoal + gold accents, big serif headlines, generous whitespace, premium feel", hero: "full-bleed image with dark overlay and centered serif headline", sections: "stats row first, then image+text split, then process steps" },
-      { id: "editorial", label: "Editorial", vibe: "off-white paper background, strong typographic hierarchy, thin rules, magazine rhythm", hero: "left-aligned oversized headline with small kickers and an inline image", sections: "image+text split first, then services grid, then testimonial band" },
-      { id: "bold-agency", label: "Bold agency", vibe: "high-contrast blocks of brand color, chunky headings, playful shapes and badges", hero: "split-screen hero with headline left and image collage right", sections: "services grid first, then stats row, then process steps" },
-      { id: "minimal-swiss", label: "Minimal Swiss", vibe: "white space, small uppercase labels, grid lines, one accent color used sparingly", hero: "centered compact hero with thin divider and dual buttons", sections: "process steps first, then image+text split, then services grid" },
-      { id: "warm-artisan", label: "Warm artisan", vibe: "cream + terracotta + deep green, rounded cards, friendly human voice", hero: "rounded image card hero with warm gradient wash", sections: "testimonial band first, then services grid, then image+text split" },
-      { id: "glass-modern", label: "Glass modern", vibe: "gradient mesh background, frosted-glass cards, soft glows, tech-forward", hero: "gradient mesh hero with glass CTA card overlay", sections: "stats row first, then services grid, then FAQ accordion" },
-      { id: "split-story", label: "Split story", vibe: "alternating left/right storytelling rows, sticky-feel rhythm, photo-forward", hero: "asymmetric split hero with overlapping image", sections: "alternating image+text rows first, then process steps, then stats row" },
-      { id: "compact-local", label: "Compact local", vibe: "mobile-first, sticky call bar, click-to-call prominent, trust badges near CTAs", hero: "compact hero with phone CTA primary and review-style trust chips", sections: "trust strip first, then services grid, then FAQ accordion" },
+      { id: "luxe-dark", label: "Luxe dark", vibe: "bg #0c0a09 text #fafaf9 surface #1c1917 accent gold #d4a437; Fraunces serif headlines + Inter body", hero: "full-bleed image, dark gradient overlay, centered serif headline, gold eyebrow", sections: "stats row first, then image+text split, then process steps" },
+      { id: "editorial", label: "Editorial paper", vibe: "bg #faf7f2 text #1c1917 surface #ffffff accent rust #c2410c; Newsreader serif headlines, thin rules", hero: "left-aligned oversized headline, small kicker, inline image right", sections: "image+text split first, then services grid, then testimonial band" },
+      { id: "bold-agency", label: "Bold agency", vibe: "bg #ffffff text #0f172a surface #f1f5f9 accent electric indigo #4f46e5 + lime #bef264; Space Grotesk chunky headlines", hero: "split-screen: headline + badges left, image collage right on brand-color block", sections: "services grid first, then stats row, then process steps" },
+      { id: "minimal-swiss", label: "Minimal Swiss", vibe: "bg #ffffff text #111111 surface #f5f5f5 accent single red #dc2626 sparingly; Inter strict grid, uppercase micro-labels", hero: "compact centered hero, thin divider, dual buttons", sections: "process steps first, then image+text split, then services grid" },
+      { id: "warm-artisan", label: "Warm artisan", vibe: "bg #fffbeb text #431407 surface #ffffff accent terracotta #ea580c + green #166534; DM Serif headlines, rounded cards", hero: "rounded image card hero with warm gradient wash behind", sections: "testimonial band first, then services grid, then image+text split" },
+      { id: "glass-modern", label: "Glass modern", vibe: "bg gradient #0f172a to #312e81 text #f8fafc accent cyan #22d3ee + violet #a78bfa; Outfit headlines, frosted-glass cards", hero: "gradient mesh hero with floating glass CTA card", sections: "stats row first, then services grid, then FAQ accordion" },
+      { id: "split-story", label: "Split story", vibe: "bg #f8fafc text #0f172a surface #ffffff accent deep teal #0f766e; Merriweather serif headlines, alternating rows", hero: "asymmetric split hero with overlapping framed image", sections: "alternating image+text rows first, then process steps, then stats row" },
+      { id: "compact-local", label: "Compact local", palette: "bg #ffffff text #0f172a surface #f8fafc accent green #16a34a + amber stars #f59e0b", fonts: "Public Sans, big tap targets, sticky call bar", hero: "compact hero, phone CTA primary, review-style trust chips", sections: "trust strip first, then services grid, then quote form" },
+      { id: "ocean-clean", label: "Ocean clean", palette: "bg #f0fdfa text #042f2e surface #ffffff accent teal #14b8a6 + navy #0f172a", fonts: "Plus Jakarta Sans, airy spacing", hero: "light airy hero with wave divider and floating service cards", sections: "services grid first, then split story, then stats" },
+      { id: "noir-gold", label: "Noir gold", palette: "bg #09090b text #fafafa surface #18181b accent gold #eab308", fonts: "Playfair serif + Inter, letter-spaced eyebrows", hero: "black hero, gold rule, centered luxury headline", sections: "image+text split first, then stats, then testimonial" },
+      { id: "fresh-saas", label: "Fresh SaaS", palette: "bg #ffffff text #1e1b4b surface #eef2ff accent indigo #6366f1 + mint #6ee7b7", fonts: "Inter, pill badges, soft shadows", hero: "centered SaaS hero with pill badge + product-style image", sections: "trust row, features grid, then FAQ" },
+      { id: "rustic-bold", label: "Rustic bold", palette: "bg #1c0a00 text #fff7ed surface #431407 accent orange #f97316", fonts: "Anton condensed headlines + Inter body", hero: "full-bleed dark photo hero with huge condensed headline", sections: "stats band first, then services, then big CTA" }
     ],
     IMAGE_DEFAULT: "black-forest-labs/flux.1-schnell",
     VIDEO_DEFAULT: "google/veo-3.1-fast",
@@ -62,6 +56,30 @@ const POLLINATIONS = {
 };
 
 const PROVIDER = "pollinations";
+
+// THEME = per-archetype shell themes. Nav, page bg, footer + fonts change
+// with the picked design archetype so no two builds share one look.
+const THEME = {
+  "luxe-dark": { bg: "#0c0a09", ink: "#fafaf9", nav: "#0c0a09", navInk: "#e7e5e4", active: "#d4a437", activeInk: "#0c0a09", fonts: "Fraunces,Georgia,serif", foot: "#0c0a09", footInk: "#a8a29e" },
+
+// Per-archetype shell themes — the nav, page background, footer and fonts
+// change with the picked design archetype so no two builds share one look.
+const SHELL_THEMES = {
+  "luxe-dark": { bg: "#0c0a09", ink: "#fafaf9", nav: "#0c0a09", navInk: "#e7e5e4", active: "#d4a437", activeInk: "#0c0a09", fonts: "Fraunces,Georgia,serif", foot: "#0c0a09", footInk: "#a8a29e" },
+  "editorial": { bg: "#faf7f2", ink: "#1c1917", nav: "#faf7f2", navInk: "#44403c", active: "#1c1917", activeInk: "#faf7f2", fonts: "Newsreader,Georgia,serif", foot: "#1c1917", footInk: "#d6d3d1" },
+  "bold-agency": { bg: "#ffffff", ink: "#0f172a", nav: "#4f46e5", navInk: "#e0e7ff", active: "#bef264", activeInk: "#0f172a", fonts: "'Space Grotesk',Inter,system-ui,sans-serif", foot: "#0f172a", footInk: "#cbd5e1" },
+  "minimal-swiss": { bg: "#ffffff", ink: "#111111", nav: "#ffffff", navInk: "#525252", active: "#dc2626", activeInk: "#ffffff", fonts: "Inter,Helvetica,Arial,sans-serif", foot: "#111111", footInk: "#d4d4d4" },
+  "warm-artisan": { bg: "#fffbeb", ink: "#431407", nav: "#fffbeb", navInk: "#92400e", active: "#ea580c", activeInk: "#fffbeb", fonts: "'DM Serif Display',Georgia,serif", foot: "#431407", footInk: "#fed7aa" },
+  "glass-modern": { bg: "linear-gradient(160deg,#0f172a,#312e81)", ink: "#f8fafc", nav: "rgba(15,23,42,.85)", navInk: "#c7d2fe", active: "#22d3ee", activeInk: "#0f172a", fonts: "Outfit,Inter,system-ui,sans-serif", foot: "#0f172a", footInk: "#a5b4fc" },
+  "split-story": { bg: "#f8fafc", ink: "#0f172a", nav: "#0f766e", navInk: "#ccfbf1", active: "#ffffff", activeInk: "#0f766e", fonts: "Merriweather,Georgia,serif", foot: "#042f2e", footInk: "#99f6e4" },
+  "compact-local": { bg: "#ffffff", ink: "#0f172a", nav: "#16a34a", navInk: "#f0fdf4", active: "#ffffff", activeInk: "#16a34a", fonts: "'Public Sans',Inter,system-ui,sans-serif", foot: "#052e16", footInk: "#bbf7d0" },
+  "ocean-clean": { bg: "#f0fdfa", ink: "#042f2e", nav: "#0f766e", navInk: "#ccfbf1", active: "#14b8a6", activeInk: "#042f2e", fonts: "'Plus Jakarta Sans',Inter,system-ui,sans-serif", foot: "#042f2e", footInk: "#99f6e4" },
+  "noir-gold": { bg: "#09090b", ink: "#fafafa", nav: "#09090b", navInk: "#d4d4d8", active: "#eab308", activeInk: "#09090b", fonts: "'Playfair Display',Georgia,serif", foot: "#09090b", footInk: "#a1a1aa" },
+  "fresh-saas": { bg: "#ffffff", ink: "#1e1b4b", nav: "#eef2ff", navInk: "#4338ca", active: "#6366f1", activeInk: "#ffffff", fonts: "Inter,system-ui,sans-serif", foot: "#1e1b4b", footInk: "#c7d2fe" },
+  "rustic-bold": { bg: "#1c0a00", ink: "#fff7ed", nav: "#1c0a00", navInk: "#fdba74", active: "#f97316", activeInk: "#1c0a00", fonts: "Anton,Impact,sans-serif", foot: "#1c0a00", footInk: "#fdba74" },
+  "modern": { bg: "#f8fafc", ink: "#0f172a", nav: "rgba(255,255,255,.94)", navInk: "#334155", active: "#0f172a", activeInk: "#ffffff", fonts: "Inter,system-ui,Arial,sans-serif", foot: "#0f172a", footInk: "#cbd5e1" }
+};
+
 
 function publicPollinationsError(error) {
   if (error instanceof AppError) return error;
@@ -410,27 +428,29 @@ export class PollinationsService {
     return systems[s] || systems.modern;
   }
 
-  fallbackPageFragment(spec, lead, hero, gallery, isHome) {
+  fallbackPageFragment(spec, lead, hero, gallery, isHome, archId) {
+    const t = THEME[archId] || THEME.modern;
     const name = String(lead?.name || "Your Business");
     const type = String(lead?.businessType || lead?.category || "Local Business");
     const address = String(lead?.address || "");
     const phone = String(lead?.phone || "");
     const email = String(lead?.email || "");
-    const card = (h, p) => "<div style=\"background:#fff;border:1px solid #e6ebf2;border-radius:16px;padding:22px;box-shadow:0 6px 20px rgba(15,23,42,.06)\"><h3 style=\"margin:.1em 0 .3em\">" + h + "</h3><p style=\"margin:0;color:#475569\">" + p + "</p></div>";
+    const card = (h, p) => "<div style=\"background:" + t.nav + ";color:" + t.navInk + ";border:1px solid rgba(128,128,128,.25);border-radius:16px;padding:22px;box-shadow:0 6px 20px rgba(15,23,42,.06)\"><h3 style=\"margin:.1em 0 .3em\">" + h + "</h3><p style=\"margin:0;opacity:.85\">" + p + "</p></div>";
     if (isHome) {
       return "<div class=\"hero-band\"><span class=\"kick\">" + type + "</span><h1>" + name + " — quality service you can trust</h1><p class=\"lead\">" + address + " Call today for a free quote.</p><div class=\"cta-row\"><a class=\"btn btn-p\" href=\"tel:" + phone + "\">Call now</a><a class=\"btn btn-g\" href=\"#quote\">Get a free quote</a></div></div><img src=\"" + hero + "\" alt=\"" + name + "\" loading=\"lazy\" style=\"width:100%;max-height:420px;object-fit:cover;display:block;border-radius:16px\"><div class=\"trust\"><span><b>Local</b> & trusted</span><span><b>Fast</b> response</span><span><b>Fair</b> pricing</span></div><h1>" + name + " — " + type + "</h1><p>" + address + "</p><p>Phone: " + phone + "</p><p>Email: " + email + "</p><button>Get a Free Quote</button>" + card("Services", "What we do");
     }
     return "<h1>" + spec.title + "</h1><p>" + spec.focus + "</p>";
   }
 
-  assembleMultiPage(pages, business, accent) {
+  assembleMultiPage(pages, business, accent, archId) {
+    const t = THEME[archId] || THEME.modern;
     const e = (v) => String(v ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
     const navLinks = pages.map((p, i) => "<a href=\"#\" class=\"nav-a" + (i === 0 ? " active" : "") + "\" onclick=\"return showPage(" + i + ")\">" + e(p.title) + "</a>").join("");
     const sections = pages.map((p, i) => "<section class=\"pg\" id=\"pg-" + i + "\"" + (i === 0 ? "" : " style=\"display:none\"") + ">" + p.body + "</section>").join("");
     // Neutral frame only: nav + page switcher + footer. The AI's own classes
     // carry the design, so each style (modern/luxury/medical/restaurant/bold)
     // renders its own distinct look instead of one forced navy theme.
-    return "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>" + e(business) + "</title><meta name=\"description\" content=\"" + e(business) + " — a professional website built to turn visitors into customers.\"><style>*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,Arial,sans-serif;color:#0f172a;background:#f8fafc;line-height:1.55}img{max-width:100%;height:auto}.nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.94);display:flex;gap:6px;align-items:center;padding:10px 16px;flex-wrap:wrap;box-shadow:0 1px 8px rgba(15,23,42,.08);backdrop-filter:blur(8px)}.nav-a{color:#334155;text-decoration:none;font-weight:600;padding:8px 13px;border-radius:9px;font-size:.9rem}.nav-a.active,.nav-a:hover{background:#0f172a;color:#fff}.nav .brand{font-weight:800;margin-right:auto;font-size:1.02rem}.pg{max-width:1120px;margin:0 auto;padding:26px 20px 40px}.site-foot{background:#0f172a;color:#cbd5e1;text-align:center;padding:24px;font-size:.88rem}form.site-form{display:grid;gap:10px;max-width:520px}input,textarea,select{padding:12px;border:1px solid #cbd5e1;border-radius:10px;font:inherit;width:100%}button{cursor:pointer}</style></head><body><nav class=\"nav\"><span class=\"brand\">" + e(business) + "</span>" + navLinks + "</nav>" + sections + "<footer>© " + new Date().getFullYear() + " " + e(business) + ". All rights reserved.<br><span style=\"opacity:.75;font-size:.82rem\">Website crafted with MAT LEADS AI Website Studio — created by Ebube John Okoye.</span></footer><script>function showPage(i){document.querySelectorAll('.pg').forEach(function(s,idx){s.style.display=idx===i?'block':'none'});document.querySelectorAll('.nav-a').forEach(function(a,idx){a.classList.toggle('active',idx===i)});window.scrollTo(0,0);return false;}</script></body></html>";
+    return "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>" + e(business) + "</title><meta name=\"description\" content=\"" + e(business) + " — a professional website built to turn visitors into customers.\"><style>*{box-sizing:border-box}body{margin:0;font-family:" + t.fonts + ";color:" + t.ink + ";background:" + t.bg + ";line-height:1.55}img{max-width:100%;height:auto}.nav{position:sticky;top:0;z-index:50;background:" + t.nav + ";display:flex;gap:6px;align-items:center;padding:10px 16px;flex-wrap:wrap;box-shadow:0 1px 8px rgba(15,23,42,.08);backdrop-filter:blur(8px)}.nav-a{color:" + t.navInk + ";text-decoration:none;font-weight:600;padding:8px 13px;border-radius:9px;font-size:.9rem}.nav-a.active,.nav-a:hover{background:" + t.active + ";color:" + t.activeInk + "}.nav .brand{font-weight:800;margin-right:auto;font-size:1.02rem}.pg{max-width:1120px;margin:0 auto;padding:26px 20px 40px}.site-foot{background:" + t.foot + ";color:" + t.footInk + ";text-align:center;padding:24px;font-size:.88rem}form.site-form{display:grid;gap:10px;max-width:520px}input,textarea,select{padding:12px;border:1px solid #cbd5e1;border-radius:10px;font:inherit;width:100%}button{cursor:pointer}</style></head><body><nav class=\"nav\"><span class=\"brand\">" + e(business) + "</span>" + navLinks + "</nav>" + sections + "<footer>© " + new Date().getFullYear() + " " + e(business) + ". All rights reserved.<br><span style=\"opacity:.75;font-size:.82rem\">Website crafted with MAT LEADS AI Website Studio — created by Ebube John Okoye.</span></footer><script>function showPage(i){document.querySelectorAll('.pg').forEach(function(s,idx){s.style.display=idx===i?'block':'none'});document.querySelectorAll('.nav-a').forEach(function(a,idx){a.classList.toggle('active',idx===i)});window.scrollTo(0,0);return false;}</script></body></html>";
   }
 
   async buildWebsite(lead = {}, options = {}) {
@@ -490,8 +510,8 @@ export class PollinationsService {
       }
     }
     const fragments = content.split(/<!--PAGE-->/i).map((s) => s.trim()).filter(Boolean);
-    const pages = pageSpecs.map((spec, i) => ({ ...spec, body: fragments[i] && fragments[i].length > 40 ? fragments[i] : this.fallbackPageFragment(spec, lead, hero, gallery, i === 0) }));
-    return { ...result, html: this.assembleMultiPage(pages, business, accent), pageCount: pages.length };
+    const pages = pageSpecs.map((spec, i) => ({ ...spec, body: fragments[i] && fragments[i].length > 40 ? fragments[i] : this.fallbackPageFragment(spec, lead, hero, gallery, i === 0, archPick.id) }));
+    return { ...result, html: this.assembleMultiPage(pages, business, accent, archPick.id), pageCount: pages.length };
   }
 
   refineWebsite(currentHtml, instruction, meta = {}) {
