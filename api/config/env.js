@@ -95,8 +95,8 @@ export const env = {
     max: number(process.env.RATE_LIMIT_MAX, 120)
   },
   owner: {
-    email: (process.env.OWNER_EMAIL || "owner@matleads.local").toLowerCase(),
-    password: process.env.OWNER_PASSWORD || "admin2026",
+    email: String(process.env.OWNER_EMAIL || "owner@matleads.local").trim().toLowerCase(),
+    password: String(process.env.OWNER_PASSWORD || "admin2026").trim(),
     passwordFallbacks: ["admin2026", "freeusers2026"]
   }
 };

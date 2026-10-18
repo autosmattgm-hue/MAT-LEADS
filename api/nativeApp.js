@@ -762,7 +762,7 @@ export async function handleRequest(req, res) {
   } catch (error) {
     const status = error.status || 500;
     const errorCode = String(error.code || "");
-    const showMessage = status < 500 || errorCode.endsWith("_NOT_CONFIGURED") || errorCode.startsWith("NVIDIA_");
+    const showMessage = status < 500 || errorCode.endsWith("_NOT_CONFIGURED") || errorCode.startsWith("NVIDIA_") || errorCode === "AUTH_STORE_UNAVAILABLE" || errorCode === "AUTH_UPSTREAM_UNAVAILABLE";
     if (status >= 500) {
       try {
         const { logger } = await import("./utils/logger.js");

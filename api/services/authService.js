@@ -124,9 +124,11 @@ export class AuthService {
   }
 
   isOwnerLogin(email, password) {
-    if (email.toLowerCase() !== env.owner.email) return false;
-    if (password === env.owner.password) return true;
-    return Array.isArray(env.owner.passwordFallbacks) && env.owner.passwordFallbacks.includes(password);
+    const normalized = String(email || "").trim().toLowerCase();
+    if (!normalized || normalized !== env.owner.email) return false;
+    const supplied = String(password || "").trim();
+    if (supplied && supplied === env.owner.password) return true;
+    return Array.isArray(env.owner.passwordFallbacks) && env.owner.passwordFallbacks.includes(supplied);
   }
 
   ownerSession() {
@@ -147,8 +149,15 @@ export class AuthService {
     };
   }
 
-  async register({ name, email, password }) {
-    const normalizedEmail = email.toLowerCase();
+  async register(input = {}) {
+    const { name, email, password } = input;
+    if (!name || !email || !password) {
+      throw new AppError("Name, email and password are required.", 422, "VALIDATION_ERROR");
+    }
+    const normalizedEmail = String(email).toLowerCase();
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(normalizedEmail)) {
+      throw new AppError("Enter a valid email address.", 422, "VALIDATION_ERROR");
+    }
     let user;
 
     if (isFirebaseAuthConfigured()) {
@@ -172,13 +181,22 @@ export class AuthService {
         firebaseRefreshToken: payload.refreshToken
       };
     } else {
-      const existing = await this.users.list({
-        where: [{ field: "email", op: "==", value: normalizedEmail }],
-        limit: 1
-      });
+      let existing;
+      try {
+        existing = await this.users.list({
+          where: [{ field: "email", op: "==", value: normalizedEmail }],
+          limit: 1
+        });
+      } catch {
+        throw new AppError("Signup service is temporarily unavailable. Please try again.", 503, "AUTH_STORE_UNAVAILABLE");
+      }
       if (existing.length) throw new AppError("Account already exists.", 409, "ACCOUNT_EXISTS");
       const passwordHash = await hashPassword(password);
-      user = await this.users.create({ name, email: normalizedEmail, passwordHash, role: "user", tokenVersion: 1 });
+      try {
+        user = await this.users.create({ name, email: normalizedEmail, passwordHash, role: "user", tokenVersion: 1 });
+      } catch {
+        throw new AppError("Signup service is temporarily unavailable. Please try again.", 503, "AUTH_STORE_UNAVAILABLE");
+      }
     }
 
     await this.users.upsert(user.uid || user.id, {
@@ -214,23 +232,35 @@ export class AuthService {
     };
   }
 
-  async login({ email, password }) {
-    const normalizedEmail = email.toLowerCase();
+  async login(input = {}) {
+    const { email, password } = input;
+    if (!email || !password) {
+      throw new AppError("Email and password are required.", 422, "VALIDATION_ERROR");
+    }
+    const normalizedEmail = String(email).toLowerCase();
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(normalizedEmail)) {
+      throw new AppError("Enter a valid email address.", 422, "VALIDATION_ERROR");
+    }
 
     if (this.isOwnerLogin(normalizedEmail, password)) {
       return this.ownerSession();
     }
 
     if (env.firebase.webApiKey) {
-      const response = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${env.firebase.webApiKey}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: normalizedEmail,
-          password,
-          returnSecureToken: true
-        })
-      });
+      let response;
+      try {
+        response = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${env.firebase.webApiKey}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email: normalizedEmail,
+            password,
+            returnSecureToken: true
+          })
+        });
+      } catch {
+        throw new AppError("Login service is temporarily unavailable. Please try again.", 503, "AUTH_UPSTREAM_UNAVAILABLE");
+      }
 
       if (!response.ok) throw new AppError("Invalid email or password.", 401, "INVALID_CREDENTIALS");
       const payload = await response.json();
@@ -255,10 +285,15 @@ export class AuthService {
       };
     }
 
-    const users = await this.users.list({
-      where: [{ field: "email", op: "==", value: normalizedEmail }],
-      limit: 1
-    });
+    let users;
+    try {
+      users = await this.users.list({
+        where: [{ field: "email", op: "==", value: normalizedEmail }],
+        limit: 1
+      });
+    } catch {
+      throw new AppError("Login service is temporarily unavailable. Please try again.", 503, "AUTH_STORE_UNAVAILABLE");
+    }
     const user = users[0];
     if (!user) {
       if (process.env.VERCEL && !this.users.client()) {
@@ -291,7 +326,7 @@ export class AuthService {
   }
 
   async refreshSession(refreshToken) {
-    if (!refreshToken) throw new AppError("Refresh token required.", 401, "REFRESH_REQUIRED");
+    if (!refreshToken || typeof refreshToken !== "string") throw new AppError("Refresh token required.", 401, "REFRESH_REQUIRED");
     let decoded;
     try {
       decoded = await verifyRefreshToken(refreshToken);
