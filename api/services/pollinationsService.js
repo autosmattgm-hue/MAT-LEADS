@@ -57,11 +57,6 @@ const POLLINATIONS = {
 
 const PROVIDER = "pollinations";
 
-// THEME = per-archetype shell themes. Nav, page bg, footer + fonts change
-// with the picked design archetype so no two builds share one look.
-const THEME = {
-  "luxe-dark": { bg: "#0c0a09", ink: "#fafaf9", nav: "#0c0a09", navInk: "#e7e5e4", active: "#d4a437", activeInk: "#0c0a09", fonts: "Fraunces,Georgia,serif", foot: "#0c0a09", footInk: "#a8a29e" },
-
 // Per-archetype shell themes — the nav, page background, footer and fonts
 // change with the picked design archetype so no two builds share one look.
 const SHELL_THEMES = {
@@ -429,7 +424,7 @@ export class PollinationsService {
   }
 
   fallbackPageFragment(spec, lead, hero, gallery, isHome, archId) {
-    const t = THEME[archId] || THEME.modern;
+    const t = SHELL_THEMES[archId] || SHELL_THEMES.modern;
     const name = String(lead?.name || "Your Business");
     const type = String(lead?.businessType || lead?.category || "Local Business");
     const address = String(lead?.address || "");
@@ -443,7 +438,7 @@ export class PollinationsService {
   }
 
   assembleMultiPage(pages, business, accent, archId) {
-    const t = THEME[archId] || THEME.modern;
+    const t = SHELL_THEMES[archId] || SHELL_THEMES.modern;
     const e = (v) => String(v ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
     const navLinks = pages.map((p, i) => "<a href=\"#\" class=\"nav-a" + (i === 0 ? " active" : "") + "\" onclick=\"return showPage(" + i + ")\">" + e(p.title) + "</a>").join("");
     const sections = pages.map((p, i) => "<section class=\"pg\" id=\"pg-" + i + "\"" + (i === 0 ? "" : " style=\"display:none\"") + ">" + p.body + "</section>").join("");

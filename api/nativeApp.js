@@ -298,6 +298,42 @@ const routes = [
   },
   {
     method: "POST",
+    regex: /^\/api\/auth\/diag$/,
+    keys: [],
+    handler: async ({ body }) => {
+      const steps = {};
+      const email = String(body?.email || "").trim().toLowerCase();
+      steps.emailReceived = Boolean(email);
+      steps.ownerEmailSet = Boolean(env.owner.email);
+      steps.ownerEmailMatch = email ? email === env.owner.email : false;
+      try {
+        steps.ownerCheck = authService.isOwnerLogin(email, String(body?.password || ""));
+      } catch (error) {
+        steps.ownerCheck = `THREW: ${error.message}`;
+      }
+      try {
+        const found = await authService.users.list({
+          where: [{ field: "email", op: "==", value: email || "__none__" }],
+          limit: 1
+        });
+        steps.storeList = `ok, found=${found.length}`;
+      } catch (error) {
+        steps.storeList = `THREW: ${error.message}`;
+      }
+      try {
+        const { signAccessToken: sign } = await import("./middleware/auth.js");
+        sign({ uid: "diag", email: email || "diag@test.local", role: "user" });
+        steps.jwtSign = "ok";
+      } catch (error) {
+        steps.jwtSign = `THREW: ${error.message}`;
+      }
+      steps.firebaseClient = Boolean(authService.users.client());
+      steps.firebaseWebApiKeySet = Boolean(env.firebase?.webApiKey);
+      return steps;
+    }
+  },
+  {
+    method: "POST",
     regex: /^\/api\/auth\/register$/,
     keys: [],
     handler: async ({ body }) => authService.register(validate(authSchemas.register, body)),
