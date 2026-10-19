@@ -53,20 +53,33 @@ export const env = {
     ])
   },
   firebase: {
+    // Client SDK values (safe to expose to the browser - restricted in Firebase Console).
+    apiKey: process.env.FIREBASE_API_KEY || "",
+    authDomain: process.env.FIREBASE_AUTH_DOMAIN || "",
     projectId: process.env.FIREBASE_PROJECT_ID || "",
+    storageBucket: process.env.FIREBASE_STORAGE_BUCKET || "",
+    messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID || "",
+    appId: process.env.FIREBASE_APP_ID || "",
+    databaseUrl: process.env.FIREBASE_DATABASE_URL || "",
+    // Admin SDK values (SECRET - server only).
     clientEmail: process.env.FIREBASE_CLIENT_EMAIL || "",
     privateKey: (process.env.FIREBASE_PRIVATE_KEY || "").replace(/\\n/g, "\n"),
-    webApiKey: process.env.FIREBASE_WEB_API_KEY || ""
+    webApiKey: process.env.FIREBASE_WEB_API_KEY || process.env.FIREBASE_API_KEY || ""
   },
   nvidia: {
     apiKey: process.env.NVIDIA_API_KEY || "",
     baseUrl: process.env.NVIDIA_BASE_URL || "https://integrate.api.nvidia.com/v1",
-    model: process.env.NVIDIA_MODEL || "moonshotai/kimi-k3",
-    modelFallbacks: list(process.env.NVIDIA_MODEL_FALLBACKS, ["openai/gpt-oss-20b", "z-ai/glm-5.3-flash"]),
+    // Live probe (Oct 2026): openai/gpt-oss-20b answered in ~2.6s and is healthy.
+    // kimi-k3 is 410 Gone (EOL 2026-10-15); the z-ai glm models ran ~44s under
+    // load, so they are fallbacks only. gpt-oss-20b is the fast, reliable primary.
+    model: process.env.NVIDIA_MODEL || "openai/gpt-oss-20b",
+    modelFallbacks: list(process.env.NVIDIA_MODEL_FALLBACKS, ["z-ai/glm-5.3-flash", "z-ai/glm-5.3"]),
     websiteModel: process.env.NVIDIA_WEBSITE_MODEL || "openai/gpt-oss-20b",
-    websiteFallbacks: list(process.env.NVIDIA_WEBSITE_FALLBACKS, ["moonshotai/kimi-k3", "z-ai/glm-5.3-flash"]),
-    tycoonModel: process.env.NVIDIA_TYCOON_MODEL || "moonshotai/kimi-k3",
-    timeoutMs: number(process.env.NVIDIA_TIMEOUT_MS, 12000),
+    websiteFallbacks: list(process.env.NVIDIA_WEBSITE_FALLBACKS, ["z-ai/glm-5.3-flash", "z-ai/glm-5.3"]),
+    tycoonModel: process.env.NVIDIA_TYCOON_MODEL || "openai/gpt-oss-20b",
+    // Interactive budget: 12s was too tight for two model attempts. 20s lets a
+    // fast model answer and still leaves room for one fallback attempt.
+    timeoutMs: number(process.env.NVIDIA_TIMEOUT_MS, 20000),
     websiteTimeoutMs: number(process.env.NVIDIA_WEBSITE_TIMEOUT_MS, 50000),
     cacheTtlMs: number(process.env.NVIDIA_CACHE_TTL_MS, 600000),
     maxTokens: number(process.env.NVIDIA_MAX_TOKENS, 420)

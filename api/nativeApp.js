@@ -67,6 +67,53 @@ const mimeTypes = new Map([
 ]);
 
 const rateBuckets = new Map();
+const signupBuckets = new Map();
+const SIGNUP_ABUSE_WINDOW_MS = 30 * 24 * 60 * 60 * 1000;
+const SIGNUP_ABUSE_MAX = 5;
+
+function signupFingerprint(req, body = {}) {
+  const ip = clientIp(req);
+  const ua = String(getHeader(req, "user-agent") || "").slice(0, 160);
+  const lang = String(getHeader(req, "accept-language") || "").slice(0, 80);
+  const email = String(body?.email || "").trim().toLowerCase();
+  const domain = email.includes("@") ? email.split("@")[1] : "";
+  return { ip, deviceKey: `${ua}::${lang}`, domain };
+}
+
+async function checkSignupAbuse(req, body = {}) {
+  const { ip, deviceKey, domain } = signupFingerprint(req, body);
+  const now = Date.now();
+  const key = `signup:${ip}:${deviceKey}`;
+  let bucket = signupBuckets.get(key);
+  if (!bucket || bucket.resetAt <= now) {
+    bucket = { count: 0, emails: [], resetAt: now + SIGNUP_ABUSE_WINDOW_MS };
+  }
+  bucket.count += 1;
+  const email = String(body?.email || "").trim().toLowerCase();
+  if (email && !bucket.emails.includes(email)) bucket.emails.push(email);
+  signupBuckets.set(key, bucket);
+  if (bucket.count > SIGNUP_ABUSE_MAX && bucket.emails.length > SIGNUP_ABUSE_MAX) {
+    try {
+      const { FirestoreRepository } = await import("./repositories/firestoreRepository.js");
+      const repo = new FirestoreRepository("signupAbuse");
+      if (repo) {
+        await repo.upsert(`ip:${ip}`, {
+          id: `ip:${ip}`,
+          ip,
+          deviceKey,
+          emails: bucket.emails,
+          attempts: bucket.count,
+          suspendedAt: new Date().toISOString(),
+          reason: "signup_abuse_multi_email"
+        }).catch(() => {});
+      }
+    } catch {}
+    const err = new AppError("Too many different signup emails from this device. New signups are suspended here — please sign in with one of your existing accounts.", 403, "SIGNUP_SUSPENDED");
+    err.details = { suspension: "signup_only", signinAllowed: true };
+    throw err;
+  }
+  return { ip, deviceKey, domain };
+}
 const publicFiles = new Set([
   "/",
   "/index.html",
@@ -117,17 +164,20 @@ function securityHeaders(extra = {}) {
   return {
     "Content-Security-Policy": [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-inline'",
+      // Firebase SDK ships from gstatic; browser auth also talks to googleapis.
+      "script-src 'self' 'unsafe-inline' https://www.gstatic.com https://apis.google.com",
       "style-src 'self' 'unsafe-inline'",
       "img-src 'self' data: https:",
-      "connect-src 'self'",
-      "frame-src 'self' https://www.google.com https://maps.google.com",
+      "connect-src 'self' https://www.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://firebaseinstallations.googleapis.com",
+      "frame-src 'self' https://www.google.com https://maps.google.com https://accounts.google.com https://*.firebaseapp.com",
       "font-src 'self' data:",
       "object-src 'none'",
       "base-uri 'self'",
       "frame-ancestors 'self'"
     ].join("; "),
-    "Cross-Origin-Opener-Policy": "same-origin",
+    // "same-origin" severs window.opener for the Google sign-in popup, which
+    // breaks Firebase signInWithPopup — it requires same-origin-allow-popups.
+    "Cross-Origin-Opener-Policy": "same-origin-allow-popups",
     "Referrer-Policy": "strict-origin-when-cross-origin",
     "X-Content-Type-Options": "nosniff",
     "X-Permitted-Cross-Domain-Policies": "none",
@@ -247,6 +297,23 @@ function matchRoute(method, pathname, pattern) {
 const routes = [
   {
     method: "GET",
+    regex: /^\/api\/config$/,
+    keys: [],
+    handler: async () => ({
+      firebase: {
+        apiKey: env.firebase.apiKey || env.firebase.webApiKey || "",
+        authDomain: env.firebase.authDomain || "",
+        databaseURL: env.firebase.databaseUrl || "",
+        projectId: env.firebase.projectId || "",
+        storageBucket: env.firebase.storageBucket || "",
+        messagingSenderId: env.firebase.messagingSenderId || "",
+        appId: env.firebase.appId || "",
+        configured: Boolean((env.firebase.apiKey || env.firebase.webApiKey) && env.firebase.projectId)
+      }
+    })
+  },
+  {
+    method: "GET",
     regex: /^\/api\/health$/,
     keys: [],
     handler: async () => ({
@@ -271,7 +338,7 @@ const routes = [
       realMode: true,
       aiModels: {
         chat: [env.nvidia.model, ...(env.nvidia.modelFallbacks || [])].filter(Boolean),
-        website: [env.nvidia.websiteModel, ...(env.nvidia.websiteFallbacks || []), "z-ai/glm-5.3-flash", "z-ai/glm-5.3", "moonshotai/kimi-k3"].filter(Boolean),
+        website: [env.nvidia.websiteModel, ...(env.nvidia.websiteFallbacks || []), "z-ai/glm-5.3-flash", "z-ai/glm-5.3"].filter(Boolean),
         tycoon: [env.nvidia.tycoonModel, "z-ai/glm-5.3-flash", "z-ai/glm-5.3"].filter(Boolean)
       },
       missingRequiredForLiveOperation: [
@@ -336,7 +403,11 @@ const routes = [
     method: "POST",
     regex: /^\/api\/auth\/register$/,
     keys: [],
-    handler: async ({ body }) => authService.register(validate(authSchemas.register, body)),
+    handler: async ({ req, body }) => {
+      const parsed = validate(authSchemas.register, body);
+      await checkSignupAbuse(req, parsed);
+      return authService.register(parsed);
+    },
     status: 201
   },
   {
@@ -344,6 +415,21 @@ const routes = [
     regex: /^\/api\/auth\/login$/,
     keys: [],
     handler: async ({ body }) => authService.login(validate(authSchemas.login, body))
+  },
+  {
+    method: "POST",
+    regex: /^\/api\/auth\/firebase$/,
+    keys: [],
+    handler: async ({ req, body }) => {
+      const { idToken, name, password } = validate(authSchemas.firebaseSession, body);
+      const { verifyFirebaseIdToken } = await import("./config/firebase.js");
+      const identity = await verifyFirebaseIdToken(idToken);
+      return authService.loginWithFirebase(idToken, {
+        preVerifiedIdentity: identity,
+        profile: { name, password },
+        beforeCreate: (emailOrPhone) => checkSignupAbuse(req, { email: emailOrPhone })
+      });
+    }
   },
   {
     method: "POST",

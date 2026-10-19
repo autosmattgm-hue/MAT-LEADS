@@ -4,6 +4,7 @@ import { FirestoreRepository } from "../repositories/firestoreRepository.js";
 import { NvidiaService } from "./nvidiaService.js";
 import { PollinationsService } from "./pollinationsService.js";
 import { AppError } from "../utils/errors.js";
+import { hasRichVisibleContent } from "../utils/siteContent.js";
 
 const memoryWebsites = new Map();
 const memoryByToken = new Map();
@@ -57,14 +58,20 @@ export class WebsiteService {
       try {
         const result = await builder.run();
         if (result.pageCount) pageCount = result.pageCount;
-        if (result.html && /<\/html>/i.test(result.html) && result.html.length > 800) {
+        // Require complete markup AND enough visible text that a CSS-only shell
+        // (long but unreadable) can never be accepted as a finished site.
+        if (result.html && /<\/html>/i.test(result.html) && result.html.length > 800 && hasRichVisibleContent(result.html)) {
           html = result.html;
           provider = result.provider || builder.name;
           model = result.model;
           built = result;
           break;
         }
-        reasons.push(`${builder.name}: AI build was incomplete — asking the next provider.`);
+        if (result.html && /<\/html>/i.test(result.html) && result.html.length > 800 && !hasRichVisibleContent(result.html)) {
+          reasons.push(`${builder.name}: AI build produced markup with too little readable content — asking the next provider.`);
+        } else {
+          reasons.push(`${builder.name}: AI build was incomplete — asking the next provider.`);
+        }
       } catch (e) {
         reasons.push(`${builder.name}: ${String(e?.message || "AI request failed").slice(0, 220)}`);
       }

@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-13T22:36:02.181Z",
+  "updatedAt": "2026-10-19T00:37:14.134Z",
   "collections": {
     "aiWebsites": [
       {
@@ -942,6 +942,33 @@
         ],
         "createdAt": "2026-10-13T22:35:14.165Z",
         "updatedAt": "2026-10-13T22:35:14.165Z"
+      },
+      {
+        "id": "9556f247-ee31-4ce2-89bb-457347ca761d",
+        "shareToken": "5066febcf0c44610a84c1a75",
+        "ownerId": "owner",
+        "leadId": "",
+        "leadName": "Test Bakery",
+        "businessType": "bakery",
+        "address": "",
+        "phone": "",
+        "email": "",
+        "businessName": "Test Bakery",
+        "style": "modern",
+        "html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Test Bakery</title><meta name=\"description\" content=\"Test Bakery — a professional website built to turn visitors into customers.\"><style>*{box-sizing:border-box}body{margin:0;font-family:'Segoe UI',Inter,system-ui,Arial,sans-serif;color:#16233a;background:linear-gradient(180deg,#f4f6fb 0%,#eef2f7 100%);line-height:1.6}img{max-width:100%;height:auto;border-radius:14px}.nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.92);display:flex;gap:6px;align-items:center;padding:12px 20px;flex-wrap:wrap;box-shadow:0 2px 14px rgba(15,23,42,.1);backdrop-filter:blur(10px)}.nav .brand{font-weight:800;margin-right:auto;font-size:1.08rem;letter-spacing:-.01em}.nav-a{color:#334155;text-decoration:none;font-weight:600;padding:9px 15px;border-radius:999px;font-size:.9rem;transition:all .2s}.nav-a.active,.nav-a:hover{background:#0f172a;color:#fff}.pg{max-width:1140px;margin:0 auto;padding:28px 22px 48px}.site-foot{background:#0f172a;color:#cbd5e1;text-align:center;padding:26px;font-size:.88rem}form.site-form{display:grid;gap:10px;max-width:520px}input,textarea,select{padding:12px;border:1px solid #cbd5e1;border-radius:10px;font:inherit;width:100%}button{cursor:pointer}</style></head><body><nav class=\"nav\"><span class=\"brand\">Test Bakery</span><a href=\"#\" class=\"nav-a active\" onclick=\"return showPage(0)\">Home</a></nav><section class=\"pg\" id=\"pg-0\"><img src=\"https://picsum.photos/seed/bakery/1600/900\" alt=\"Test Bakery — professional bakery\" style=\"width:100%;max-height:440px;object-fit:cover;display:block\"><div class=\"wrap\" style=\"text-align:center\"><p style=\"letter-spacing:3px;text-transform:uppercase;font-size:12px;color:#64748b;margin:18px 0 0;font-weight:700\">bakery</p><h1 style=\"font-size:clamp(2rem,5.4vw,3.4rem);margin:.2em 0;color:#0f172a\">Test Bakery</h1><p style=\"max-width:660px;margin:0 auto;color:#475569;font-size:1.08rem;line-height:1.6\">Professional, reliable bakery you can count on. Clear pricing, fast response, and work we stand behind — so getting started is easy.</p><div style=\"display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:18px\"><a href=\"#contact\" style=\"padding:14px 28px;border-radius:12px;background:#0f172a;color:#fff;font-weight:700;text-decoration:none\">Get a free quote</a></div><div style=\"display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:22px\"><span style=\"background:#eef2f7;border:1px solid #e2e8f0;color:#334155;padding:8px 15px;border-radius:999px;font-size:.84rem;font-weight:600\">Licensed &amp; insured</span><span style=\"background:#eef2f7;border:1px solid #e2e8f0;color:#334155;padding:8px 15px;border-radius:999px;font-size:.84rem;font-weight:600\">Fast, friendly service</span><span style=\"background:#eef2f7;border:1px solid #e2e8f0;color:#334155;padding:8px 15px;border-radius:999px;font-size:.84rem;font-weight:600\">Free, no-obligation quotes</span><span style=\"background:#eef2f7;border:1px solid #e2e8f0;color:#334155;padding:8px 15px;border-radius:999px;font-size:.84rem;font-weight:600\">Proudly local</span></div></div><div class=\"wrap\"><div style=\"display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:16px;margin-top:6px\"><div style=\"background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:20px\"><h3 style=\"margin:.1em 0 .3em\">Quality you can trust</h3><p style=\"margin:0;color:#475569\">Careful work and honest advice on every single job.</p></div><div style=\"background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:20px\"><h3 style=\"margin:.1em 0 .3em\">Clear, upfront pricing</h3><p style=\"margin:0;color:#475569\">Know the cost before we begin — no hidden fees.</p></div><div style=\"background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:20px\"><h3 style=\"margin:.1em 0 .3em\">Here when you need us</h3><p style=\"margin:0;color:#475569\">Quick response and friendly support after the job.</p></div></div><div style=\"display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-top:22px\"><img src=\"https://picsum.photos/seed/bakery-1/800/600\" alt=\"Test Bakery\" style=\"width:100%;height:180px;object-fit:cover;border-radius:12px\"><img src=\"https://picsum.photos/seed/bakery-2/800/600\" alt=\"Test Bakery\" style=\"width:100%;height:180px;object-fit:cover;border-radius:12px\"><img src=\"https://picsum.photos/seed/bakery-3/800/600\" alt=\"Test Bakery\" style=\"width:100%;height:180px;object-fit:cover;border-radius:12px\"></div></div></section><footer class=\"site-foot\">© 2026 Test Bakery. All rights reserved.<br><span style=\"opacity:.75;font-size:.82rem\">Website crafted with MAT LEADS AI Website Studio — created by Ebube John Okoye.</span></footer><script>function showPage(i){document.querySelectorAll('.pg').forEach(function(s,idx){s.style.display=idx===i?'block':'none'});document.querySelectorAll('.nav-a').forEach(function(a,idx){a.classList.toggle('active',idx===i)});window.scrollTo(0,0);return false;}</script></body></html>",
+        "provider": "nvidia",
+        "model": "openai/gpt-oss-20b",
+        "pageCount": 1,
+        "aiError": "",
+        "revisions": 1,
+        "history": [
+          {
+            "at": "2026-10-19T00:36:23.639Z",
+            "instruction": "Initial AI website build"
+          }
+        ],
+        "createdAt": "2026-10-19T00:37:14.132Z",
+        "updatedAt": "2026-10-19T00:37:14.132Z"
       }
     ],
     "users": [
@@ -1169,7 +1196,7 @@
           "timezone": "America/Los_Angeles",
           "exportHeaders": true,
           "autoExport": false,
-          "aiModel": "moonshotai/kimi-k3",
+          "aiModel": "openai/gpt-oss-20b",
           "outreachTone": "professional",
           "maxFollowUps": 3,
           "autoFollowUp": true,
@@ -1233,6 +1260,141 @@
           "upgradeRequiredAfterTrial": true
         },
         "emailVerified": false
+      },
+      {
+        "uid": "6RExXKpthgekesw9dSTymQKnopT2",
+        "name": "Smoke Tester",
+        "email": "smoke-1792350299410@example.com",
+        "passwordHash": "scrypt$de3e0a40663712d055a91b4701094252$da0b56356a03cab02d4bc2ee0c7f497bfb6bf1a3129d0047febd6f0322953815c36ec035db11408902699831f115e126a64d5d231f918a75a4baee7579aa266c",
+        "role": "user",
+        "subscription": "trial",
+        "planName": "Free Trial",
+        "monthlyLeadLimit": 5,
+        "trialSearchLimit": 2,
+        "trialLeadLimit": 5,
+        "billingStatus": "trial",
+        "trialSearchesUsed": 1,
+        "entitlements": {
+          "billingRequired": true,
+          "trial": true,
+          "trialSearchesUsed": 1,
+          "trialSearchLimit": 2,
+          "trialLeadLimit": 5,
+          "upgradeRequiredAfterTrial": true
+        },
+        "emailVerified": false,
+        "tokenVersion": 1,
+        "id": "6RExXKpthgekesw9dSTymQKnopT2",
+        "updatedAt": "2026-10-18T19:05:20.787Z",
+        "createdAt": "2026-10-18T19:05:01.064Z"
+      },
+      {
+        "uid": "ySIAuGftmwUrbNziu3mVGuuKVJ83",
+        "name": "Smoke Tester",
+        "email": "smoke-1792350352247@example.com",
+        "passwordHash": "scrypt$7687708d1df1957b3ae7e6871affbaa6$25681efd62d4ad7c3c2df4ed3aed9cc76d319c510168059a8b43ebcdca9de863dd739337099549a471d4f9fd087b88f91fb6dc6df8b91def97875bb9ffc76938",
+        "role": "user",
+        "subscription": "trial",
+        "planName": "Free Trial",
+        "monthlyLeadLimit": 5,
+        "trialSearchLimit": 2,
+        "trialLeadLimit": 5,
+        "billingStatus": "trial",
+        "trialSearchesUsed": 1,
+        "entitlements": {
+          "billingRequired": true,
+          "trial": true,
+          "trialSearchesUsed": 1,
+          "trialSearchLimit": 2,
+          "trialLeadLimit": 5,
+          "upgradeRequiredAfterTrial": true
+        },
+        "emailVerified": false,
+        "tokenVersion": 1,
+        "id": "ySIAuGftmwUrbNziu3mVGuuKVJ83",
+        "updatedAt": "2026-10-18T19:06:12.379Z",
+        "createdAt": "2026-10-18T19:05:53.363Z"
+      },
+      {
+        "uid": "a8tVnUujVXVlL4ongUVIix9opXz1",
+        "name": "Smoke Tester",
+        "email": "smoke-1792367714937@example.com",
+        "passwordHash": "scrypt$6e8321a5ee7056c5fde37e6407b45e60$dac9e61fd80cdadcfe61570a053e80832476a0c1d20874c504a7edbc292511f9013e9672d7cdd37eaca78ab5cb73dea49e021aea969c6b4e1d74afe2fc468b35",
+        "role": "user",
+        "subscription": "trial",
+        "planName": "Free Trial",
+        "monthlyLeadLimit": 5,
+        "trialSearchLimit": 2,
+        "trialLeadLimit": 5,
+        "billingStatus": "trial",
+        "trialSearchesUsed": 1,
+        "entitlements": {
+          "billingRequired": true,
+          "trial": true,
+          "trialSearchesUsed": 1,
+          "trialSearchLimit": 2,
+          "trialLeadLimit": 5,
+          "upgradeRequiredAfterTrial": true
+        },
+        "emailVerified": false,
+        "tokenVersion": 1,
+        "id": "a8tVnUujVXVlL4ongUVIix9opXz1",
+        "updatedAt": "2026-10-18T23:55:35.962Z",
+        "createdAt": "2026-10-18T23:55:16.182Z"
+      },
+      {
+        "uid": "PWokDeImBpN71zO6uwOW7VvWNdI2",
+        "name": "Smoke Tester",
+        "email": "smoke-1792367747014@example.com",
+        "passwordHash": "scrypt$8edfd97ae962cfe3fd10ad7b8c70b040$b82fca40887fbcc7c58c40d467034d80a296ca01cc6cc7b37733eb6604e505c7a1309b5fc8cce5d653a1fe744648f99358152bd82ea91e33610fd4fc38d3889e",
+        "role": "user",
+        "subscription": "trial",
+        "planName": "Free Trial",
+        "monthlyLeadLimit": 5,
+        "trialSearchLimit": 2,
+        "trialLeadLimit": 5,
+        "billingStatus": "trial",
+        "trialSearchesUsed": 1,
+        "entitlements": {
+          "billingRequired": true,
+          "trial": true,
+          "trialSearchesUsed": 1,
+          "trialSearchLimit": 2,
+          "trialLeadLimit": 5,
+          "upgradeRequiredAfterTrial": true
+        },
+        "emailVerified": false,
+        "tokenVersion": 1,
+        "id": "PWokDeImBpN71zO6uwOW7VvWNdI2",
+        "updatedAt": "2026-10-18T23:56:07.528Z",
+        "createdAt": "2026-10-18T23:55:48.283Z"
+      },
+      {
+        "uid": "eD8Iq6oxSKPTypWAgtXKLVfy4Pi1",
+        "name": "Smoke Tester",
+        "email": "smoke-1792367783614@example.com",
+        "passwordHash": "scrypt$1ee4e5568c4646f77a15c495d257fd30$1400c25ca8bfc0134fe671d0c3ba01bed6851c299988c02fcbe6e193be71eaaca3204f2935c649b0fb2d559d9ef3d84172b7e7d02a0628ba329c5c803887c197",
+        "role": "user",
+        "subscription": "trial",
+        "planName": "Free Trial",
+        "monthlyLeadLimit": 5,
+        "trialSearchLimit": 2,
+        "trialLeadLimit": 5,
+        "billingStatus": "trial",
+        "trialSearchesUsed": 1,
+        "entitlements": {
+          "billingRequired": true,
+          "trial": true,
+          "trialSearchesUsed": 1,
+          "trialSearchLimit": 2,
+          "trialLeadLimit": 5,
+          "upgradeRequiredAfterTrial": true
+        },
+        "emailVerified": false,
+        "tokenVersion": 1,
+        "id": "eD8Iq6oxSKPTypWAgtXKLVfy4Pi1",
+        "updatedAt": "2026-10-18T23:56:46.473Z",
+        "createdAt": "2026-10-18T23:56:24.832Z"
       }
     ],
     "leads": [
@@ -13145,13 +13307,13 @@
         },
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
-        "discoveredBy": "2c16f281-fa0c-4d4d-a7df-8c25442f444a",
-        "discoveredAt": "2026-10-09T07:03:24.514Z",
-        "updatedAt": "2026-10-09T07:03:42.378Z",
+        "discoveredBy": "eD8Iq6oxSKPTypWAgtXKLVfy4Pi1",
+        "discoveredAt": "2026-10-18T23:56:34.383Z",
+        "updatedAt": "2026-10-18T23:56:54.812Z",
         "createdAt": "2026-10-09T06:41:53.933Z",
-        "ownerId": "2c16f281-fa0c-4d4d-a7df-8c25442f444a",
+        "ownerId": "eD8Iq6oxSKPTypWAgtXKLVfy4Pi1",
         "stage": "Contacted",
-        "savedAt": "2026-10-09T07:03:39.421Z"
+        "savedAt": "2026-10-18T23:56:52.686Z"
       },
       {
         "id": "osm-node-9080250962",
@@ -13232,9 +13394,9 @@
         },
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
-        "discoveredBy": "2c16f281-fa0c-4d4d-a7df-8c25442f444a",
-        "discoveredAt": "2026-10-09T07:03:24.515Z",
-        "updatedAt": "2026-10-09T07:03:24.515Z",
+        "discoveredBy": "eD8Iq6oxSKPTypWAgtXKLVfy4Pi1",
+        "discoveredAt": "2026-10-18T23:56:34.383Z",
+        "updatedAt": "2026-10-18T23:56:34.383Z",
         "createdAt": "2026-10-09T06:41:53.933Z"
       },
       {
@@ -13316,9 +13478,9 @@
         },
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
-        "discoveredBy": "2c16f281-fa0c-4d4d-a7df-8c25442f444a",
-        "discoveredAt": "2026-10-09T07:03:24.515Z",
-        "updatedAt": "2026-10-09T07:03:24.515Z",
+        "discoveredBy": "eD8Iq6oxSKPTypWAgtXKLVfy4Pi1",
+        "discoveredAt": "2026-10-18T23:56:34.383Z",
+        "updatedAt": "2026-10-18T23:56:34.383Z",
         "createdAt": "2026-10-09T06:41:53.933Z"
       },
       {
@@ -13396,9 +13558,9 @@
         },
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
-        "discoveredBy": "2c16f281-fa0c-4d4d-a7df-8c25442f444a",
-        "discoveredAt": "2026-10-09T07:03:24.515Z",
-        "updatedAt": "2026-10-09T07:03:24.515Z",
+        "discoveredBy": "eD8Iq6oxSKPTypWAgtXKLVfy4Pi1",
+        "discoveredAt": "2026-10-18T23:56:34.385Z",
+        "updatedAt": "2026-10-18T23:56:34.385Z",
         "createdAt": "2026-10-09T06:41:53.933Z"
       },
       {
@@ -13487,9 +13649,9 @@
         },
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
-        "discoveredBy": "2c16f281-fa0c-4d4d-a7df-8c25442f444a",
-        "discoveredAt": "2026-10-09T07:03:24.515Z",
-        "updatedAt": "2026-10-09T07:03:24.515Z",
+        "discoveredBy": "eD8Iq6oxSKPTypWAgtXKLVfy4Pi1",
+        "discoveredAt": "2026-10-18T23:56:34.385Z",
+        "updatedAt": "2026-10-18T23:56:34.385Z",
         "createdAt": "2026-10-09T06:41:53.933Z"
       },
       {
@@ -13619,13 +13781,13 @@
         },
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
-        "discoveredBy": "8c44d0d9-9deb-449f-89f4-b01484433016",
-        "discoveredAt": "2026-10-09T07:24:55.141Z",
-        "updatedAt": "2026-10-09T07:25:11.849Z",
+        "discoveredBy": "ySIAuGftmwUrbNziu3mVGuuKVJ83",
+        "discoveredAt": "2026-10-18T19:06:00.425Z",
+        "updatedAt": "2026-10-18T19:06:19.288Z",
         "createdAt": "2026-10-09T07:24:55.141Z",
-        "ownerId": "8c44d0d9-9deb-449f-89f4-b01484433016",
+        "ownerId": "ySIAuGftmwUrbNziu3mVGuuKVJ83",
         "stage": "Contacted",
-        "savedAt": "2026-10-09T07:25:10.561Z"
+        "savedAt": "2026-10-18T19:06:16.713Z"
       },
       {
         "id": "photon-node-7320697313",
@@ -13754,9 +13916,9 @@
         },
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
-        "discoveredBy": "8c44d0d9-9deb-449f-89f4-b01484433016",
-        "discoveredAt": "2026-10-09T07:24:55.141Z",
-        "updatedAt": "2026-10-09T07:24:55.141Z",
+        "discoveredBy": "ySIAuGftmwUrbNziu3mVGuuKVJ83",
+        "discoveredAt": "2026-10-18T19:06:00.425Z",
+        "updatedAt": "2026-10-18T19:06:00.425Z",
         "createdAt": "2026-10-09T07:24:55.141Z"
       },
       {
@@ -13886,9 +14048,9 @@
         },
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
-        "discoveredBy": "8c44d0d9-9deb-449f-89f4-b01484433016",
-        "discoveredAt": "2026-10-09T07:24:55.141Z",
-        "updatedAt": "2026-10-09T07:24:55.141Z",
+        "discoveredBy": "ySIAuGftmwUrbNziu3mVGuuKVJ83",
+        "discoveredAt": "2026-10-18T19:06:00.425Z",
+        "updatedAt": "2026-10-18T19:06:00.425Z",
         "createdAt": "2026-10-09T07:24:55.141Z"
       },
       {
@@ -14018,9 +14180,9 @@
         },
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
-        "discoveredBy": "8c44d0d9-9deb-449f-89f4-b01484433016",
-        "discoveredAt": "2026-10-09T07:24:55.141Z",
-        "updatedAt": "2026-10-09T07:24:55.141Z",
+        "discoveredBy": "ySIAuGftmwUrbNziu3mVGuuKVJ83",
+        "discoveredAt": "2026-10-18T19:06:00.425Z",
+        "updatedAt": "2026-10-18T19:06:00.425Z",
         "createdAt": "2026-10-09T07:24:55.141Z"
       },
       {
@@ -14152,9 +14314,9 @@
         },
         "opportunityScore": 100,
         "opportunityCategory": "Very High Opportunity",
-        "discoveredBy": "8c44d0d9-9deb-449f-89f4-b01484433016",
-        "discoveredAt": "2026-10-09T07:24:55.141Z",
-        "updatedAt": "2026-10-09T07:24:55.141Z",
+        "discoveredBy": "ySIAuGftmwUrbNziu3mVGuuKVJ83",
+        "discoveredAt": "2026-10-18T19:06:00.425Z",
+        "updatedAt": "2026-10-18T19:06:00.425Z",
         "createdAt": "2026-10-09T07:24:55.141Z"
       },
       {
@@ -17205,6 +17367,161 @@
         "id": "06e952f1-1de2-45ff-8023-94058bd299f4",
         "createdAt": "2026-10-13T22:35:59.248Z",
         "updatedAt": "2026-10-13T22:35:59.248Z"
+      },
+      {
+        "actor": "smoke-1792350299410@example.com",
+        "action": "lead_search",
+        "query": {
+          "country": "",
+          "countries": [],
+          "state": "",
+          "city": "",
+          "zip": "",
+          "industry": "",
+          "keyword": "businesses",
+          "businessTypes": [],
+          "mapLink": "https://www.google.com/maps/@13.4053888,-16.6887424,11z?entry=ttu&g_ep=EgoyMDI2MDYwMS4wIKXMDSoASAFQAw%3D%3D",
+          "latitude": null,
+          "longitude": null,
+          "radiusMeters": 15000,
+          "limit": 10,
+          "searchDepth": "deep",
+          "leadQuality": "all",
+          "sortBy": "opportunity",
+          "minOpportunityScore": 0,
+          "requireContact": false,
+          "missingWebsiteOnly": false,
+          "bypassCache": false,
+          "refreshSeed": ""
+        },
+        "count": 5,
+        "id": "5078b2dc-4588-4ff0-a0db-822adaa3824f",
+        "createdAt": "2026-10-18T19:05:23.862Z",
+        "updatedAt": "2026-10-18T19:05:23.862Z"
+      },
+      {
+        "actor": "smoke-1792350352247@example.com",
+        "action": "lead_search",
+        "query": {
+          "country": "",
+          "countries": [],
+          "state": "",
+          "city": "",
+          "zip": "",
+          "industry": "",
+          "keyword": "businesses",
+          "businessTypes": [],
+          "mapLink": "https://www.google.com/maps/@13.4053888,-16.6887424,11z?entry=ttu&g_ep=EgoyMDI2MDYwMS4wIKXMDSoASAFQAw%3D%3D",
+          "latitude": null,
+          "longitude": null,
+          "radiusMeters": 15000,
+          "limit": 10,
+          "searchDepth": "deep",
+          "leadQuality": "all",
+          "sortBy": "opportunity",
+          "minOpportunityScore": 0,
+          "requireContact": false,
+          "missingWebsiteOnly": false,
+          "bypassCache": false,
+          "refreshSeed": ""
+        },
+        "count": 5,
+        "id": "6cfb8e5a-bafb-4a3b-ac70-765851c7aafc",
+        "createdAt": "2026-10-18T19:06:14.438Z",
+        "updatedAt": "2026-10-18T19:06:14.438Z"
+      },
+      {
+        "actor": "smoke-1792367714937@example.com",
+        "action": "lead_search",
+        "query": {
+          "country": "",
+          "countries": [],
+          "state": "",
+          "city": "",
+          "zip": "",
+          "industry": "",
+          "keyword": "businesses",
+          "businessTypes": [],
+          "mapLink": "https://www.google.com/maps/@13.4053888,-16.6887424,11z?entry=ttu&g_ep=EgoyMDI2MDYwMS4wIKXMDSoASAFQAw%3D%3D",
+          "latitude": null,
+          "longitude": null,
+          "radiusMeters": 15000,
+          "limit": 10,
+          "searchDepth": "deep",
+          "leadQuality": "all",
+          "sortBy": "opportunity",
+          "minOpportunityScore": 0,
+          "requireContact": false,
+          "missingWebsiteOnly": false,
+          "bypassCache": false,
+          "refreshSeed": ""
+        },
+        "count": 5,
+        "id": "d0f72221-5325-42a7-9b7d-0af3ec93baf4",
+        "createdAt": "2026-10-18T23:55:38.497Z",
+        "updatedAt": "2026-10-18T23:55:38.497Z"
+      },
+      {
+        "actor": "smoke-1792367747014@example.com",
+        "action": "lead_search",
+        "query": {
+          "country": "",
+          "countries": [],
+          "state": "",
+          "city": "",
+          "zip": "",
+          "industry": "",
+          "keyword": "businesses",
+          "businessTypes": [],
+          "mapLink": "https://www.google.com/maps/@13.4053888,-16.6887424,11z?entry=ttu&g_ep=EgoyMDI2MDYwMS4wIKXMDSoASAFQAw%3D%3D",
+          "latitude": null,
+          "longitude": null,
+          "radiusMeters": 15000,
+          "limit": 10,
+          "searchDepth": "deep",
+          "leadQuality": "all",
+          "sortBy": "opportunity",
+          "minOpportunityScore": 0,
+          "requireContact": false,
+          "missingWebsiteOnly": false,
+          "bypassCache": false,
+          "refreshSeed": ""
+        },
+        "count": 5,
+        "id": "c269532d-62c7-49e3-9dcc-339afa29d96f",
+        "createdAt": "2026-10-18T23:56:11.250Z",
+        "updatedAt": "2026-10-18T23:56:11.250Z"
+      },
+      {
+        "actor": "smoke-1792367783614@example.com",
+        "action": "lead_search",
+        "query": {
+          "country": "",
+          "countries": [],
+          "state": "",
+          "city": "",
+          "zip": "",
+          "industry": "",
+          "keyword": "businesses",
+          "businessTypes": [],
+          "mapLink": "https://www.google.com/maps/@13.4053888,-16.6887424,11z?entry=ttu&g_ep=EgoyMDI2MDYwMS4wIKXMDSoASAFQAw%3D%3D",
+          "latitude": null,
+          "longitude": null,
+          "radiusMeters": 15000,
+          "limit": 10,
+          "searchDepth": "deep",
+          "leadQuality": "all",
+          "sortBy": "opportunity",
+          "minOpportunityScore": 0,
+          "requireContact": false,
+          "missingWebsiteOnly": false,
+          "bypassCache": false,
+          "refreshSeed": ""
+        },
+        "count": 5,
+        "id": "dcf23491-327c-4a0d-a062-53b904c1bc78",
+        "createdAt": "2026-10-18T23:56:49.687Z",
+        "updatedAt": "2026-10-18T23:56:49.687Z"
       }
     ],
     "activities": [
@@ -17234,6 +17551,33 @@
         "id": "99ca5b44-2751-4a9b-a7e9-e508ddab9691",
         "createdAt": "2026-10-09T07:25:13.926Z",
         "updatedAt": "2026-10-09T07:25:13.926Z"
+      },
+      {
+        "leadId": "photon-node-8209452111",
+        "actor": "smoke-1792350299410@example.com",
+        "action": "stage_updated",
+        "stage": "Contacted",
+        "id": "e1c80872-d9ed-4cc1-8845-4e281d035770",
+        "createdAt": "2026-10-18T19:05:31.966Z",
+        "updatedAt": "2026-10-18T19:05:31.966Z"
+      },
+      {
+        "leadId": "photon-node-8209452111",
+        "actor": "smoke-1792350352247@example.com",
+        "action": "stage_updated",
+        "stage": "Contacted",
+        "id": "4c22ab0a-0cbd-44aa-9d03-f2022d8dc281",
+        "createdAt": "2026-10-18T19:06:23.131Z",
+        "updatedAt": "2026-10-18T19:06:23.131Z"
+      },
+      {
+        "leadId": "osm-node-6341257888",
+        "actor": "smoke-1792367783614@example.com",
+        "action": "stage_updated",
+        "stage": "Contacted",
+        "id": "0af89efd-e40d-46f2-939a-8b61dc723606",
+        "createdAt": "2026-10-18T23:56:57.398Z",
+        "updatedAt": "2026-10-18T23:56:57.398Z"
       }
     ],
     "checkoutSessions": [

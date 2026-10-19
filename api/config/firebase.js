@@ -2,11 +2,17 @@ import crypto from "node:crypto";
 import { env } from "./env.js";
 import { logger } from "../utils/logger.js";
 
-const hasFirestoreCredentials = Boolean(
-  env.firebase.projectId &&
-  env.firebase.clientEmail &&
-  env.firebase.privateKey
-);
+// A malformed FIREBASE_PRIVATE_KEY paste (missing \n escaping, stray quotes)
+// used to make every Firestore call throw mid-request. Validate the key shape
+// up front and treat bad credentials as "not configured" so the app falls
+// back to the local store instead of failing every request.
+function hasFirestoreCredentials() {
+  return Boolean(
+    env.firebase.projectId &&
+    env.firebase.clientEmail &&
+    normalizedPrivateKey(env.firebase.privateKey)
+  );
+}
 
 let cachedToken = null;
 
@@ -116,7 +122,7 @@ function decodeDocument(doc) {
 }
 
 export function isFirebaseConfigured() {
-  return hasFirestoreCredentials;
+  return hasFirestoreCredentials();
 }
 
 function normalizedPrivateKey(raw = "") {
@@ -134,8 +140,44 @@ export function isFirebaseAuthConfigured() {
   return Boolean(env.firebase.webApiKey);
 }
 
+export async function verifyFirebaseIdToken(idToken) {
+  if (!env.firebase.webApiKey) {
+    const { AppError } = await import("../utils/errors.js");
+    throw new AppError("Google sign-in is not configured yet. Add FIREBASE_WEB_API_KEY in hosting env vars.", 503, "FIREBASE_AUTH_NOT_CONFIGURED");
+  }
+  let response;
+  try {
+    response = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${env.firebase.webApiKey}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ idToken })
+    });
+  } catch {
+    throw new AppError("Login service is temporarily unavailable. Please try again.", 503, "AUTH_UPSTREAM_UNAVAILABLE");
+  }
+  if (!response.ok) {
+    throw new AppError("That Google sign-in token is invalid or expired. Please try again.", 401, "INVALID_FIREBASE_TOKEN");
+  }
+  const payload = await response.json();
+  const record = payload?.users?.[0];
+  if (!record?.localId) {
+    throw new AppError("That Google sign-in token is invalid or expired. Please try again.", 401, "INVALID_FIREBASE_TOKEN");
+  }
+  const provider = Array.isArray(record.providerUserInfo) && record.providerUserInfo.length
+    ? String(record.providerUserInfo[0].providerId || "password")
+    : (record.phoneNumber && !record.email ? "phone" : "password");
+  return {
+    uid: String(record.localId),
+    email: String(record.email || "").trim().toLowerCase(),
+    emailVerified: Boolean(record.emailVerified),
+    phoneNumber: String(record.phoneNumber || ""),
+    displayName: String(record.displayName || ""),
+    provider
+  };
+}
+
 export function firestoreClient() {
-  if (!hasFirestoreCredentials) return null;
+  if (!hasFirestoreCredentials()) return null;
 
   return {
     async get(collection, id) {

@@ -1,6 +1,7 @@
 import { env } from "../config/env.js";
 import { AppError } from "../utils/errors.js";
 import { isCreatorQuestion, creatorAnswer, identityLine } from "../utils/brand.js";
+import { hasRealContent, visibleWordCount } from "../utils/siteContent.js";
 
 const POLLINATIONS = {
   GEN_BASE: "https://gen.pollinations.ai",
@@ -21,6 +22,9 @@ const POLLINATIONS = {
     WEBSITE_MIN_PAGE_CHARS: 1200,
     // Minimum total fragment chars before we retry the build.
     WEBSITE_MIN_TOTAL_CHARS: 2600,
+    // Minimum *visible* words before we retry — a CSS-only response can be long
+    // yet contain no readable text, which previously shipped empty sites.
+    WEBSITE_MIN_VISIBLE_WORDS: 180,
     // Rotating professional design archetypes — one is picked per build so no two
     // sites share the same look unless the user repeats the same choices.
     DESIGN_ARCHETYPES: [
@@ -493,7 +497,7 @@ export class PollinationsService {
     };
     let result = await request(POLLINATIONS.MODELS.WEBSITE_TOKENS_FIRST);
     let content = String(result.content || "");
-    if (content.replace(/<!--PAGE-->/gi, "").trim().length < POLLINATIONS.MODELS.WEBSITE_MIN_TOTAL_CHARS) {
+    if (content.replace(/<!--PAGE-->/gi, "").trim().length < POLLINATIONS.MODELS.WEBSITE_MIN_TOTAL_CHARS || visibleWordCount(content) < POLLINATIONS.MODELS.WEBSITE_MIN_VISIBLE_WORDS) {
       try {
         const retry = await request(POLLINATIONS.MODELS.WEBSITE_TOKENS_RETRY, "Previous attempt was cut short — write FULLY complete pages this time with every section finished, " + layoutPick + " hero, fresh class names, varied section order. Separate each page with <!--PAGE--> and end cleanly.");
         if (String(retry.content || "").length > content.length) {
@@ -505,7 +509,7 @@ export class PollinationsService {
       }
     }
     const fragments = content.split(/<!--PAGE-->/i).map((s) => s.trim()).filter(Boolean);
-    const pages = pageSpecs.map((spec, i) => ({ ...spec, body: fragments[i] && fragments[i].length > 40 ? fragments[i] : this.fallbackPageFragment(spec, lead, hero, gallery, i === 0, archPick.id) }));
+    const pages = pageSpecs.map((spec, i) => ({ ...spec, body: hasRealContent(fragments[i]) ? fragments[i] : this.fallbackPageFragment(spec, lead, hero, gallery, i === 0, archPick.id) }));
     return { ...result, html: this.assembleMultiPage(pages, business, accent, archPick.id), pageCount: pages.length };
   }
 

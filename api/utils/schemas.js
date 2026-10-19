@@ -118,7 +118,16 @@ export const authSchemas = {
   })),
   refresh: schema((input) => ({
     refreshToken: stringField(input, "refreshToken", { required: true, min: 20, max: 4000 })
-  }))
+  })),
+  firebaseSession: schema((input) => {
+    const idToken = stringField(input, "idToken", { required: true, min: 10, max: 8000 });
+    const name = stringField(input, "name", { max: 120, truncate: true });
+    const password = stringField(input, "password", { max: 128 });
+    if (password && password.length < 8) {
+      throw validationError({ password: ["Must be at least 8 characters"] });
+    }
+    return { idToken, name, password };
+  })
 };
 
 export const profileSchema = schema((input) => ({

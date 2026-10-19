@@ -4,6 +4,7 @@ const USER_KEY = "mat_user";
 const PUBLIC_API_PATHS = new Set([
   "/api/auth/login",
   "/api/auth/register",
+  "/api/auth/firebase",
   "/api/auth/refresh",
   "/api/health"
 ]);
@@ -216,7 +217,10 @@ export async function apiFetch(path, options = {}) {
     }
     var baseMessage = typeof payload === "object" && payload && payload.error ? payload.error.message : "Request failed";
     var message = fieldMessage ? baseMessage + " (" + fieldMessage + ")" : baseMessage;
-    throw new Error(message);
+    var error = new Error(message);
+    error.code = typeof payload === "object" && payload && payload.error && payload.error.code ? payload.error.code : undefined;
+    error.status = response.status;
+    throw error;
   }
 
   return payload;

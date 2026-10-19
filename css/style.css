@@ -1244,6 +1244,62 @@ th {
   padding: clamp(24px, 5vw, 52px);
 }
 
+.auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--muted, #8b95a7);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.auth-divider::before,
+.auth-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--border, #2a3244);
+}
+.btn-google {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  font-weight: 600;
+  background: #ffffff;
+  color: #1f2430;
+  border: 1px solid var(--border, #2a3244);
+}
+.btn-google:hover {
+  background: #f2f5fb;
+  color: #1f2430;
+}
+.google-icon { flex: 0 0 auto; }
+.auth-link {
+  display: block;
+  text-align: center;
+  font-size: 13px;
+  color: var(--muted, #8b95a7);
+  text-decoration: underline;
+}
+.auth-alt {
+  display: grid;
+  gap: 12px;
+  padding: 12px;
+  border: 1px dashed var(--border, #2a3244);
+  border-radius: 12px;
+}
+.verify-banner:not([hidden]) {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+  border-color: #d9a441;
+}
+
 .auth-panel form {
   display: grid;
   gap: 14px;
@@ -1614,3 +1670,7 @@ label:has([data-ai-website-toggle]) {
 .loading-row .spinner {
   margin: 0;
 }
+
+/* The hidden attribute must win over class display rules (.field, .btn etc.)
+   so hidden auth fields and panels actually disappear when toggled. */
+[hidden] { display: none !important; }
