@@ -1,4 +1,67 @@
+# MAT LEADS AI PRO X — robots.txt
+# All crawlers, including AI answer engines, are explicitly welcome on public pages.
+
+# Classic crawlers and AI engines: marketing pages are open to everyone.
 User-agent: *
 Allow: /
+Disallow: /api/
+Disallow: /dashboard.html
+Disallow: /crm.html
+Disallow: /lead-details.html
+Disallow: /client-report.html
+Disallow: /admin.html
+Disallow: /profile.html
+Disallow: /settings.html
+Disallow: /reports.html
+Disallow: /analytics.html
+Disallow: /billing-success.html
+Disallow: /pay.html
+Disallow: /forgot-password.html
 
-Sitemap: https://matleads.example.com/sitemap.xml
+# AI search agents / answer engines — explicitly allowed (do not block).
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Perplexity-User
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+User-agent: Bytespider
+Allow: /
+
+User-agent: Amazonbot
+Allow: /
+
+User-agent: cohere-ai
+Allow: /
+
+User-agent: meta-externalagent
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+Sitemap: https://www.mat-leads.world/sitemap.xml
