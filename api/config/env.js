@@ -77,9 +77,10 @@ export const env = {
     websiteModel: process.env.NVIDIA_WEBSITE_MODEL || "openai/gpt-oss-20b",
     websiteFallbacks: list(process.env.NVIDIA_WEBSITE_FALLBACKS, ["z-ai/glm-5.3-flash", "z-ai/glm-5.3"]),
     tycoonModel: process.env.NVIDIA_TYCOON_MODEL || "openai/gpt-oss-20b",
-    // Interactive budget: 12s was too tight for two model attempts. 20s lets a
-    // fast model answer and still leaves room for one fallback attempt.
-    timeoutMs: number(process.env.NVIDIA_TIMEOUT_MS, 20000),
+    // Interactive budget: gpt-oss-20b normally answers in 5-11s, but under load a
+    // single attempt can spike past the 17s per-attempt cap. 30s lets attempt 1
+    // run its full cap and still gives a primary retry real room before giving up.
+    timeoutMs: number(process.env.NVIDIA_TIMEOUT_MS, 30000),
     websiteTimeoutMs: number(process.env.NVIDIA_WEBSITE_TIMEOUT_MS, 50000),
     cacheTtlMs: number(process.env.NVIDIA_CACHE_TTL_MS, 600000),
     maxTokens: number(process.env.NVIDIA_MAX_TOKENS, 420)

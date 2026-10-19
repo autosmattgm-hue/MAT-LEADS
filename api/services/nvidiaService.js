@@ -368,7 +368,7 @@ export class NvidiaService {
       .filter((m) => !isRetiredModel(m))
       .slice(0, Math.max(1, Math.min(Number(maxAttempts) || 2, 2)));
     if (!queue.length) throw new AppError("No usable NVIDIA model is configured. Set NVIDIA_MODEL=z-ai/glm-5.3-flash and activate it at https://build.nvidia.com, then restart or redeploy.", 503, "NVIDIA_NO_LIVE_MODEL");
-    const deadlineAt = Date.now() + requestBudget(timeoutMs, 24000);
+    const deadlineAt = Date.now() + requestBudget(timeoutMs, 32000);
     for (let index = 0; index < queue.length; index += 1) {
       const model = queue[index];
       // 17s per-attempt cap: gpt-oss-20b runs 9-11s on real business prompts, so
@@ -403,6 +403,14 @@ export class NvidiaService {
           // A transient timeout cools the model briefly; a dead/retired ID gets
           // the full 5-minute ban so we don't lock out the only fast model.
           coolDownModel(model, lastError?.code === "NVIDIA_TIMEOUT" ? TRANSIENT_COOLDOWN_MS : MODEL_COOLDOWN_MS);
+          // Timeouts are usually jitter on the fast primary (5-10s normally,
+          // occasional 17s+ spikes). The slow fallbacks run ~44-100s live and can
+          // never answer inside an interactive budget, so a timed-out first
+          // attempt swaps the next slot to a retry of the SAME fast model — two
+          // real chances instead of one real chance plus a doomed slow attempt.
+          if (lastError?.code === "NVIDIA_TIMEOUT" && index === 0 && queue.length > 1 && queue[1] !== model) {
+            queue[1] = model;
+          }
           continue;
         }
         throw lastError;
@@ -460,6 +468,14 @@ export class NvidiaService {
         } finally {
           clearTimeout(retryTimeout);
         }
+      }
+      // Some models return HTTP 200 with empty content (observed live on glm and
+      // nemotron). Retry instead of handing the user a "No content" placeholder.
+      if (!String(content || "").trim()) {
+        lastError = new AppError(`NVIDIA model ${model} returned an empty response.`, 502, "NVIDIA_EMPTY");
+        coolDownModel(model, TRANSIENT_COOLDOWN_MS);
+        if (index === 0 && queue.length > 1 && queue[1] !== model) queue[1] = model;
+        continue;
       }
       const result = {
         configured: true,
