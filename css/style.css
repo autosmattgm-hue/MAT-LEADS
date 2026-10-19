@@ -1674,3 +1674,51 @@ label:has([data-ai-website-toggle]) {
 /* The hidden attribute must win over class display rules (.field, .btn etc.)
    so hidden auth fields and panels actually disappear when toggled. */
 [hidden] { display: none !important; }
+
+/* AEO: FAQ accordion (home, faq, feature pages) */
+.faq-list {
+  display: grid;
+  gap: 12px;
+  margin-top: 22px;
+}
+
+details.faq-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0 18px;
+}
+
+details.faq-item summary {
+  cursor: pointer;
+  font-weight: 700;
+  padding: 15px 34px 15px 0;
+  list-style: none;
+  position: relative;
+}
+
+details.faq-item summary::-webkit-details-marker {
+  display: none;
+}
+
+details.faq-item summary::after {
+  content: "+";
+  position: absolute;
+  right: 2px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.25rem;
+  color: var(--muted);
+}
+
+details.faq-item[open] summary::after {
+  content: "-";
+}
+
+details.faq-item .faq-answer {
+  margin: 0 0 16px;
+  color: var(--muted);
+  line-height: 1.65;
+  max-width: 78ch;
+}
+

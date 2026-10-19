@@ -156,9 +156,11 @@ const publicFiles = new Set([
   "/sw.js",
   "/robots.txt",
   "/sitemap.xml",
+  "/faq.html",
+  "/forgot-password.html",
   "/favicon.ico"
 ]);
-const publicFolders = ["/css/", "/js/", "/assets/", "/components/"];
+const publicFolders = ["/css/", "/js/", "/assets/", "/components/", "/features/"];
 
 function securityHeaders(extra = {}) {
   return {

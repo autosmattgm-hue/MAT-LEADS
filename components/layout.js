@@ -89,6 +89,8 @@ function initPublicNav() {
       <a href="/index.html#lead-engine">Lead Engine</a>
       <a href="/index.html#ai">AI Analyzer</a>
       <a href="/about.html">About</a>
+      <a href="/features/phone-lead-generation">Features</a>
+      <a href="/faq.html">FAQ</a>
       <a href="/pricing.html">Pricing</a>
       <a href="/login.html">Login</a>
     </nav>
