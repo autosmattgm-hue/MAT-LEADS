@@ -8,43 +8,54 @@
     <link rel="icon" href="/assets/logo-mark.svg" type="image/svg+xml">
     <link rel="stylesheet" href="/css/style.css">
   </head>
-  <body data-page="business-ai">
+  <body data-page="business-ai" class="tycoon-page">
     <div class="app-layout" data-app-shell>
       <main class="workspace">
-        <section class="workspace-header">
-          <div>
-            <h1>Business AI Tycoon</h1>
-            <p>The ruthless closer: what to say, what price to give, and how to win every deal. Pro / Admin only.</p>
-          </div>
-          <div class="toolbar">
-            <a class="btn btn-secondary" href="/dashboard.html">Leads</a>
-            <a class="btn btn-primary" href="/website-studio.html">Website Studio</a>
-          </div>
-        </section>
-        <section class="detail-layout">
-          <article class="panel">
-            <h2>Ask the Tycoon</h2>
-            <div id="tycoonGate" class="notice">Checking Pro access...</div>
-            <form id="tycoonForm" class="form-grid compact">
-              <div class="field" style="grid-column:1 / -1;"><label for="tycoonLead">Lead context (optional JSON or lead id)</label><input id="tycoonLead" placeholder="Paste lead id or leave blank"></div>
-              <div class="field" style="grid-column:1 / -1;"><label for="tycoonPrompt">Your deal question</label><textarea id="tycoonPrompt" rows="4" required placeholder="e.g. This restaurant has no website, owner asked price on WhatsApp. What do I say and what price?"></textarea></div>
-              <button class="btn btn-primary" type="submit">Ask Tycoon</button>
+        <div class="tycoon-shell">
+          <header class="tycoon-topbar">
+            <div class="tycoon-id">
+              <span class="tycoon-orb" aria-hidden="true">T</span>
+              <div>
+                <strong>Business AI Tycoon</strong>
+                <span class="muted-value">Closer mode &middot; what to say, what price, how to win</span>
+              </div>
+            </div>
+            <div class="toolbar">
+              <button class="btn btn-secondary" type="button" id="tycoonNew">New chat</button>
+              <a class="btn btn-secondary" href="/dashboard.html">Leads</a>
+              <a class="btn btn-primary" href="/website-studio.html">Website Studio</a>
+            </div>
+          </header>
+
+          <div id="tycoonGate" class="notice tycoon-gate">Checking Pro access&hellip;</div>
+
+          <section class="tycoon-thread" id="tycoonThread" aria-live="polite" aria-label="Conversation with Business AI Tycoon">
+            <div class="tycoon-empty" id="tycoonEmpty">
+              <span class="tycoon-orb big" aria-hidden="true">T</span>
+              <h1>Ask the Tycoon anything about closing deals</h1>
+              <p>Prices, objections, follow-ups, WhatsApp scripts &mdash; get a direct answer you can copy-paste today.</p>
+              <div class="tycoon-chips">
+                <button class="tycoon-chip" type="button">How do I price a $500 website for a dental clinic?</button>
+                <button class="tycoon-chip" type="button">Owner says my price is too expensive. What do I reply?</button>
+                <button class="tycoon-chip" type="button">Write a follow-up for a lead who ignored me for 3 days.</button>
+                <button class="tycoon-chip" type="button">How do I upsell a $99/mo care plan?</button>
+              </div>
+            </div>
+          </section>
+
+          <footer class="tycoon-composer-wrap">
+            <details class="tycoon-lead-toggle">
+              <summary>+ Lead context (optional)</summary>
+              <input id="tycoonLead" placeholder="Paste a lead id so the Tycoon knows the business">
+            </details>
+            <form id="tycoonForm" class="tycoon-composer">
+              <label class="sr-only" for="tycoonPrompt">Message Business AI Tycoon</label>
+              <textarea id="tycoonPrompt" rows="1" placeholder="Message Business AI Tycoon&hellip;" required></textarea>
+              <button type="submit" id="tycoonSend" aria-label="Send message">&#10148;</button>
             </form>
-            <div class="toolbar" style="margin-top:12px;">
-              <button class="btn btn-secondary" type="button" id="tycoonCopy">Copy Answer</button>
-              <button class="btn btn-secondary" type="button" id="tycoonWhats">Share to WhatsApp</button>
-            </div>
-          </article>
-          <article class="panel">
-            <h2>Tycoon Playbook</h2>
-            <div id="tycoonOut" class="notice">Example: ask for price anchoring, objection replies, follow-up sequence, retainer upsell.</div>
-            <div class="audit-list" style="margin-top:12px;">
-              <div class="audit-item"><span>Price rule</span><strong>Setup $1,500-$3,500 + $297-$797/mo</strong></div>
-              <div class="audit-item"><span>Close rule</span><strong>Audit first, price second, urgency last</strong></div>
-              <div class="audit-item"><span>WhatsApp rule</span><strong>Short script + voice note + audit link</strong></div>
-            </div>
-          </article>
-        </section>
+            <p class="tycoon-hint muted-value">Enter to send &middot; Shift+Enter for a new line &middot; cached answers reply instantly</p>
+          </footer>
+        </div>
       </main>
     </div>
     <script type="module" src="/components/layout.js"></script>
