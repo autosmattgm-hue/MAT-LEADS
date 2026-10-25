@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Verify Your Email | MAT LEADS AI PRO X</title>
+    <meta name="description" content="Confirm your email address to activate your MAT LEADS AI PRO X workspace.">
+    <link rel="icon" href="/assets/logo-mark.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="/css/style.css">
+  </head>
+  <body>
+    <main class="auth-page">
+      <section class="auth-visual">
+        <a class="brand" href="/index.html"><img src="/assets/logo-mark.svg" alt="" width="34" height="34"><span>MAT LEADS AI PRO X</span></a>
+        <h1>One click from your lead engine.</h1>
+        <p>Verifying your email keeps your workspace secure and activates your free trial.</p>
+      </section>
+      <section class="auth-panel">
+        <div id="verifyWorking">
+          <h2>Verifying your email…</h2>
+          <p>Hold on a moment while we confirm your link.</p>
+          <div class="notice" role="status">This only takes a second.</div>
+        </div>
+
+        <div id="verifySent" hidden>
+          <h2>Check your inbox</h2>
+          <p id="verifySentLine">We sent a verification link to your email address.</p>
+          <div class="notice" role="status">Open the link in that email to activate your account. Didn’t get it? Check spam, or resend below.</div>
+          <form id="resendForm" class="field" style="margin-top:14px;">
+            <label for="resendEmail">Email address</label>
+            <div style="display:flex;gap:8px;">
+              <input id="resendEmail" type="email" autocomplete="email" required placeholder="you@business.com">
+              <button class="btn btn-secondary" type="submit">Resend</button>
+            </div>
+          </form>
+          <button class="btn btn-primary" id="openPendingLink" type="button" hidden>Open my verification link</button>
+          <div class="notice" id="resendStatus" role="status" hidden></div>
+          <a class="btn btn-ghost" href="/login.html">Back to login</a>
+        </div>
+
+        <div id="verifySuccess" hidden>
+          <h2>Email verified ✓</h2>
+          <p id="verifySuccessLine">Your account is active. Taking you to the login page…</p>
+          <div class="notice success" role="status">Your free trial is ready — 2 lead searches with up to 5 leads each.</div>
+          <a class="btn btn-primary" href="/login.html">Continue to login</a>
+        </div>
+
+        <div id="verifyError" hidden>
+          <h2>That link didn’t work</h2>
+          <div class="notice error" id="verifyErrorLine" role="alert"></div>
+          <p>Request a fresh verification link below, or contact support if it keeps failing.</p>
+          <form id="errorResendForm" class="field">
+            <label for="errorResendEmail">Email address</label>
+            <div style="display:flex;gap:8px;">
+              <input id="errorResendEmail" type="email" autocomplete="email" required placeholder="you@business.com">
+              <button class="btn btn-secondary" type="submit">Send new link</button>
+            </div>
+          </form>
+          <div class="notice" id="errorResendStatus" role="status" hidden></div>
+          <a class="btn btn-ghost" href="/login.html">Back to login</a>
+        </div>
+      </section>
+    </main>
+    <script type="module" src="/components/layout.js"></script>
+    <script type="module" src="/js/verify-email.js"></script>
+  </body>
+</html>

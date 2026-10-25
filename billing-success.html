@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Payment Complete | MAT LEADS AI PRO X</title>
-    <meta name="description" content="Confirm your MAT LEADS AI PRO X PayPal payment and activate your lead generation plan.">
+    <title>Subscribed Successfully | MAT LEADS AI PRO X</title>
+    <meta name="description" content="Your MAT LEADS AI PRO X subscription is active — your plan features are unlocked.">
     <meta name="robots" content="noindex,nofollow">
     <link rel="icon" href="/assets/logo-mark.svg" type="image/svg+xml">
     <link rel="stylesheet" href="/css/style.css">
@@ -13,13 +13,15 @@
     <header class="public-nav" data-public-nav></header>
     <main class="section">
       <div class="container">
-        <section class="panel" aria-live="polite">
-          <span class="plan-pill">Billing</span>
-          <h1>Activating your plan</h1>
-          <p class="notice" data-billing-status>Confirming your PayPal return and unlocking your workspace...</p>
-          <div class="lead-actions" style="margin-top:16px;">
-            <a class="btn btn-primary" href="/dashboard.html">Go to Dashboard</a>
-            <a class="btn btn-secondary" href="/pricing.html">Back to Pricing</a>
+        <section class="panel" aria-live="polite" style="max-width:660px;margin:0 auto;text-align:center;">
+          <span class="plan-pill" data-billing-plan-pill>Subscription</span>
+          <div data-billing-icon style="font-size:2.8rem;line-height:1;margin:10px 0 4px;">⏳</div>
+          <h1 data-billing-title>Activating your plan</h1>
+          <p class="notice" data-billing-status>Confirming your payment and unlocking your workspace…</p>
+          <ul id="planPerks" hidden style="display:none;text-align:left;max-width:440px;margin:16px auto 0;padding:14px 18px;background:var(--bg);border:1px solid var(--border);border-radius:12px;font-size:.9rem;line-height:1.9;"></ul>
+          <div class="lead-actions" style="margin-top:18px;justify-content:center;">
+            <a class="btn btn-primary" href="/dashboard.html" data-go-dashboard>Go to Dashboard</a>
+            <a class="btn btn-secondary" href="/pricing.html" data-back-pricing>Back to Pricing</a>
           </div>
         </section>
       </div>

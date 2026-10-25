@@ -4,141 +4,85 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Website Studio | MAT LEADS AI PRO X</title>
-    <meta name="description" content="Chat with the AI to generate a professional client website, refine it, then open the manual builder for pixel-perfect edits.">
+    <meta name="description" content="Chat with MAT Studio AI to generate a professional client website, refine it in plain words, then fine-tune every detail in the visual builder.">
+    <link rel="canonical" href="https://www.mat-leads.world/website-studio.html">
     <link rel="icon" href="/assets/logo-mark.svg" type="image/svg+xml">
     <link rel="stylesheet" href="/css/style.css">
-    <style>
-      .studio-shell{max-width:1280px;margin:0 auto;padding:18px 16px 40px}
-      .studio-top{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
-      .studio-top h1{margin:0;font-size:clamp(1.1rem,2.5vw,1.4rem)}
-      .studio-top .sub{color:var(--muted);font-size:.88rem;margin:2px 0 0}
-      .studio-top .spacer{flex:1}
-      .btn-edit{display:inline-flex;align-items:center;gap:6px;padding:6px 13px;font-size:.82rem;border-radius:999px}
-      .edit-jump{margin-left:auto;display:flex;gap:8px;align-items:center}
-      .btn-edit{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;font-size:.85rem;border-radius:999px;border:1px solid var(--border-strong);background:var(--surface);cursor:pointer;font-weight:700}
-      .studio-grid{display:grid;grid-template-columns:minmax(320px,390px) minmax(0,1fr);gap:16px;align-items:start}
-      @media(max-width:1020px){.studio-grid{grid-template-columns:minmax(0,1fr)}.chat-card{order:2}.preview-card{order:1}}
-      .chat-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow);display:flex;flex-direction:column;overflow:hidden;min-height:520px}
-      .chat-head{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
-      .ai-dot{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#d97757,#b3543f);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800}
-      .chat-head b{display:block;font-size:.95rem}
-      .chat-head small{color:var(--muted)}
-      .model-pill{margin-left:auto;font-size:.72rem;border:1px solid var(--border);border-radius:999px;padding:3px 10px;color:var(--muted)}
-      .chat-log{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;background:var(--bg);max-height:52vh;min-height:200px}
-      .bubble{max-width:92%;padding:11px 14px;border-radius:14px;font-size:.9rem;line-height:1.5;white-space:pre-wrap}
-      .bubble.ai{background:var(--surface);border:1px solid var(--border);align-self:flex-start}
-      .bubble.user{background:#0b6bcb;color:#fff;align-self:flex-end}
-      .chat-form{border-top:1px solid var(--border);padding:12px;display:flex;flex-direction:column;gap:10px;background:var(--surface)}
-      .chat-form details{border:1px solid var(--border);border-radius:10px;padding:8px 10px;font-size:.83rem}
-      .chat-form details summary{cursor:pointer;font-weight:700}
-      .brief-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
-      .brief-grid .full{grid-column:1/-1}
-      .brief-grid label{font-size:.72rem;color:var(--muted);display:block;margin-bottom:3px}
-      .brief-grid input,.brief-grid select,.brief-grid textarea{width:100%;padding:8px;border:1px solid var(--border);border-radius:8px;font:inherit;font-size:.83rem;background:var(--surface);color:var(--text)}
-      .composer{display:flex;gap:8px;align-items:flex-end}
-      .composer textarea{flex:1;min-height:44px;resize:vertical;padding:10px 12px;border:1px solid var(--border-strong);border-radius:12px;font:inherit;font-size:.9rem;background:var(--surface);color:var(--text)}
-      .composer button{border:none;background:#d97757;color:#fff;border-radius:12px;padding:11px 16px;font-weight:700;cursor:pointer}
-      .composer button:disabled{opacity:.6;cursor:wait}
-      .follow-wrap{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:.8rem;color:var(--muted)}
-      .follow-toggle{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--border-strong);background:var(--surface);color:var(--text);border-radius:999px;padding:6px 13px;font-size:.8rem;font-weight:700;cursor:pointer}
-      .follow-toggle .tick{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;border:2px solid var(--border-strong);font-size:.65rem;line-height:1}
-      .follow-toggle.on{border-color:#16a34a;background:#f0fdf4;color:#166534}
-      .follow-toggle.on .tick{border-color:#16a34a;background:#16a34a;color:#fff}
-      .preview-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow);overflow:hidden}
-      .preview-bar{display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--border);flex-wrap:wrap}
-      .preview-url{flex:1;min-width:140px;font-size:.78rem;color:var(--muted);background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:6px 10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-      .preview-actions{display:flex;gap:6px;flex-wrap:wrap}
-      .chip-btn{font-size:.78rem;padding:6px 12px;border-radius:999px;border:1px solid var(--border-strong);background:var(--surface);cursor:pointer;font-weight:600}
-      .chip-btn.primary{background:#0b6bcb;border-color:#0b6bcb;color:#fff}
-      #studioPreview{width:100%;min-height:620px;border:none;background:#fff;display:block;margin:0 auto}
-      #studioPreview.mobile{max-width:400px;border-left:1px solid var(--border);border-right:1px solid var(--border)}
-      .gen-overlay{display:none;padding:34px 20px;text-align:center;color:var(--muted)}
-      .hidden-old{display:none!important}
-      @media(max-width:1020px){
-        .studio-shell{padding:14px 12px 32px}
-        .chat-card{min-height:0}
-        .chat-log{max-height:38vh}
-        .preview-bar{gap:6px}
-        .preview-url{flex-basis:100%;order:5}
-        .preview-actions{flex-wrap:wrap}
-        .chip-btn{padding:8px 14px;font-size:.82rem}
-        #studioPreview{min-height:70vh}
-      }
-      @media(max-width:560px){
-        .studio-top h1{font-size:1.15rem}
-        .edit-jump{width:100%;justify-content:flex-start}
-        .brief-grid{grid-template-columns:1fr}
-        .composer textarea{font-size:16px}
-        .device-toggle{display:none}
-        .chip-btn.primary{flex:1;text-align:center}
-      }
-    </style>
   </head>
   <body data-page="website-studio">
     <div class="app-layout" data-app-shell>
       <main class="workspace">
-        <div class="studio-shell">
-          <div class="studio-top">
+        <div class="wsx-shell">
+          <div class="wsx-top">
             <div>
               <h1>Website Studio</h1>
-              <p class="sub">Describe the business — the AI designs a complete, professional site.</p>
+              <p class="sub">Chat to design a professional site — then fine-tune it in the visual builder.</p>
             </div>
-            <div class="edit-jump">
+            <div class="wsx-top-actions">
               <span class="plan-pill" id="studioPlan">Pro / Admin</span>
-              <button class="btn-edit" id="openManualBuilder" type="button" title="Open the manual no-code website builder">✎ Edit</button>
+              <button class="btn-edit" id="wsxNewChat" type="button" title="Start a fresh conversation">New chat</button>
             </div>
           </div>
-          <div class="studio-grid">
-            <section class="chat-card" aria-label="AI website assistant">
-              <div class="chat-head">
-                <div class="ai-dot">M</div>
-                <div><b>MAT Studio AI</b><small id="studioStatusLine">Ready to design</small></div>
-                <span class="model-pill" id="studioMeta">AI</span>
+
+          <div class="wsx-grid">
+            <section class="wsx-chat" aria-label="AI website assistant">
+              <div class="wsx-chathead">
+                <div class="wsx-avatar">M</div>
+                <div class="wsx-chathead-txt">
+                  <b>MAT Studio AI</b>
+                  <small id="studioStatusLine">Online — ready to build</small>
+                </div>
+                <span class="wsx-model" id="studioMeta">AI</span>
               </div>
-              <div class="chat-log" id="chatLog" aria-live="polite"></div>
-              <form class="chat-form" id="studioBuildForm">
-                <details id="briefBox" open>
-                  <summary>Build brief (business, style, pages, images)</summary>
-                  <div class="brief-grid">
-                    <div class="full"><label for="studioBusiness">Business name</label><input id="studioBusiness" placeholder="e.g. Lakeside Dental Studio"></div>
-                    <div><label for="studioStyle">Style</label><select id="studioStyle"><option value="modern">Modern premium</option><option value="luxury">Luxury dark</option><option value="medical">Clean medical</option><option value="restaurant">Warm restaurant</option><option value="bold">Bold agency</option><option value="minimal">Minimal elegant</option></select></div>
-                    <div><label for="studioPalette">Color theme</label><select id="studioPalette"><option value="emerald">Emerald</option><option value="blue">Royal blue</option><option value="gold">Gold + black</option><option value="rose">Rose</option><option value="teal">Teal</option><option value="purple">Purple</option><option value="orange">Orange</option></select></div>
-                    <div><label for="studioPages">Pages</label><select id="studioPages"><option value="1">1 — Landing</option><option value="2">2 — Home + About</option><option value="3">3 — Home, About, Services</option><option value="4">4 — + Contact</option></select></div>
-                    <div><label for="studioLeadId">Lead ID (optional)</label><input id="studioLeadId" placeholder="auto-filled from leads"></div>
-                    <div class="full"><label for="studioHeroImg">Hero image URL</label><input id="studioHeroImg" placeholder="https://.../hero.jpg"></div>
-                    <div class="full"><label for="studioGallery">Gallery URLs (one per line, up to 6)</label><textarea id="studioGallery" rows="2" placeholder="https://.../photo1.jpg"></textarea></div>
-                  </div>
-                </details>
-                <div class="composer">
-                  <textarea id="studioInstruction" placeholder="Describe the site… e.g. A 3-page site for a Lagos bakery, warm luxury style, with menu, order form and WhatsApp button"></textarea>
-                  <button type="submit" id="studioBuildBtn">➤</button>
+
+              <div class="wsx-leads">
+                <label for="wsxLeadSelect">Build for (saved lead)</label>
+                <select id="wsxLeadSelect">
+                  <option value="">— Type a business name in the chat —</option>
+                </select>
+                <div class="wsx-leadcard" id="wsxLeadCard" hidden>
+                  <b id="wsxLeadName">—</b>
+                  <span class="wsx-leadid" id="wsxLeadId">—</span>
+                  <small id="wsxLeadMeta"></small>
                 </div>
-                <div class="follow-wrap">
-                  <button type="button" id="followBriefToggle" class="follow-toggle on" aria-pressed="true" title="When ON, the AI strictly follows your style, pages and design brief. When OFF, it freely designs the best site for that business."><span class="tick">✓</span> Follow design brief</button>
-                  <span id="followHint">ON — AI follows your brief exactly.</span>
-                </div>
+              </div>
+
+              <div class="wsx-log" id="chatLog" aria-live="polite"></div>
+              <div class="wsx-chips" id="wsxChips" aria-label="Quick replies"></div>
+
+              <details class="wsx-history" id="wsxHistoryBox">
+                <summary>Your websites</summary>
+                <div id="wsxHistory" class="wsx-history-list"><p class="wsx-history-empty">Loading your sites…</p></div>
+              </details>
+
+              <form class="wsx-composer" id="wsxComposer">
+                <textarea id="wsxInput" rows="1" placeholder="Message MAT Studio AI… (Enter to send, Shift+Enter for a new line)"></textarea>
+                <button type="submit" id="wsxSend" aria-label="Send message">➤</button>
               </form>
-              <form id="studioRefineForm" class="hidden-old" aria-hidden="true"><textarea id="studioInstructionHidden"></textarea></form>
             </section>
-            <section class="preview-card" aria-label="Website preview">
-              <div class="preview-bar">
-                <div class="dots"><span></span><span></span><span></span></div>
-                <div class="preview-url" id="previewUrl">No website yet — describe it on the left</div>
-                <div class="device-toggle"><button type="button" id="viewDesktop" class="on">Desktop</button><button type="button" id="viewMobile">Mobile</button></div>
-                <div class="preview-actions">
-                  <button class="chip-btn" type="button" id="studioOpenPreview">Open</button>
-                  <button class="chip-btn" type="button" id="studioDownload">Download</button>
-                  <button class="chip-btn" type="button" id="studioCopyLink">Copy link</button>
-                  <button class="chip-btn primary" type="button" id="studioEditManual">✎ Edit in builder</button>
+
+            <section class="wsx-preview" aria-label="Website preview">
+              <div class="wsx-previewbar">
+                <div class="wsx-device">
+                  <button type="button" id="viewDesktop" class="on">Desktop</button>
+                  <button type="button" id="viewMobile">Mobile</button>
+                </div>
+                <div class="wsx-preview-actions">
+                  <button class="chip-btn" type="button" id="studioOpenPreview" disabled>Open</button>
+                  <button class="chip-btn" type="button" id="studioDownload" disabled>Download</button>
+                  <button class="chip-btn" type="button" id="studioCopyLink" disabled>Copy link</button>
+                  <button class="chip-btn primary" type="button" id="studioEditManual" disabled>✎ Edit in builder</button>
                 </div>
               </div>
-              <div class="gen-overlay" id="genOverlay"><b>Designing your website…</b><div class="typing"><span></span><span></span><span></span></div><div style="font-size:.8rem;margin-top:8px">Professional hero, sections, gallery, FAQ &amp; contact — this takes ~20–40 seconds</div></div>
+              <div class="wsx-status" id="studioStatus">The AI will ask how many pages you need first.</div>
+              <div class="gen-overlay" id="genOverlay">
+                <b>Designing your website…</b>
+                <div class="typing"><span></span><span></span><span></span></div>
+                <div class="wsx-gensub">Senior-grade hero, sections, gallery, FAQ &amp; contact — about 30–50 seconds</div>
+              </div>
               <iframe id="studioPreview" title="Generated website preview"></iframe>
             </section>
           </div>
-          <div id="studioStatus" class="notice" style="margin-top:12px;">Paste a lead or type a business name to start.</div>
-          <input id="studioHeroFile" type="file" accept="image/*" hidden>
-          <input id="studioGalleryFiles" type="file" accept="image/*" multiple hidden>
         </div>
       </main>
     </div>

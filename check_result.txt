@@ -1,0 +1,5 @@
+
+> mat-leads-ai-pro-x@1.0.0 check
+> node utils/syntax-check.js
+
+✓ Syntax check passed for 92 JavaScript file(s).

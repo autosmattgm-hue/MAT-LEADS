@@ -1,0 +1,2 @@
+single check OK
+syntax-check stdout: ✓ Syntax check passed for 92 JavaScript file(s).

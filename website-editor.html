@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Website Editor | MAT LEADS AI PRO X</title>
+    <meta name="description" content="Edit your generated website visually — text, images, colours, pages, navigation and SEO — with no code required.">
+    <meta name="robots" content="noindex,nofollow">
+    <link rel="icon" href="/assets/logo-mark.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="/css/style.css">
+  </head>
+  <body data-page="website-editor">
+    <div class="app-layout" data-app-shell>
+      <main class="workspace">
+        <div class="wed-shell">
+          <header class="wed-top">
+            <div class="wed-top-left">
+              <a class="wed-back" href="/website-studio.html" title="Back to Website Studio">← Studio</a>
+              <div>
+                <h1>Website Editor</h1>
+                <p class="sub" id="wedSiteName">Loading your site…</p>
+              </div>
+            </div>
+            <div class="wed-top-actions">
+              <span class="plan-pill" id="wedPlan">Pro</span>
+              <div class="wed-device">
+                <button type="button" id="wedDesktop" class="on">Desktop</button>
+                <button type="button" id="wedMobile">Mobile</button>
+              </div>
+              <button class="btn btn-secondary" type="button" id="wedUndo" title="Undo the last change">↶ Undo</button>
+              <button class="btn btn-secondary" type="button" id="wedPreview">Preview</button>
+              <button class="btn btn-primary" type="button" id="wedSave">Save &amp; publish</button>
+            </div>
+          </header>
+
+          <div class="wed-grid">
+            <aside class="wed-panel" aria-label="Editor controls">
+              <nav class="wed-tabs" role="tablist">
+                <button type="button" class="wed-tab on" data-wed-tab="content" role="tab">Content</button>
+                <button type="button" class="wed-tab" data-wed-tab="pages" role="tab">Pages</button>
+                <button type="button" class="wed-tab" data-wed-tab="style" role="tab">Style</button>
+                <button type="button" class="wed-tab" data-wed-tab="nav" role="tab">Menu</button>
+                <button type="button" class="wed-tab" data-wed-tab="seo" role="tab">SEO</button>
+              </nav>
+
+              <div class="wed-tabpanes">
+                <section class="wed-pane on" data-wed-pane="content">
+                  <p class="wed-hint">Click any text in the preview to edit it, or use the fields below.</p>
+
+                  <label class="wed-field">
+                    <span>Business name</span>
+                    <input type="text" id="wedBusinessName" placeholder="Lakeside Dental">
+                  </label>
+                  <label class="wed-field">
+                    <span>Tagline / headline</span>
+                    <input type="text" id="wedHeadline" placeholder="A confident headline for the hero">
+                  </label>
+                  <label class="wed-field">
+                    <span>Intro paragraph</span>
+                    <textarea id="wedIntro" rows="3" placeholder="One or two sentences about the business."></textarea>
+                  </label>
+                  <label class="wed-field">
+                    <span>Primary button label</span>
+                    <input type="text" id="wedCtaLabel" placeholder="Book a free quote">
+                  </label>
+                  <label class="wed-field">
+                    <span>Primary button link</span>
+                    <input type="text" id="wedCtaUrl" placeholder="#contact or https://…">
+                  </label>
+
+                  <div class="wed-row">
+                    <label class="wed-field">
+                      <span>Phone</span>
+                      <input type="text" id="wedPhone" placeholder="+1 555 0100">
+                    </label>
+                    <label class="wed-field">
+                      <span>Email</span>
+                      <input type="email" id="wedEmail" placeholder="hello@business.com">
+                    </label>
+                  </div>
+
+                  <label class="wed-field">
+                    <span>Address</span>
+                    <input type="text" id="wedAddress" placeholder="12 Market Street, Austin TX">
+                  </label>
+                  <label class="wed-field">
+                    <span>Hero image URL</span>
+                    <input type="url" id="wedHeroImage" placeholder="https://…/hero.jpg">
+                  </label>
+                  <div class="wed-inline">
+                    <button class="btn btn-secondary btn-sm" type="button" id="wedUploadHero">Upload image</button>
+                    <span class="wed-hint" id="wedUploadMsg">or paste a link above</span>
+                  </div>
+
+                  <label class="wed-field">
+                    <span>Services (one per line)</span>
+                    <textarea id="wedServices" rows="5" placeholder="Website design&#10;Local SEO&#10;Monthly care plan"></textarea>
+                  </label>
+                  <label class="wed-field">
+                    <span>FAQ (one question per line)</span>
+                    <textarea id="wedFaq" rows="4" placeholder="How long does a build take?&#10;Do you offer monthly support?"></textarea>
+                  </label>
+                </section>
+                <section class="wed-pane" data-wed-pane="pages">
+                  <p class="wed-hint">Your site is split into pages. Edit each page's content below.</p>
+                  <label class="wed-field">
+                    <span>Active page</span>
+                    <select id="wedPageSelect"></select>
+                  </label>
+                  <label class="wed-field">
+                    <span>Page title</span>
+                    <input type="text" id="wedPageTitle" placeholder="Home">
+                  </label>
+                  <label class="wed-field">
+                    <span>Page headline</span>
+                    <input type="text" id="wedPageHeadline" placeholder="A bold headline for this page">
+                  </label>
+                  <label class="wed-field">
+                    <span>Page body</span>
+                    <textarea id="wedPageBody" rows="8" placeholder="Describe this page in your own words."></textarea>
+                  </label>
+                  <div class="wed-inline">
+                    <button class="btn btn-secondary btn-sm" type="button" id="wedAddPage">+ Add page</button>
+                    <button class="btn btn-secondary btn-sm" type="button" id="wedRemovePage">Remove page</button>
+                  </div>
+                </section>
+
+                <section class="wed-pane" data-wed-pane="style">
+                  <p class="wed-hint">Tune the look of your site. Changes apply to the live preview instantly.</p>
+                  <label class="wed-field">
+                    <span>Accent colour</span>
+                    <input type="color" id="wedAccent" value="#0f172a">
+                  </label>
+                  <label class="wed-field">
+                    <span>Background colour</span>
+                    <input type="color" id="wedBackground" value="#f4f6fb">
+                  </label>
+                  <label class="wed-field">
+                    <span>Text colour</span>
+                    <input type="color" id="wedTextColor" value="#16233a">
+                  </label>
+                  <label class="wed-field">
+                    <span>Font family</span>
+                    <select id="wedFont">
+                      <option value="'Segoe UI',Inter,system-ui,Arial,sans-serif">Modern sans</option>
+                      <option value="Georgia,'Times New Roman',serif">Classic serif</option>
+                      <option value="'Courier New',monospace">Monospace</option>
+                      <option value="'Trebuchet MS',Arial,sans-serif">Friendly</option>
+                    </select>
+                  </label>
+                  <label class="wed-field">
+                    <span>Heading size</span>
+                    <input type="range" id="wedHeadingScale" min="80" max="150" value="100">
+                  </label>
+                  <label class="wed-check">
+                    <input type="checkbox" id="wedRounded">
+                    <span>Rounded corners</span>
+                  </label>
+                  <label class="wed-check">
+                    <input type="checkbox" id="wedShadows">
+                    <span>Card shadows</span>
+                  </label>
+                </section>
+                <section class="wed-pane" data-wed-pane="nav">
+                  <p class="wed-hint">Your top menu. Each item links to a page on this site.</p>
+                  <div id="wedNavList" class="wed-navlist"></div>
+                  <div class="wed-inline">
+                    <button class="btn btn-secondary btn-sm" type="button" id="wedAddNav">+ Add menu item</button>
+                  </div>
+                </section>
+
+                <section class="wed-pane" data-wed-pane="seo">
+                  <p class="wed-hint">How your site appears in Google and when shared.</p>
+                  <label class="wed-field">
+                    <span>Page title</span>
+                    <input type="text" id="wedSeoTitle" maxlength="60" placeholder="Lakeside Dental | Austin">
+                  </label>
+                  <label class="wed-field">
+                    <span>Meta description</span>
+                    <textarea id="wedSeoDescription" rows="3" maxlength="160" placeholder="A short summary of the business."></textarea>
+                  </label>
+                  <label class="wed-field">
+                    <span>Keywords (comma separated)</span>
+                    <input type="text" id="wedSeoKeywords" placeholder="dentist, austin, teeth cleaning">
+                  </label>
+                  <label class="wed-field">
+                    <span>Share link</span>
+                    <input type="text" id="wedShareUrl" readonly>
+                  </label>
+                  <div class="wed-inline">
+                    <button class="btn btn-secondary btn-sm" type="button" id="wedCopyLink">Copy link</button>
+                  </div>
+                </section>
+              </div>
+            </aside>
+
+            <section class="wed-canvas" aria-label="Website preview">
+              <div class="wed-status" id="wedStatus">Loading your site…</div>
+              <div class="wed-canvas-inner" id="wedCanvas">
+                <iframe id="wedPreview" title="Website editing preview"></iframe>
+              </div>
+            </section>
+          </div>
+
+          <input id="wedFileInput" type="file" accept="image/*" hidden>
+        </div>
+      </main>
+    </div>
+    <script type="module" src="/components/layout.js"></script>
+    <script type="module" src="/js/website-editor.js"></script>
+  </body>
+</html>
