@@ -129,8 +129,9 @@
               <input id="minOpportunityScore" name="minOpportunityScore" type="number" min="0" max="100" value="0">
             </div>
             <div class="field">
-              <label for="limit">Results</label>
+              <label for="limit">Results to Find</label>
               <select id="limit" name="limit">
+                <option value="5">5</option>
                 <option value="10">10</option>
                 <option value="20" selected>20</option>
                 <option value="30">30</option>
@@ -146,6 +147,7 @@
             <div class="form-actions">
               <button class="btn btn-primary" type="submit">Search Leads</button>
               <button class="btn btn-secondary" type="button" data-refresh-leads>Refresh Leads</button>
+              <button class="btn btn-secondary" type="button" data-expand-search>Broaden Area</button>
               <button class="btn btn-secondary" type="button" data-save-visible-leads>Save All</button>
               <button class="btn btn-secondary" type="button" data-export-visible-leads>Export CSV</button>
             </div>
@@ -192,6 +194,14 @@
                 <div class="field">
                   <label for="visibleLeadMinScore">Minimum Score</label>
                   <input id="visibleLeadMinScore" type="number" min="0" max="100" value="0">
+                </div>
+                <div class="field">
+                  <label for="leadPageSize">Cards Per Page</label>
+                  <select id="leadPageSize" aria-label="Lead cards per page">
+                    <option value="10">10</option>
+                    <option value="20" selected>20</option>
+                    <option value="50">50</option>
+                  </select>
                 </div>
               </div>
               <div id="leadCommandSummary" class="notice">Run a search to activate lead filters and bulk actions.</div>
