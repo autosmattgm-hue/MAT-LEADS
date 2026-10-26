@@ -19,30 +19,8 @@ export class DashboardService {
       wonDeals,
       estimatedRevenue,
       conversionRate: savedLeads ? Math.round((wonDeals / savedLeads) * 100) : 0,
-      monthlyGrowth: this.monthlyGrowth(leads),
-      dailyActions: this.dailyActions(leads)
+      monthlyGrowth: this.monthlyGrowth(leads)
     };
-  }
-
-  dailyActions(leads) {
-    const now = Date.now();
-    const contactedStages = new Set(["Contacted", "Follow Up", "Proposal Sent", "Meeting Scheduled", "Negotiation", "Won", "Lost"]);
-    const actions = [];
-
-    for (const lead of leads) {
-      const stage = lead.stage || "New";
-      const dueAt = lead.nextActionAt || lead.nextFollowUpAt || lead.followUpAt || lead.reminderAt;
-      const dueTime = dueAt ? new Date(dueAt).getTime() : Number.NaN;
-      const score = Number(lead.opportunityScore || lead.audit?.score || 0);
-      if (Number.isFinite(dueTime) && dueTime <= now && !["Won", "Lost"].includes(stage)) {
-        actions.push({ priority: dueTime < now - 86400000 ? 1 : 2, type: "follow_up", leadId: lead.id, leadName: lead.name, dueAt, title: dueTime < now - 86400000 ? "Overdue follow-up" : "Follow-up due today", reason: `Next action was scheduled for ${new Date(dueAt).toLocaleDateString()}.`, actionLabel: "Open lead" });
-      } else if (stage === "New" && score >= 70 && !contactedStages.has(stage)) {
-        actions.push({ priority: 3, type: "high_opportunity", leadId: lead.id, leadName: lead.name, title: "Contact a high-opportunity lead", reason: `Opportunity score is ${score}/100 and no outreach stage is recorded.`, actionLabel: "Open lead" });
-      } else if (lead.websiteUrl && !lead.audit?.completedAt && !lead.audit?.status) {
-        actions.push({ priority: 4, type: "website_audit", leadId: lead.id, leadName: lead.name, title: "Review website opportunity", reason: "A website URL is available but no completed audit is stored.", actionLabel: "Open audit" });
-      }
-    }
-    return actions.sort((a, b) => a.priority - b.priority).slice(0, 8);
   }
 
   monthlyGrowth(leads) {

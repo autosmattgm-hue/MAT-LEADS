@@ -2,7 +2,7 @@
 // Used by every AI entry point so the AI always knows who built this website.
 
 export const CREATOR_NAME = "Ebube John Okoye";
-export const CREATOR_TITLE = "global AI product builder and web developer";
+export const CREATOR_TITLE = "Nigerian web developer";
 export const PLATFORM_NAME = "MAT LEADS AI PRO X";
 export const PLATFORM_SITE = "mat-leads.world";
 

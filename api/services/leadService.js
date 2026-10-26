@@ -5,36 +5,10 @@ import { GooglePlacesService } from "./googlePlacesService.js";
 import { WebsiteAuditService } from "./websiteAuditService.js";
 import { AppError } from "../utils/errors.js";
 import { isAdminUser } from "../utils/entitlements.js";
-import { enhanceSearchResult } from "./smartsearch.js";
 
 const searchCache = new Map();
 const SEARCH_CACHE_TTL_MS = 5 * 60 * 1000;
 const MAX_SEARCH_CACHE_ENTRIES = 80;
-const INTERACTIVE_PROVIDER_TIMEOUT_MS = 38000;
-const MAX_INLINE_AUDITS = 24;
-const INLINE_AUDIT_CONCURRENCY = 4;
-
-function withTimeout(promise, timeoutMs, message) {
-  let timer;
-  return Promise.race([
-    promise,
-    new Promise((_, reject) => {
-      timer = setTimeout(() => reject(new AppError(message, 503, "LEAD_SEARCH_TIMEOUT")), timeoutMs);
-    })
-  ]).finally(() => clearTimeout(timer));
-}
-
-async function mapWithConcurrency(items, concurrency, mapper) {
-  const results = new Array(items.length);
-  let nextIndex = 0;
-  await Promise.all(Array.from({ length: Math.min(concurrency, items.length) }, async () => {
-    while (nextIndex < items.length) {
-      const index = nextIndex++;
-      results[index] = await mapper(items[index]);
-    }
-  }));
-  return results;
-}
 
 function compactObject(object) {
   return Object.fromEntries(Object.entries(object).filter(([, value]) => {
@@ -45,41 +19,973 @@ function compactObject(object) {
   }));
 }
 
-function enrichLeadFromAudit(lead, audit) {
-  const profile = audit?.publicProfile || {};
-  const phone = lead.phone || profile.phones?.[0] || "";
-  const email = lead.email || profile.emails?.[0] || "";
+function stableJson(value) {
+  if (Array.isArray(value)) return `[${value.map(stableJson).join(",")}]`;
+  if (value && typeof value === "object") {
+    return `{${Object.keys(value).sort().map((key) => `${JSON.stringify(key)}:${stableJson(value[key])}`).join(",")}}`;
+  }
+  return JSON.stringify(value);
+}
+
+function hashString(value) {
+  let hash = 2166136261;
+  for (const character of String(value || "")) {
+    hash ^= character.charCodeAt(0);
+    hash = Math.imul(hash, 16777619);
+  }
+  return hash >>> 0;
+}
+
+function cacheKeyForSearch(search, userOrAdmin) {
+  const isAdmin = typeof userOrAdmin === "boolean"
+    ? userOrAdmin
+    : isAdminUser(userOrAdmin) || userOrAdmin?.entitlements?.unlimitedAccess || userOrAdmin?.permissions?.includes?.("unlimited");
+  const accessTier = typeof userOrAdmin === "object" && isTrialUser(userOrAdmin) ? "trial" : "standard";
+  return stableJson({ search, isAdmin, accessTier });
+}
+
+function getCachedSearch(cacheKey) {
+  const cached = searchCache.get(cacheKey);
+  if (!cached) return null;
+  if (cached.expiresAt <= Date.now()) {
+    searchCache.delete(cacheKey);
+    return null;
+  }
+  return { ...cached.result, cached: true };
+}
+
+function setCachedSearch(cacheKey, result) {
+  searchCache.set(cacheKey, {
+    result,
+    expiresAt: Date.now() + SEARCH_CACHE_TTL_MS
+  });
+  while (searchCache.size > MAX_SEARCH_CACHE_ENTRIES) {
+    searchCache.delete(searchCache.keys().next().value);
+  }
+}
+
+function hasContact(lead) {
+  return Boolean(lead.phone || lead.email || lead.details?.contact?.mobile || lead.social || Object.keys(lead.details?.social || {}).length);
+}
+
+function hasOwnerData(lead) {
+  const owner = lead.details?.ownerContact || {};
+  return Boolean(owner.ownerName || owner.operator || owner.contactPerson);
+}
+
+function contactScore(lead) {
+  return [
+    lead.phone,
+    lead.email,
+    lead.details?.contact?.mobile,
+    lead.details?.contact?.whatsappLink || lead.details?.contact?.whatsapp,
+    lead.details?.contact?.phone,
+    lead.websiteUrl,
+    lead.social || Object.keys(lead.details?.social || {}).length
+  ].filter(Boolean).length;
+}
+
+function isPaidUser(user = {}) {
+  return Boolean(user.entitlements?.activePlan || user.planActivatedAt || user.paypalCheckoutSessionId);
+}
+
+function isTrialUser(user = {}) {
+  if (isAdminUser(user) || user?.entitlements?.unlimitedAccess || user?.permissions?.includes?.("unlimited")) return false;
+  if (isPaidUser(user)) return false;
+  return !user.subscription || user.subscription === "trial" || user.billingStatus === "trial" || user.subscription === "starter";
+}
+
+function trialUsage(user = {}) {
+  const trialPlan = getPlan("trial");
+  const used = Math.max(0, Number(user.trialSearchesUsed || user.entitlements?.trialSearchesUsed || 0));
+  // Referral sign-ups add bonus lead-search credits on top of the trial plan.
+  const bonus = Math.max(0, Number(user.bonusSearchCredits || 0));
+  const searchLimit = trialPlan.trialSearchLimit + bonus;
+  return {
+    used,
+    remaining: Math.max(0, searchLimit - used),
+    searchLimit,
+    leadLimit: trialPlan.trialLeadLimit
+  };
+}
+
+function normalizeSearchForUser(search, user) {
+  const admin = isAdminUser(user) || user?.entitlements?.unlimitedAccess || user?.permissions?.includes?.("unlimited");
+  const trial = isTrialUser(user);
+  return {
+    ...search,
+    limit: Math.min(Math.max(Number(search.limit) || 20, 1), admin ? 200 : 50),
+    searchDepth: admin ? search.searchDepth : (search.searchDepth === "maximum" || trial ? "deep" : search.searchDepth)
+  };
+}
+
+function returnLimitForUser(search, user) {
+  return isTrialUser(user) ? getPlan("trial").trialLeadLimit : search.limit;
+}
+
+function candidateLimitForSearch(search, admin) {
+  const multiplier = {
+    quick: 1.2,
+    standard: 1.8,
+    deep: 2.6,
+    maximum: 4
+  }[search.searchDepth] || 2.6;
+  return Math.min(Math.ceil(search.limit * multiplier), admin ? 300 : 120);
+}
+
+function applyLeadFilters(leads, search) {
+  const minScore = Number(search.minOpportunityScore || 0);
+  const filtered = leads.filter((lead) => {
+    const score = lead.opportunityScore ?? lead.audit?.score ?? 0;
+    if (score < minScore) return false;
+    if (search.requireContact && !hasContact(lead)) return false;
+    if (search.missingWebsiteOnly && lead.websiteUrl) return false;
+    if (search.leadQuality === "contact_ready" && !hasContact(lead)) return false;
+    if (search.leadQuality === "needs_website" && lead.websiteUrl) return false;
+    if (search.leadQuality === "high_opportunity" && score < 70) return false;
+    if (search.leadQuality === "owner_data" && !hasOwnerData(lead)) return false;
+    return true;
+  });
+
+  const sorters = {
+    opportunity: (left, right) => (right.opportunityScore ?? right.audit?.score ?? 0) - (left.opportunityScore ?? left.audit?.score ?? 0),
+    contact: (left, right) => contactScore(right) - contactScore(left),
+    website_missing: (left, right) => Number(!right.websiteUrl) - Number(!left.websiteUrl),
+    name: (left, right) => String(left.name || "").localeCompare(String(right.name || ""))
+  };
+  const sorter = sorters[search.sortBy] || sorters.opportunity;
+  return filtered.sort((left, right) => sorter(left, right) || String(left.name || "").localeCompare(String(right.name || "")));
+}
+
+function fallbackLeadPool(leads) {
+  return [...leads].sort((left, right) => (
+    (right.opportunityScore ?? right.audit?.score ?? 0) - (left.opportunityScore ?? left.audit?.score ?? 0)
+  ) || contactScore(right) - contactScore(left) || String(left.name || "").localeCompare(String(right.name || "")));
+}
+
+function freshLeadOrder(leads, refreshSeed) {
+  if (!refreshSeed) return leads;
+  return [...leads]
+    .map((lead, index) => ({
+      lead,
+      rank: hashString(`${refreshSeed}:${lead.id || lead.name || "lead"}:${lead.address || ""}:${index}`)
+    }))
+    .sort((left, right) => left.rank - right.rank)
+    .map(({ lead }) => lead);
+}
+
+function mergePublicWebsiteProfile(lead, audit) {
+  const profile = audit?.publicProfile;
+  if (!profile) return lead;
+
+  const details = lead.details || {};
+  const profilePhones = Array.isArray(profile.phones) ? profile.phones : [];
+  const profileEmails = Array.isArray(profile.emails) ? profile.emails : [];
+  const contact = compactObject({
+    ...(details.contact || {}),
+    phone: lead.phone || details.contact?.phone || details.contact?.mobile || profilePhones[0],
+    mobile: details.contact?.mobile || profilePhones[1] || profilePhones[0],
+    email: lead.email || details.contact?.email || profileEmails[0],
+    website: lead.websiteUrl || details.contact?.website || profile.finalUrl
+  });
+  const social = compactObject({
+    ...(details.social || {}),
+    ...(profile.socialLinks || {}),
+    ...(lead.details?.social || {})
+  });
+  const whatsappFromProfile = profile.socialLinks?.whatsapp || "";
+  const business = compactObject({
+    ...(details.business || {}),
+    websiteTitle: profile.metadata?.title,
+    websiteDescription: profile.metadata?.description
+  });
+  const source = compactObject({
+    ...(details.source || {}),
+    websiteScanUrl: profile.finalUrl,
+    websiteScanSource: profile.source,
+    websiteExtractedAt: new Date().toISOString()
+  });
+
   return {
     ...lead,
-    phone,
-    email,
+    phone: lead.phone || contact.phone || contact.mobile || "",
+    email: lead.email || contact.email || "",
+    websiteUrl: lead.websiteUrl || contact.website || "",
+    social: lead.social || social.facebook || social.instagram || social.linkedin || social.tiktok || social.youtube || social.x || Object.values(social)[0] || "",
     details: {
-      ...(lead.details || {}),
-      contact: compactObject({ ...(lead.details?.contact || {}), phone, email }),
-      social: compactObject({ ...(lead.details?.social || {}), ...(profile.socialLinks || {}) }),
-      publicWebsiteProfile: profile.finalUrl ? profile : lead.details?.publicWebsiteProfile
+      ...details,
+      contact: {
+        ...contact,
+        whatsapp: whatsappFromProfile || contact.whatsapp || "",
+        whatsappLink: whatsappFromProfile ? whatsappFromProfile : whatsappLinkFromPhone(contact.mobile || contact.phone, { ...lead, details: { ...(lead.details || {}), contact, location: details.location } }, details.location || {}),
+        whatsappSource: whatsappFromProfile ? "public_whatsapp_link" : (contact.mobile || contact.phone ? "business_phone_number" : ""),
+        whatsappNeedsCheck: !whatsappFromProfile && Boolean(contact.mobile || contact.phone)
+      },
+      social,
+      business,
+      source,
+      publicWebsiteProfile: compactObject({
+        finalUrl: profile.finalUrl,
+        emails: profile.emails || [],
+        phones: profile.phones || [],
+        socialLinks: profile.socialLinks || {},
+        metadata: profile.metadata || {},
+        source: profile.source
+      })
     }
   };
 }
 
-function hasPublicContact(lead) {
-  return Boolean(
-    lead.phone || lead.email || lead.details?.contact?.phone || lead.details?.contact?.mobile
-    || lead.audit?.publicProfile?.phones?.length || lead.audit?.publicProfile?.emails?.length
-    || Object.keys(lead.details?.social || {}).length || Object.keys(lead.audit?.publicProfile?.socialLinks || {}).length
-  );
+function valueOrNotFound(value) {
+  if (Array.isArray(value)) return value.length ? value.join(", ") : "Not found in public data";
+  if (value === undefined || value === null || value === "") return "Not found in public data";
+  if (typeof value === "object") return Object.keys(value).length ? JSON.stringify(value) : "Not found in public data";
+  return String(value);
 }
 
-function meetsSearchQuality(lead, search = {}) {
-  const score = Number(lead.opportunityScore || lead.audit?.score || 0);
-  const quality = search.leadQuality || "all";
-  const requiresContact = search.requireContact || quality === "contact_ready" || quality === "owner_data";
-  if (requiresContact && !hasPublicContact(lead)) return false;
-  if (search.missingWebsiteOnly && lead.websiteUrl) return false;
-  if (quality === "needs_website" && lead.websiteUrl) return false;
-  if (quality === "high_opportunity" && score < Math.max(55, Number(search.minOpportunityScore || 0))) return false;
-  if (score < Number(search.minOpportunityScore || 0)) return false;
-  return true;
+function searchUrl(query) {
+  return `https://www.google.com/search?q=${encodeURIComponent(query)}`;
+}
+
+function hostnameFromWebsite(website) {
+  if (!website) return "";
+  try {
+    const url = new URL(/^https?:\/\//i.test(website) ? website : `https://${website}`);
+    return url.hostname;
+  } catch {
+    return "";
+  }
+}
+
+const countryCallingCodesByIso = {
+  US: "1",
+  CA: "1",
+  GB: "44",
+  IE: "353",
+  DE: "49",
+  FR: "33",
+  ES: "34",
+  IT: "39",
+  PT: "351",
+  NL: "31",
+  BE: "32",
+  CH: "41",
+  AT: "43",
+  PL: "48",
+  CZ: "420",
+  FI: "358",
+  SE: "46",
+  NO: "47",
+  DK: "45",
+  AU: "61",
+  NZ: "64",
+  SG: "65",
+  HK: "852",
+  TW: "886",
+  JP: "81",
+  KR: "82",
+  IN: "91",
+  MX: "52",
+  BR: "55",
+  AR: "54",
+  CL: "56",
+  CO: "57",
+  PE: "51",
+  PA: "507",
+  CR: "506",
+  ZA: "27",
+  NG: "234",
+  GH: "233",
+  KE: "254",
+  EG: "20",
+  MA: "212",
+  TR: "90",
+  IL: "972",
+  MY: "60",
+  PH: "63",
+  TH: "66",
+  VN: "84",
+  ID: "62",
+  SN: "221",
+  GM: "220",
+  KW: "965",
+  QA: "974",
+  BH: "973",
+  OM: "968",
+  JO: "962",
+  AE: "971",
+  SA: "966"
+};
+
+const countryCallingCodesByName = {
+  "united states": "1",
+  canada: "1",
+  "united kingdom": "44",
+  ireland: "353",
+  germany: "49",
+  france: "33",
+  spain: "34",
+  italy: "39",
+  portugal: "351",
+  netherlands: "31",
+  belgium: "32",
+  switzerland: "41",
+  austria: "43",
+  poland: "48",
+  "czech republic": "420",
+  finland: "358",
+  sweden: "46",
+  norway: "47",
+  denmark: "45",
+  australia: "61",
+  "new zealand": "64",
+  singapore: "65",
+  "hong kong": "852",
+  taiwan: "886",
+  japan: "81",
+  "south korea": "82",
+  india: "91",
+  mexico: "52",
+  brazil: "55",
+  argentina: "54",
+  chile: "56",
+  colombia: "57",
+  peru: "51",
+  panama: "507",
+  "costa rica": "506",
+  "south africa": "27",
+  nigeria: "234",
+  ghana: "233",
+  kenya: "254",
+  egypt: "20",
+  morocco: "212",
+  turkey: "90",
+  israel: "972",
+  malaysia: "60",
+  philippines: "63",
+  thailand: "66",
+  vietnam: "84",
+  indonesia: "62",
+  senegal: "221",
+  "the gambia": "220",
+  gambia: "220",
+  kuwait: "965",
+  qatar: "974",
+  bahrain: "973",
+  oman: "968",
+  jordan: "962",
+  "united arab emirates": "971",
+  "saudi arabia": "966"
+};
+
+function normalizedName(value) {
+  return String(value || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+}
+
+function safeHttpUrl(value) {
+  try {
+    const url = new URL(value);
+    return ["http:", "https:"].includes(url.protocol) ? url.href : "";
+  } catch {
+    return "";
+  }
+}
+
+function isWhatsappUrl(value) {
+  const url = safeHttpUrl(value);
+  if (!url) return false;
+  try {
+    const host = new URL(url).hostname.toLowerCase();
+    return host === "wa.me" || host === "whatsapp.com" || host.endsWith(".whatsapp.com");
+  } catch {
+    return false;
+  }
+}
+
+function socialLinksForLead(lead = {}, audit = {}) {
+  return {
+    ...(lead.details?.social || {}),
+    ...(lead.details?.publicWebsiteProfile?.socialLinks || {}),
+    ...(audit?.publicProfile?.socialLinks || {})
+  };
+}
+
+function countryCallingCodeForLead(lead = {}, location = {}) {
+  const iso = String(
+    lead.countryCode ||
+    lead.details?.location?.countryCode ||
+    location.countryCode ||
+    ""
+  ).toUpperCase();
+  if (countryCallingCodesByIso[iso]) return countryCallingCodesByIso[iso];
+
+  const names = [
+    lead.country,
+    lead.countryName,
+    lead.details?.location?.country,
+    lead.details?.location?.countryName,
+    location.country,
+    location.countryName
+  ].map(normalizedName);
+
+  return names.map((name) => countryCallingCodesByName[name]).find(Boolean) || "";
+}
+
+function normalizePhoneForWhatsapp(phone, lead = {}, location = {}) {
+  const raw = String(phone || "").trim();
+  if (!raw) return "";
+  const firstNumber = raw.split(/[\/|;]/)[0].replace(/\s*(?:ext\.?|extension|x)\s*\d+$/i, "").trim();
+  let digits = firstNumber.replace(/\D/g, "");
+  if (!digits) return "";
+
+  if (firstNumber.startsWith("+")) {
+    // Already includes an international prefix.
+  } else if (digits.startsWith("00")) {
+    digits = digits.slice(2);
+  } else {
+    const callingCode = countryCallingCodeForLead(lead, location);
+    if (!callingCode) return "";
+    const nationalNumber = digits.replace(/^0+/, "");
+    digits = digits.startsWith(callingCode) && digits.length > callingCode.length + 5
+      ? digits
+      : `${callingCode}${nationalNumber}`;
+  }
+
+  return digits.length >= 8 && digits.length <= 15 ? digits : "";
+}
+
+function whatsappLinkFromPhone(phone, lead = {}, location = {}) {
+  const normalized = normalizePhoneForWhatsapp(phone, lead, location);
+  return normalized ? `https://wa.me/${normalized}` : "";
+}
+
+function whatsappContactForLead(lead = {}, contact = {}, location = {}, audit = {}) {
+  const socialLinks = socialLinksForLead(lead, audit);
+  const explicitWhatsapp = safeHttpUrl(socialLinks.whatsapp || contact.whatsapp || "");
+  if (explicitWhatsapp && isWhatsappUrl(explicitWhatsapp)) {
+    return {
+      url: explicitWhatsapp,
+      source: "public_whatsapp_link",
+      note: "A public WhatsApp link was found in map or website data."
+    };
+  }
+
+  const leadSocial = safeHttpUrl(lead.social || "");
+  if (leadSocial && isWhatsappUrl(leadSocial)) {
+    return {
+      url: leadSocial,
+      source: "public_whatsapp_link",
+      note: "A public WhatsApp link was found in map or website data."
+    };
+  }
+
+  const phone = [
+    contact.mobile,
+    contact.phone,
+    lead.details?.contact?.mobile,
+    lead.details?.contact?.phone,
+    lead.phone,
+    lead.details?.publicWebsiteProfile?.phones?.[0],
+    audit?.publicProfile?.phones?.[0]
+  ].find(Boolean);
+  const phoneLink = whatsappLinkFromPhone(phone, lead, location);
+  if (!phoneLink) return {};
+
+  return {
+    url: phoneLink,
+    source: "business_phone_number",
+    note: "Opens WhatsApp with the real business phone number; WhatsApp confirms whether the number is registered."
+  };
+}
+
+function buildVerificationLinks(lead, dossier) {
+  const businessName = lead.name || "business";
+  const address = dossier.location?.address || lead.address || "";
+  const website = dossier.contact?.website || lead.websiteUrl || "";
+  const hostname = hostnameFromWebsite(website);
+  const baseQuery = [businessName, address].filter(Boolean).join(" ");
+
+  return compactObject({
+    googleBusinessSearch: searchUrl(baseQuery),
+    ownerSearch: searchUrl(`${baseQuery} owner manager founder`),
+    phoneEmailSearch: searchUrl(`${baseQuery} phone email contact`),
+    facebookSearch: searchUrl(`${baseQuery} Facebook`),
+    instagramSearch: searchUrl(`${baseQuery} Instagram`),
+    linkedinSearch: searchUrl(`${baseQuery} LinkedIn owner manager`),
+    tiktokSearch: searchUrl(`${baseQuery} TikTok`),
+    youtubeSearch: searchUrl(`${baseQuery} YouTube`),
+    xSearch: searchUrl(`${baseQuery} X Twitter`),
+    whatsappContact: dossier.contact?.whatsappLink || "",
+    websiteContactSearch: hostname ? searchUrl(`site:${hostname} contact email phone owner`) : ""
+  });
+}
+
+function formatWebsiteBuildBrief(lead, dossier) {
+  const missing = dossier.salesUse?.missingData?.length
+    ? dossier.salesUse.missingData.join(", ")
+    : "No critical missing public fields detected";
+  const auditChecks = Object.entries(dossier.audit?.checks || {})
+    .map(([key, value]) => `${key}: ${value ? "found" : "missing"}`)
+    .join("; ");
+
+  return [
+    "WEBSITE BUILD BRIEF",
+    "",
+    `Business name: ${valueOrNotFound(lead.name)}`,
+    `Business type: ${valueOrNotFound(lead.businessType || lead.category)}`,
+    `Owner name: ${valueOrNotFound(dossier.ownerContact?.ownerName)}`,
+    `Operator/manager: ${valueOrNotFound(dossier.ownerContact?.operator || dossier.ownerContact?.contactPerson)}`,
+    `Contact role: ${valueOrNotFound(dossier.ownerContact?.contactRole)}`,
+    `Phone: ${valueOrNotFound(dossier.contact?.phone || dossier.contact?.mobile)}`,
+    `WhatsApp contact: ${valueOrNotFound(dossier.contact?.whatsappLink)}`,
+    `WhatsApp source note: ${valueOrNotFound(dossier.contact?.whatsappVerificationNote)}`,
+    `Email: ${valueOrNotFound(dossier.contact?.email)}`,
+    `Current website: ${valueOrNotFound(dossier.contact?.website || lead.websiteUrl)}`,
+    `Google Maps: ${valueOrNotFound(dossier.location?.googleMapsLink || lead.googleMapsLink)}`,
+    `OpenStreetMap source: ${valueOrNotFound(dossier.source?.osmUrl)}`,
+    `Address: ${valueOrNotFound(dossier.location?.address || lead.address)}`,
+    `City: ${valueOrNotFound(dossier.location?.city)}`,
+    `Country: ${valueOrNotFound(dossier.location?.country || dossier.location?.countryName)}`,
+    `Latitude/longitude: ${valueOrNotFound(dossier.location?.latitude)}, ${valueOrNotFound(dossier.location?.longitude)}`,
+    `Opening hours: ${valueOrNotFound(dossier.operations?.openingHours || lead.openingHours)}`,
+    `Services/cuisine/category notes: ${valueOrNotFound(dossier.business?.cuisine || dossier.business?.description || dossier.business?.businessType)}`,
+    `Social links: ${valueOrNotFound(dossier.social)}`,
+    `Website-discovered social links: ${valueOrNotFound(dossier.websiteDiscovery?.socialLinks)}`,
+    `Website-discovered emails: ${valueOrNotFound(dossier.websiteDiscovery?.emails)}`,
+    `Payment info: ${valueOrNotFound(dossier.payments)}`,
+    `Owner search link: ${valueOrNotFound(dossier.verificationLinks?.ownerSearch)}`,
+    `Phone/email search link: ${valueOrNotFound(dossier.verificationLinks?.phoneEmailSearch)}`,
+    "",
+    "WEBSITE OPPORTUNITY",
+    `Opportunity score: ${valueOrNotFound(dossier.audit?.score)}/100`,
+    `Opportunity category: ${valueOrNotFound(dossier.audit?.category)}`,
+    `Best offer: ${valueOrNotFound(dossier.salesUse?.bestOffer)}`,
+    `Missing data to collect: ${missing}`,
+    `Audit checks: ${auditChecks || "No audit checks available"}`,
+    "",
+    "RECOMMENDED WEBSITE STRUCTURE",
+    "Home: clear offer, location, phone, primary CTA",
+    "About: trust, owner/operator story if available",
+    "Services/Menu/Inventory: based on business type",
+    "Gallery: business photos and proof",
+    "Reviews: Google/social proof",
+    "Contact: map, phone, email, opening hours, form",
+    "Booking/Quote CTA: appointment, reservation, or inquiry flow",
+    "",
+    "OWNER/CONTACT NOTE",
+    dossier.ownerContact?.ownerName || dossier.ownerContact?.operator || dossier.ownerContact?.contactPerson
+      ? "Owner/operator/contact information was found in the public source data."
+      : "Owner or direct contact person was not publicly listed. Use the owner search link, business phone, email, website contact form, Google Maps link, Facebook, Instagram, or LinkedIn to verify the decision maker before outreach."
+  ].join("\n");
+}
+
+function money(value) {
+  return `$${Math.round(Number(value) || 0).toLocaleString("en-US")}`;
+}
+
+function businessLabel(lead, dossier) {
+  return lead.businessType || lead.category || dossier.business?.businessType || dossier.business?.category || "local business";
+}
+
+function primaryContactValue(dossier) {
+  return dossier.contact?.phone || dossier.contact?.mobile || dossier.contact?.email || dossier.contact?.whatsappLink || "";
+}
+
+function estimatedProjectValue(lead, dossier) {
+  const score = Number(dossier.audit?.score ?? lead.opportunityScore ?? 50);
+  const noWebsite = !lead.websiteUrl;
+  const contactBonus = primaryContactValue(dossier) ? 450 : 0;
+  const categoryBonus = score >= 80 ? 900 : score >= 55 ? 550 : 250;
+  const websiteBonus = noWebsite ? 1800 : 650;
+  const bookingBonus = dossier.audit?.checks?.bookingSystem === false ? 450 : 0;
+  const seoBonus = dossier.audit?.checks?.seoMetadata === false ? 400 : 0;
+  return websiteBonus + categoryBonus + contactBonus + bookingBonus + seoBonus + 1200;
+}
+
+function monthlyUpsideEstimate(lead, dossier) {
+  const reviews = Math.max(0, Number(lead.reviewsCount || dossier.business?.reviewsCount || 0));
+  const rating = Math.max(0, Number(lead.rating || dossier.business?.rating || 0));
+  const baseline = lead.websiteUrl ? 750 : 1200;
+  const trustMultiplier = rating >= 4.5 ? 1.35 : rating >= 4 ? 1.18 : 1;
+  const demandLift = Math.min(1400, reviews * 3.5);
+  return Math.round((baseline + demandLift) * trustMultiplier);
+}
+
+function buildLeadReasons(lead, dossier) {
+  const checks = dossier.audit?.checks || {};
+  const reasons = [
+    !lead.websiteUrl && "No public website was found, making a new website build an obvious first offer.",
+    checks.mobileFriendly === false && "The current website appears weak on mobile, which hurts calls, bookings, and form conversions.",
+    checks.seoMetadata === false && "SEO metadata is missing or weak, so the business is likely underperforming in local search.",
+    checks.https === false && "HTTPS is missing, which creates a trust and conversion issue.",
+    checks.contactForm === false && "A contact form or conversion path was not detected.",
+    checks.bookingSystem === false && "No booking or appointment system was detected.",
+    primaryContactValue(dossier) && "Public contact data is available, so outreach can start without manual data hunting.",
+    Object.keys(dossier.social || {}).length > 0 && "Social links were found, giving an extra verification and follow-up channel.",
+    (Number(dossier.business?.rating || lead.rating || 0) >= 4) && "The business has enough reputation signal to benefit from a better conversion funnel."
+  ].filter(Boolean);
+
+  return reasons.length ? reasons.slice(0, 8) : [
+    "The public profile has enough location and business data to support a targeted audit and proposal.",
+    "A concise local SEO, conversion, and follow-up offer can be positioned around measurable revenue improvement."
+  ];
+}
+
+function buildCompetitorGap(lead, dossier) {
+  const label = businessLabel(lead, dossier);
+  const city = dossier.location?.city || dossier.location?.marketName || lead.marketName || "the local market";
+  const checks = dossier.audit?.checks || {};
+  return {
+    searchQuery: `${lead.name || label} competitors ${city}`,
+    competitorSearchUrl: searchUrl(`${label} near ${city} best website booking reviews`),
+    likelyGaps: [
+      !lead.websiteUrl ? "Competitors with modern websites can capture customers before this business is considered." : "Competitors may be winning with clearer landing pages, faster mobile UX, and stronger calls to action.",
+      checks.bookingSystem === false ? "Businesses with online booking can convert after-hours demand automatically." : "Booking is present or unknown, so focus on making the booking path shorter and more visible.",
+      checks.seoMetadata === false ? "Competitors with better titles, descriptions, and local pages may outrank this profile." : "SEO metadata is present or unknown, so the next gap is content depth and local proof.",
+      "Review proof, service pages, photo galleries, and map-ready contact sections should be benchmarked before outreach."
+    ],
+    positioningAngle: `Position the offer as a local ${label} conversion upgrade in ${city}, not just a generic website project.`
+  };
+}
+
+function buildProposalPack(lead, dossier) {
+  const noWebsite = !lead.websiteUrl;
+  const projectValue = estimatedProjectValue(lead, dossier);
+  const monthlyValue = Math.max(497, Math.round(projectValue * 0.18));
+  const label = businessLabel(lead, dossier);
+  return {
+    title: noWebsite ? "Local Website Launch + Lead Capture System" : "Website Conversion + Local SEO Growth Sprint",
+    targetBusiness: lead.name || "Local business",
+    packagePrice: projectValue,
+    monthlyRetainer: monthlyValue,
+    closeRateTarget: "18% to 32% when contact data and decision maker are verified",
+    timeline: noWebsite ? "7 to 14 days" : "5 to 10 days",
+    deliverables: [
+      noWebsite ? "Conversion-focused website with mobile-first pages" : "Website audit fixes for mobile, SEO, speed, and trust",
+      "Google Maps conversion section with phone, directions, reviews, and service area",
+      "Booking, quote, or contact form connected to email/CRM",
+      "Local SEO title, description, schema, and service/category copy",
+      "AI-assisted outreach follow-up sequence for missed calls and warm leads",
+      "Monthly reporting dashboard with calls, leads, bookings, and next actions"
+    ],
+    upsells: [
+      "AI chatbot or SMS assistant",
+      "CRM pipeline automation",
+      "Monthly SEO content pages",
+      "Review generation campaign",
+      "Paid ads landing page"
+    ],
+    firstPitch: `I found a few quick wins for ${lead.name || "your business"} that can help a ${label} turn more local searches into calls, bookings, and quote requests.`
+  };
+}
+
+function buildRoiEstimate(lead, dossier) {
+  const projectValue = estimatedProjectValue(lead, dossier);
+  const monthlyUpside = monthlyUpsideEstimate(lead, dossier);
+  const breakEvenMonths = Math.max(1, Math.ceil(projectValue / monthlyUpside));
+  return {
+    setupInvestment: projectValue,
+    estimatedMonthlyUpside: monthlyUpside,
+    breakEvenMonths,
+    twelveMonthUpside: monthlyUpside * 12,
+    assumptions: [
+      "Assumes a modest lift in calls, form fills, bookings, and map-to-website conversions.",
+      "Uses public reputation, website status, audit gaps, and contact completeness as directional signals.",
+      "Final ROI should be refined after confirming average order value and close rate with the owner."
+    ],
+    roiStory: `${money(projectValue)} in setup can break even in about ${breakEvenMonths} month${breakEvenMonths === 1 ? "" : "s"} if the business captures roughly ${money(monthlyUpside)} in extra monthly revenue.`
+  };
+}
+
+function buildCallScript(lead, dossier) {
+  const name = lead.name || "your business";
+  const label = businessLabel(lead, dossier);
+  const issue = !lead.websiteUrl
+    ? "I could not find a proper website connected to your map listing"
+    : "I noticed a few conversion and local search gaps on your website";
+  return {
+    opener: `Hi, is this the best person to speak with about marketing or the website for ${name}?`,
+    reason: `I was checking local ${label} businesses and ${issue}.`,
+    valueHook: "The quick win is making it easier for people who already find you on Google Maps to call, book, or request a quote.",
+    qualifyingQuestions: [
+      "Do most new customers come from Google, referrals, or repeat business?",
+      "Do you currently track calls, forms, bookings, or missed inquiries?",
+      "If we could add a few more qualified leads each month, what would that be worth?",
+      "Who usually approves website or marketing improvements?"
+    ],
+    close: "Would it be useful if I sent a one-page audit with the exact fixes and a simple price range?"
+  };
+}
+
+function buildObjectionHandlers() {
+  return [
+    {
+      objection: "We already have someone for the website.",
+      response: "That is good. I am not trying to replace them. I can send a short revenue audit showing missed calls, bookings, SEO, and conversion gaps your current team can also use."
+    },
+    {
+      objection: "We do not have budget right now.",
+      response: "Totally fair. That is why I frame it around break-even. If one or two extra jobs can cover the work, it becomes a revenue decision instead of a design expense."
+    },
+    {
+      objection: "Send me information.",
+      response: "Absolutely. I will send the audit, but before I do, what matters most: more calls, more bookings, better Google visibility, or a more professional site?"
+    }
+  ];
+}
+
+function buildOutreachSequence(lead, dossier) {
+  const name = lead.name || "your business";
+  const noWebsite = !lead.websiteUrl;
+  return [
+    {
+      day: 1,
+      channel: "Email or contact form",
+      subject: noWebsite ? `Website opportunity for ${name}` : `Quick website wins for ${name}`,
+      message: `${name} looks like it could win more local customers with ${noWebsite ? "a simple website and lead capture setup" : "a few website conversion and local SEO fixes"}. I can send a one-page audit with the highest-value fixes.`
+    },
+    {
+      day: 2,
+      channel: "Phone or WhatsApp",
+      subject: "Verify decision maker",
+      message: "Call to confirm who handles website or marketing decisions, then ask whether calls, bookings, or quote requests are the highest priority."
+    },
+    {
+      day: 4,
+      channel: "Email follow-up",
+      subject: "3 quick wins",
+      message: "Send three bullets from the audit: conversion path, Google Maps trust signals, and booking/contact automation."
+    },
+    {
+      day: 7,
+      channel: "Final value follow-up",
+      subject: "Should I close this out?",
+      message: "Offer to close the loop unless they want the full proposal and ROI estimate."
+    }
+  ];
+}
+
+function buildSalesAgentPlan(lead, dossier) {
+  const contact = primaryContactValue(dossier) || "Verify phone, email, or owner contact first";
+  return {
+    status: primaryContactValue(dossier) ? "Ready for outreach" : "Needs contact verification",
+    nextBestAction: primaryContactValue(dossier)
+      ? "Send the audit summary, then call within 24 hours."
+      : "Use the owner and contact finder links before starting the outreach sequence.",
+    contactTarget: contact,
+    pipelineStage: "New",
+    recommendedFollowUpDays: [1, 2, 4, 7, 14],
+    automationTasks: [
+      "Create CRM deal with proposal value and source link.",
+      "Copy proposal pack into email or client report.",
+      "Set follow-up reminder after the first call.",
+      "Track reply, meeting booked, proposal sent, won, or lost."
+    ]
+  };
+}
+
+function buildContactFinder(lead, dossier) {
+  return {
+    status: primaryContactValue(dossier) ? "Public contact data found" : "Needs manual verification",
+    bestContact: primaryContactValue(dossier) || "Not found in public data",
+    ownerCandidate: dossier.ownerContact?.ownerName || dossier.ownerContact?.operator || dossier.ownerContact?.contactPerson || "Not found in public data",
+    verifiedChannels: [
+      dossier.contact?.phone && "phone",
+      dossier.contact?.email && "email",
+      dossier.contact?.whatsappLink && "whatsapp",
+      lead.websiteUrl && "website",
+      Object.keys(dossier.social || {}).length && "social"
+    ].filter(Boolean),
+    verificationSteps: [
+      "Open Google Maps and confirm the business is active.",
+      "Check the official website contact page if one exists.",
+      "Search owner, manager, Facebook, Instagram, and LinkedIn links before claiming decision-maker data.",
+      "Call or message using the public business contact channel."
+    ]
+  };
+}
+
+function buildClientReportMeta(lead, dossier, proposal, roi) {
+  return {
+    title: `${lead.name || "Business"} Growth Opportunity Report`,
+    reportUrl: `/client-report.html?id=${encodeURIComponent(lead.id || "")}`,
+    summary: `A proposal-ready audit for ${lead.name || "this business"} with website gaps, outreach plan, projected ROI, and next actions.`,
+    primaryCta: "Book a strategy call",
+    recommendedOffer: proposal.title,
+    estimatedInvestment: proposal.packagePrice,
+    estimatedMonthlyUpside: roi.estimatedMonthlyUpside,
+    disclaimer: "Use this as a directional sales report. Confirm business revenue, margins, and decision-maker details before sending final pricing."
+  };
+}
+
+function formatProposalBrief(lead, dossier, proposal, roi) {
+  return [
+    "PROPOSAL PACK",
+    "",
+    `Business: ${valueOrNotFound(lead.name)}`,
+    `Offer: ${valueOrNotFound(proposal.title)}`,
+    `Package price: ${money(proposal.packagePrice)}`,
+    `Monthly retainer: ${money(proposal.monthlyRetainer)}`,
+    `Timeline: ${proposal.timeline}`,
+    `ROI story: ${roi.roiStory}`,
+    "",
+    "DELIVERABLES",
+    ...proposal.deliverables.map((item) => `- ${item}`),
+    "",
+    "FIRST PITCH",
+    proposal.firstPitch,
+    "",
+    "NEXT STEP",
+    dossier.salesAgent?.nextBestAction || "Verify contact data, send audit, and request a short call."
+  ].join("\n");
+}
+
+function formatOutreachSequence(sequence = []) {
+  return sequence.map((step) => [
+    `DAY ${step.day} - ${step.channel}`,
+    `Subject: ${step.subject}`,
+    step.message
+  ].join("\n")).join("\n\n");
+}
+
+function buildRevenueAssets(lead, dossier) {
+  const proposal = buildProposalPack(lead, dossier);
+  const roi = buildRoiEstimate(lead, dossier);
+  return {
+    leadReasons: buildLeadReasons(lead, dossier),
+    roi,
+    competitorGap: buildCompetitorGap(lead, dossier),
+    proposal,
+    callScript: buildCallScript(lead, dossier),
+    objectionHandlers: buildObjectionHandlers(),
+    outreachSequence: buildOutreachSequence(lead, dossier),
+    salesAgent: buildSalesAgentPlan(lead, dossier),
+    contactFinder: buildContactFinder(lead, dossier),
+    clientReport: buildClientReportMeta(lead, dossier, proposal, roi)
+  };
+}
+
+function buildLeadDossier(lead, audit) {
+  const details = lead.details || {};
+  const rawTags = details.source?.rawTags || lead.raw?.tags || {};
+  const ownerContact = compactObject({
+    ownerName: details.ownerContact?.ownerName || rawTags.owner || rawTags["contact:owner"],
+    operator: details.ownerContact?.operator || rawTags.operator || rawTags["operator:name"],
+    contactPerson: details.ownerContact?.contactPerson || rawTags["contact:person"] || rawTags["contact:name"] || rawTags.manager,
+    contactRole: details.ownerContact?.contactRole || rawTags["contact:role"],
+    publicContactNote: details.ownerContact?.publicContactNote
+  });
+  let contact = compactObject({
+    phone: lead.phone,
+    email: lead.email,
+    website: lead.websiteUrl,
+    social: lead.social,
+    ...(details.contact || {})
+  });
+  const location = compactObject({
+    address: lead.address,
+    latitude: lead.latitude,
+    longitude: lead.longitude,
+    googleMapsLink: lead.googleMapsLink,
+    marketName: lead.marketName,
+    countryName: lead.countryName,
+    ...(details.location || {})
+  });
+  const whatsappContact = whatsappContactForLead(lead, contact, location, audit);
+  contact = compactObject({
+    ...contact,
+    whatsappLink: whatsappContact.url,
+    whatsappSource: whatsappContact.source,
+    whatsappVerificationNote: whatsappContact.note
+  });
+  const business = compactObject({
+    name: lead.name,
+    category: lead.category,
+    businessType: lead.businessType,
+    rating: lead.rating,
+    reviewsCount: lead.reviewsCount,
+    opportunityScore: lead.opportunityScore,
+    opportunityCategory: lead.opportunityCategory,
+    ...(details.business || {})
+  });
+
+  const dossier = {
+    summary: compactObject({
+      name: lead.name,
+      businessType: lead.businessType || lead.category,
+      source: lead.source,
+      score: audit?.score ?? lead.opportunityScore,
+      opportunity: audit?.category || lead.opportunityCategory
+    }),
+    ownerContact,
+    contact,
+    social: details.social || {},
+    location,
+    business,
+    operations: details.operations || {},
+    payments: details.payments || {},
+    websiteDiscovery: details.publicWebsiteProfile || audit?.publicProfile || {},
+    onlinePresence: compactObject({
+      website: lead.websiteUrl,
+      googleMapsLink: lead.googleMapsLink,
+      osmUrl: details.source?.osmUrl,
+      hasWebsite: Boolean(lead.websiteUrl),
+      hasPhone: Boolean(contact.phone || contact.mobile),
+      hasEmail: Boolean(contact.email),
+      hasWhatsapp: Boolean(contact.whatsappLink),
+      whatsappLink: contact.whatsappLink,
+      hasSocial: Boolean(Object.keys(details.social || {}).length || lead.social),
+      socialLinks: details.social || {},
+      websiteDiscoveredSocialLinks: details.publicWebsiteProfile?.socialLinks || audit?.publicProfile?.socialLinks || {},
+      websiteDiscoveredEmails: details.publicWebsiteProfile?.emails || audit?.publicProfile?.emails || [],
+      websiteDiscoveredPhones: details.publicWebsiteProfile?.phones || audit?.publicProfile?.phones || []
+    }),
+    audit: compactObject({
+      score: audit?.score,
+      category: audit?.category,
+      elapsedMs: audit?.elapsedMs,
+      status: audit?.status,
+      checks: audit?.checks || {},
+      error: audit?.error
+    }),
+    source: details.source || compactObject({
+      provider: lead.source,
+      raw: lead.raw
+    }),
+    salesUse: {
+      bestOffer: lead.websiteUrl ? "Website audit, SEO improvement, booking/contact conversion, AI outreach automation" : "New website build, Google Maps conversion, local SEO, booking/contact setup",
+      missingData: [
+        !lead.websiteUrl && "website",
+        !contact.phone && "phone",
+        !contact.email && "email",
+        !Object.keys(details.social || {}).length && !lead.social && "social links",
+        !details.operations?.openingHours && !lead.openingHours && "opening hours"
+      ].filter(Boolean)
+    }
+  };
+  const verificationLinks = buildVerificationLinks(lead, dossier);
+  const dossierWithLinks = { ...dossier, verificationLinks };
+  const revenueAssets = buildRevenueAssets(lead, dossierWithLinks);
+  const completeDossier = { ...dossierWithLinks, ...revenueAssets };
+
+  return {
+    ...completeDossier,
+    copyReady: {
+      websiteBuildBrief: formatWebsiteBuildBrief(lead, completeDossier),
+      proposalBrief: formatProposalBrief(lead, completeDossier, revenueAssets.proposal, revenueAssets.roi),
+      callScript: [
+        revenueAssets.callScript.opener,
+        revenueAssets.callScript.reason,
+        revenueAssets.callScript.valueHook,
+        "",
+        "Questions:",
+        ...revenueAssets.callScript.qualifyingQuestions.map((item) => `- ${item}`),
+        "",
+        `Close: ${revenueAssets.callScript.close}`
+      ].join("\n"),
+      outreachSequence: formatOutreachSequence(revenueAssets.outreachSequence)
+    }
+  };
 }
 
 export class LeadService {
@@ -87,54 +993,46 @@ export class LeadService {
     this.googlePlaces = new GooglePlacesService();
     this.websiteAudit = new WebsiteAuditService();
     this.leads = new FirestoreRepository("leads");
-    this.users = new FirestoreRepository("users");
     this.auditLogs = new FirestoreRepository("auditLogs");
+    this.users = new FirestoreRepository("users");
   }
 
   async currentAccessUser(user) {
     if (!user?.uid || isAdminUser(user)) return user;
-    // Firebase password, popup, and legacy sessions can hold different
-    // provider IDs for one verified email. Resolve the durable account before
-    // enforcing a metered trial, so usage cannot split across login paths.
-    let stored = await this.users.findById(user.uid);
-    if (!stored && user.email) {
-      const matches = await this.users.list({
-        where: [{ field: "email", op: "==", value: String(user.email).trim().toLowerCase() }],
-        limit: 1
-      });
-      stored = matches[0] || null;
-    }
-    if (!stored) return user;
-    return {
-      ...user,
-      ...stored,
-      uid: stored.uid || stored.id || user.uid,
-      email: stored.email || user.email
-    };
+    const stored = await this.users.findById(user.uid);
+    return { ...user, ...(stored || {}) };
   }
 
   async assertTrialAccess(user) {
-    if (isAdminUser(user) || user?.entitlements?.unlimitedAccess || user?.permissions?.includes?.("unlimited")) return null;
-    const planKey = String(user?.subscription || user?.entitlements?.activePlan || "trial").toLowerCase();
-    if (planKey !== "trial") return null;
-
-    const plan = getPlan("trial");
-    const searchLimit = Number(user?.trialSearchLimit || user?.entitlements?.trialSearchLimit || plan.trialSearchLimit);
-    const leadLimit = Number(user?.trialLeadLimit || user?.entitlements?.trialLeadLimit || plan.trialLeadLimit);
-    const used = Number(user?.trialSearchesUsed || user?.entitlements?.trialSearchesUsed || 0);
-    if (used >= searchLimit) {
-      throw new AppError("Your free trial searches are used. Upgrade to continue finding new leads.", 402, "TRIAL_SEARCH_LIMIT_REACHED");
+    if (!isTrialUser(user)) return null;
+    const usage = trialUsage(user);
+    if (usage.remaining <= 0) {
+      throw new AppError(
+        `Your free trial includes ${usage.searchLimit} lead searches with up to ${usage.leadLimit} leads each. Subscribe to unlock more lead searches.`,
+        402,
+        "TRIAL_LIMIT_REACHED",
+        { trial: usage, upgradeUrl: "/pricing.html" }
+      );
     }
-    return { used, searchLimit, leadLimit, remaining: Math.max(0, searchLimit - used) };
+    return usage;
   }
 
   async recordTrialSearch(user, usage) {
     if (!usage || !user?.uid) return null;
     const used = usage.used + 1;
+    const nextUsage = {
+      used,
+      remaining: Math.max(0, usage.searchLimit - used),
+      searchLimit: usage.searchLimit,
+      leadLimit: usage.leadLimit
+    };
     await this.users.upsert(user.uid, {
       trialSearchesUsed: used,
+      subscription: "trial",
+      planName: "Free Trial",
+      billingStatus: "trial",
+      monthlyLeadLimit: usage.leadLimit,
       entitlements: {
-        ...(user.entitlements || {}),
         billingRequired: true,
         trial: true,
         trialSearchesUsed: used,
@@ -143,29 +1041,24 @@ export class LeadService {
         upgradeRequiredAfterTrial: true
       }
     });
-    return { ...usage, used, remaining: Math.max(0, usage.searchLimit - used) };
+    return nextUsage;
   }
 
   async search(search, user) {
     const accessUser = await this.currentAccessUser(user);
     const startingTrialUsage = await this.assertTrialAccess(accessUser);
     const admin = isAdminUser(accessUser) || accessUser?.entitlements?.unlimitedAccess || accessUser?.permissions?.includes?.("unlimited");
-    const effectiveSearch = search;
-    const bypassCache = Boolean(effectiveSearch?.bypassCache || effectiveSearch?.refreshSeed);
+    const effectiveSearch = normalizeSearchForUser(search, accessUser);
+    const bypassCache = Boolean(effectiveSearch.bypassCache || effectiveSearch.refreshSeed);
+    const refreshSeed = effectiveSearch.refreshSeed || (bypassCache ? String(Date.now()) : "");
     const providerSearch = {
       ...effectiveSearch,
-      // Fetch enough candidates for ranking without delaying the first page by
-      // crawling hundreds of businesses.
-      limit: Math.min(200, Math.max(
-        effectiveSearch?.limit || 20,
-        Math.min((effectiveSearch?.limit || 20) * ((effectiveSearch?.requireContact || effectiveSearch?.missingWebsiteOnly) ? 6 : 2), 200)
-      )),
-      interactive: true
+      refreshSeed,
+      limit: candidateLimitForSearch(effectiveSearch, admin)
     };
-    const requestedLimit = effectiveSearch?.limit || 50;
-    const resultLimit = Math.min(requestedLimit, startingTrialUsage?.leadLimit || requestedLimit);
-    const cacheKey = JSON.stringify(providerSearch) + "-" + (admin ? "admin" : "user");
-    const cached = bypassCache ? null : searchCache.get(cacheKey);
+    const resultLimit = returnLimitForUser(effectiveSearch, accessUser);
+    const cacheKey = cacheKeyForSearch(providerSearch, accessUser);
+    const cached = bypassCache ? null : getCachedSearch(cacheKey);
     if (cached) {
       const updatedTrialUsage = await this.recordTrialSearch(accessUser, startingTrialUsage);
       await this.auditLogs.create({
@@ -176,61 +1069,31 @@ export class LeadService {
       });
       return {
         ...cached,
-        leads: cached.leads,
         trial: updatedTrialUsage ? {
           ...updatedTrialUsage,
-          limited: updatedTrialUsage.remaining <= 0,
+          limited: true,
           upgradeUrl: "/pricing.html"
         } : cached.trial
       };
     }
 
-    let result = { leads: [] };
-    try {
-      result = await withTimeout(
-        this.googlePlaces.search(providerSearch),
-        INTERACTIVE_PROVIDER_TIMEOUT_MS,
-        "Lead data providers are taking too long. Please retry in a moment."
-      );
-    } catch (error) {
-      if (error instanceof AppError) throw error;
-      throw new AppError("Lead search could not reach a map data provider. Please retry.", 503, "LEAD_PROVIDER_UNAVAILABLE");
-    }
+    const result = await this.googlePlaces.search(providerSearch);
     let audited = [];
     try {
-      const targetedDataSearch = Boolean(effectiveSearch?.requireContact || effectiveSearch?.missingWebsiteOnly || effectiveSearch?.leadQuality === "contact_ready");
-      const largeResultRequest = resultLimit > 50;
-      const auditCandidateCount = Math.min(
-        result.leads.length,
-        // Large result requests prioritize fast discovery. Their records still
-        // retain map contact fields and receive a complete audit when opened.
-        largeResultRequest ? 0 : targetedDataSearch ? MAX_INLINE_AUDITS : Math.max(10, Math.min(resultLimit * 2, MAX_INLINE_AUDITS))
-      );
-      const auditCandidates = result.leads.slice(0, auditCandidateCount);
-      const auditedCandidates = await mapWithConcurrency(auditCandidates, INLINE_AUDIT_CONCURRENCY, async (lead) => {
-        try {
-          const audit = lead.audit?.publicProfile
-            ? lead.audit
-            : await this.websiteAudit.audit(lead, {
-              timeoutMs: 3500,
-              discoverProfiles: !largeResultRequest && auditCandidates.indexOf(lead) < 5,
-              profilePageLimit: 2,
-              profilePageTimeoutMs: 2200
-            });
-          return { ...enrichLeadFromAudit(lead, audit), audit, opportunityScore: audit.score, opportunityCategory: audit.category };
-        } catch (error) {
-          return { ...lead, audit: { score: 0, category: "Audit Pending", checks: {} }, opportunityScore: 0, opportunityCategory: "Audit Pending" };
-        }
-      });
-      audited = [
-        ...auditedCandidates,
-        ...result.leads.slice(auditCandidateCount).map((lead) => ({
+      audited = await Promise.all(result.leads.map(async (lead) => {
+      try {
+        const audit = lead.audit?.publicProfile ? lead.audit : await this.websiteAudit.audit(lead);
+        const enrichedLead = mergePublicWebsiteProfile(lead, audit);
+        return { ...enrichedLead, audit, opportunityScore: audit.score, opportunityCategory: audit.category };
+      } catch (error) {
+        return {
           ...lead,
-          audit: { score: lead.opportunityScore || 0, category: "Audit Pending", checks: {} },
-          opportunityScore: lead.opportunityScore || 0,
+          audit: { score: 0, category: "Audit Pending", checks: {}, error: error.message },
+          opportunityScore: 0,
           opportunityCategory: "Audit Pending"
-        }))
-      ];
+        };
+      }
+      }));
     } catch {
       audited = (result.leads || []).map((lead) => ({
         ...lead,
@@ -239,44 +1102,14 @@ export class LeadService {
         opportunityCategory: "Audit Pending"
       }));
     }
-
-    let filteredPool = audited.filter((lead) => meetsSearchQuality(lead, effectiveSearch));
-    if (effectiveSearch && effectiveSearch.filters) {
-      filteredPool = filteredPool.filter(lead => {
-        let passes = true;
-        for (const filter of effectiveSearch.filters) {
-          const { field, op, value } = filter;
-          if (op === "==") {
-            if (String(lead[field] || "") !== String(value)) passes = false;
-          } else if (op === "contains") {
-            if (!String(lead[field] || "").toLowerCase().includes(String(value).toLowerCase())) passes = false;
-          } else if (op === ">=") {
-            if (Number(lead[field] || 0) < Number(value)) passes = false;
-          } else if (op === "<=") {
-            if (Number(lead[field] || 999999) > Number(value)) passes = false;
-          } else if (op === "in") {
-            if (!value.includes(String(lead[field] || ""))) passes = false;
-          }
-        }
-        return passes;
-      });
-    }
-
-    // Explicit data-quality requirements must never be silently relaxed: a
-    // "contact details only" search should not return contactless businesses.
-    const hasStrictQualityFilter = Boolean(effectiveSearch?.requireContact || effectiveSearch?.missingWebsiteOnly || effectiveSearch?.leadQuality !== "all" || Number(effectiveSearch?.minOpportunityScore || 0) > 0);
-    const filtersRelaxed = !hasStrictQualityFilter && filteredPool.length === 0 && audited.length > 0;
-    const qualifiedPool = await this.fallbackLeadOrder(
-      filtersRelaxed ? await this.fallbackLeadPool(audited) : filteredPool,
-      effectiveSearch?.refreshSeed || "",
-      effectiveSearch?.sortBy
-    );
-
+    const filteredPool = applyLeadFilters(audited, effectiveSearch);
+    const filtersRelaxed = filteredPool.length === 0 && audited.length > 0;
+    const qualifiedPool = freshLeadOrder(filtersRelaxed ? fallbackLeadPool(audited) : filteredPool, refreshSeed);
     const qualified = qualifiedPool.slice(0, resultLimit);
 
     await Promise.all(qualified.map((lead) => this.leads.upsert(lead.id, {
       ...lead,
-      source: lead.source || "enhanced_search",
+      source: result.source || "google_places",
       discoveredBy: accessUser?.uid,
       discoveredAt: new Date().toISOString()
     })));
@@ -295,58 +1128,37 @@ export class LeadService {
       leads: qualified,
       cached: false,
       refreshed: bypassCache,
-      refreshSeed: effectiveSearch?.refreshSeed || "",
+      refreshSeed,
       adminUnlimited: admin,
       searchStats: {
-        requestedLimit: effectiveSearch?.limit || 50,
-        returnedLimit: qualified.length,
+        requestedLimit: effectiveSearch.limit,
+        returnedLimit: resultLimit,
         providerCandidateLimit: providerSearch.limit,
-        rawCount: result.leads?.length || 0,
+        rawCount: result.leads.length,
         auditedCount: audited.length,
         qualifiedCount: qualified.length,
         qualifiedPoolCount: qualifiedPool.length,
-        strictContactFilter: Boolean(effectiveSearch?.requireContact || effectiveSearch?.leadQuality === "contact_ready" || effectiveSearch?.leadQuality === "owner_data"),
-        strictMissingWebsiteFilter: Boolean(effectiveSearch?.missingWebsiteOnly || effectiveSearch?.leadQuality === "needs_website"),
-        contactCoverageLimited: Boolean(
-          (effectiveSearch?.requireContact || effectiveSearch?.leadQuality === "contact_ready" || effectiveSearch?.leadQuality === "owner_data")
-          && /^openstreetmap_(photon|nominatim)$/.test(String(result.source || ""))
-        ),
         filtersRelaxed,
         bypassCache,
-        searchDepth: effectiveSearch?.searchDepth,
-        leadQuality: "enhanced",
-        sortBy: effectiveSearch?.sortBy
+        searchDepth: effectiveSearch.searchDepth,
+        leadQuality: effectiveSearch.leadQuality,
+        sortBy: effectiveSearch.sortBy
       },
       trial: updatedTrialUsage ? {
         ...updatedTrialUsage,
-        limited: updatedTrialUsage.remaining <= 0,
+        limited: true,
         upgradeUrl: "/pricing.html"
       } : undefined
     };
-
-    if (!bypassCache) searchCache.set(cacheKey, response);
+    if (!bypassCache) setCachedSearch(cacheKey, response);
     return response;
-  }
-
-  async fallbackLeadPool(audited) {
-    return audited.slice(0, 100);
-  }
-
-  async fallbackLeadOrder(leads, refreshSeed, sortBy = "opportunity") {
-    const ordered = freshLeadOrder(leads, refreshSeed);
-    if (sortBy === "contact") {
-      return ordered.sort((a, b) => Number(hasPublicContact(b)) - Number(hasPublicContact(a)) || Number(b.opportunityScore || 0) - Number(a.opportunityScore || 0));
-    }
-    if (sortBy === "website_missing") {
-      return ordered.sort((a, b) => Number(!b.websiteUrl) - Number(!a.websiteUrl) || Number(b.opportunityScore || 0) - Number(a.opportunityScore || 0));
-    }
-    if (sortBy === "name") return ordered.sort((a, b) => String(a.name || "").localeCompare(String(b.name || "")));
-    return ordered;
   }
 
   async save(leadId, user, fallbackLead = null) {
     let existing = null;
     try { existing = await this.getById(leadId); } catch { existing = null; }
+    // Search-result leads live in a short-lived cache, not Firestore — if the
+    // cache missed, persist the client-sent copy instead of 404ing the save.
     const lead = existing || fallbackLead;
     if (!lead) return null;
     return this.leads.upsert(lead.id, {
@@ -365,21 +1177,14 @@ export class LeadService {
     const lead = await this.getById(id);
     if (!lead) return null;
     const audit = lead.audit?.publicProfile ? lead.audit : await this.websiteAudit.audit(lead);
-    const publicEnrichedLead = { ...lead };
+    const publicEnrichedLead = mergePublicWebsiteProfile(lead, audit);
     const enrichedLead = { ...publicEnrichedLead, audit, opportunityScore: audit.score, opportunityCategory: audit.category };
     return {
       lead: enrichedLead,
-      dossier: { needs: [], bestOffer: "Contact info and website presence detected" },
-      aiSummary: "Enhanced lead extraction ready"
+      dossier: buildLeadDossier(enrichedLead, audit),
+      aiSummary: env.nvidia.apiKey
+        ? "NVIDIA analysis is ready for this lead."
+        : "Real NVIDIA analysis requires NVIDIA_API_KEY in .env."
     };
   }
-}
-
-function freshLeadOrder(leads, refreshSeed) {
-  return leads.sort((a, b) => {
-    const scoreA = Number(a.opportunityScore || 0) || 0;
-    const scoreB = Number(b.opportunityScore || 0) || 0;
-    if (scoreB !== scoreA) return scoreB - scoreA;
-    return String(a.name || "").localeCompare(String(b.name || ""));
-  });
 }

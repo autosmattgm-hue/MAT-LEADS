@@ -270,12 +270,12 @@ async function fetchPublicHtml(url, timeoutMs = 4500) {
   }
 }
 
-async function discoverMorePublicProfilePages(homeHtml, finalUrl, currentProfile, { limit = 4, timeoutMs = 4500 } = {}) {
+async function discoverMorePublicProfilePages(homeHtml, finalUrl, currentProfile) {
   if (Object.keys(currentProfile.socialLinks || {}).length >= 2) return [];
   const discovered = [];
   for (const pageUrl of socialDiscoveryPageUrls(homeHtml, finalUrl)) {
-    if (discovered.length >= limit) break;
-    const page = await fetchPublicHtml(pageUrl, timeoutMs);
+    if (discovered.length >= 4) break;
+    const page = await fetchPublicHtml(pageUrl);
     if (!page) continue;
     discovered.push(profileFromHtml(page.rawHtml, page.finalUrl, "official_business_website_linked_page"));
     const merged = mergePublicProfiles([currentProfile, ...discovered]);
@@ -330,7 +330,7 @@ export class WebsiteAuditService {
     return { score: computeScore(checks, 0), category: categorize(computeScore(checks, 0)), checks, elapsedMs: 0, error: reason || undefined };
   }
 
-  async audit(lead, { timeoutMs = 8000, discoverProfiles = true, profilePageLimit = 4, profilePageTimeoutMs = 4500 } = {}) {
+  async audit(lead) {
     try {
       if (!lead.websiteUrl) {
         return this.fallbackAudit("");
@@ -349,7 +349,7 @@ export class WebsiteAuditService {
       }
 
       const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), timeoutMs);
+      const timeout = setTimeout(() => controller.abort(), 8000);
       const started = performance.now();
 
       try {
@@ -366,9 +366,7 @@ export class WebsiteAuditService {
       const html = rawHtml.toLowerCase();
       const finalUrl = new URL(response.url || url.href);
       const homeProfile = profileFromHtml(rawHtml, finalUrl);
-      const discoveredProfiles = discoverProfiles
-        ? await discoverMorePublicProfilePages(rawHtml, finalUrl, homeProfile, { limit: profilePageLimit, timeoutMs: profilePageTimeoutMs })
-        : [];
+      const discoveredProfiles = await discoverMorePublicProfilePages(rawHtml, finalUrl, homeProfile);
       const publicProfile = mergePublicProfiles([homeProfile, ...discoveredProfiles]);
       const title = hasPattern(html, /<title[^>]*>[^<]{8,}<\/title>/i);
       const description = hasPattern(html, /<meta[^>]+name=["']description["'][^>]+content=["'][^"']{40,}/i);

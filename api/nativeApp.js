@@ -132,7 +132,6 @@ const publicFiles = new Set([
   "/reports.html",
   "/analytics.html",
   "/website-studio.html",
-  "/website-editor.html",
   "/business-ai.html",
   "/tools.html",
   "/work-planner.html",
@@ -652,26 +651,12 @@ const routes = [
   },
   {
     method: "GET",
-    regex: /^\/api\/ai\/websites$/,
-    keys: [],
-    handler: async ({ req }) => {
-      const user = await getUser(req);
-      requireProAi(user);
-      const websites = await websiteService.listForUser(user);
-      return { websites };
-    }
-  },
-  {
-    method: "GET",
     regex: /^\/api\/ai\/websites\/([^/]+)$/,
     keys: ["id"],
     handler: async ({ req, params }) => {
-      const user = await getUser(req);
+      await getUser(req);
       const website = await websiteService.getById(params.id);
       if (!website) throw new AppError("Website not found.", 404, "WEBSITE_NOT_FOUND");
-      if (String(website.ownerId || "") !== String(user?.uid || "") && String(user?.role || "").toLowerCase() !== "admin") {
-        throw new AppError("You can only open your own websites.", 403, "FORBIDDEN");
-      }
       return { website, shareUrl: `/s/${website.shareToken}`, studioUrl: `/website-studio.html?id=${encodeURIComponent(website.id)}` };
     }
   },

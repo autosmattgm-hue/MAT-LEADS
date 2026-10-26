@@ -25,7 +25,6 @@ export class CrmService {
   async updateStage(id, stage, user) {
     const existing = await this.leads.findById(id);
     if (!existing) return null;
-    if (!isAdminUser(user) && existing.ownerId !== user?.uid) return null;
     const updated = await this.leads.upsert(id, {
       ...existing,
       ownerId: isAdminUser(user) ? existing.ownerId || user?.uid : user?.uid,
@@ -41,8 +40,6 @@ export class CrmService {
   }
 
   async addNote(id, note, tags, user) {
-    const existing = await this.leads.findById(id);
-    if (!existing || (!isAdminUser(user) && existing.ownerId !== user?.uid)) return null;
     return this.activities.create({
       leadId: id,
       actor: user?.email,

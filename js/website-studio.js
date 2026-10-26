@@ -1,416 +1,179 @@
 import { apiFetch, byId, getCurrentUser, isProUser, requireAuth } from "./api.js";
 
-const SAVED_LEADS_KEY = "mat_local_saved_leads_v1";
-
 let websiteId = "";
 let shareToken = "";
 let shareUrl = "";
 let currentHtml = "";
+// Follow-design-brief toggle (ON = strict brief, OFF = free pro design).
+let followBrief = true;
+// Uploaded images are stored client-side as data URLs and injected into the
+// final HTML after generation (too large to send through the AI prompt).
+const uploaded = { hero: "", gallery: [] };
 
-// Conversation state machine: pages -> business -> building -> ready (refine).
-let stage = "pages";
-let chosenPages = 0;
-let typedBusiness = "";
-let selectedLead = null;
-let savedLeads = [];
-let busy = false;
-
-// ---------- small helpers ----------
-function abs(url) {
-  try { return new URL(url, window.location.origin).href; } catch { return url; }
+function paintFollowToggle() {
+  const btn = byId("followBriefToggle");
+  const hint = byId("followHint");
+  if (!btn) return;
+  btn.classList.toggle("on", followBrief);
+  btn.setAttribute("aria-pressed", followBrief ? "true" : "false");
+  const tick = btn.querySelector(".tick");
+  if (tick) tick.textContent = followBrief ? "✓" : "";
+  if (hint) hint.textContent = followBrief ? "ON — AI follows your brief exactly." : "OFF — AI freely designs the best site for this business.";
 }
 
-function esc(value) {
-  return String(value ?? "")
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
+function readFileAsDataUrl(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result || ""));
+    reader.onerror = () => reject(new Error("Could not read the image file."));
+    reader.readAsDataURL(file);
+  });
 }
 
-function setStatus(message) {
-  const node = byId("studioStatus");
-  if (node) node.textContent = message;
-}
-
-function setStatusLine(message) {
-  const node = byId("studioStatusLine");
-  if (node) node.textContent = message;
-}
-
-// Same ID scheme as js/leads.js — every saved lead carries an ML-XXXXXX id.
-function makeLeadId() {
-  const alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-  const bytes = new Uint8Array(6);
-  try { (window.crypto || {}).getRandomValues?.(bytes); } catch {}
-  let out = "ML-";
-  for (let i = 0; i < 6; i += 1) {
-    const byte = bytes[i] ?? Math.floor(Math.random() * 256);
-    out += alphabet[byte % alphabet.length];
+// Guarantee the user's uploaded photos appear on the built site even if the AI
+// used placeholder images: swap the hero and gallery <img> srcs to the uploads.
+function injectUploadedImages(html) {
+  let out = String(html || "");
+  const esc = (u) => u.replace(/"/g, "&quot;");
+  if (uploaded.hero) {
+    const imgs = [...out.matchAll(/<img\b[^>]*?\ssrc=(["'])(.*?)\1[^>]*>/gi)];
+    if (imgs.length) {
+      const first = imgs[0];
+      const swapped = first[0].replace(/src=(["'])(.*?)\1/i, `src="${esc(uploaded.hero)}"`);
+      out = out.replace(first[0], swapped);
+    } else if (/<body[^>]*>/i.test(out)) {
+      out = out.replace(/(<body[^>]*>)/i, `$1<img src="${esc(uploaded.hero)}" alt="Hero image" style="width:100%;max-height:420px;object-fit:cover;display:block">`);
+    }
+  }
+  if (uploaded.gallery.length) {
+    const imgs = [...out.matchAll(/<img\b[^>]*?\ssrc=(["'])(.*?)\1[^>]*>/gi)];
+    // Replace the 2nd..Nth images (after the hero) with the gallery uploads.
+    imgs.slice(1).forEach((match, i) => {
+      if (i < uploaded.gallery.length) {
+        out = out.replace(match[0], match[0].replace(/src=(["'])(.*?)\1/i, `src="${esc(uploaded.gallery[i])}"`));
+      }
+    });
   }
   return out;
 }
 
-// ---------- chat rendering (ChatGPT-style thread) ----------
-function scrollLog() {
-  const log = byId("chatLog");
-  if (log) log.scrollTop = log.scrollHeight;
+function abs(url) {
+  try { return new URL(url, window.location.origin).href; } catch { return url; }
 }
 
-function addMessage(role, text, options = {}) {
-  const log = byId("chatLog");
-  if (!log) return null;
-  const wrap = document.createElement("div");
-  wrap.className = `wsx-msg wsx-msg--${role}`;
-  if (role === "ai") {
-    const who = document.createElement("span");
-    who.className = "wsx-msg-role";
-    who.textContent = "MAT Studio AI";
-    wrap.append(who);
-  }
-  const body = document.createElement("div");
-  body.className = "wsx-msg-body";
-  wrap.append(body);
-  log.append(wrap);
-  scrollLog();
-  if (options.html) body.innerHTML = text;
-  else body.textContent = text;
-  return body;
-}
-
-// Typewriter reveal, tuned so long messages still appear in under a second.
-function typeAi(text) {
-  const body = addMessage("ai", "");
-  if (!body) return;
-  const full = String(text || "");
-  if (full.length > 600) {
-    body.textContent = full;
-    scrollLog();
-    return;
-  }
-  const totalTicks = 50;
-  const perTick = Math.max(1, Math.ceil(full.length / totalTicks));
-  const step = Math.max(8, Math.min(16, Math.round(750 / totalTicks)));
-  let index = 0;
-  const tick = () => {
-    index = Math.min(full.length, index + perTick);
-    body.textContent = full.slice(0, index);
-    scrollLog();
-    if (index < full.length) setTimeout(tick, step);
-  };
-  tick();
-}
-
-function addUser(text) {
-  addMessage("user", text);
-}
-
-// A quiet system line (build notes, loaded-site info) — styled apart from the
-// user bubbles so the thread still reads like a normal conversation.
-function addNote(text) {
-  const wrap = document.createElement("div");
-  wrap.className = "wsx-note";
-  wrap.textContent = text;
-  const log = byId("chatLog");
-  if (!log) return;
-  log.append(wrap);
-  scrollLog();
-}
-
-function addTypingIndicator() {
-  const log = byId("chatLog");
-  if (!log) return null;
-  const wrap = document.createElement("div");
-  wrap.className = "wsx-msg wsx-msg--ai wsx-typing-ind";
-  wrap.innerHTML = '<span class="wsx-msg-role">MAT Studio AI</span><div class="wsx-dots"><span></span><span></span><span></span></div>';
-  log.append(wrap);
-  scrollLog();
-  return wrap;
-}
-
-function addErrorBubble(message, retryLabel, onRetry) {
-  const body = addMessage("ai", "");
-  if (!body) return;
-  body.className = "wsx-msg-body wsx-err";
-  body.textContent = message;
-  if (retryLabel && typeof onRetry === "function") {
-    const retry = document.createElement("button");
-    retry.type = "button";
-    retry.className = "wsx-retry";
-    retry.textContent = retryLabel;
-    retry.addEventListener("click", () => {
-      const bubble = retry.closest(".wsx-msg");
-      bubble?.remove();
-      onRetry();
-    });
-    body.append(document.createElement("br"), retry);
-  }
-  scrollLog();
-}
-
-function renderChips(chips = []) {
-  const row = byId("wsxChips");
-  if (!row) return;
-  row.innerHTML = "";
-  for (const chip of chips) {
-    const btn = document.createElement("button");
-    btn.type = "button";
-    btn.className = "wsx-chip";
-    btn.textContent = chip.label;
-    btn.addEventListener("click", () => {
-      clearChips();
-      if (typeof chip.onPick === "function") chip.onPick();
-    });
-    row.append(btn);
-  }
-}
-
-function clearChips() {
-  const row = byId("wsxChips");
-  if (row) row.innerHTML = "";
-}
-
-// ---------- saved leads picker ----------
-function readSavedLeads() {
-  try {
-    const parsed = JSON.parse(localStorage.getItem(SAVED_LEADS_KEY) || "[]");
-    return Array.isArray(parsed) ? parsed.filter((lead) => lead && lead.name) : [];
-  } catch {
-    return [];
-  }
-}
-
-function writeSavedLeads(leads) {
-  try { localStorage.setItem(SAVED_LEADS_KEY, JSON.stringify(leads.slice(0, 500))); } catch {}
-}
-
-function loadLeadPicker() {
-  savedLeads = readSavedLeads();
-  let changed = false;
-  for (const lead of savedLeads) {
-    if (!lead.leadId) {
-      lead.leadId = makeLeadId();
-      changed = true;
-    }
-  }
-  if (changed) writeSavedLeads(savedLeads);
-
-  const select = byId("wsxLeadSelect");
-  if (!select) return;
-  const placeholder = '<option value="">— Type a business name in the chat —</option>';
-  const options = savedLeads.map((lead) =>
-    `<option value="${esc(lead.leadId || lead.id || "")}">${esc(lead.leadId || "—")} — ${esc(lead.name)}</option>`
-  );
-  select.innerHTML = placeholder + options.join("");
-
-  // Lead handed over from the Leads page (sessionStorage hand-off).
-  try {
-    const handoff = JSON.parse(sessionStorage.getItem("mat_studio_lead") || "null");
-    if (!handoff?.name) return;
-    const match = savedLeads.find((lead) =>
-      (handoff.leadId && lead.leadId === handoff.leadId) ||
-      (handoff.id && lead.id === handoff.id) ||
-      (!handoff.leadId && !handoff.id && lead.name === handoff.name)
-    );
-    if (match) {
-      select.value = match.leadId || match.id || "";
-      applySelectedLead(match);
-      return;
-    }
-    if (handoff.leadId) {
-      // Live search lead that is not stored locally — still offer it.
-      savedLeads.unshift(handoff);
-      select.insertAdjacentHTML("afterbegin", `<option value="${esc(handoff.leadId)}">${esc(handoff.leadId)} — ${esc(handoff.name)}</option>`);
-      select.value = handoff.leadId;
-      applySelectedLead(handoff);
-      return;
-    }
-    typedBusiness = String(handoff.name || "");
-  } catch {}
-}
-
-function applySelectedLead(lead) {
-  selectedLead = lead || null;
-  const card = byId("wsxLeadCard");
-  if (!card) return;
-  if (!lead) {
-    card.hidden = true;
-    return;
-  }
-  card.hidden = false;
-  byId("wsxLeadName").textContent = lead.name || "Business";
-  byId("wsxLeadId").textContent = lead.leadId || lead.id || "no id";
-  byId("wsxLeadMeta").textContent = [lead.phone, lead.address].filter(Boolean).join(" • ");
-}
-
-function businessIdentity() {
-  if (selectedLead?.name) return selectedLead.name;
-  if (typedBusiness) return typedBusiness;
-  return "";
-}
-
-// ---------- conversation flow ----------
-function askPageCount() {
-  stage = "pages";
-  chosenPages = 0;
-  typeAi("Hi! I'm MAT Studio AI 👋\nI'll design a professional website for your business.\nFirst — how many pages do you need?");
-  renderChips([1, 2, 3, 4].map((n) => ({
-    label: n === 1 ? "1 page" : `${n} pages`,
-    onPick: () => pickPageCount(n)
-  })));
-  setStatus("Waiting for your page count…");
-  setStatusLine("How many pages?");
-}
-
-function pickPageCount(count, silent = false) {
-  chosenPages = count;
-  if (!silent) addUser(count === 1 ? "1 page" : `${count} pages`);
-  if (businessIdentity()) {
-    beginBuild();
-    return;
-  }
-  stage = "business";
-  typeAi("Which business is it for?\nPick one of your saved leads above — or type the business name right here in the chat.");
-  setStatus("Waiting for the business…");
-  setStatusLine("Which business?");
-}
-
-function beginBuild() {
-  if (busy) return;
-  const businessName = businessIdentity();
-  if (!chosenPages || !businessName) {
-    if (!chosenPages) {
-      askPageCount();
-    } else {
-      stage = "business";
-      typeAi("Which business is it for? Pick a saved lead above, or type the business name here.");
-      renderChips([]);
-    }
-    return;
-  }
-  stage = "building";
-  const leadTag = selectedLead?.leadId ? ` (lead ${selectedLead.leadId})` : "";
-  addNote(`Building for ${businessName}${leadTag}`);
-  typeAi(`Building your ${chosenPages}-page website for ${businessName} now — hero, services, gallery, FAQ and contact. This takes about 30–50 seconds…`);
-  renderChips([]);
-  runBuild(businessName);
-}
-
-async function runBuild(businessName) {
-  busy = true;
-  const send = byId("wsxSend");
-  if (send) send.disabled = true;
-  showOverlay(true);
-  setStatusLine("Designing your site…");
-  setStatus(`Building a ${chosenPages}-page site for ${businessName}…`);
-  try {
-    const payload = {
-      leadId: selectedLead?.leadId || "",
-      lead: selectedLead || {},
-      businessName,
-      pages: chosenPages
-    };
-    const r = await apiFetch("/api/ai/websites", { method: "POST", body: JSON.stringify(payload) });
-    websiteId = r.websiteId;
-    shareToken = r.shareToken;
-    shareUrl = r.shareUrl || "";
-    setPreview(r.website.html);
-    enablePreviewActions(true);
-    const pageLabel = r.website.pageCount && r.website.pageCount > 1 ? ` • ${r.website.pageCount} pages` : "";
-    byId("studioMeta").textContent = `${r.website.businessName || businessName} • ${r.website.model || "site"}${pageLabel}`;
-    const aiNote = r.website.aiError ? `\nNote: ${r.website.aiError}` : "";
-    typeAi(`Done ✅ ${r.website.businessName || businessName} is live in the preview — ${r.website.pageCount || 1} page(s).\nUse Desktop / Mobile to check it, Copy link to share, or open Edit in builder for pixel-perfect changes.\nTell me any change in plain words — e.g. “make the hero darker” or “change the phone number”.${aiNote}`);
-    setStatus(r.website.aiError ? `Built with a fallback: ${r.website.aiError}` : "Ready — chat to refine, or edit in the builder.");
-    setStatusLine("Site ready — refine below");
-    stage = "ready";
-    loadHistory();
-    try { history.replaceState(null, "", `/website-studio.html?id=${encodeURIComponent(websiteId)}`); } catch {}
-  } catch (err) {
-    const msg = String(err?.message || "The build didn't finish.");
-    const upgrade = /pro plan|402|PRO_REQUIRED/i.test(msg);
-    stage = "error";
-    if (upgrade) {
-      addErrorBubble(msg);
-      renderChips([{ label: "Upgrade to Pro", onPick: () => { window.location.href = "/pricing.html?upgrade=pro"; } }]);
-    } else {
-      addErrorBubble(`The build didn't finish: ${msg}`, "Retry build", () => {
-        stage = "building";
-        runBuild(businessName);
-      });
-      renderChips([{ label: "Retry build", onPick: () => { stage = "building"; runBuild(businessName); } }]);
-    }
-    setStatus(msg);
-    setStatusLine("Build failed — retry anytime");
-  } finally {
-    busy = false;
-    showOverlay(false);
-    if (send) send.disabled = false;
-  }
-}
-
-async function runRefine(instruction) {
-  if (busy || !websiteId) return;
-  busy = true;
-  const indicator = addTypingIndicator();
-  setStatus("Applying your change…");
-  setStatusLine("Applying change…");
-  try {
-    const r = await apiFetch(`/api/ai/websites/${encodeURIComponent(websiteId)}`, {
-      method: "PATCH",
-      body: JSON.stringify({ instruction })
-    });
-    indicator?.remove();
-    setPreview(r.website.html);
-    const pageLabel = r.website.pageCount > 1 ? ` • ${r.website.pageCount} pages` : "";
-    byId("studioMeta").textContent = `${r.website.businessName || ""} • rev ${r.website.revisions}${pageLabel}`.replace(/^ • /, "");
-    addMessage("ai", `Applied ✅ (revision ${r.website.revisions}). Anything else you want to change?`);
-    setStatus("Change applied.");
-    setStatusLine("Site ready — refine below");
-  } catch (err) {
-    indicator?.remove();
-    const msg = String(err?.message || "That change didn't apply.");
-    const upgrade = /pro plan|402|PRO_REQUIRED/i.test(msg);
-    addErrorBubble(msg, upgrade ? null : "Try again", upgrade ? null : () => runRefine(instruction));
-    if (upgrade) {
-      renderChips([{ label: "Upgrade to Pro", onPick: () => { window.location.href = "/pricing.html?upgrade=pro"; } }]);
-    }
-    setStatus(msg);
-    setStatusLine("Site ready — refine below");
-  } finally {
-    busy = false;
-  }
-}
-
-// ---------- preview ----------
 function setPreview(html) {
   currentHtml = html || "";
   const frame = byId("studioPreview");
-  if (frame) frame.srcdoc = currentHtml;
+  if (!frame) return;
+  frame.srcdoc = currentHtml;
+  frame.onload = () => {
+    try {
+      const text = frame.contentDocument?.body?.innerText?.trim() || "";
+      if (currentHtml && !text) {
+        byId("studioStatus").textContent = "Inline preview was blocked by the browser — click Open Preview to view the full site in a new tab.";
+      }
+    } catch {
+      // Cross-document access blocked; the site itself is still fine.
+    }
+  };
 }
 
-function showOverlay(show) {
-  const overlay = byId("genOverlay");
-  if (overlay) overlay.style.display = show ? "block" : "none";
+function replaceOnce(html, pattern, replacement) {
+  return html.replace(pattern, replacement);
 }
 
-function enablePreviewActions(enabled) {
-  ["studioOpenPreview", "studioDownload", "studioCopyLink", "studioEditManual"].forEach((id) => {
-    const btn = byId(id);
-    if (btn) btn.disabled = !enabled;
-  });
+function applyManualEdits() {
+  if (!currentHtml) { byId("editMsg").textContent = "Generate a website first."; return; }
+  let html = currentHtml;
+  const biz = byId("editBiz").value.trim();
+  const head = byId("editHead").value.trim();
+  const phone = byId("editPhone").value.trim();
+  const email = byId("editEmail").value.trim();
+  const cta = byId("editCta").value.trim();
+  const accent = byId("editAccent").value;
+
+  if (biz) {
+    html = replaceOnce(html, /<title[^>]*>[\s\S]*?<\/title>/i, `<title>${biz}</title>`);
+    if (!head) html = replaceOnce(html, /(<h1[^>]*>)([\s\S]*?)(<\/h1>)/i, `$1${biz}$3`);
+  }
+  if (head) html = replaceOnce(html, /(<h1[^>]*>)([\s\S]*?)(<\/h1>)/i, `$1${head}$3`);
+  if (phone) {
+    html = html.replace(/tel:[^"'\s)]*/gi, `tel:${phone.replace(/[^\d+]/g, "")}`);
+    html = replaceOnce(html, /(\+?\d[\d\s().-]{6,}\d)/, phone);
+  }
+  if (email) {
+    html = html.replace(/mailto:[^"'\s?)]*/gi, `mailto:${email}`);
+    html = replaceOnce(html, /([a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,})/i, email);
+  }
+  if (cta) html = replaceOnce(html, /(<a[^>]*class="[^"]*btn[^"]*"[^>]*>)([\s\S]*?)(<\/a>)/i, `$1${cta}$3`);
+  const accentCss = `<style id="manualAccent">a.btn,.btn,button[type="submit"],a.btn-p{background:${accent}!important}</style>`;
+  html = html.includes("</head>") ? html.replace("</head>", `${accentCss}</head>`) : accentCss + html;
+
+  currentHtml = html;
+  setPreview(currentHtml);
+  byId("editMsg").textContent = "Changes applied to the preview. Click Save to Server so the share link matches, then Download if you want the file.";
 }
 
-function setDevice(device) {
-  byId("studioPreview")?.classList.toggle("mobile", device === "mobile");
-  byId("viewDesktop")?.classList.toggle("on", device === "desktop");
-  byId("viewMobile")?.classList.toggle("on", device === "mobile");
+function addManualImage() {
+  if (!currentHtml) { byId("editMsg").textContent = "Generate a website first, then add images."; return; }
+  const url = byId("editImageUrl").value.trim();
+  if (!/^https?:\/\//i.test(url)) { byId("editMsg").textContent = "Paste a valid image URL (starting with https://)."; return; }
+  const safeUrl = url.replace(/["'<>]/g, "");
+  const imgTag = `<figure style="margin:20px 0;text-align:center"><img src="${safeUrl}" alt="Website image" style="max-width:100%;height:auto;border-radius:14px;box-shadow:0 8px 24px rgba(0,0,0,.12)"></figure>`;
+  let html = currentHtml;
+  if (/<\/body>/i.test(html)) html = html.replace(/<\/body>/i, `${imgTag}</body>`);
+  else if (/<\/main>/i.test(html)) html = html.replace(/<\/main>/i, `${imgTag}</main>`);
+  else html = imgTag + html;
+  currentHtml = html;
+  setPreview(currentHtml);
+  byId("editImageUrl").value = "";
+  byId("editMsg").textContent = "Image added to the preview. Click Save to Server so your share link shows it, then Download if you want the file.";
+}
+
+function toggleEditOnPage() {
+  const frame = byId("studioPreview");
+  if (!frame?.contentDocument) { byId("editMsg").textContent = "Preview not ready — click Open Preview to edit in a tab instead."; return; }
+  try {
+    const body = frame.contentDocument.body;
+    const on = body.getAttribute("contenteditable") === "true";
+    body.setAttribute("contenteditable", on ? "false" : "true");
+    body.style.outline = on ? "" : "3px dashed #22c55e";
+    byId("editMsg").textContent = on
+      ? "Edit mode off. Click Save to Server to keep your typing."
+      : "Edit mode ON — click any text on the preview and type. Then click Save to Server.";
+    if (!on) {
+      body.addEventListener("blur", () => {
+        try { currentHtml = "<!doctype html>" + frame.contentDocument.documentElement.outerHTML; } catch {}
+      }, true);
+    }
+  } catch {
+    byId("editMsg").textContent = "Could not enable click-to-edit — use Open Preview + Apply Changes instead.";
+  }
+}
+
+async function saveManualHtml() {
+  if (!websiteId) { byId("editMsg").textContent = "Generate the website first, then edit."; return; }
+  const frame = byId("studioPreview");
+  try {
+    if (frame?.contentDocument?.documentElement) {
+      currentHtml = "<!doctype html>" + frame.contentDocument.documentElement.outerHTML;
+      setPreview(currentHtml);
+    }
+  } catch {}
+  byId("editMsg").textContent = "Saving your manual edits...";
+  try {
+    const r = await apiFetch(`/api/ai/websites/${encodeURIComponent(websiteId)}/html`, { method: "POST", body: JSON.stringify({ html: currentHtml }) });
+    byId("studioMeta").textContent = `${r.website.businessName || r.website.leadName} • saved manual edit • rev ${r.website.revisions || ""}`;
+    byId("editMsg").textContent = "Saved. Share link and Live Link now show your manual edits.";
+    updateShare();
+  } catch (err) { byId("editMsg").textContent = err.message; }
 }
 
 function openPreviewWindow() {
   if (!currentHtml) return;
   const w = window.open("", "_blank");
   if (!w) {
-    setStatus("Pop-up blocked — allow pop-ups for this site, then click Open again.");
+    byId("studioStatus").textContent = "Pop-up blocked — allow pop-ups for this site, then click Open Preview again.";
     return;
   }
   w.document.open();
@@ -420,328 +183,142 @@ function openPreviewWindow() {
 
 async function loadFromQuery() {
   const q = new URLSearchParams(window.location.search);
-  const id = q.get("id") || "";
-  if (!id) return false;
-  setStatus("Loading website…");
-  try {
-    const r = await apiFetch(`/api/ai/websites/${encodeURIComponent(id)}`);
-    websiteId = r.website.id;
-    shareToken = r.website.shareToken || "";
-    shareUrl = r.shareUrl || "";
-    setPreview(r.website.html);
-    chosenPages = chosenPages || Number(r.website.pageCount || 1);
-    const pageLabel = r.website.pageCount > 1 ? ` • ${r.website.pageCount} pages` : "";
-    byId("studioMeta").textContent = `${r.website.businessName || r.website.leadName || "Website"} • rev ${r.website.revisions}${pageLabel}`;
-    enablePreviewActions(true);
-    stage = "ready";
-    addMessage("ai", `Loaded your site — ${r.website.businessName || r.website.leadName || "your business"}. Tell me what to change, or open Edit in builder.`);
-    setStatus("Loaded — chat to refine.");
-    setStatusLine("Site ready — refine below");
-    return true;
-  } catch (error) {
-    addErrorBubble(`Couldn't load that website: ${error.message}`);
-    setStatus(error.message);
-    return false;
+  websiteId = q.get("id") || "";
+  const leadId = q.get("leadId") || "";
+  const business = q.get("business") || "";
+  if (leadId && byId("studioLeadId")) byId("studioLeadId").value = leadId;
+  if (business && byId("studioBusiness")) byId("studioBusiness").value = business;
+  const leadRaw = q.get("lead");
+  if (leadRaw && byId("studioBusiness")) {
+    try {
+      const lead = JSON.parse(decodeURIComponent(escape(atob(leadRaw))));
+      if (lead?.name) byId("studioBusiness").value = lead.name;
+      sessionStorage.setItem("mat_studio_lead", JSON.stringify(lead));
+    } catch {}
+  }
+  if (websiteId) {
+    byId("studioStatus").textContent = "Loading website...";
+    try {
+      const r = await apiFetch(`/api/ai/websites/${encodeURIComponent(websiteId)}`);
+      websiteId = r.website.id; shareToken = r.website.shareToken; shareUrl = r.shareUrl;
+      setPreview(r.website.html);
+      byId("studioMeta").textContent = `${r.website.businessName || r.website.leadName} • rev ${r.website.revisions} • ${r.website.model}`;
+      byId("studioStatus").textContent = "Loaded. Tell AI what to change.";
+      updateShare();
+    } catch (e) { byId("studioStatus").textContent = e.message; }
   }
 }
 
-// ---------- message router ----------
-function handleUserMessage(raw) {
-  const text = String(raw || "").trim();
-  if (!text) return;
-  addUser(text);
-
-  if (stage === "pages") {
-    const digits = text.match(/\b([1-4])\b/);
-    if (digits) {
-      pickPageCount(Number(digits[1]), true);
-      return;
-    }
-    typeAi("Pick a page count with the chips below (1–4 pages) — that's the first thing I need 🙂");
-    renderChips([1, 2, 3, 4].map((n) => ({
-      label: n === 1 ? "1 page" : `${n} pages`,
-      onPick: () => pickPageCount(n)
-    })));
-    return;
-  }
-
-  if (stage === "locked") {
-    typeAi("The Studio unlocks on the Professional plan. Use the chip above to upgrade — everything else in your account keeps working.");
-    return;
-  }
-
-  if (stage === "business") {
-    typedBusiness = text.slice(0, 120);
-    beginBuild();
-    return;
-  }
-
-  if (stage === "building") {
-    typeAi("I'm still building your site — hang tight, one moment ✨");
-    return;
-  }
-
-  if (stage === "error") {
-    if (chosenPages && businessIdentity()) {
-      stage = "building";
-      runBuild(businessIdentity());
-    } else {
-      askPageCount();
-    }
-    return;
-  }
-
-  if (stage === "ready" && websiteId) {
-    runRefine(text.slice(0, 2000));
-    return;
-  }
-
-  askPageCount();
+function updateShare() {
+  const full = abs(shareUrl || (shareToken ? `/s/${shareToken}` : "#"));
+  const open = byId("studioOpenLive");
+  if (open && shareToken) open.href = full;
 }
 
-// ---------- output controls ----------
-function downloadSite() {
-  if (!currentHtml) return;
-  const slug = (byId("studioMeta")?.textContent || "website")
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-|-$/g, "")
-    .slice(0, 40) || "website";
-  const blob = new Blob([currentHtml], { type: "text/html;charset=utf-8" });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = `${slug}.html`;
-  document.body.append(link);
-  link.click();
-  link.remove();
-  setTimeout(() => URL.revokeObjectURL(url), 2000);
-  setStatus("Downloaded. Open the file in any browser or host it anywhere.");
-}
-
-async function copyShareLink() {
-  if (!shareUrl) {
-    setStatus("No share link yet — build the site first.");
-    return;
-  }
-  const link = abs(shareUrl);
-  try {
-    await navigator.clipboard.writeText(link);
-    setStatus("Share link copied to your clipboard.");
-  } catch {
-    setStatus(`Copy this link: ${link}`);
-  }
-}
-
-function openBuilder() {
-  if (!websiteId) {
-    setStatus("Build the site first, then open the editor.");
-    return;
-  }
-  window.location.href = `/website-editor.html?id=${encodeURIComponent(websiteId)}`;
-}
-
-// ---------- composer ----------
-function submitMessage(text) {
-  const message = String(text ?? byId("wsxInput")?.value ?? "").trim();
-  if (!message || busy) return;
-  const input = byId("wsxInput");
-  if (input) {
-    input.value = "";
-    input.style.height = "auto";
-  }
-  handleUserMessage(message);
-}
-
-function autoGrow(textarea) {
-  if (!textarea) return;
-  textarea.style.height = "auto";
-  textarea.style.height = `${Math.min(160, textarea.scrollHeight)}px`;
-}
-
-function bindComposer() {
-  const form = byId("wsxComposer");
-  const input = byId("wsxInput");
-  if (!form || !input) return;
-
-  form.addEventListener("submit", (event) => {
-    event.preventDefault();
-    submitMessage();
-  });
-
-  input.addEventListener("keydown", (event) => {
-    if (event.key === "Enter" && !event.shiftKey) {
-      event.preventDefault();
-      submitMessage();
-    }
-  });
-  input.addEventListener("input", () => autoGrow(input));
-}
-
-function bindPreviewControls() {
-  byId("viewDesktop")?.addEventListener("click", () => setDevice("desktop"));
-  byId("viewMobile")?.addEventListener("click", () => setDevice("mobile"));
-  byId("studioOpenPreview")?.addEventListener("click", openPreviewWindow);
-  byId("studioDownload")?.addEventListener("click", downloadSite);
-  byId("studioCopyLink")?.addEventListener("click", copyShareLink);
-  byId("studioEditManual")?.addEventListener("click", openBuilder);
-}
-
-function bindLeadPicker() {
-  const select = byId("wsxLeadSelect");
-  if (!select) return;
-  select.addEventListener("change", () => {
-    const lead = savedLeads.find((item) => String(item.leadId || item.id || "") === select.value);
-    if (lead) applySelectedLead(lead);
-    else applySelectedLead(null);
-  });
-}
-
-// ---------- your websites list ----------
-async function loadHistory() {
-  const list = byId("wsxHistory");
-  if (!list) return;
-  try {
-    const result = await apiFetch("/api/ai/websites");
-    const rows = Array.isArray(result.websites) ? result.websites : [];
-    if (!rows.length) {
-      list.innerHTML = '<p class="wsx-history-empty">No websites yet — your builds will appear here.</p>';
-      return;
-    }
-    list.innerHTML = rows.map((row) => `
-      <button type="button" class="wsx-history-item" data-site-id="${esc(row.id)}">
-        <b>${esc(row.businessName || "Website")}</b>
-        <small>${row.pageCount > 1 ? `${row.pageCount} pages` : "1 page"} • rev ${row.revisions || 1}</small>
-      </button>`).join("");
-  } catch {
-    list.innerHTML = '<p class="wsx-history-empty">Could not load your websites right now.</p>';
-  }
-}
-
-function bindHistory() {
-  const list = byId("wsxHistory");
-  list?.addEventListener("click", (event) => {
-    const item = event.target.closest("[data-site-id]");
-    if (!item) return;
-    window.location.href = `/website-studio.html?id=${encodeURIComponent(item.dataset.siteId)}`;
-  });
-}
-
-// "New chat" resets the thread but keeps the account and the saved leads.
-function resetConversation() {
-  const log = byId("chatLog");
-  if (log) log.innerHTML = "";
-  clearChips();
-  websiteId = "";
-  shareToken = "";
-  shareUrl = "";
-  currentHtml = "";
-  stage = "pages";
-  chosenPages = 0;
-  typedBusiness = "";
-  selectedLead = null;
-  busy = false;
-  enablePreviewActions(false);
-  setPreview("");
-  byId("studioMeta").textContent = "AI";
-  applySelectedLead(null);
-  try { history.replaceState(null, "", "/website-studio.html"); } catch {}
-  askPageCount();
-}
-
-// ---------- plan badge ----------
-function paintPlanBadge() {
-  const pill = byId("studioPlan");
-  if (!pill) return;
-  const user = getCurrentUser();
-  if (!user) {
-    pill.textContent = "Sign in to build";
-    return;
-  }
-  if (String(user.role || "").toLowerCase() === "admin" || user.entitlements?.unlimitedAccess) {
-    pill.textContent = "Admin — all features";
-    return;
-  }
-  if (isProUser(user)) {
-    pill.textContent = `${user.planName || user.subscription || "Pro"} — Studio unlocked`;
-    return;
-  }
-  pill.textContent = "Pro required for Studio";
-}
-
-// ---------- initialization ----------
-async function initStudio() {
+document.addEventListener("DOMContentLoaded", () => {
   if (!requireAuth()) return;
-  paintPlanBadge();
-
-  bindComposer();
-  bindPreviewControls();
-  bindLeadPicker();
-  bindHistory();
-  loadLeadPicker();
-
-  byId("wsxNewChat")?.addEventListener("click", resetConversation);
-
-  // The Studio is a Pro feature — everyone else gets a clear upgrade path
-  // instead of a failed build.
   const user = getCurrentUser();
-  const isAdmin = String(user?.role || "").toLowerCase() === "admin" || user?.entitlements?.unlimitedAccess;
-  if (!isAdmin && !isProUser(user)) {
-    stage = "locked";
-    typeAi("Website Studio is part of the Professional plan. Upgrade to unlock AI site generation, the visual builder and shareable client links.");
-    renderChips([
-      { label: "Upgrade to Pro", onPick: () => { window.location.href = "/pricing.html?upgrade=pro"; } },
-      { label: "See pricing", onPick: () => { window.location.href = "/pricing.html"; } }
-    ]);
-    setStatus("Upgrade to Professional to use the Studio.");
-    setStatusLine("Pro plan required");
+  if (!isProUser(user)) {
+    byId("studioStatus").textContent = "Website Studio needs Pro or higher. Redirecting to Pricing...";
+    setTimeout(() => { window.location.href = "/pricing.html?upgrade=pro"; }, 1200);
     return;
   }
+  loadFromQuery();
 
-  // Deep link from the Leads page: ?leadId=…&business=…
-  const params = new URLSearchParams(window.location.search);
-  const leadId = params.get("leadId") || "";
-  const business = params.get("business") || "";
-  const siteId = params.get("id") || "";
+  // Image uploads: read files as data URLs, keep them client-side, and inject
+  // them into the built site after generation (see injectUploadedImages).
+  byId("studioHeroFile")?.addEventListener("change", async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    try {
+      uploaded.hero = await readFileAsDataUrl(file);
+      byId("studioHeroImg").value = "";
+      byId("studioUploadMsg").textContent = `Hero image ready: ${file.name}. It will be placed on your site when you Generate.`;
+    } catch (err) { byId("studioUploadMsg").textContent = err.message; }
+    e.target.value = "";
+  });
+  byId("studioGalleryFiles")?.addEventListener("change", async (e) => {
+    const files = [...(e.target.files || [])].slice(0, 6);
+    if (!files.length) return;
+    try {
+      uploaded.gallery = [];
+      for (const file of files) uploaded.gallery.push(await readFileAsDataUrl(file));
+      byId("studioUploadMsg").textContent = `${uploaded.gallery.length} gallery image(s) ready. They will appear on your site when you Generate.`;
+    } catch (err) { byId("studioUploadMsg").textContent = err.message; }
+    e.target.value = "";
+  });
 
-  // Always show the owned-sites list, whatever the entry point.
-  loadHistory();
-
-  if (siteId) {
-    const loaded = await loadFromQuery();
-    if (loaded) return;
-  }
-
-  if (leadId) {
-    let lead = savedLeads.find((item) => String(item.leadId || item.id || "") === String(leadId));
-    if (!lead) {
-      try {
-        const result = await apiFetch(`/api/leads/${encodeURIComponent(leadId)}/report`);
-        lead = result.lead;
-      } catch {}
+  byId("studioBuildForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const btn = byId("studioBuildBtn");
+    btn.disabled = true; btn.textContent = "Building professional site...";
+    byId("studioStatus").innerHTML = `<div class="loading-row"><div class="spinner" role="status" aria-label="Loading"></div><span class="muted-value">AI is designing your premium website (fast mode: max ~20s; if it's busy you instantly get a premium template you can retry)...</span></div>`;
+    try {
+      let lead = null;
+      try { lead = JSON.parse(sessionStorage.getItem("mat_studio_lead") || "null"); } catch {}
+      const leadId = byId("studioLeadId").value.trim();
+      if (!lead && leadId) { try { const r = await apiFetch(`/api/leads/${encodeURIComponent(leadId)}/report`); lead = r.lead; } catch {} }
+      const payload = { followBrief, leadId, lead: lead || {}, businessName: byId("studioBusiness").value.trim() || lead?.name || "Business", style: byId("studioStyle").value, palette: byId("studioPalette").value, pages: parseInt(byId("studioPages")?.value, 10) || 1, images: { hero: byId("studioHeroImg")?.value.trim() || "", gallery: (byId("studioGallery")?.value || "").split(/\n+/).map((s) => s.trim()).filter(Boolean).slice(0, 6) } };
+      const r = await apiFetch("/api/ai/websites", { method: "POST", body: JSON.stringify(payload) });
+      websiteId = r.websiteId; shareToken = r.shareToken; shareUrl = r.shareUrl;
+      const withUploads = (uploaded.hero || uploaded.gallery.length) ? injectUploadedImages(r.website.html) : r.website.html;
+      setPreview(withUploads);
+      const pageLabel = r.website.pageCount && r.website.pageCount > 1 ? ` • ${r.website.pageCount} pages` : "";
+      byId("studioMeta").textContent = `${r.website.businessName} • built with ${r.website.model}${pageLabel}${r.website.aiError ? ` • Note: ${r.website.aiError}` : ""}`;
+      byId("studioStatus").textContent = (r.website.provider === "pollinations" || r.website.provider === "nvidia") && !r.website.aiError ? `Done. Real AI ${r.website.pageCount || 1}-page site built. Use the site's top menu to switch pages; chat to refine, download, or share.` : `Done with premium template. ${r.website.aiError || "AI unavailable."}`;
+      updateShare();
+      history.replaceState(null, "", `/website-studio.html?id=${encodeURIComponent(websiteId)}`);
+    } catch (err) {
+      const msg = String(err?.message || "Request failed");
+      byId("studioStatus").innerHTML = `${msg} ${/pro plan|402|PRO_REQUIRED/i.test(msg) ? `<a href="/pricing.html?upgrade=pro"><strong>Upgrade to Pro</strong></a>` : ""}`;
     }
-    if (lead) {
-      applySelectedLead(lead);
-      const select = byId("wsxLeadSelect");
-      if (select && ![...select.options].some((o) => o.value === String(lead.leadId || lead.id || ""))) {
-        select.insertAdjacentHTML("afterbegin", `<option value="${esc(lead.leadId || lead.id || "")}">${esc(lead.leadId || "—")} — ${esc(lead.name)}</option>`);
-      }
-      if (select) select.value = String(lead.leadId || lead.id || "");
-    } else if (business) {
-      typedBusiness = business;
+    finally { btn.disabled = false; btn.textContent = "Generate Website"; }
+  });
+
+  byId("studioRefineForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    if (!websiteId) { byId("studioStatus").textContent = "Generate a website first."; return; }
+    const instruction = byId("studioInstruction").value.trim();
+    if (!instruction) return;
+    byId("studioStatus").innerHTML = `<div class="loading-row"><div class="spinner" role="status" aria-label="Loading"></div><span class="muted-value">Applying your change...</span></div>`;
+    try {
+      const r = await apiFetch(`/api/ai/websites/${encodeURIComponent(websiteId)}`, { method: "PATCH", body: JSON.stringify({ instruction }) });
+      setPreview(r.website.html);
+      byId("studioMeta").textContent = `Updated • rev ${r.website.revisions}`;
+      byId("studioStatus").textContent = "Change applied.";
+      byId("studioInstruction").value = "";
+    } catch (err) {
+      const msg = String(err?.message || "Request failed");
+      byId("studioStatus").innerHTML = `${msg} ${/pro plan|402|PRO_REQUIRED/i.test(msg) ? `<a href="/pricing.html?upgrade=pro"><strong>Upgrade to Pro</strong></a>` : ""}`;
     }
-  } else if (business) {
-    typedBusiness = business;
-  }
+  });
 
-  askPageCount();
-}
-
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", initStudio);
-} else {
-  initStudio();
-}
-
-
-
+  byId("studioOpenPreview").addEventListener("click", openPreviewWindow);
+  byId("followBriefToggle")?.addEventListener("click", () => { followBrief = !followBrief; paintFollowToggle(); });
+  paintFollowToggle();
+  const jumpToManual = () => {
+    if (!websiteId || !currentHtml) { byId("studioStatus").textContent = "Generate the website first, then edit it."; return; }
+    byId("manualEditBox").open = true;
+    byId("manualEditBox").scrollIntoView({ behavior: "smooth", block: "start" });
+    byId("editMsg").textContent = "Edit text, images, colors and sections below — no code needed — then Apply edits.";
+  };
+  byId("openManualBuilder").addEventListener("click", jumpToManual);
+  byId("studioEditManual").addEventListener("click", jumpToManual);
+  byId("editApply").addEventListener("click", applyManualEdits);
+  byId("editAddImage").addEventListener("click", addManualImage);
+  byId("editMode").addEventListener("click", toggleEditOnPage);
+  byId("editSave").addEventListener("click", saveManualHtml);
+  byId("studioDownload").addEventListener("click", () => {
+    if (!currentHtml) return;
+    const blob = new Blob([currentHtml], { type: "text/html" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `website-${websiteId.slice(0, 8)}.html`;
+    document.body.append(a); a.click(); a.remove();
+  });
+  byId("studioCopyLink").addEventListener("click", async () => {
+    if (!shareToken) return;
+    await navigator.clipboard.writeText(abs(shareUrl));
+    byId("studioStatus").textContent = "Share link copied.";
+  });
+});

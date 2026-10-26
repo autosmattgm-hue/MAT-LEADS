@@ -2,20 +2,16 @@ import crypto from "node:crypto";
 import { env } from "./env.js";
 import { logger } from "../utils/logger.js";
 
-// A malformed FIREBASE_PRIVATE_KEY paste (missing \n escaping, stray quotes,
-// or a truncated/placeholder key) used to make every Firestore call throw
-// mid-request. Validate the key shape up front and treat bad credentials as
-// "not configured" so the app falls back to the local store instead of
-// failing every request with ERR_OSSL_UNSUPPORTED.
+// A malformed FIREBASE_PRIVATE_KEY paste (missing \n escaping, stray quotes)
+// used to make every Firestore call throw mid-request. Validate the key shape
+// up front and treat bad credentials as "not configured" so the app falls
+// back to the local store instead of failing every request.
 function hasFirestoreCredentials() {
-  const key = normalizedPrivateKey(env.firebase.privateKey);
-  if (!env.firebase.projectId || !env.firebase.clientEmail || !key) return false;
-  try {
-    crypto.createPrivateKey(key);
-    return true;
-  } catch {
-    return false;
-  }
+  return Boolean(
+    env.firebase.projectId &&
+    env.firebase.clientEmail &&
+    normalizedPrivateKey(env.firebase.privateKey)
+  );
 }
 
 let cachedToken = null;

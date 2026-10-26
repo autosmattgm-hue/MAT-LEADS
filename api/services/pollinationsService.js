@@ -1,7 +1,7 @@
 import { env } from "../config/env.js";
 import { AppError } from "../utils/errors.js";
 import { isCreatorQuestion, creatorAnswer, identityLine } from "../utils/brand.js";
-import { hasRealContent, visibleWordCount, repairTruncatedHtml, missingPageSections } from "../utils/siteContent.js";
+import { hasRealContent, visibleWordCount } from "../utils/siteContent.js";
 
 const POLLINATIONS = {
   GEN_BASE: "https://gen.pollinations.ai",
@@ -60,27 +60,6 @@ const POLLINATIONS = {
 };
 
 const PROVIDER = "pollinations";
-
-// Classic text endpoint. The Gen endpoint (gen.pollinations.ai) is gated by the
-// key's model allow-list: when permissions.models is empty the API answers HTTP
-// 200 with an "isn't allowed to use" notice for EVERY model, so Gen can never
-// build anything for such a key. The Classic endpoint has no allow-list.
-const CLASSIC_CHAT = "/openai";
-// Classic free tier serves 1 reply per 30s per IP and answers HTTP 402
-// FREE_LIMIT otherwise, so calls are serialized and spaced out.
-let classicChain = Promise.resolve();
-let classicLastStartedAt = 0;
-
-function classicSlot(minIntervalMs) {
-  const previous = classicChain;
-  let release;
-  classicChain = new Promise((resolve) => { release = resolve; });
-  return previous.then(async () => {
-    const wait = Math.max(0, classicLastStartedAt + minIntervalMs - Date.now());
-    if (wait > 0) await new Promise((resolve) => setTimeout(resolve, wait));
-    classicLastStartedAt = Date.now();
-  }).finally(() => release());
-}
 
 // Per-archetype shell themes — the nav, page background, footer and fonts
 // change with the picked design archetype so no two builds share one look.
@@ -154,8 +133,6 @@ function fetchJson(url, options) {
 
 export class PollinationsService {
   constructor() {
-    // Set once a Gen model is refused; then every request goes to Classic.
-    this.genDenied = false;
     this.refreshConfig();
   }
 
@@ -177,64 +154,6 @@ export class PollinationsService {
   authHeaders(extra = {}) {
     const key = env.pollinations.apiKey;
     return { ...(key ? { Authorization: "Bearer " + key } : {}), ...extra };
-  }
-
-  // One Classic call. Classic returns the OpenAI chat-completions shape with
-  // the answer in choices[0].message.content and the chain of thought in
-  // choices[0].message.reasoning.
-  async classicOnce(messages, options = {}) {
-    const {
-      temperature = 0.6,
-      maxTokens = 2000,
-      model = env.pollinations.classicModel || "openai-fast",
-      timeoutMs = env.pollinations.classicTimeoutMs || 150000,
-    } = options;
-    const body = {
-      model,
-      messages,
-      max_tokens: Math.min(Math.max(Number(maxTokens) || 2000, 100), 16000),
-      temperature: Number(temperature ?? 0.6),
-      stream: false,
-      // The default reasoning mode burns the whole 1500-token Classic budget on
-      // chain-of-thought and returns finish_reason "length" with no content.
-      // "low" keeps the reasoning negligible so the answer itself is complete.
-      reasoning_effort: "low",
-    };
-    const url = String(env.pollinations.classicBaseUrl || "https://text.pollinations.ai").replace(/\/$/, "") + CLASSIC_CHAT;
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), Math.max(5000, Number(timeoutMs) || 150000));
-    try {
-      const response = await fetchJson(url, {
-        method: "POST",
-        signal: controller.signal,
-        headers: this.authHeaders({ "Content-Type": "application/json", Accept: "application/json" }),
-        body: JSON.stringify(body),
-      });
-      const message = (response.choices && Array.isArray(response.choices) ? response.choices[0] : {}) || {};
-      const msg = message.message || {};
-      const content = msg.content !== undefined ? String(msg.content ?? "") : String(message.text ?? "");
-      if (!content || !content.trim()) {
-        throw new AppError("Pollinations Classic returned an empty response.", 503, "POLLINATIONS_EMPTY");
-      }
-      return {
-        configured: true,
-        provider: PROVIDER,
-        model,
-        content,
-        usage: response.usage || null,
-        cached: false,
-        finishReason: message.finish_reason || null,
-      };
-    } finally {
-      clearTimeout(timer);
-    }
-  }
-
-  // Serialized + spaced Classic call (1 reply per 30s on the free tier).
-  async classicText(messages, options = {}) {
-    const minInterval = Number(env.pollinations.classicMinIntervalMs) || 31000;
-    await classicSlot(minInterval);
-    return this.classicOnce(messages, options);
   }
 
   resolveTextModels(requested, fallbackPool) {
@@ -288,20 +207,6 @@ export class PollinationsService {
     const safety = safe === undefined || safe === null || safe === false || safe === 0 ? {} : { safe: Array.isArray(safe) ? safe.join(",") : String(safe) };
     let lastError = null;
     const deniedModels = [];
-    // Once the key's allow-list is known to be empty, every later Gen model
-    // attempt is a guaranteed refusal, so skip straight to Classic.
-    if (this.genDenied && options.classicFallback !== false) {
-      try {
-        return await this.classicText(cleanMessages, {
-          temperature,
-          maxTokens,
-          model: env.pollinations.classicModel || "openai-fast",
-          timeoutMs: Math.max(timeoutMs, env.pollinations.classicTimeoutMs || 150000),
-        });
-      } catch (classicError) {
-        throw publicPollinationsError(classicError);
-      }
-    }
     for (const attempt of queue) {
       const controller = new AbortController();
       const timer = setTimeout(() => controller.abort(), Math.max(5000, Number(timeoutMs) || 60000));
@@ -339,8 +244,6 @@ export class PollinationsService {
         if (/isn.t allowed to use|is not allowed to use|allow it for this key/i.test(String(content))) {
           const grantMatch = String(content).match(/https:\/\/enter\.pollinations\.ai\/grant\?[^\s)\]">]+/);
           deniedModels.push({ model: attempt, grant: grantMatch ? grantMatch[0] : "https://enter.pollinations.ai/keys" });
-          // A refused model means the key's allow-list does not cover it.
-          this.genDenied = true;
           lastError = new AppError("Pollinations key cannot use " + attempt + "; its model allow-list does not include it.", 503, "POLLINATIONS_MODEL_DENIED");
           continue;
         }
@@ -355,38 +258,7 @@ export class PollinationsService {
       }
     }
     if (deniedModels.length && deniedModels.length === queue.length) {
-      // The key's model allow-list covers none of the Gen models. The Classic
-      // endpoint has no allow-list, so it can still serve the request.
-      if (options.classicFallback !== false) {
-        try {
-          return await this.classicText(cleanMessages, {
-            temperature,
-            maxTokens,
-            model: env.pollinations.classicModel || "openai-fast",
-            timeoutMs: Math.max(timeoutMs, env.pollinations.classicTimeoutMs || 150000),
-          });
-        } catch (classicError) {
-          // Classic is the only usable path here, so surface ITS error
-          // (rate limit, timeout, ...) instead of the misleading
-          // "model not allowed" message that hides the real cause.
-          throw publicPollinationsError(classicError);
-        }
-      }
       throw new AppError("Pollinations key is not allowed to use any of: " + queue.join(", ") + " (its model allow-list covers none of them). Owner fix: open " + deniedModels[0].grant + " and allow the text category for this key - or set a full-access secret (sk_) key as POLLINATIONS_API_KEY. You can also pin one allowed model via POLLINATIONS_TEXT_MODEL / POLLINATIONS_WEBSITE_MODEL, then retry.", 503, "POLLINATIONS_MODEL_DENIED");
-    }
-    // Any other Gen failure (quota, empty body, upstream error) can still be
-    // served by Classic, which has neither the allow-list nor the same quota.
-    if (options.classicFallback !== false) {
-      try {
-        return await this.classicText(cleanMessages, {
-          temperature,
-          maxTokens,
-          model: env.pollinations.classicModel || "openai-fast",
-          timeoutMs: Math.max(timeoutMs, env.pollinations.classicTimeoutMs || 150000),
-        });
-      } catch (classicError) {
-        lastError = classicError;
-      }
     }
     throw publicPollinationsError(lastError || new Error("Pollinations AI request failed."));
   }
@@ -563,17 +435,10 @@ export class PollinationsService {
     const phone = String(lead?.phone || "");
     const email = String(lead?.email || "");
     const card = (h, p) => "<div style=\"background:" + t.nav + ";color:" + t.navInk + ";border:1px solid rgba(128,128,128,.25);border-radius:16px;padding:22px;box-shadow:0 6px 20px rgba(15,23,42,.06)\"><h3 style=\"margin:.1em 0 .3em\">" + h + "</h3><p style=\"margin:0;opacity:.85\">" + p + "</p></div>";
-    // The fallback must carry every section the AI pages are asked for, so a
-    // failed page still ships a usable site instead of a bare heading.
-    const style = "<style>.fb-hero{display:grid;gap:10px;padding:18px 0}.fb-stats{display:flex;gap:18px;flex-wrap:wrap;padding:16px 0}.fb-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;padding:14px 0}.fb-faq{padding:14px 0}.fb-form{display:grid;gap:10px;max-width:520px;padding:14px 0}</style>";
-    const stats = "<div class=\"fb-stats\"><div><b>10+</b><br>Years serving the area</div><div><b>500+</b><br>Jobs completed</div><div><b>4.9</b><br>Average rating</div><div><b>24h</b><br>Response time</div></div>";
-    const cards = "<div class=\"fb-cards\">" + card("Quality work", "Every job finished to a high standard.") + card("Fair pricing", "Clear quotes with no hidden extras.") + card("Local team", "We are based right here in the community.") + "</div>";
-    const faq = "<div class=\"fb-faq\"><h2>Frequently asked questions</h2><details><summary>Do you offer free quotes?</summary><p>Yes, we provide a free quote for every job.</p></details><details><summary>How soon can you start?</summary><p>Most jobs start within a few days of booking.</p></details><details><summary>Do you guarantee the work?</summary><p>Yes, all work is backed by our guarantee.</p></details></div>";
-    const form = "<form class=\"fb-form\" id=\"quote\"><h2>Request a free quote</h2><input type=\"text\" name=\"name\" placeholder=\"Your name\" required><input type=\"email\" name=\"email\" placeholder=\"Your email\" required><input type=\"tel\" name=\"phone\" placeholder=\"Your phone\"><textarea name=\"message\" rows=\"4\" placeholder=\"How can we help?\"></textarea><button type=\"submit\">Send Request</button></form>";
     if (isHome) {
-      return style + "<div class=\"fb-hero\"><span class=\"kick\">" + type + "</span><h1>" + name + " — quality service you can trust</h1><p class=\"lead\">" + address + " Call today for a free quote.</p><div class=\"cta-row\"><a class=\"btn btn-p\" href=\"tel:" + phone + "\">Call now</a><a class=\"btn btn-g\" href=\"#quote\">Get a free quote</a></div></div><img src=\"" + hero + "\" alt=\"" + name + "\" loading=\"lazy\" style=\"width:100%;max-height:420px;object-fit:cover;display:block;border-radius:16px\">" + stats + cards + faq + form;
+      return "<div class=\"hero-band\"><span class=\"kick\">" + type + "</span><h1>" + name + " — quality service you can trust</h1><p class=\"lead\">" + address + " Call today for a free quote.</p><div class=\"cta-row\"><a class=\"btn btn-p\" href=\"tel:" + phone + "\">Call now</a><a class=\"btn btn-g\" href=\"#quote\">Get a free quote</a></div></div><img src=\"" + hero + "\" alt=\"" + name + "\" loading=\"lazy\" style=\"width:100%;max-height:420px;object-fit:cover;display:block;border-radius:16px\"><div class=\"trust\"><span><b>Local</b> & trusted</span><span><b>Fast</b> response</span><span><b>Fair</b> pricing</span></div><h1>" + name + " — " + type + "</h1><p>" + address + "</p><p>Phone: " + phone + "</p><p>Email: " + email + "</p><button>Get a Free Quote</button>" + card("Services", "What we do");
     }
-    return style + "<h1>" + spec.title + "</h1><p>" + spec.focus + "</p><img src=\"" + hero + "\" alt=\"" + name + " — " + spec.title + "\" loading=\"lazy\" style=\"width:100%;max-height:380px;object-fit:cover;display:block;border-radius:16px\">" + stats + cards + faq + form;
+    return "<h1>" + spec.title + "</h1><p>" + spec.focus + "</p>";
   }
 
   assembleMultiPage(pages, business, accent, archId) {
@@ -599,14 +464,11 @@ export class PollinationsService {
     const accentMap = { emerald: "#22c55e", blue: "#2563eb", gold: "#d4af37", rose: "#e11d48", teal: "#14b8a6", purple: "#7c3aed", orange: "#f97316" };
     const accent = accentMap[options.palette] || "#22c55e";
     const pageCount = Math.min(4, Math.max(1, parseInt(options.pages, 10) || 1));
-    // Keep each focus SHORT. A long focus listing extra bands (gallery,
-    // testimonial, pricing...) made the model append a seventh section, which
-    // pushed the reply past Classic's ~1500 token cap.
     const allSpecs = [
-      { id: "home", title: "Home", focus: "headline and CTAs for this business" },
-      { id: "about", title: "About", focus: "the business story and why choose us" },
-      { id: "services", title: "Services", focus: "the services this business offers" },
-      { id: "contact", title: "Contact", focus: "how to reach and contact this business" }
+      { id: "home", title: "Home", focus: "hero band with headline + dual CTA, trust-signal strip, 3-4 card highlights grid, gallery image row, sample testimonial band, FAQ accordion, closing CTA band" },
+      { id: "about", title: "About", focus: "brand story, why-choose-us cards, values list, process steps (contact > quote > work > support), commitment note" },
+      { id: "services", title: "Services", focus: "4-6 service cards with benefit copy, simple packages/pricing row, FAQ, closing CTA band" },
+      { id: "contact", title: "Contact", focus: "click-to-call + message CTA buttons, contact form (name, email, message), address, hours, map placeholder, FAQ" }
     ];
     const pageSpecs = allSpecs.slice(0, pageCount);
     const business = String(lead.name || options.businessName || "Your Business");
@@ -628,81 +490,25 @@ export class PollinationsService {
     if (bx(options.about, 900)) briefExtra.push("ABOUT=" + bx(options.about, 900));
     if (bx(options.language, 40)) briefExtra.push("LANGUAGE=" + bx(options.language, 40));
     const brief = JSON.stringify({ business, type: lead.businessType || lead.category, address: lead.address, phone: lead.phone, email: lead.email, style: options.style || "modern", colors: options.palette || "emerald", images: { hero, gallery } }).slice(0, 1500) + (briefExtra.length ? " EXTRA:" + briefExtra.join("|") : "");
-    // Compact prompt. The Classic endpoint caps a reply at ~1500 tokens TOTAL,
-    // so the previous multi-paragraph brief (long design system + full page
-    // brief) left too little room for the page itself and the model stopped at
-    // finish_reason "length". Keep the prompt tiny, name a fixed set of
-    // sections, and let the retry ask for a shorter page.
-    const request = (maxTokens, note, targetSpecs = pageSpecs, terse = false) => {
-      const spec = targetSpecs[0] || {};
-      // Each page gets its OWN class prefix: a <style> block applies document-wide
-      // even when its parent page is hidden, so a shared prefix would let one
-      // page's rules restyle another page.
-      const slug = (String(business).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 12) || "site")
-        + "-" + String(spec.id || targetSpecs.indexOf(spec) + 1).toLowerCase().replace(/[^a-z0-9]+/g, "");
-      const tone = terse ? " Write SHORT copy (max 12 words per paragraph, no extra sections)." : "";
-      const system = "You are a web designer. Output ONLY the inner HTML of ONE website page. "
-        + "Style: " + (terse ? String(archPick.label) + " colors " + accent + "." : designDirection + " " + layoutPick + ".") + " "
-        + "Page " + (spec.title || "Home") + ": " + (spec.focus || "") + ". "
-        + "Use class prefix ." + slug + "-. "
-        + "Structure, in this order: (1) <style> with at most 10 one-line rules using only ." + slug + "- classes; "
-        + "(2) hero: h1, one sentence, two <a> buttons; (3) stats: 4 big numbers; "
-        + "(4) 3 cards, each h3 + one short line + link; (5) one <img> + short text; "
-        + "(6) 3 <details> FAQ items; (7) <form> with name, email, phone, message and a submit button. "
-        + "Use the image URLs given. Add NO other sections (no gallery, no testimonials, no pricing, no extra lists) and no second <style> block. "
-        + "No markdown, no explanation, no html/head/body/nav, no <!--PAGE--> marker. "
-        + "Be brief so the page fits in 900 tokens. Finish every section." + tone;
-      const user = terse
-        ? "Business: " + brief + ". Build page \"" + (spec.title || "Home") + "\"."
-        : "Business: " + brief + ". Build page \"" + (spec.title || "Home") + "\" using the image URLs exactly.";
+    const request = (maxTokens, note) => {
+      const system = "You are MAT LEADS Studio, an award-winning web design studio whose output rivals Claude's best sites. Output ONLY the inner content for a " + pageCount + "-page business website. DESIGN SYSTEM (obey exactly): " + designDirection + " HERO LAYOUT THIS TIME: " + layoutPick + " (variation #" + varietySeed + " - this build must feel unmistakably different from any previous one). PRO STANDARD: generous whitespace, oversized display headlines (clamp 2.4rem-4rem), eyebrow kickers with letter-spacing, gradient or image hero bands with overlay, glass or elevated cards (radius 16-20px, soft shadows, hover lift), trust chips, stats with big numerals, numbered process steps, alternating image/text rows, pricing teasers, testimonial band on Home ONLY labelled sample with no invented names, FAQ accordion with <details>/<summary>, sticky mobile call bar, closing CTA band with gradient. RULES: (1) Separate each page with the exact marker <!--PAGE--> on its own line, and emit exactly " + pageCount + " page(s) in this order: " + pageSpecs.map((p) => p.title).join(", ") + ". (2) Do NOT output <!doctype>, <html>, <head>, <body> or <nav> — only the page content. (3) You MUST open with ONE single-line <style> block defining your OWN fresh classes for hero/cards/buttons/stats/faq/cta (never reuse generic .hero-band/.card, never invent clashing globals); keep it under ~60 declarations. (4) Use the exact image URLs from the brief in real <img> tags with loading=lazy and descriptive alt text; never leave src empty. Never emit placeholder grey boxes — every image slot gets a real URL from the brief or an https picsum seed image. (5) Every page opens with a HERO: eyebrow kicker, one bold benefit-led headline worded DIFFERENTLY from typical templates, one supporting sentence, TWO buttons. Then vary the middle: pick a DIFFERENT order and DIFFERENT emphasis each build (stats row, process steps, image+text split, pricing teasers, testimonial band on Home ONLY labelled sample with no fake names, FAQ accordion with <details>/<summary>), and a closing CTA band that does not copy previous closings. (6) Copy must feel customer-taste: follow the brief TONE when given (default warm, confident, benefit-led), short sentences, and NEVER repeat the same headline twice. Build service cards from the brief SERVICES list when given — one card per service with a 1-line benefit and a mini-CTA button. Use the brief CTA text on hero and closing buttons when given. Weave the brief ABOUT story into the Home trust area and the About page. Write the whole site in the brief LANGUAGE when given. NEVER invent awards, reviews, licenses, addresses or numbers not in the brief - use neutral placeholders or omit. (7) FULL LENGTH: use the generous token budget — every page complete with all sections finished, each page at least ~1200 characters of body content. NEVER stop mid-section, NEVER truncate. (8) No markdown, no explanations, no code fences.";
+      const user = "Build the " + pageCount + " page section(s) for: " + brief + ". Page focuses: " + pageSpecs.map((p) => p.title + " = " + p.focus).join("; ") + ". Hero uses images.hero; put images.gallery URLs in an <img> row on the Home page. Variation #" + varietySeed + " with " + layoutPick + ". Separate every page with <!--PAGE-->. " + (note || "");
       return this.text([{ role: "system", content: system }, { role: "user", content: user }], { temperature: 0.85, maxTokens, timeoutMs: Math.max(60000, 120000), model: process.env.POLLINATIONS_WEBSITE_MODEL || POLLINATIONS.MODELS.WEBSITE_DEFAULT, fallbackModels: POLLINATIONS.MODELS.WEBSITE_FALLBACKS });
     };
-    // One request per page. The Classic endpoint caps a reply at ~1500 tokens,
-    // so asking for every page in one call truncates the last page mid-section.
-    // Per-page calls keep each page complete on every provider.
-    const pageBodies = [];
-    let result = null;
-    for (let i = 0; i < pageSpecs.length; i++) {
-      const spec = pageSpecs[i];
-      let pageContent = "";
-      let truncated = false;
+    let result = await request(POLLINATIONS.MODELS.WEBSITE_TOKENS_FIRST);
+    let content = String(result.content || "");
+    if (content.replace(/<!--PAGE-->/gi, "").trim().length < POLLINATIONS.MODELS.WEBSITE_MIN_TOTAL_CHARS || visibleWordCount(content) < POLLINATIONS.MODELS.WEBSITE_MIN_VISIBLE_WORDS) {
       try {
-        const attempt = await request(POLLINATIONS.MODELS.WEBSITE_TOKENS_FIRST, "", [spec]);
-        pageContent = String(attempt.content || "");
-        truncated = String(attempt.finishReason || "").toLowerCase() === "length";
-        if (!result) result = attempt;
-      } catch (error) {
-        if (!result) throw error;
-      }
-      // A page cut off by the token cap leaves dangling tags; close them so the
-      // section still renders instead of swallowing the rest of the document.
-      let repaired = repairTruncatedHtml(pageContent);
-      if (repaired.repaired) { pageContent = repaired.html; truncated = true; }
-      // Truncated or too thin: retry with the terse prompt, which asks for a
-      // shorter page that fits the cap instead of repeating the same overflow.
-      // Retry when the page was cut off, is too thin, or is missing a required
-      // section (the FAQ or contact form are the usual casualties of a cut reply).
-      const missingSections = missingPageSections(pageContent);
-      if (truncated || missingSections.length || !hasRealContent(pageContent) || visibleWordCount(pageContent) < 60) {
-        try {
-          const retry = await request(POLLINATIONS.MODELS.WEBSITE_TOKENS_RETRY, "", [spec], true);
-          const retryBody = repairTruncatedHtml(String(retry.content || ""));
-          const retryMissing = missingPageSections(retryBody.html);
-          // Prefer the retry when it is more complete; otherwise keep the original.
-          const better = retryMissing.length < missingSections.length
-            || (retryMissing.length === missingSections.length && retryBody.html.length > pageContent.length)
-            || (missingSections.length > 0 && retryMissing.length === 0);
-          if (better) {
-            pageContent = retryBody.html;
-            if (!result) result = retry;
-          }
-        } catch {
-          /* keep the first attempt */
+        const retry = await request(POLLINATIONS.MODELS.WEBSITE_TOKENS_RETRY, "Previous attempt was cut short — write FULLY complete pages this time with every section finished, " + layoutPick + " hero, fresh class names, varied section order. Separate each page with <!--PAGE--> and end cleanly.");
+        if (String(retry.content || "").length > content.length) {
+          result = retry;
+          content = String(retry.content || "");
         }
+      } catch {
+        /* keep first attempt */
       }
-      pageBodies.push(pageContent);
     }
-    const fragments = pageBodies.map((s) => String(s || "").trim());
+    const fragments = content.split(/<!--PAGE-->/i).map((s) => s.trim()).filter(Boolean);
     const pages = pageSpecs.map((spec, i) => ({ ...spec, body: hasRealContent(fragments[i]) ? fragments[i] : this.fallbackPageFragment(spec, lead, hero, gallery, i === 0, archPick.id) }));
     return { ...result, html: this.assembleMultiPage(pages, business, accent, archPick.id), pageCount: pages.length };
   }

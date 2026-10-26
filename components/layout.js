@@ -1,67 +1,35 @@
-import { apiFetch, hasStoredSession, isProUser } from "../js/api.js";
+import { apiFetch, hasStoredSession } from "../js/api.js";
 
-// The sidebar is grouped so 25+ destinations stay scannable. Each item
-// carries an explicit `page` key — it matches the `data-page` attribute on
-// the page body. Deriving it from the label used to leave most tool pages
-// without an active highlight.
-const navGroups = [
-  {
-    label: "Leads",
-    items: [
-      { href: "/dashboard.html", page: "dashboard", label: "Dashboard", icon: "D" },
-      { href: "/crm.html", page: "crm", label: "CRM", icon: "C" },
-      { href: "/lead-details.html", page: "lead-details", label: "Lead Details", icon: "L" }
-    ]
-  },
-  {
-    label: "Websites",
-    items: [
-      { href: "/website-studio.html", page: "website-studio", label: "Website Studio", icon: "W", pro: true },
-      { href: "/website-editor.html", page: "website-editor", label: "Website Editor", icon: "E", pro: true },
-      { href: "/business-ai.html", page: "business-ai", label: "Business AI", icon: "B", pro: true },
-      { href: "/outreach.html", page: "outreach", label: "Outreach", icon: "O" },
-      { href: "/proposals.html", page: "proposals", label: "Proposals", icon: "P" }
-    ]
-  },
-  {
-    label: "Business Tools",
-    items: [
-      { href: "/tools.html", page: "tools", label: "Tools Hub", icon: "T" },
-      { href: "/work-planner.html", page: "work-planner", label: "Work Planner", icon: "K" },
-      { href: "/money.html", page: "money", label: "Money Toolkit", icon: "$" },
-      { href: "/freelance.html", page: "freelance", label: "Freelancer", icon: "F" },
-      { href: "/digital.html", page: "digital", label: "Digital Products", icon: "D" },
-      { href: "/content.html", page: "content", label: "Content Studio", icon: "C" },
-      { href: "/sales.html", page: "sales", label: "Sales Copy", icon: "S" },
-      { href: "/social.html", page: "social", label: "Social Manager", icon: "S" },
-      { href: "/ecommerce.html", page: "ecommerce", label: "E-commerce", icon: "$" },
-      { href: "/affiliate.html", page: "affiliate", label: "Affiliate", icon: "%" },
-      { href: "/coaching.html", page: "coaching", label: "Coaching", icon: "C" }
-    ]
-  },
-  {
-    label: "Earn",
-    items: [
-      { href: "/earn.html", page: "earn", label: "Earn Hub", icon: "E" },
-      { href: "/gigs.html", page: "gigs", label: "Gigs", icon: "G" },
-      { href: "/students.html", page: "students", label: "Earn Starter", icon: "E" },
-      { href: "/learn.html", page: "learn", label: "Learn", icon: "T" }
-    ]
-  },
-  {
-    label: "Account",
-    items: [
-      { href: "/reports.html", page: "reports", label: "Reports", icon: "R" },
-      { href: "/analytics.html", page: "analytics", label: "Analytics", icon: "A" },
-      { href: "/pricing.html", page: "pricing", label: "Pricing", icon: "$" },
-      { href: "/profile.html", page: "profile", label: "Profile", icon: "F" },
-      { href: "/settings.html", page: "settings", label: "Settings", icon: "S" }
-    ]
-  }
+const navItems = [
+  { href: "/dashboard.html", label: "Dashboard", icon: "D" },
+  { href: "/crm.html", label: "CRM", icon: "C" },
+  { href: "/lead-details.html", label: "Lead Details", icon: "L" },
+  { href: "/website-studio.html", label: "Website Studio", icon: "W" },
+  { href: "/business-ai.html", label: "Business AI", icon: "B" },
+  { href: "/tools.html", label: "Tools", icon: "T" },
+  { href: "/work-planner.html", label: "Work Planner", icon: "K" },
+  { href: "/earn.html", label: "Earn", icon: "E" },
+  { href: "/gigs.html", label: "Gigs", icon: "G" },
+  { href: "/learn.html", label: "Learn", icon: "T" },
+  { href: "/money.html", label: "Money Toolkit", icon: "$" },
+  { href: "/freelance.html", label: "Freelancer", icon: "F" },
+  { href: "/digital.html", label: "Digital Products", icon: "D" },
+  { href: "/content.html", label: "Content Studio", icon: "C" },
+  { href: "/sales.html", label: "Sales Copy", icon: "S" },
+  { href: "/students.html", label: "Earn Starter", icon: "E" },
+  { href: "/ecommerce.html", label: "E-commerce", icon: "$" },
+  { href: "/affiliate.html", label: "Affiliate", icon: "%" },
+  { href: "/coaching.html", label: "Coaching", icon: "C" },
+  { href: "/social.html", label: "Social Manager", icon: "S" },
+  { href: "/outreach.html", label: "Outreach", icon: "O" },
+  { href: "/proposals.html", label: "Proposals", icon: "P" },
+  { href: "/reports.html", label: "Reports", icon: "R" },
+  { href: "/analytics.html", label: "Analytics", icon: "A" },
+  { href: "/pricing.html", label: "Pricing", icon: "$" },
+  { href: "/profile.html", label: "Profile", icon: "F" },
+  { href: "/settings.html", label: "Settings", icon: "S" }
+  // Admin link is injected only for admin accounts — see syncAdminNavItem().
 ];
-
-// Flat list, kept for anything that needs every destination.
-export const navItems = navGroups.flatMap((group) => group.items);
 
 function isAdminAccount(user) {
   return String(user?.role || "").toLowerCase() === "admin";
@@ -70,13 +38,10 @@ function isAdminAccount(user) {
 function adminLinkMarkup() {
   const active = document.body.dataset.page || "";
   return `
-    <div class="nav-group">
-      <p class="nav-group__label">Admin</p>
-      <a href="/admin.html" class="${active === "admin" ? "active" : ""}">
-        <span aria-hidden="true">M</span>
-        <span>Admin</span>
-      </a>
-    </div>
+    <a href="/admin.html" class="${active === "admin" ? "active" : ""}">
+      <span aria-hidden="true">M</span>
+      <span>Admin</span>
+    </a>
   `;
 }
 
@@ -91,17 +56,6 @@ function syncAdminNavItem(user) {
   } else if (existing) {
     existing.remove();
   }
-}
-
-// Pro-gated destinations carry a badge. When the account already has a Pro
-// plan the badge turns solid so the sidebar shows what is actually unlocked,
-// instead of every entry looking like it is still behind a paywall.
-function syncProNavState(user) {
-  const unlocked = isProUser(user);
-  document.querySelectorAll('#sidebar a[data-nav-pro]').forEach((link) => {
-    link.classList.toggle("is-unlocked", unlocked);
-    link.classList.toggle("is-locked", !unlocked);
-  });
 }
 
 function brandMarkup() {
@@ -186,17 +140,11 @@ function initAppShell() {
   sidebar.innerHTML = `
     ${brandMarkup()}
     <nav aria-label="Application">
-      ${navGroups.map((group) => `
-        <div class="nav-group">
-          <p class="nav-group__label">${group.label}</p>
-          ${group.items.map((item) => `
-            <a href="${item.href}" class="${active === item.page ? "active" : ""}"${item.pro ? ' data-nav-pro="1"' : ""}>
-              <span aria-hidden="true">${item.icon}</span>
-              <span>${item.label}</span>
-              ${item.pro ? '<em class="nav-pro-badge">Pro</em>' : ""}
-            </a>
-          `).join("")}
-        </div>
+      ${navItems.map((item) => `
+        <a href="${item.href}" class="${active === item.label.toLowerCase().replaceAll(" ", "-") ? "active" : ""}">
+          <span aria-hidden="true">${item.icon}</span>
+          <span>${item.label}</span>
+        </a>
       `).join("")}
     </nav>
   `;
@@ -228,10 +176,6 @@ function initAppShell() {
 
   shell.prepend(sidebar);
   workspace.prepend(topbar);
-
-  // Paint the Pro badge state from the cached account right away so the
-  // sidebar never flashes the locked styling before /api/auth/me resolves.
-  syncProNavState(cachedUser);
 }
 
 function sessionText(user) {
@@ -256,7 +200,6 @@ async function initSessionBadge() {
     try {
       const user = JSON.parse(cached);
       target.textContent = sessionText(user);
-      syncProNavState(user);
     } catch {
       target.textContent = "Workspace session active.";
     }
@@ -265,7 +208,6 @@ async function initSessionBadge() {
   if (!hasStoredSession()) {
     target.textContent = "Login required to access the workspace.";
     syncAdminNavItem(null);
-    syncProNavState(null);
     return;
   }
 
@@ -275,7 +217,6 @@ async function initSessionBadge() {
     localStorage.setItem("mat_user", JSON.stringify(user));
     target.textContent = sessionText(user);
     syncAdminNavItem(user);
-    syncProNavState(user);
   } catch {
     target.textContent = "Workspace session active.";
   }

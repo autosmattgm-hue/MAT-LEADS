@@ -407,9 +407,7 @@ export class AuthService {
       if (!storedUser) storedUser = localUser;
       this.assertEmailVerified(storedUser);
       const user = applyAdminEntitlements({
-        // Keep the token subject aligned with the durable Firebase account
-        // record so trial usage survives every supported sign-in method.
-        uid: storedUser?.uid || storedUser?.id || `firebase:${payload.localId}`,
+        uid: payload.localId,
         name: storedUser?.name || "",
         email: normalizedEmail,
         role: storedUser?.role || "user",
