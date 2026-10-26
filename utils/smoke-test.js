@@ -37,7 +37,32 @@ try {
     method: "POST",
     body: JSON.stringify({ name: "Smoke Tester", email, password: "Password123" })
   });
-  if (!auth.accessToken) throw new Error("Register did not return an access token");
+  if (auth.verificationRequired) {
+    // Login must be blocked until the address is verified.
+    let blockedMessage = "";
+    try {
+      await request("/api/auth/login", {
+        method: "POST",
+        body: JSON.stringify({ email, password: "Password123" })
+      });
+    } catch (error) {
+      blockedMessage = String(error.message || "");
+    }
+    if (!blockedMessage.includes("ACCOUNT_NOT_VERIFIED")) {
+      throw new Error("Login was not blocked for an unverified email address");
+    }
+    const token = auth.verificationToken;
+    if (!token) {
+      throw new Error("Register did not expose a verification token (set EMAIL_VERIFICATION=off or no mail provider)");
+    }
+    const verified = await request("/api/auth/verify-email", {
+      method: "POST",
+      body: JSON.stringify({ token })
+    });
+    if (!verified.verified) throw new Error("Email verification did not confirm the account");
+  } else if (!auth.accessToken) {
+    throw new Error("Register did not return an access token");
+  }
 
   const login = await request("/api/auth/login", {
     method: "POST",
