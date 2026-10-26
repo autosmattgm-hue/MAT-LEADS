@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Website Studio | MAT LEADS AI PRO X</title>
+    <meta name="description" content="Chat with MAT Studio AI to generate a professional client website, then fine-tune every detail in the visual builder.">
+    <link rel="icon" href="/assets/logo-mark.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="/css/style.css">
+  </head>
+  <body data-page="website-studio">
+    <div class="app-layout" data-app-shell>
+      <main class="workspace">
+        <div class="wsx-shell">
+          <div class="wsx-top">
+            <div>
+              <h1>Website Studio</h1>
+              <p class="sub">Chat to design a professional site — then fine-tune it in the visual builder.</p>
+            </div>
+            <div class="wsx-top-actions">
+              <span class="plan-pill" id="studioPlan">Pro / Admin</span>
+              <button class="btn-edit" id="wsxNewChat" type="button" title="Start a fresh conversation">New chat</button>
+            </div>
+          </div>
+
+          <div class="wsx-grid">
+            <section class="wsx-chat" aria-label="AI website assistant">
+              <div class="wsx-chathead">
+                <div class="wsx-avatar">M</div>
+                <div class="wsx-chathead-txt">
+                  <b>MAT Studio AI</b>
+                  <small id="studioStatusLine">Online — ready to build</small>
+                </div>
+                <span class="wsx-model" id="studioMeta">AI</span>
+              </div>
+
+              <div class="wsx-leads">
+                <label for="wsxLeadSelect">Build for (saved lead)</label>
+                <select id="wsxLeadSelect">
+                  <option value="">— Type a business name in the chat —</option>
+                </select>
+                <div class="wsx-leadcard" id="wsxLeadCard" hidden>
+                  <b id="wsxLeadName">—</b>
+                  <span class="wsx-leadid" id="wsxLeadId">—</span>
+                  <small id="wsxLeadMeta"></small>
+                </div>
+              </div>
+
+              <div class="wsx-log" id="chatLog" aria-live="polite"></div>
+              <div class="wsx-chips" id="wsxChips" aria-label="Quick replies"></div>
+
+              <form class="wsx-composer" id="wsxComposer">
+                <textarea id="wsxInput" rows="1" placeholder="Message MAT Studio AI… (Enter to send, Shift+Enter for a new line)"></textarea>
+                <button type="submit" id="wsxSend" aria-label="Send message">➤</button>
+              </form>
+            </section>
+
+            <section class="wsx-preview" aria-label="Website preview">
+              <div class="wsx-previewbar">
+                <div class="wsx-device">
+                  <button type="button" id="viewDesktop" class="on">Desktop</button>
+                  <button type="button" id="viewMobile">Mobile</button>
+                </div>
+                <div class="wsx-preview-actions">
+                  <button class="chip-btn" type="button" id="studioOpenPreview" disabled>Open</button>
+                  <button class="chip-btn" type="button" id="studioDownload" disabled>Download</button>
+                  <button class="chip-btn" type="button" id="studioCopyLink" disabled>Copy link</button>
+                  <button class="chip-btn primary" type="button" id="studioEditManual" disabled>✎ Edit in builder</button>
+                </div>
+              </div>
+              <div class="wsx-status" id="studioStatus">The AI will ask how many pages you need first.</div>
+              <div class="gen-overlay" id="genOverlay">
+                <b>Designing your website…</b>
+                <div class="typing"><span></span><span></span><span></span></div>
+                <div class="wsx-gensub">Senior-grade hero, sections, gallery, FAQ &amp; contact — about 30–50 seconds</div>
+              </div>
+              <iframe id="studioPreview" title="Generated website preview"></iframe>
+            </section>
+          </div>
+        </div>
+      </main>
+    </div>
+    <script type="module" src="/components/layout.js"></script>
+    <script type="module" src="/js/website-studio.js"></script>
+  </body>
+</html>

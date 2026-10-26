@@ -1,0 +1,46 @@
+﻿TOTAL=132
+88:   });
+89:   if (!extra.length) return base;
+90:   const contactedStages = new Set(["Contacted", "Follow Up", "Proposal Sent", "Meeting Scheduled", "Negotiation", "Won"]);
+91:   const extraContacted = extra.filter((lead) => contactedStages.has(vaultStageValue(lead))).length;
+92:   const extraWon = extra.filter((lead) => vaultStageValue(lead) === "Won").length;
+93:   const extraRevenue = extra.reduce((sum, lead) => sum + Number(lead?.estimatedValue || 0), 0);
+94:   const savedLeads = Number(base.savedLeads || 0) + extra.length;
+95:   const wonDeals = Number(base.wonDeals || 0) + extraWon;
+96:   return {
+97:     ...base,
+98:     totalLeads: Number(base.totalLeads || 0) + extra.length,
+99:     savedLeads,
+100:     contactedLeads: Number(base.contactedLeads || 0) + extraContacted,
+101:     wonDeals,
+102:     estimatedRevenue: Number(base.estimatedRevenue || 0) + extraRevenue,
+103:     conversionRate: savedLeads ? Math.round((wonDeals / savedLeads) * 100) : 0,
+104:   };
+105: }
+106: 
+107: async function initDashboard() {
+108:   const target = byId("dashboardMetrics");
+109:   if (!target) return;
+110:   if (!requireAuth()) return;
+111:   renderAccessState();
+112:   target.innerHTML = `<div class="skeleton">Loading revenue metrics...</div>`;
+113: 
+114:   try {
+115:     const result = await apiFetch("/api/dashboard/metrics");
+116:     const serverMetrics = result.metrics || { totalLeads: 0, savedLeads: 0, contactedLeads: 0, wonDeals: 0, estimatedRevenue: 0, conversionRate: 0, monthlyGrowth: [] };
+117:     const metrics = mergeVaultIntoMetrics(serverMetrics);
+118:     renderMetrics(metrics);
+119:     renderChart(metrics || { monthlyGrowth: [] });
+120:     if (metrics.savedLeads > serverMetrics.savedLeads) {
+121:       const note = document.createElement("p");
+122:       note.className = "notice";
+123:       note.textContent = `${metrics.savedLeads - serverMetrics.savedLeads} saved lead(s) counted from this browser's vault (server CRM unreachable or empty). They stay after logout until you delete them.`;
+124:       target.after(note);
+125:     }
+126:   } catch (error) {
+127:     const msg = String(error?.message || "Metrics unavailable");
+128:     target.innerHTML = `<div class="error-state">${msg}. Check Vercel env vars (Firebase/NVIDIA/JWT) and redeploy.</div>`;
+129:   }
+130: }
+131: 
+132: document.addEventListener("DOMContentLoaded", initDashboard);

@@ -1,0 +1,77 @@
+﻿151:   }
+152: }
+153: 
+154: async function saveManualHtml() {
+155:   if (!websiteId) { byId("editMsg").textContent = "Generate the website first, then edit."; return; }
+156:   const frame = byId("studioPreview");
+157:   try {
+158:     if (frame?.contentDocument?.documentElement) {
+159:       currentHtml = "<!doctype html>" + frame.contentDocument.documentElement.outerHTML;
+160:       setPreview(currentHtml);
+161:     }
+162:   } catch {}
+163:   byId("editMsg").textContent = "Saving your manual edits...";
+164:   try {
+165:     const r = await apiFetch(`/api/ai/websites/${encodeURIComponent(websiteId)}/html`, { method: "POST", body: JSON.stringify({ html: currentHtml }) });
+166:     byId("studioMeta").textContent = `${r.website.businessName || r.website.leadName} â€¢ saved manual edit â€¢ rev ${r.website.revisions || ""}`;
+167:     byId("editMsg").textContent = "Saved. Share link and Live Link now show your manual edits.";
+168:     updateShare();
+169:   } catch (err) { byId("editMsg").textContent = err.message; }
+170: }
+171: 
+172: function openPreviewWindow() {
+173:   if (!currentHtml) return;
+174:   const w = window.open("", "_blank");
+175:   if (!w) {
+176:     byId("studioStatus").textContent = "Pop-up blocked â€” allow pop-ups for this site, then click Open Preview again.";
+177:     return;
+178:   }
+179:   w.document.open();
+180:   w.document.write(currentHtml);
+181:   w.document.close();
+182: }
+183: 
+184: async function loadFromQuery() {
+185:   const q = new URLSearchParams(window.location.search);
+186:   websiteId = q.get("id") || "";
+187:   const leadId = q.get("leadId") || "";
+188:   const business = q.get("business") || "";
+189:   if (leadId && byId("studioLeadId")) byId("studioLeadId").value = leadId;
+190:   if (business && byId("studioBusiness")) byId("studioBusiness").value = business;
+191:   const leadRaw = q.get("lead");
+192:   if (leadRaw && byId("studioBusiness")) {
+193:     try {
+194:       const lead = JSON.parse(decodeURIComponent(escape(atob(leadRaw))));
+195:       if (lead?.name) byId("studioBusiness").value = lead.name;
+196:       sessionStorage.setItem("mat_studio_lead", JSON.stringify(lead));
+197:     } catch {}
+198:   }
+199:   if (websiteId) {
+200:     byId("studioStatus").textContent = "Loading website...";
+201:     try {
+202:       const r = await apiFetch(`/api/ai/websites/${encodeURIComponent(websiteId)}`);
+203:       websiteId = r.website.id; shareToken = r.website.shareToken; shareUrl = r.shareUrl;
+204:       setPreview(r.website.html);
+205:       byId("studioMeta").textContent = `${r.website.businessName || r.website.leadName} â€¢ rev ${r.website.revisions} â€¢ ${r.website.model}`;
+206:       byId("studioStatus").textContent = "Loaded. Tell AI what to change.";
+207:       updateShare();
+208:     } catch (e) { byId("studioStatus").textContent = e.message; }
+209:   }
+210: }
+211: 
+212: function updateShare() {
+213:   const full = abs(shareUrl || (shareToken ? `/s/${shareToken}` : "#"));
+214:   const open = byId("studioOpenLive");
+215:   if (open && shareToken) open.href = full;
+216: }
+217: 
+218: document.addEventListener("DOMContentLoaded", () => {
+219:   if (!requireAuth()) return;
+220:   const user = getCurrentUser();
+221:   if (!isProUser(user)) {
+222:     byId("studioStatus").textContent = "Website Studio needs Pro or higher. Redirecting to Pricing...";
+223:     setTimeout(() => { window.location.href = "/pricing.html?upgrade=pro"; }, 1200);
+224:     return;
+225:   }
+226:   loadFromQuery();
+227: 

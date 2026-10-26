@@ -1,0 +1,8 @@
+﻿api.js:6: "/api/auth/register",
+app.js:44: const { signInWithGoogle } = await loadFirebaseAuth();
+app.js:45: await signInWithGoogle(status);
+app.js:66: const { registerWithEmail } = await loadFirebaseAuth();
+app.js:69: await registerWithEmail(payload.name, payload.email, payload.password, status);
+app.js:82: const result = await apiFetch("/api/auth/register", {
+firebase-auth.js:57: export async function signInWithGoogle(status) {
+firebase-auth.js:74: export async function registerWithEmail(name, email, password, status) {

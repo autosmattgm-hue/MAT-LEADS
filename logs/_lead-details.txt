@@ -1,0 +1,50 @@
+﻿1591:     <section class="panel">
+1592:       <div class="lead-card__top">
+1593:         <div>
+1594:           <h2>${escapeHtml(lead.name || "Saved lead")}</h2>
+1595:           <p>${escapeHtml(lead.businessType || lead.category || "Local business")} - ${escapeHtml(lead.address || "Address unavailable")}</p>
+1596:         </div>
+1597:         <span class="score-pill ${scoreClass(score)}">${score}/100</span>
+1598:       </div>
+1599:       <div class="lead-meta" style="margin-top:14px;">
+1600:         <span class="tag success">Loaded from local storage</span>
+1601:         <span class="tag">${lead.phone ? "Phone found" : "Phone missing"}</span>
+1602:         <span class="tag">${lead.email ? "Email found" : "Email missing"}</span>
+1603:         <span class="tag">${lead.websiteUrl ? "Website found" : "Website missing"}</span>
+1604:         ${socialUrl ? `<span class="tag success">Social found</span>` : ""}
+1605:         ${whatsapp ? `<span class="tag success">${escapeHtml(whatsapp.status)}</span>` : ""}
+1606:       </div>
+1607:       ${renderLeadStrength(lead)}
+1608:       <div class="lead-actions" style="margin-top:16px;">
+1609:         ${websiteUrl ? `<a class="btn btn-secondary" href="${websiteUrl}" target="_blank" rel="noreferrer">Website</a>` : ""}
+1610:         ${mapsUrl ? `<a class="btn btn-secondary" href="${mapsUrl}" target="_blank" rel="noreferrer">Maps</a>` : ""}
+1611:         ${renderWhatsappButton(lead, "btn btn-secondary")}
+1612:         ${socialUrl ? `<a class="btn btn-secondary" href="${socialUrl}" target="_blank" rel="noreferrer">Social</a>` : ""}
+1613:         <button class="btn btn-secondary" type="button" data-copy-dossier>Copy All Data</button>
+1614:         <button class="btn btn-primary" type="button" data-copy-brief>Copy Website Brief</button>
+1615:         <button class="btn btn-secondary" type="button" data-download-json>JSON</button>
+1616:         <button class="btn btn-secondary" type="button" data-download-csv>CSV</button>
+1617:         <button class="btn btn-ghost" type="button" data-delete-local-lead="${escapeHtml(localLeadId(lead))}">Delete Local</button>
+1618:       </div>
+1619:       <h2 style="margin-top:20px;">Verified Contact Actions</h2>
+1620:       ${renderContactActions(lead)}
+1621:     </section>
+1622: 
+1623:     <section class="panel" style="grid-column:1 / -1;">
+1624:       <h2>Copy-Ready Website Build Brief</h2>
+1625:       <pre class="copy-brief">${escapeHtml(localWebsiteBrief(lead))}</pre>
+1626:     </section>
+1627: 
+1628:     ${renderRevenueEngine(report)}
+1629: 
+1630:     <section class="panel">
+1631:       <h2>Contact Details</h2>
+1632:       <div class="audit-list">
+1633:         ${renderExpectedRows(dossier.contact, [
+1634:           ["phone", "Phone"],
+1635:           ["mobile", "Mobile"],
+1636:           ["email", "Email"],
+1637:           ["website", "Website", "website"]
+1638:         ])}
+1639:         ${renderWhatsappContact(lead)}
+1640:       </div>

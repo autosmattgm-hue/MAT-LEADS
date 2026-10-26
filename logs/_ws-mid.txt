@@ -1,0 +1,179 @@
+﻿90:   const phone = byId("editPhone").value.trim();
+91:   const email = byId("editEmail").value.trim();
+92:   const cta = byId("editCta").value.trim();
+93:   const accent = byId("editAccent").value;
+94: 
+95:   if (biz) {
+96:     html = replaceOnce(html, /<title[^>]*>[\s\S]*?<\/title>/i, `<title>${biz}</title>`);
+97:     if (!head) html = replaceOnce(html, /(<h1[^>]*>)([\s\S]*?)(<\/h1>)/i, `$1${biz}$3`);
+98:   }
+99:   if (head) html = replaceOnce(html, /(<h1[^>]*>)([\s\S]*?)(<\/h1>)/i, `$1${head}$3`);
+100:   if (phone) {
+101:     html = html.replace(/tel:[^"'\s)]*/gi, `tel:${phone.replace(/[^\d+]/g, "")}`);
+102:     html = replaceOnce(html, /(\+?\d[\d\s().-]{6,}\d)/, phone);
+103:   }
+104:   if (email) {
+105:     html = html.replace(/mailto:[^"'\s?)]*/gi, `mailto:${email}`);
+106:     html = replaceOnce(html, /([a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,})/i, email);
+107:   }
+108:   if (cta) html = replaceOnce(html, /(<a[^>]*class="[^"]*btn[^"]*"[^>]*>)([\s\S]*?)(<\/a>)/i, `$1${cta}$3`);
+109:   const accentCss = `<style id="manualAccent">a.btn,.btn,button[type="submit"],a.btn-p{background:${accent}!important}</style>`;
+110:   html = html.includes("</head>") ? html.replace("</head>", `${accentCss}</head>`) : accentCss + html;
+111: 
+112:   currentHtml = html;
+113:   setPreview(currentHtml);
+114:   byId("editMsg").textContent = "Changes applied to the preview. Click Save to Server so the share link matches, then Download if you want the file.";
+115: }
+116: 
+117: function addManualImage() {
+118:   if (!currentHtml) { byId("editMsg").textContent = "Generate a website first, then add images."; return; }
+119:   const url = byId("editImageUrl").value.trim();
+120:   if (!/^https?:\/\//i.test(url)) { byId("editMsg").textContent = "Paste a valid image URL (starting with https://)."; return; }
+121:   const safeUrl = url.replace(/["'<>]/g, "");
+122:   const imgTag = `<figure style="margin:20px 0;text-align:center"><img src="${safeUrl}" alt="Website image" style="max-width:100%;height:auto;border-radius:14px;box-shadow:0 8px 24px rgba(0,0,0,.12)"></figure>`;
+123:   let html = currentHtml;
+124:   if (/<\/body>/i.test(html)) html = html.replace(/<\/body>/i, `${imgTag}</body>`);
+125:   else if (/<\/main>/i.test(html)) html = html.replace(/<\/main>/i, `${imgTag}</main>`);
+126:   else html = imgTag + html;
+127:   currentHtml = html;
+128:   setPreview(currentHtml);
+129:   byId("editImageUrl").value = "";
+130:   byId("editMsg").textContent = "Image added to the preview. Click Save to Server so your share link shows it, then Download if you want the file.";
+131: }
+132: 
+133: function toggleEditOnPage() {
+134:   const frame = byId("studioPreview");
+135:   if (!frame?.contentDocument) { byId("editMsg").textContent = "Preview not ready â€” click Open Preview to edit in a tab instead."; return; }
+136:   try {
+137:     const body = frame.contentDocument.body;
+138:     const on = body.getAttribute("contenteditable") === "true";
+139:     body.setAttribute("contenteditable", on ? "false" : "true");
+140:     body.style.outline = on ? "" : "3px dashed #22c55e";
+141:     byId("editMsg").textContent = on
+142:       ? "Edit mode off. Click Save to Server to keep your typing."
+143:       : "Edit mode ON â€” click any text on the preview and type. Then click Save to Server.";
+144:     if (!on) {
+145:       body.addEventListener("blur", () => {
+146:         try { currentHtml = "<!doctype html>" + frame.contentDocument.documentElement.outerHTML; } catch {}
+147:       }, true);
+148:     }
+149:   } catch {
+150:     byId("editMsg").textContent = "Could not enable click-to-edit â€” use Open Preview + Apply Changes instead.";
+151:   }
+152: }
+153: 
+154: async function saveManualHtml() {
+155:   if (!websiteId) { byId("editMsg").textContent = "Generate the website first, then edit."; return; }
+156:   const frame = byId("studioPreview");
+157:   try {
+158:     if (frame?.contentDocument?.documentElement) {
+159:       currentHtml = "<!doctype html>" + frame.contentDocument.documentElement.outerHTML;
+160:       setPreview(currentHtml);
+161:     }
+162:   } catch {}
+163:   byId("editMsg").textContent = "Saving your manual edits...";
+164:   try {
+165:     const r = await apiFetch(`/api/ai/websites/${encodeURIComponent(websiteId)}/html`, { method: "POST", body: JSON.stringify({ html: currentHtml }) });
+166:     byId("studioMeta").textContent = `${r.website.businessName || r.website.leadName} â€¢ saved manual edit â€¢ rev ${r.website.revisions || ""}`;
+167:     byId("editMsg").textContent = "Saved. Share link and Live Link now show your manual edits.";
+168:     updateShare();
+169:   } catch (err) { byId("editMsg").textContent = err.message; }
+170: }
+171: 
+172: function openPreviewWindow() {
+173:   if (!currentHtml) return;
+174:   const w = window.open("", "_blank");
+175:   if (!w) {
+176:     byId("studioStatus").textContent = "Pop-up blocked â€” allow pop-ups for this site, then click Open Preview again.";
+177:     return;
+178:   }
+179:   w.document.open();
+180:   w.document.write(currentHtml);
+181:   w.document.close();
+182: }
+183: 
+184: async function loadFromQuery() {
+185:   const q = new URLSearchParams(window.location.search);
+186:   websiteId = q.get("id") || "";
+187:   const leadId = q.get("leadId") || "";
+188:   const business = q.get("business") || "";
+189:   if (leadId && byId("studioLeadId")) byId("studioLeadId").value = leadId;
+190:   if (business && byId("studioBusiness")) byId("studioBusiness").value = business;
+191:   const leadRaw = q.get("lead");
+192:   if (leadRaw && byId("studioBusiness")) {
+193:     try {
+194:       const lead = JSON.parse(decodeURIComponent(escape(atob(leadRaw))));
+195:       if (lead?.name) byId("studioBusiness").value = lead.name;
+196:       sessionStorage.setItem("mat_studio_lead", JSON.stringify(lead));
+197:     } catch {}
+198:   }
+199:   if (websiteId) {
+200:     byId("studioStatus").textContent = "Loading website...";
+201:     try {
+202:       const r = await apiFetch(`/api/ai/websites/${encodeURIComponent(websiteId)}`);
+203:       websiteId = r.website.id; shareToken = r.website.shareToken; shareUrl = r.shareUrl;
+204:       setPreview(r.website.html);
+205:       byId("studioMeta").textContent = `${r.website.businessName || r.website.leadName} â€¢ rev ${r.website.revisions} â€¢ ${r.website.model}`;
+206:       byId("studioStatus").textContent = "Loaded. Tell AI what to change.";
+207:       updateShare();
+208:     } catch (e) { byId("studioStatus").textContent = e.message; }
+209:   }
+210: }
+211: 
+212: function updateShare() {
+213:   const full = abs(shareUrl || (shareToken ? `/s/${shareToken}` : "#"));
+214:   const open = byId("studioOpenLive");
+215:   if (open && shareToken) open.href = full;
+216: }
+217: 
+218: document.addEventListener("DOMContentLoaded", () => {
+219:   if (!requireAuth()) return;
+220:   const user = getCurrentUser();
+221:   if (!isProUser(user)) {
+222:     byId("studioStatus").textContent = "Website Studio needs Pro or higher. Redirecting to Pricing...";
+223:     setTimeout(() => { window.location.href = "/pricing.html?upgrade=pro"; }, 1200);
+224:     return;
+225:   }
+226:   loadFromQuery();
+227: 
+228:   // Image uploads: read files as data URLs, keep them client-side, and inject
+229:   // them into the built site after generation (see injectUploadedImages).
+230:   byId("studioHeroFile")?.addEventListener("change", async (e) => {
+231:     const file = e.target.files?.[0];
+232:     if (!file) return;
+233:     try {
+234:       uploaded.hero = await readFileAsDataUrl(file);
+235:       byId("studioHeroImg").value = "";
+236:       byId("studioUploadMsg").textContent = `Hero image ready: ${file.name}. It will be placed on your site when you Generate.`;
+237:     } catch (err) { byId("studioUploadMsg").textContent = err.message; }
+238:     e.target.value = "";
+239:   });
+240:   byId("studioGalleryFiles")?.addEventListener("change", async (e) => {
+241:     const files = [...(e.target.files || [])].slice(0, 6);
+242:     if (!files.length) return;
+243:     try {
+244:       uploaded.gallery = [];
+245:       for (const file of files) uploaded.gallery.push(await readFileAsDataUrl(file));
+246:       byId("studioUploadMsg").textContent = `${uploaded.gallery.length} gallery image(s) ready. They will appear on your site when you Generate.`;
+247:     } catch (err) { byId("studioUploadMsg").textContent = err.message; }
+248:     e.target.value = "";
+249:   });
+250: 
+251:   byId("studioBuildForm").addEventListener("submit", async (e) => {
+252:     e.preventDefault();
+253:     const btn = byId("studioBuildBtn");
+254:     btn.disabled = true; btn.textContent = "Building professional site...";
+255:     byId("studioStatus").innerHTML = `<div class="loading-row"><div class="spinner" role="status" aria-label="Loading"></div><span class="muted-value">AI is designing your premium website (fast mode: max ~20s; if it's busy you instantly get a premium template you can retry)...</span></div>`;
+256:     try {
+257:       let lead = null;
+258:       try { lead = JSON.parse(sessionStorage.getItem("mat_studio_lead") || "null"); } catch {}
+259:       const leadId = byId("studioLeadId").value.trim();
+260:       if (!lead && leadId) { try { const r = await apiFetch(`/api/leads/${encodeURIComponent(leadId)}/report`); lead = r.lead; } catch {} }
+261:       const payload = { followBrief, leadId, lead: lead || {}, businessName: byId("studioBusiness").value.trim() || lead?.name || "Business", style: byId("studioStyle").value, palette: byId("studioPalette").value, pages: parseInt(byId("studioPages")?.value, 10) || 1, images: { hero: byId("studioHeroImg")?.value.trim() || "", gallery: (byId("studioGallery")?.value || "").split(/\n+/).map((s) => s.trim()).filter(Boolean).slice(0, 6) } };
+262:       const r = await apiFetch("/api/ai/websites", { method: "POST", body: JSON.stringify(payload) });
+263:       websiteId = r.websiteId; shareToken = r.shareToken; shareUrl = r.shareUrl;
+264:       const withUploads = (uploaded.hero || uploaded.gallery.length) ? injectUploadedImages(r.website.html) : r.website.html;
+265:       setPreview(withUploads);
+266:       const pageLabel = r.website.pageCount && r.website.pageCount > 1 ? ` â€¢ ${r.website.pageCount} pages` : "";
+267:       byId("studioMeta").textContent = `${r.website.businessName} â€¢ built with ${r.website.model}${pageLabel}${r.website.aiError ? ` â€¢ Note: ${r.website.aiError}` : ""}`;
+268:       byId("studioStatus").textContent = (r.website.provider === "pollinations" || r.website.provider === "nvidia") && !r.website.aiError ? `Done. Real AI ${r.website.pageCount || 1}-page site built. Use the site's top menu to switch pages; chat to refine, download, or share.` : `Done with premium template. ${r.website.aiError || "AI unavailable."}`;

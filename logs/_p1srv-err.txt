@@ -1,0 +1,1 @@
+[auth] verification mail not delivered for e2e-1792478549851@example.com (no mail provider). Link: http://localhost:3000/verify-email.html?token=8e159c75615870703f53ec5893d225d819761098b90a4d41

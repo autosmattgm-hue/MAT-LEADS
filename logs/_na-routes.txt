@@ -1,0 +1,170 @@
+﻿576:   {
+577:     method: "POST",
+578:     regex: /^\/api\/ai\/proposal$/,
+579:     keys: [],
+580:     handler: async ({ req, body }) => {
+581:       await getUser(req);
+582:       const payload = validate(aiSchemas.proposal, body);
+583:       const lead = await leadService.getById(payload.leadId);
+584:       if (!lead) throw new AppError("Lead not found.", 404, "LEAD_NOT_FOUND");
+585:       return nvidiaService.proposalPack(lead, payload.offerKey || "pro_site");
+586:     }
+587:   },
+588:   {
+589:     method: "POST",
+590:     regex: /^\/api\/ai\/tycoon$/,
+591:     keys: [],
+592:     handler: async ({ req, body }) => {
+593:       const user = await getUser(req);
+594:       requireProAi(user);
+595:       const payload = validate(aiSchemas.tycoon, body);
+596:       let lead = payload.lead && Object.keys(payload.lead).length ? payload.lead : null;
+597:       if (!lead && payload.leadId) lead = await leadService.getById(payload.leadId);
+598:       return nvidiaService.tycoonChat(payload.prompt, { lead: lead || {}, user: user.email || "" });
+599:     }
+600:   },
+601:   {
+602:     method: "POST",
+603:     regex: /^\/api\/ai\/websites$/,
+604:     keys: [],
+605:     handler: async ({ req, body }) => {
+606:       const user = await getUser(req);
+607:       requireProAi(user);
+608:       const payload = validate(aiSchemas.websiteBuild, body);
+609:       let lead = payload.lead && Object.keys(payload.lead).length ? payload.lead : null;
+610:       if (!lead && payload.leadId) lead = await leadService.getById(payload.leadId);
+611:       if (!lead) lead = { id: payload.leadId || "lead", name: payload.businessName || "Business" };
+612:       const result = await websiteService.build({ lead, options: { businessName: payload.businessName, style: payload.style, palette: payload.palette, pages: payload.pages || 1, images: payload.images || {}, design: payload.design, tone: payload.tone, services: payload.services, cta: payload.cta, about: payload.about, language: payload.language, followBrief: payload.followBrief }, user });
+613:       return { websiteId: result.website.id, shareToken: result.website.shareToken, shareUrl: `/s/${result.website.shareToken}`, studioUrl: `/website-studio.html?id=${encodeURIComponent(result.website.id)}`, website: result.website };
+614:     }
+615:   },
+616:   {
+617:     method: "PATCH",
+618:     regex: /^\/api\/ai\/websites\/([^/]+)$/,
+619:     keys: ["id"],
+620:     handler: async ({ req, body, params }) => {
+621:       const user = await getUser(req);
+622:       requireProAi(user);
+623:       const payload = validate(aiSchemas.websiteRefine, { ...body, websiteId: params.id });
+624:       const result = await websiteService.refine({ id: params.id, instruction: payload.instruction, user });
+625:       return { websiteId: result.website.id, shareToken: result.website.shareToken, shareUrl: `/s/${result.website.shareToken}`, website: result.website };
+626:     }
+627:   },
+628:   {
+629:     method: "POST",
+630:     regex: /^\/api\/ai\/websites\/([^/]+)\/html$/,
+631:     keys: ["id"],
+632:     handler: async ({ req, body, params }) => {
+633:       const user = await getUser(req);
+634:       requireProAi(user);
+635:       const payload = validate(aiSchemas.websiteHtml, body);
+636:       return websiteService.saveHtml(params.id, payload.html, user);
+637:     }
+638:   },
+639:   {
+640:     method: "GET",
+641:     regex: /^\/api\/ai\/websites\/([^/]+)$/,
+642:     keys: ["id"],
+643:     handler: async ({ req, params }) => {
+644:       await getUser(req);
+645:       const website = await websiteService.getById(params.id);
+646:       if (!website) throw new AppError("Website not found.", 404, "WEBSITE_NOT_FOUND");
+647:       return { website, shareUrl: `/s/${website.shareToken}`, studioUrl: `/website-studio.html?id=${encodeURIComponent(website.id)}` };
+648:     }
+649:   },
+650:   {
+651:     method: "GET",
+652:     regex: /^\/api\/s\/([^/]+)$/,
+653:     keys: ["token"],
+654:     handler: async ({ params }) => {
+655:       const website = await websiteService.getByToken(params.token);
+656:       if (!website) throw new AppError("Shared website not found.", 404, "WEBSITE_NOT_FOUND");
+657:       return { website, html: website.html };
+658:     }
+659:   },
+660:   {
+661:     method: "GET",
+662:     regex: /^\/api\/crm\/leads$/,
+663:     keys: [],
+664:     handler: async ({ req }) => ({ leads: await crmService.listLeads(await getUser(req)) })
+665:   },
+666:   {
+667:     method: "PATCH",
+668:     regex: /^\/api\/crm\/leads\/([^/]+)\/stage$/,
+669:     keys: ["id"],
+670:     handler: async ({ req, body, params }) => {
+671:       const payload = validate(crmSchemas.stage, body);
+672:       const lead = await crmService.updateStage(params.id, payload.stage, await getUser(req));
+673:       if (!lead) throw new AppError("Lead not found.", 404, "LEAD_NOT_FOUND");
+674:       return { lead };
+675:     }
+676:   },
+677:   {
+678:     method: "POST",
+679:     regex: /^\/api\/crm\/leads\/([^/]+)\/notes$/,
+680:     keys: ["id"],
+681:     handler: async ({ req, body, params }) => {
+682:       const payload = validate(crmSchemas.note, body);
+683:       return { activity: await crmService.addNote(params.id, payload.note, payload.tags, await getUser(req)) };
+684:     },
+685:     status: 201
+686:   },
+687:   {
+688:     method: "GET",
+689:     regex: /^\/api\/dashboard\/metrics$/,
+690:     keys: [],
+691:     handler: async ({ req }) => ({ metrics: await dashboardService.metrics(await getUser(req)) })
+692:   },
+693:   {
+694:     method: "POST",
+695:     regex: /^\/api\/billing\/stripe\/payment-intent$/,
+696:     keys: [],
+697:     handler: async ({ req, body }) => billingService.createStripePaymentIntent(
+698:       validate(billingSchema, body).plan,
+699:       await getUser(req),
+700:       getHeader(req, "idempotency-key")
+781:     keys: [],
+782:     handler: async ({ req, body }) => earnService.requestPayout(await getUser(req), validate(earnSchemas.payout, body)),
+783:     status: 201
+784:   },
+785:   {
+786:     method: "POST",
+787:     regex: /^\/api\/earn\/track-signup$/,
+788:     keys: [],
+789:     handler: async ({ req, body }) => {
+790:       const user = await getUser(req);
+791:       const ref = String(body?.ref || body?.code || "").slice(0, 40);
+792:       if (!ref) return { tracked: false };
+793:       return { tracked: true, referral: await earnService.trackSignup(user, ref) };
+794:     }
+795:   },
+796:   {
+797:     method: "GET",
+798:     regex: /^\/api\/gigs$/,
+799:     keys: [],
+800:     handler: async ({ req }) => ({ gigs: await gigService.list(await getUser(req)) })
+801:   },
+802:   {
+803:     method: "POST",
+804:     regex: /^\/api\/gigs$/,
+805:     keys: [],
+806:     handler: async ({ req, body }) => gigService.create(await getUser(req), validate(gigSchemas.create, body)),
+807:     status: 201
+808:   },
+809:   {
+810:     method: "POST",
+811:     regex: /^\/api\/gigs\/([^/]+)\/claim$/,
+812:     keys: ["id"],
+813:     handler: async ({ req, params }) => gigService.claim(await getUser(req), params.id)
+814:   }
+815: ];
+816: 
+817: async function handleApi(req, res, url) {
+818:   rateLimit(req);
+819:   const body = await readJson(req);
+820:   for (const route of routes) {
+821:     const params = matchRoute(req.method, url.pathname, route);
+822:     if (!params) continue;
+823:     const payload = await route.handler({ req, body, params, url });
+824:     return json(res, route.status || 200, payload);
+825:   }

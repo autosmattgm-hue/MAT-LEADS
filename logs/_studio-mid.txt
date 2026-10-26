@@ -1,0 +1,85 @@
+﻿40:       .composer button{border:none;background:#d97757;color:#fff;border-radius:12px;padding:11px 16px;font-weight:700;cursor:pointer}
+41:       .composer button:disabled{opacity:.6;cursor:wait}
+42:       .follow-wrap{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:.8rem;color:var(--muted)}
+43:       .follow-toggle{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--border-strong);background:var(--surface);color:var(--text);border-radius:999px;padding:6px 13px;font-size:.8rem;font-weight:700;cursor:pointer}
+44:       .follow-toggle .tick{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;border:2px solid var(--border-strong);font-size:.65rem;line-height:1}
+45:       .follow-toggle.on{border-color:#16a34a;background:#f0fdf4;color:#166534}
+46:       .follow-toggle.on .tick{border-color:#16a34a;background:#16a34a;color:#fff}
+47:       .preview-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow);overflow:hidden}
+48:       .preview-bar{display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--border);flex-wrap:wrap}
+49:       .preview-url{flex:1;min-width:140px;font-size:.78rem;color:var(--muted);background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:6px 10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+50:       .preview-actions{display:flex;gap:6px;flex-wrap:wrap}
+51:       .chip-btn{font-size:.78rem;padding:6px 12px;border-radius:999px;border:1px solid var(--border-strong);background:var(--surface);cursor:pointer;font-weight:600}
+52:       .chip-btn.primary{background:#0b6bcb;border-color:#0b6bcb;color:#fff}
+53:       #studioPreview{width:100%;min-height:620px;border:none;background:#fff;display:block;margin:0 auto}
+54:       #studioPreview.mobile{max-width:400px;border-left:1px solid var(--border);border-right:1px solid var(--border)}
+55:       .gen-overlay{display:none;padding:34px 20px;text-align:center;color:var(--muted)}
+56:       .hidden-old{display:none!important}
+57:       @media(max-width:1020px){
+58:         .studio-shell{padding:14px 12px 32px}
+59:         .chat-card{min-height:0}
+60:         .chat-log{max-height:38vh}
+61:         .preview-bar{gap:6px}
+62:         .preview-url{flex-basis:100%;order:5}
+63:         .preview-actions{flex-wrap:wrap}
+64:         .chip-btn{padding:8px 14px;font-size:.82rem}
+65:         #studioPreview{min-height:70vh}
+66:       }
+67:       @media(max-width:560px){
+68:         .studio-top h1{font-size:1.15rem}
+69:         .edit-jump{width:100%;justify-content:flex-start}
+70:         .brief-grid{grid-template-columns:1fr}
+71:         .composer textarea{font-size:16px}
+72:         .device-toggle{display:none}
+73:         .chip-btn.primary{flex:1;text-align:center}
+74:       }
+75:     </style>
+76:   </head>
+77:   <body data-page="website-studio">
+78:     <div class="app-layout" data-app-shell>
+79:       <main class="workspace">
+80:         <div class="studio-shell">
+81:           <div class="studio-top">
+82:             <div>
+83:               <h1>Website Studio</h1>
+84:               <p class="sub">Describe the business â€” the AI designs a complete, professional site.</p>
+85:             </div>
+86:             <div class="edit-jump">
+87:               <span class="plan-pill" id="studioPlan">Pro / Admin</span>
+88:               <button class="btn-edit" id="openManualBuilder" type="button" title="Open the manual no-code website builder">âœŽ Edit</button>
+89:             </div>
+90:           </div>
+91:           <div class="studio-grid">
+92:             <section class="chat-card" aria-label="AI website assistant">
+93:               <div class="chat-head">
+94:                 <div class="ai-dot">M</div>
+95:                 <div><b>MAT Studio AI</b><small id="studioStatusLine">Ready to design</small></div>
+96:                 <span class="model-pill" id="studioMeta">AI</span>
+97:               </div>
+98:               <div class="chat-log" id="chatLog" aria-live="polite"></div>
+99:               <form class="chat-form" id="studioBuildForm">
+100:                 <details id="briefBox" open>
+101:                   <summary>Build brief (business, style, pages, images)</summary>
+102:                   <div class="brief-grid">
+103:                     <div class="full"><label for="studioBusiness">Business name</label><input id="studioBusiness" placeholder="e.g. Lakeside Dental Studio"></div>
+104:                     <div><label for="studioStyle">Style</label><select id="studioStyle"><option value="modern">Modern premium</option><option value="luxury">Luxury dark</option><option value="medical">Clean medical</option><option value="restaurant">Warm restaurant</option><option value="bold">Bold agency</option><option value="minimal">Minimal elegant</option></select></div>
+105:                     <div><label for="studioPalette">Color theme</label><select id="studioPalette"><option value="emerald">Emerald</option><option value="blue">Royal blue</option><option value="gold">Gold + black</option><option value="rose">Rose</option><option value="teal">Teal</option><option value="purple">Purple</option><option value="orange">Orange</option></select></div>
+106:                     <div><label for="studioPages">Pages</label><select id="studioPages"><option value="1">1 â€” Landing</option><option value="2">2 â€” Home + About</option><option value="3">3 â€” Home, About, Services</option><option value="4">4 â€” + Contact</option></select></div>
+107:                     <div><label for="studioLeadId">Lead ID (optional)</label><input id="studioLeadId" placeholder="auto-filled from leads"></div>
+108:                     <div class="full"><label for="studioHeroImg">Hero image URL</label><input id="studioHeroImg" placeholder="https://.../hero.jpg"></div>
+109:                     <div class="full"><label for="studioGallery">Gallery URLs (one per line, up to 6)</label><textarea id="studioGallery" rows="2" placeholder="https://.../photo1.jpg"></textarea></div>
+110:                   </div>
+111:                 </details>
+112:                 <div class="composer">
+113:                   <textarea id="studioInstruction" placeholder="Describe the siteâ€¦ e.g. A 3-page site for a Lagos bakery, warm luxury style, with menu, order form and WhatsApp button"></textarea>
+114:                   <button type="submit" id="studioBuildBtn">âž¤</button>
+115:                 </div>
+116:                 <div class="follow-wrap">
+117:                   <button type="button" id="followBriefToggle" class="follow-toggle on" aria-pressed="true" title="When ON, the AI strictly follows your style, pages and design brief. When OFF, it freely designs the best site for that business."><span class="tick">âœ“</span> Follow design brief</button>
+118:                   <span id="followHint">ON â€” AI follows your brief exactly.</span>
+119:                 </div>
+120:               </form>
+121:               <form id="studioRefineForm" class="hidden-old" aria-hidden="true"><textarea id="studioInstructionHidden"></textarea></form>
+122:             </section>
+123:             <section class="preview-card" aria-label="Website preview">
+124:               <div class="preview-bar">

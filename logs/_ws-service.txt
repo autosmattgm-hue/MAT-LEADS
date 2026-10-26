@@ -1,0 +1,1 @@
+﻿45: let pageCount = parseInt(options.pages, 10) || 1;

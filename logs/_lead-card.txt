@@ -1,0 +1,76 @@
+﻿1500:         <button class="btn btn-primary" type="button" data-save-lead="${lead.id}">Save Lead</button>
+1501:         <label class="select-check" title="Tick to reveal the AI website builder for this lead">
+1502:           <input type="checkbox" data-ai-website-toggle="${escapeHtml(lead.id)}">
+1503:           <span>Use AI to create website</span>
+1504:         </label>
+1505:         <button class="btn btn-primary" type="button" hidden data-create-website="${escapeHtml(lead.id)}" data-lead-name="${escapeHtml(lead.name || "Business")}">Create Website</button>
+1506:         ${renderWhatsappButton(lead, "btn btn-secondary")}
+1507:         ${renderSocialButtons(lead)}
+1508:         ${mapsUrl ? `<a class="btn btn-ghost" href="${mapsUrl}" target="_blank" rel="noreferrer">Maps</a>` : ""}
+1509:       </div>
+1510:     </article>
+1511:   `;
+1512: }
+1513: 
+1514: function renderLocalSavedLead(lead) {
+1515:   const score = lead.opportunityScore ?? lead.audit?.score ?? 0;
+1516:   const mapsUrl = safeExternalUrl(lead.googleMapsLink);
+1517:   const websiteUrl = safeExternalUrl(lead.websiteUrl);
+1518:   const socialUrl = firstSocialUrl(lead);
+1519:   const whatsapp = whatsappActionFromLead(lead);
+1520:   const savedAt = lead.localSavedAt ? new Date(lead.localSavedAt).toLocaleString() : "Saved locally";
+1521:   return `
+1522:     <article class="lead-card local-lead-card">
+1523:       <div class="lead-card__top">
+1524:         <div>
+1525:           <h3>${escapeHtml(lead.name || "Saved lead")}</h3>
+1526:           <p>${escapeHtml(lead.businessType || lead.category || "Local business")} - ${escapeHtml(lead.address || "Address unavailable")}</p>
+1527:         </div>
+1528:         <span class="score-pill ${scoreClass(score)}">${score}/100</span>
+1529:       </div>
+1530:       ${renderLeadStrength(lead)}
+1531:       <div class="lead-meta">
+1532:         <span class="tag success">Local saved</span>
+1533:         <span class="tag">${escapeHtml(lead.localStage || lead.stage || "New")}</span>
+1534:         ${lead.localCampaign ? `<span class="tag">${escapeHtml(lead.localCampaign)}</span>` : ""}
+1535:         ${localReminderStatus(lead) === "due" ? `<span class="tag warning">Follow up due</span>` : ""}
+1536:         ${socialUrl ? `<span class="tag success">Social found</span>` : ""}
+1537:         ${whatsapp ? `<span class="tag success">${escapeHtml(whatsapp.status)}</span>` : ""}
+1538:         <span class="tag">${escapeHtml(lead.phone || "No phone")}</span>
+1539:         ${lead.email ? `<span class="tag">${escapeHtml(lead.email)}</span>` : ""}
+1540:         ${lead.marketName ? `<span class="tag">${escapeHtml(lead.marketName)}</span>` : ""}
+1541:       </div>
+1542:       <p>${websiteUrl ? `<a href="${websiteUrl}" target="_blank" rel="noreferrer">${escapeHtml(websiteUrl)}</a>` : "Website missing"}</p>
+1543:       <p class="muted-value">${escapeHtml(savedAt)}</p>
+1544:       ${renderContactActions(lead)}
+1545:       ${renderLocalLeadTools(lead)}
+1546:       <div class="lead-actions">
+1547:         <a class="btn btn-secondary" href="/lead-details.html?id=${encodeURIComponent(localLeadId(lead))}">View</a>
+1548:         <label class="select-check" title="Tick to reveal the AI website builder for this lead">
+1549:           <input type="checkbox" data-ai-website-toggle="${escapeHtml(localLeadId(lead))}">
+1550:           <span>Use AI to create website</span>
+1551:         </label>
+1552:         <button class="btn btn-primary" type="button" hidden data-create-website="${escapeHtml(localLeadId(lead))}" data-lead-name="${escapeHtml(lead.name || "Business")}">Create Website</button>
+1553:         ${renderWhatsappButton(lead, "btn btn-secondary")}
+1554:         ${socialUrl ? `<a class="btn btn-ghost" href="${socialUrl}" target="_blank" rel="noreferrer">Social</a>` : ""}
+1555:         ${mapsUrl ? `<a class="btn btn-ghost" href="${mapsUrl}" target="_blank" rel="noreferrer">Maps</a>` : ""}
+1556:         <button class="btn btn-ghost" type="button" data-delete-local-lead="${escapeHtml(localLeadId(lead))}">Delete</button>
+1557:       </div>
+1558:     </article>
+1559:   `;
+1560: }
+1561: 
+1562: function renderLocalSavedLeads() {
+1563:   const target = byId("localSavedLeads");
+1564:   const summary = byId("localSavedLeadSummary");
+1565:   if (!target) return;
+1566: 
+1567:   const allLeads = readLocalSavedLeads();
+1568:   const leads = filteredLocalSavedLeads();
+1569:   const dueCount = allLeads.filter((lead) => localReminderStatus(lead) === "due").length;
+1570:   if (summary) {
+1571:     summary.textContent = allLeads.length
+1572:       ? `${leads.length} of ${allLeads.length} saved leads shown. ${dueCount} follow-ups due. Leads stay after logout until you delete them.`
+1573:       : "No local saved leads yet.";
+1574:   }
+1575:   target.innerHTML = leads.length

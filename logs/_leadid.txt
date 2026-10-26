@@ -1,0 +1,65 @@
+﻿641:   const website = safeExternalUrl(lead.websiteUrl).replace(/^https?:\/\/(www\.)?/i, "").replace(/\/$/, "");
+642:   return [name, phone || website || address].filter(Boolean).join("|") || localLeadId(lead);
+643: }
+644: 
+645: function dedupeLeads(leads = []) {
+646:   const byKey = new Map();
+647:   for (const lead of leads) {
+648:     const key = leadDedupeKey(lead);
+649:     const existing = byKey.get(key);
+650:     if (!existing || leadStrengthScore(lead) >= leadStrengthScore(existing)) {
+651:       byKey.set(key, { ...(existing || {}), ...lead });
+652:     }
+653:   }
+654:   return [...byKey.values()];
+655: }
+656: 
+657: function localLeadId(lead = {}) {
+658:   return String(lead.id || `${lead.name || "lead"}-${lead.address || ""}-${lead.googleMapsLink || ""}`)
+659:     .toLowerCase()
+660:     .replace(/[^a-z0-9]+/g, "-")
+661:     .replace(/^-|-$/g, "")
+662:     .slice(0, 180) || `lead-${Date.now()}`;
+663: }
+664: 
+665: function readLocalSavedLeads() {
+666:   try {
+667:     const parsed = JSON.parse(localStorage.getItem(localSavedLeadsKey) || "[]");
+668:     return Array.isArray(parsed) ? parsed.filter((lead) => lead?.id || lead?.name) : [];
+669:   } catch {
+670:     return [];
+671:   }
+672: }
+673: 
+674: function writeLocalSavedLeads(leads = []) {
+675:   let items = leads.slice(0, 500);
+676:   while (items.length >= 0) {
+677:     try {
+678:       localStorage.setItem(localSavedLeadsKey, JSON.stringify(items));
+679:       return items;
+680:     } catch {
+681:       if (items.length <= 50) throw new Error("Browser local storage is full. Export saved leads, delete old leads, then try again.");
+682:       items = items.slice(0, Math.ceil(items.length * 0.75));
+683:     }
+684:   }
+685:   return [];
+686: }
+687: 
+688: function compactLeadForLocalStorage(lead = {}) {
+689:   const copy = JSON.parse(JSON.stringify(lead || {}));
+690:   const id = localLeadId(copy);
+691:   delete copy.raw;
+692:   if (copy.details?.source) {
+693:     delete copy.details.source.rawTags;
+694:     delete copy.details.source.rawPlace;
+695:     delete copy.details.source.raw;
+696:   }
+697:   return {
+698:     ...copy,
+699:     id,
+700:     localSavedAt: new Date().toISOString()
+701:   };
+702: }
+703: 
+704: function saveLeadsToLocalStorage(leads = []) {
+705:   const existing = readLocalSavedLeads();
