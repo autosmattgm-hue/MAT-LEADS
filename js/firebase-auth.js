@@ -66,7 +66,7 @@ export async function signInWithGoogle(status) {
     window.location.href = next && next.startsWith("/") ? next : "/dashboard.html";
     return result;
   } catch (error) {
-    if (status) status.textContent = friendlyFirebaseError(error);
+    if (status) status.textContent = friendlyAuthError(error);
     throw error;
   }
 }
@@ -91,7 +91,7 @@ export async function registerWithEmail(name, email, password, status) {
     const next = new URLSearchParams(window.location.search).get("next");
     window.location.href = next && next.startsWith("/") ? next : "/dashboard.html";
   } catch (error) {
-    if (status) status.textContent = friendlyFirebaseError(error);
+    if (status) status.textContent = friendlyAuthError(error);
     throw error;
   }
 }
@@ -109,7 +109,7 @@ export async function sendPasswordReset(email, status) {
     await sendPasswordResetEmail(auth, email);
     if (status) status.textContent = "Password reset email sent. Check your inbox and spam folder.";
   } catch (error) {
-    if (status) status.textContent = friendlyFirebaseError(error);
+    if (status) status.textContent = friendlyAuthError(error);
     throw error;
   }
 }
@@ -132,7 +132,7 @@ export function watchVerificationBanner() {
           await sendEmailVerification(user);
           resend.textContent = "Verification email sent — check your inbox";
         } catch (error) {
-          resend.textContent = friendlyFirebaseError(error);
+          resend.textContent = friendlyAuthError(error);
         } finally {
           setTimeout(() => { resend.disabled = false; }, 15000);
         }
@@ -141,16 +141,19 @@ export function watchVerificationBanner() {
   });
 }
 
-function friendlyFirebaseError(error) {
-  const code = String(error?.code || "");
+function friendlyAuthError(error) {
+  const code = String(error?.code || "").replace(/^auth\//, "");
   if (code.includes("popup-closed-by-user") || code.includes("cancelled-popup-request")) return "Google sign-in was closed before finishing. Try again.";
   if (code.includes("too-many-requests")) return "Too many attempts. Wait a few minutes and try again.";
   if (code.includes("email-already-in-use")) return "An account with this email already exists. Try logging in instead.";
   if (code.includes("weak-password")) return "Password is too weak. Use at least 8 characters.";
   if (code.includes("user-not-found") || code.includes("wrong-password") || code.includes("invalid-credential")) return "Invalid email or password.";
-  if (code.includes("operation-not-allowed")) return "This sign-in method is not enabled yet. Enable it in Firebase Console — Authentication — Sign-in method.";
-  if (code.includes("unauthorized-domain")) return "This domain is not authorized in Firebase Console — Authentication — Settings — Authorized domains.";
-  if (code.includes("billing-not-enabled") || code.includes("payment")) return "Phone SMS needs Blaze billing enabled on the Firebase project, then retry.";
-  return error?.message || "Something went wrong. Please try again.";
+  if (code.includes("operation-not-allowed")) return "Email and password sign-in is temporarily unavailable. Please try again in a moment.";
+  if (code.includes("unauthorized-domain")) return "Sign-in from this site is not enabled yet. Please contact support.";
+  if (code.includes("billing-not-enabled") || code.includes("payment")) return "Sign-in is temporarily unavailable. Please try again in a moment.";
+  const raw = String(error?.message || "");
+  // Never surface SDK-internal wording (vendor names, auth/ codes) to users.
+  if (!raw || /firebase|auth\/[a-z-]+/i.test(raw)) return "Something went wrong. Please try again.";
+  return raw;
 }
 

@@ -654,6 +654,34 @@ function dedupeLeads(leads = []) {
   return [...byKey.values()];
 }
 
+// Short human-readable ID stamped on every saved lead so the AI tools, studio
+// and lead picker can reference it (format: ML-XXXXXX, no look-alike chars).
+function makeLeadId() {
+  const alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  const bytes = new Uint8Array(6);
+  try { (window.crypto || {}).getRandomValues?.(bytes); } catch {}
+  let out = "ML-";
+  for (let i = 0; i < 6; i += 1) {
+    const byte = bytes[i] ?? Math.floor(Math.random() * 256);
+    out += alphabet[byte % alphabet.length];
+  }
+  return out;
+}
+
+function backfillLocalLeadIds() {
+  try {
+    const leads = readLocalSavedLeads();
+    let changed = false;
+    for (const lead of leads) {
+      if (lead && !lead.leadId) {
+        lead.leadId = makeLeadId();
+        changed = true;
+      }
+    }
+    if (changed) writeLocalSavedLeads(leads);
+  } catch {}
+}
+
 function localLeadId(lead = {}) {
   return String(lead.id || `${lead.name || "lead"}-${lead.address || ""}-${lead.googleMapsLink || ""}`)
     .toLowerCase()
@@ -697,6 +725,7 @@ function compactLeadForLocalStorage(lead = {}) {
   return {
     ...copy,
     id,
+    leadId: copy.leadId || makeLeadId(),
     localSavedAt: new Date().toISOString()
   };
 }
@@ -1454,7 +1483,12 @@ function renderLead(lead) {
   const mapsUrl = safeExternalUrl(lead.googleMapsLink);
   const website = websiteUrl ? `<a href="${websiteUrl}" target="_blank" rel="noreferrer">${escapeHtml(websiteUrl)}</a>` : "Website missing";
   const market = lead.marketName ? `<span class="tag">${escapeHtml(lead.marketName)}</span>` : "";
-  const email = lead.email ? `<span class="tag">${escapeHtml(lead.email)}</span>` : "";
+  // Contact fields can come from OpenStreetMap, Google Places, or the verified
+  // public website profile. Resolve all sources before deciding what to show.
+  const phone = primaryPhone(lead);
+  const publicEmail = lead.email || lead.details?.contact?.email || lead.audit?.publicProfile?.emails?.[0] || "";
+  const email = publicEmail ? `<span class="tag success">Email: ${escapeHtml(publicEmail)}</span>` : "";
+  const phoneTag = phone ? `<span class="tag success">Phone: ${escapeHtml(phone)}</span>` : `<span class="tag">Phone unavailable</span>`;
   const hours = lead.openingHours ? `<span class="tag">Hours found</span>` : "";
   const source = lead.source ? `<span class="tag">${escapeHtml(lead.source.replaceAll("_", " "))}</span>` : "";
   const socialLinks = socialLinksFromLead(lead);
@@ -1464,7 +1498,7 @@ function renderLead(lead) {
     ? `<span class="tag success">Social found</span>`
     : "";
   const whatsappFound = whatsapp ? `<span class="tag success">${escapeHtml(whatsapp.status)}</span>` : "";
-  const contactReady = (lead.phone || lead.email || lead.social || Object.keys(socialLinks).length) ? `<span class="tag success">Contact ready</span>` : "";
+  const contactReady = (phone || publicEmail || lead.social || Object.keys(socialLinks).length) ? `<span class="tag success">Contact ready</span>` : "";
   const websiteGap = !lead.websiteUrl ? `<span class="tag warning">Needs website</span>` : "";
   return `
     <article class="lead-card">
@@ -1483,7 +1517,7 @@ function renderLead(lead) {
       <div class="lead-meta">
         <span class="tag">${escapeHtml(lead.rating || "No")} rating</span>
         <span class="tag">${escapeHtml(lead.reviewsCount || 0)} reviews</span>
-        <span class="tag">${escapeHtml(lead.phone || "No phone")}</span>
+        ${phoneTag}
         ${market}
         ${email}
         ${hours}
@@ -1530,6 +1564,7 @@ function renderLocalSavedLead(lead) {
       ${renderLeadStrength(lead)}
       <div class="lead-meta">
         <span class="tag success">Local saved</span>
+        <span class="tag tag-lead-id" title="Lead ID — used by AI tools and Website Studio">ID ${escapeHtml(lead.leadId || localLeadId(lead))}</span>
         <span class="tag">${escapeHtml(lead.localStage || lead.stage || "New")}</span>
         ${lead.localCampaign ? `<span class="tag">${escapeHtml(lead.localCampaign)}</span>` : ""}
         ${localReminderStatus(lead) === "due" ? `<span class="tag warning">Follow up due</span>` : ""}
@@ -1598,6 +1633,7 @@ function renderLocalLeadDetail(target, lead) {
       </div>
       <div class="lead-meta" style="margin-top:14px;">
         <span class="tag success">Loaded from local storage</span>
+        <span class="tag tag-lead-id" title="Lead ID — used by AI tools and Website Studio">ID ${escapeHtml(lead.leadId || localLeadId(lead))}</span>
         <span class="tag">${lead.phone ? "Phone found" : "Phone missing"}</span>
         <span class="tag">${lead.email ? "Email found" : "Email missing"}</span>
         <span class="tag">${lead.websiteUrl ? "Website found" : "Website missing"}</span>
@@ -1771,7 +1807,14 @@ function renderFilteredLeadResults() {
   currentVisibleLeadResults = currentFilteredLeadResults.slice(pageStart, pageStart + pageSize);
 
   if (!currentLeadResults.length) {
-    target.innerHTML = `<div class="empty-state">${hasLeadSearchRun ? "No leads found for this search yet. Try Refresh Leads, choose a different business type, or paste a more exact Google Maps city link." : "Start a search to discover leads."}</div>`;
+    const requiresContact = Boolean(byId("requireContact")?.checked) || byId("leadQuality")?.value === "contact_ready";
+    const requiresMissingWebsite = Boolean(byId("missingWebsiteOnly")?.checked) || byId("leadQuality")?.value === "needs_website";
+    const emptyMessage = requiresContact
+      ? "No businesses with a verified public phone, email, or social contact were found in this area. Try a larger radius, another city, or refresh the search."
+      : requiresMissingWebsite
+        ? "No businesses with an unavailable website URL matched this area. Try a larger radius, another city, or refresh the search."
+        : "No leads found for this search yet. Try Refresh Leads, choose a different business type, or paste a more exact Google Maps city link.";
+    target.innerHTML = `<div class="empty-state">${hasLeadSearchRun ? emptyMessage : "Start a search to discover leads."}</div>`;
     renderLeadPagination();
     updateLeadCommandSummary();
     return;
@@ -1859,7 +1902,16 @@ function initLeadSearch() {
         const relaxedText = result.searchStats?.filtersRelaxed ? " Strict filters had no matches, so top real candidates were shown." : "";
         const trialText = trialSearchText(result.trial);
         const pageText = (result.leads || []).length > selectedResultPageSize() ? " Use Next and Previous below the cards to browse all returned leads." : "";
-        note.textContent = `Real ${provider} results loaded${locationText}.${countryText}${stats}${cacheText}${refreshText}${relaxedText}${trialText}${pageText} Query: ${result.query || "businesses"}.`;
+        const strictCoverageText = result.searchStats?.strictContactFilter && result.searchStats?.strictMissingWebsiteFilter
+          ? " Both strict filters were applied at the map-data source; only businesses with a public phone, email, or social tag and no listed website URL are included."
+          : "";
+        const limitedCoverageText = result.searchStats?.strictContactFilter && result.searchStats?.qualifiedCount < result.searchStats?.requestedLimit
+          ? " Fewer results means the selected market currently has fewer public map records meeting every strict requirement; use Refresh Leads or broaden the location to scan other real records."
+          : "";
+        const sourceCoverageText = result.searchStats?.contactCoverageLimited
+          ? " The fallback provider has limited public contact and website coverage; configure Google Places for more complete licensed business profiles."
+          : "";
+        note.textContent = `Real ${provider} results loaded${locationText}.${countryText}${stats}${strictCoverageText}${limitedCoverageText}${sourceCoverageText}${cacheText}${refreshText}${relaxedText}${trialText}${pageText} Query: ${result.query || "businesses"}.`;
       }
     } catch (error) {
       const raw = String(error?.message || "Search failed");
@@ -1972,7 +2024,10 @@ function initWebsiteStudioActions() {
     const lead = currentLeadResults.find((l) => String(l.id) === String(leadId))
       || currentFilteredLeadResults.find((l) => String(l.id) === String(leadId))
       || readLocalSavedLeads().find((l) => String(localLeadId(l)) === String(leadId) || String(l.id) === String(leadId));
-    if (lead) { try { sessionStorage.setItem("mat_studio_lead", JSON.stringify(lead)); } catch {} }
+    if (lead) {
+      if (!lead.leadId) lead.leadId = makeLeadId();
+      try { sessionStorage.setItem("mat_studio_lead", JSON.stringify(lead)); } catch {}
+    }
     if (!pro) {
       window.location.href = "/pricing.html?upgrade=pro";
       return;
@@ -2448,6 +2503,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initBulkLeadActions();
   initLocalSavedLeadActions();
   initLocalSavedLeadFilters();
+  backfillLocalLeadIds();
   renderLocalSavedLeads();
   initLeadDetails();
   initOutreachActions();

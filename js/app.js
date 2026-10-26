@@ -4,28 +4,9 @@ function loadFirebaseAuth() {
   return import("./firebase-auth.js");
 }
 
-// Codes meaning the Firebase project itself can't serve sign-ups (provider disabled,
-// domain not authorized, bad key) — safe to fall back to the backend-only register path.
-const FIREBASE_DISABLED_CODES = [
-  "operation-not-allowed",
-  "unauthorized-domain",
-  "auth/configuration-not-found",
-  "auth/api-key-not-valid"
-];
-
 function redirectAfterAuth() {
   const next = new URLSearchParams(window.location.search).get("next");
   window.location.href = next && next.startsWith("/") ? next : "/dashboard.html";
-}
-
-async function trackReferral() {
-  try {
-    const ref = new URLSearchParams(window.location.search).get("ref") || localStorage.getItem("mat_referral_code");
-    if (ref) {
-      localStorage.removeItem("mat_referral_code");
-      await apiFetch("/api/earn/track-signup", { method: "POST", body: JSON.stringify({ ref }) }).catch(() => {});
-    }
-  } catch {}
 }
 
 function initAuthForm() {
@@ -62,29 +43,34 @@ function initAuthForm() {
     const payload = Object.fromEntries(formData.entries());
 
     if (mode === "register") {
+      // Backend-owned signup: the account is created unverified and a
+      // verification link is emailed. No session is issued until confirmed.
       try {
-        const { registerWithEmail } = await loadFirebaseAuth();
-        // Creates the Firebase account, emails the verification link, opens the
-        // backend session (auto-persists the user in Firestore) and redirects.
-        await registerWithEmail(payload.name, payload.email, payload.password, status);
-        return;
-      } catch (error) {
-        const code = String(error?.code || "");
-        const firebaseDisabled = FIREBASE_DISABLED_CODES.some((c) => code.includes(c));
-        const importFailure = !code && !error?.status; // CDN unreachable — no server response involved
-        if (!firebaseDisabled && !importFailure) {
-          if (status) status.textContent = error?.message || "Signup failed. Please try again.";
-          return;
-        }
-        if (status) status.textContent = "Firebase unavailable — creating account directly...";
-      }
-      try {
+        const ref = new URLSearchParams(window.location.search).get("ref") || localStorage.getItem("mat_referral_code") || "";
         const result = await apiFetch("/api/auth/register", {
           method: "POST",
-          body: JSON.stringify(payload)
+          body: JSON.stringify({ ...payload, ...(ref ? { ref } : "") })
         });
+        if (ref) {
+          try { localStorage.removeItem("mat_referral_code"); } catch {}
+        }
+        if (result.verificationRequired) {
+          try {
+            localStorage.setItem("mat_pending_verification", JSON.stringify({
+              email: payload.email || "",
+              url: result.verificationUrl || "",
+              token: result.verificationToken || "",
+              sent: Boolean(result.verificationSent),
+              at: Date.now()
+            }));
+          } catch {}
+          if (status) status.textContent = result.message || "Check your inbox for the verification link.";
+          setTimeout(() => {
+            window.location.href = `/verify-email.html?sent=1&email=${encodeURIComponent(payload.email || "")}`;
+          }, 900);
+          return;
+        }
         setSession(result);
-        await trackReferral();
         if (status) status.textContent = "Success. Redirecting...";
         redirectAfterAuth();
       } catch (error) {
@@ -102,7 +88,18 @@ function initAuthForm() {
       if (status) status.textContent = "Success. Redirecting...";
       redirectAfterAuth();
     } catch (error) {
-      if (status) status.textContent = error.message;
+      if (status && error.code === "ACCOUNT_NOT_VERIFIED") {
+        status.textContent = "";
+        const line = document.createElement("span");
+        line.textContent = `${error.message} `;
+        const resend = document.createElement("a");
+        resend.href = `/verify-email.html?resend=1&email=${encodeURIComponent(payload.email || "")}`;
+        resend.textContent = "Resend verification link";
+        resend.style.textDecoration = "underline";
+        status.append(line, resend);
+      } else if (status) {
+        status.textContent = error.message;
+      }
     }
   });
 }

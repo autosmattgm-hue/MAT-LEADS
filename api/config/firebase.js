@@ -2,16 +2,20 @@ import crypto from "node:crypto";
 import { env } from "./env.js";
 import { logger } from "../utils/logger.js";
 
-// A malformed FIREBASE_PRIVATE_KEY paste (missing \n escaping, stray quotes)
-// used to make every Firestore call throw mid-request. Validate the key shape
-// up front and treat bad credentials as "not configured" so the app falls
-// back to the local store instead of failing every request.
+// A malformed FIREBASE_PRIVATE_KEY paste (missing \n escaping, stray quotes,
+// or a truncated/placeholder key) used to make every Firestore call throw
+// mid-request. Validate the key shape up front and treat bad credentials as
+// "not configured" so the app falls back to the local store instead of
+// failing every request with ERR_OSSL_UNSUPPORTED.
 function hasFirestoreCredentials() {
-  return Boolean(
-    env.firebase.projectId &&
-    env.firebase.clientEmail &&
-    normalizedPrivateKey(env.firebase.privateKey)
-  );
+  const key = normalizedPrivateKey(env.firebase.privateKey);
+  if (!env.firebase.projectId || !env.firebase.clientEmail || !key) return false;
+  try {
+    crypto.createPrivateKey(key);
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 let cachedToken = null;
@@ -143,7 +147,7 @@ export function isFirebaseAuthConfigured() {
 export async function verifyFirebaseIdToken(idToken) {
   if (!env.firebase.webApiKey) {
     const { AppError } = await import("../utils/errors.js");
-    throw new AppError("Google sign-in is not configured yet. Add FIREBASE_WEB_API_KEY in hosting env vars.", 503, "FIREBASE_AUTH_NOT_CONFIGURED");
+    throw new AppError("Google sign-in is unavailable right now. Please sign in with your email and password instead.", 503, "GOOGLE_SIGNIN_NOT_CONFIGURED");
   }
   let response;
   try {

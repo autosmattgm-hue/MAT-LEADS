@@ -61,6 +61,9 @@ const supportedCountries = new Map([
   ["Saudi Arabia", "SA"]
 ]);
 
+const osmElementDetailsCache = new Map();
+const OSM_ELEMENT_CACHE_TTL_MS = 60 * 60 * 1000;
+
 const profitableMarkets = {
   europe: [
     ["London", 51.5072, -0.1276],
@@ -711,7 +714,19 @@ function searchDepthConfig(search = {}) {
     deep: { maxMarkets: 10, marketsPerCountry: 3, perMarketMin: 5, marketRadius: 8000, overpassTimeout: 16, outMultiplier: 14 },
     maximum: { maxMarkets: 18, marketsPerCountry: 4, perMarketMin: 6, marketRadius: 12000, overpassTimeout: 20, outMultiplier: 18 }
   };
-  return configs[depth] || configs.deep;
+  const config = configs[depth] || configs.deep;
+  // Dashboard searches run behind an interactive/serverless response deadline.
+  // Keep external-provider fan-out bounded; full enrichment belongs on saved
+  // lead detail views, not the initial result request.
+  if (search.interactive !== true) return config;
+  return {
+    ...config,
+    // Six concurrent markets keep the interactive request bounded. Each
+    // market receives a larger per-market candidate target for big searches.
+    maxMarkets: Math.min(config.maxMarkets, 6),
+    marketsPerCountry: Math.min(config.marketsPerCountry, 2),
+    overpassTimeout: Math.min(config.overpassTimeout, 8)
+  };
 }
 
 function buildTextQuery(search) {
@@ -783,7 +798,7 @@ async function resolveGoogleMapsLink(mapLink) {
     if (!canResolve || !["http:", "https:"].includes(url.protocol)) return mapLink;
 
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 6000);
+    const timeout = setTimeout(() => controller.abort(), 8000);
     try {
       const response = await fetch(url, {
         method: "HEAD",
@@ -1152,10 +1167,30 @@ function buildOverpassQuery(location, limit, elementTypes = ["node"], search) {
     groups.set(key, values);
     return groups;
   }, new Map());
+  const requiresPublicContact = Boolean(search.requireContact || search.leadQuality === "contact_ready" || search.leadQuality === "owner_data");
+  const requiresMissingWebsite = Boolean(search.missingWebsiteOnly || search.leadQuality === "needs_website");
+  // These are public OpenStreetMap tags only. Applying them in the source
+  // query prevents a large general result set from being discarded after the
+  // request, which is particularly important when both quality filters are on.
+  const contactTagKeys = [
+    "phone", "contact:phone", "telephone", "contact:telephone", "phone:mobile",
+    "mobile", "contact:mobile", "email", "contact:email", "contact:whatsapp",
+    "whatsapp", "facebook", "contact:facebook", "instagram", "contact:instagram",
+    "linkedin", "contact:linkedin"
+  ];
+  const missingWebsiteSelectors = requiresMissingWebsite
+    ? '[!"website"][!"contact:website"][!"url"]'
+    : "";
+  // A key-regex expresses "any public contact tag" in one Overpass selector.
+  // Generating one selector per tag made strict searches too large and caused
+  // some Overpass mirrors to fall back before returning useful coverage.
+  const contactSelector = requiresPublicContact
+    ? `[~"^(${contactTagKeys.map(overpassRegexEscape).join("|")})$"~"."]`
+    : "";
   const selectors = [...grouped.entries()].flatMap(([key, values]) => {
     const pattern = `^(${[...values].map(overpassRegexEscape).join("|")})$`;
     return elementTypes.map((type) => (
-      `${type}(around:${radius},${lat},${lon})["name"]["${overpassEscape(key)}"~"${pattern}"];`
+      `${type}(around:${radius},${lat},${lon})["name"]["${overpassEscape(key)}"~"${pattern}"]${missingWebsiteSelectors}${contactSelector};`
     ));
   });
   const outLimit = Math.min(Math.max(limit * depth.outMultiplier, 80), 500);
@@ -1369,18 +1404,18 @@ async function searchPhotonFallback(search, location, limitOverride, profileKeys
   const collected = [];
   const seen = new Set();
 
-  for (const profileKey of orderedProfileKeys.slice(0, 8)) {
+  for (const profileKey of orderedProfileKeys.slice(0, search.interactive ? 2 : 8)) {
     if (collected.length >= limitOverride) break;
     const profileFilters = businessProfiles[profileKey]?.filters || [];
     const filters = [
       ...profileFilters.slice(0, 1),
       ...freshOrder(profileFilters.slice(1), search.refreshSeed, `photon-filter-${profileKey}`)
-    ].slice(0, 6);
+    ].slice(0, search.interactive ? 1 : 6);
 
     for (const [osmKey, osmValue] of filters) {
       if (collected.length >= limitOverride) break;
       const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 10000);
+      const timeout = setTimeout(() => controller.abort(), search.interactive ? 4000 : 10000);
       try {
         const url = new URL("https://photon.komoot.io/api/");
         url.searchParams.set("q", nominatimTerm(profileKey));
@@ -1434,10 +1469,10 @@ async function searchNominatimFallback(search, location, limitOverride, profileK
   const seen = new Set();
   const orderedProfileKeys = freshOrder(profileKeys, search.refreshSeed, "nominatim-profile");
 
-  for (const profileKey of orderedProfileKeys.slice(0, 6)) {
+  for (const profileKey of orderedProfileKeys.slice(0, search.interactive ? 2 : 6)) {
     if (collected.length >= limitOverride) break;
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 12000);
+    const timeout = setTimeout(() => controller.abort(), search.interactive ? 4000 : 12000);
     try {
       const url = new URL("https://nominatim.openstreetmap.org/search");
       url.searchParams.set("format", "jsonv2");
@@ -1538,6 +1573,78 @@ function mapPlace(place) {
 }
 
 export class GooglePlacesService {
+  async enrichOpenStreetMapContacts(leads, search) {
+    const candidates = leads
+      .map((lead, index) => ({ lead, index }))
+      .filter(({ lead }) => lead?.raw?.osmType && lead?.raw?.osmId && (!lead.phone || !lead.websiteUrl || !lead.email || !Object.keys(lead.details?.social || {}).length))
+      .slice(0, search.interactive ? (search.requireContact ? 12 : 6) : 15);
+
+    const enrichOne = async ({ lead, index }) => {
+      const type = String(lead.raw.osmType);
+      const id = String(lead.raw.osmId);
+      if (!/^(node|way|relation)$/.test(type) || !/^\d+$/.test(id)) return { lead, index };
+      const cacheKey = `${type}/${id}`;
+      const cached = osmElementDetailsCache.get(cacheKey);
+      let element = cached?.expiresAt > Date.now() ? cached.element : null;
+
+      if (!element) {
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 3000);
+        try {
+          const response = await fetch(`https://www.openstreetmap.org/api/0.6/${type}/${id}.json`, {
+            signal: controller.signal,
+            headers: { Accept: "application/json", "User-Agent": "MATLeadsAIProX/1.0" }
+          });
+          if (!response.ok) return { lead, index };
+          element = (await response.json()).elements?.[0] || null;
+          if (element) osmElementDetailsCache.set(cacheKey, { element, expiresAt: Date.now() + OSM_ELEMENT_CACHE_TTL_MS });
+        } catch {
+          return { lead, index };
+        } finally {
+          clearTimeout(timeout);
+        }
+      }
+
+      if (!element?.tags) return { lead, index };
+      const mapped = mapOsmElement(element, selectedBusinessProfileKeys(search), {
+        countryName: lead.countryName || lead.country || "",
+        countryCode: lead.countryCode || ""
+      });
+      return {
+        index,
+        lead: {
+          ...lead,
+          phone: lead.phone || mapped.phone,
+          email: lead.email || mapped.email,
+          websiteUrl: lead.websiteUrl || mapped.websiteUrl,
+          openingHours: lead.openingHours || mapped.openingHours,
+          details: {
+            ...lead.details,
+            ...mapped.details,
+            contact: { ...(lead.details?.contact || {}), ...(mapped.details?.contact || {}) },
+            social: { ...(lead.details?.social || {}), ...(mapped.details?.social || {}) }
+          },
+          raw: mapped.raw,
+          source: `${lead.source || "openstreetmap"}_details`
+        }
+      };
+    };
+
+    const results = new Array(candidates.length);
+    let next = 0;
+    await Promise.all(Array.from({ length: Math.min(2, candidates.length) }, async () => {
+      while (next < candidates.length) {
+        const current = next++;
+        results[current] = await enrichOne(candidates[current]);
+      }
+    }));
+    const enriched = [...leads];
+    for (const result of results) {
+      if (result) enriched[result.index] = result.lead;
+    }
+    return enriched;
+  }
+
   async search(search) {
     const initialSelectedCountries = selectedCountryNames(search);
     const shouldIgnoreLegacyDefaultMap = initialSelectedCountries.length > 0 && isLegacyDefaultMapLink(search.mapLink);
@@ -1581,9 +1688,14 @@ export class GooglePlacesService {
       requestBody.includedRegionCodes = countryCodesFor(selectedCountries);
     }
 
-    const response = await fetch("https://places.googleapis.com/v1/places:searchText", {
-      method: "POST",
-      headers: {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 12000);
+    let response;
+    try {
+      response = await fetch("https://places.googleapis.com/v1/places:searchText", {
+        method: "POST",
+        signal: controller.signal,
+        headers: {
         "Content-Type": "application/json",
         "X-Goog-Api-Key": env.google.placesApiKey,
         "X-Goog-FieldMask": [
@@ -1604,9 +1716,15 @@ export class GooglePlacesService {
           "places.editorialSummary",
           "places.types"
         ].join(",")
-      },
-      body: JSON.stringify(requestBody)
-    });
+        },
+        body: JSON.stringify(requestBody)
+      });
+    } catch (error) {
+      if (error?.name === "AbortError") return this.searchOpenStreetMap(normalizedSearch, location);
+      throw error;
+    } finally {
+      clearTimeout(timeout);
+    }
 
     if (!response.ok) {
       const body = await response.text();
@@ -1663,7 +1781,8 @@ export class GooglePlacesService {
 
     for (const variant of queryVariants) {
       const query = buildOverpassQuery(location, search.limit, variant.elementTypes, search);
-      for (const endpoint of env.osm.overpassEndpoints) {
+      const endpoints = search.interactive ? env.osm.overpassEndpoints.slice(0, 1) : env.osm.overpassEndpoints;
+      for (const endpoint of endpoints) {
         const controller = new AbortController();
         const timeout = setTimeout(() => controller.abort(), (depth.overpassTimeout + 4) * 1000);
         try {
@@ -1703,7 +1822,7 @@ export class GooglePlacesService {
             queryVariant: variant.label,
             location,
             query: buildTextQuery(search),
-            leads
+            leads: await this.enrichOpenStreetMapContacts(leads, search)
           };
 
           if (leads.length) return result;
@@ -1725,7 +1844,7 @@ export class GooglePlacesService {
         queryVariant: "photon_fallback",
         location,
         query: buildTextQuery(search),
-        leads: photonLeads.slice(0, search.limit)
+        leads: await this.enrichOpenStreetMapContacts(photonLeads.slice(0, search.limit), search)
       };
     }
 
@@ -1738,7 +1857,7 @@ export class GooglePlacesService {
         queryVariant: "nominatim_fallback",
         location,
         query: buildTextQuery(search),
-        leads: fallbackLeads.slice(0, search.limit)
+        leads: await this.enrichOpenStreetMapContacts(fallbackLeads.slice(0, search.limit), search)
       };
     }
 
@@ -1818,7 +1937,7 @@ export class GooglePlacesService {
         })
       },
       query: buildTextQuery(search),
-      leads: collected
+      leads: await this.enrichOpenStreetMapContacts(collected, search)
     };
   }
 
@@ -1834,7 +1953,8 @@ export class GooglePlacesService {
     let lastError = null;
     let emptyResult = null;
 
-    for (const endpoint of env.osm.overpassEndpoints) {
+    const endpoints = search.interactive ? env.osm.overpassEndpoints.slice(0, 1) : env.osm.overpassEndpoints;
+    for (const endpoint of endpoints) {
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(), (depth.overpassTimeout + 4) * 1000);
       try {
@@ -1906,3 +2026,4 @@ export class GooglePlacesService {
     throw new AppError(`OpenStreetMap Overpass market search failed: ${lastError?.message || "all endpoints unavailable"}`, 503, "OVERPASS_UNAVAILABLE");
   }
 }
+

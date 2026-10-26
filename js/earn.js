@@ -12,10 +12,12 @@ document.addEventListener("DOMContentLoaded", async () => {
       apiFetch("/api/earn/payouts")
     ]);
     referralLink = new URL(ref.linkPath, window.location.origin).href;
-    byId("refBox").innerHTML = `<strong>${ref.code}</strong><br>${referralLink}<br>Pending ${money(ref.pendingCents)} • Earned ${money(ref.paidCents)} • ${ref.rows.length} referral(s)`;
+    const creditAwards = ref.rows.reduce((sum, row) => sum + Number(row.searchCreditsAwarded || 0), 0);
+    byId("refBox").innerHTML = `<strong>${ref.code}</strong><br>${referralLink}<br><span>You get <strong>2 lead-search credits</strong> for every new user who signs up and verifies through your link.</span><br>Credits earned: <strong>${creditAwards}</strong> • Pending ${money(ref.pendingCents)} • Earned ${money(ref.paidCents)} • ${ref.rows.length} referral(s)`;
     byId("earnMetrics").innerHTML = [
       ["Referral pending", money(ref.pendingCents)],
       ["Referral earned", money(ref.paidCents)],
+      ["Search credits earned", String(creditAwards)],
       ["Open invoices", String(invoices.invoices.filter((i) => i.status !== "paid").length)],
       ["Paid invoices", money(invoices.invoices.filter((i) => i.status === "paid").reduce((s, i) => s + Number(i.amountCents || 0), 0))]
     ].map(([k, v]) => `<article class="metric"><span>${k}</span><strong>${v}</strong></article>`).join("");

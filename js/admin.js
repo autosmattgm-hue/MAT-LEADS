@@ -56,11 +56,27 @@ async function initAdmin() {
   const metrics = byId("adminMetrics");
   if (!metrics) return;
   if (!requireAuth()) return;
-  metrics.innerHTML = '<div class="skeleton">Loading system controls...</div>';
 
+  // Admin UI is visible only to admin accounts — everyone else is sent back
+  // to the dashboard before any admin data is requested.
+  let me = null;
+  try {
+    me = await apiFetch("/api/auth/me");
+  } catch {
+    return; // api.js already handles auth redirects
+  }
+  const user = me.user;
+  try { localStorage.setItem("mat_user", JSON.stringify(user)); } catch {}
+  if (String(user?.role || "").toLowerCase() !== "admin") {
+    window.location.href = "/dashboard.html";
+    return;
+  }
+
+  metrics.innerHTML = '<div class="skeleton">Loading system controls...</div>';
   try {
     const result = await apiFetch("/api/admin/overview");
     renderAdmin(result);
+    initIntegrationStatus();
   } catch (error) {
     metrics.innerHTML = '<div class="error-state">' + error.message + '</div>';
   }
@@ -68,5 +84,4 @@ async function initAdmin() {
 
 document.addEventListener("DOMContentLoaded", function() {
   initAdmin();
-  initIntegrationStatus();
 });

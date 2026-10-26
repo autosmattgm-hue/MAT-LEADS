@@ -1,5 +1,24 @@
 import { apiFetch, byId, formatCurrency, getCurrentUser, requireAuth } from "./api.js";
 
+function escapeHtml(value) {
+  return String(value ?? "").replace(/[&<>"']/g, (character) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[character]);
+}
+
+function renderDailyActions(actions = []) {
+  const target = byId("dailyActionList");
+  if (!target) return;
+  if (!actions.length) {
+    target.innerHTML = `<div class="empty-state">No urgent actions yet. Save leads, schedule follow-ups, or run a new search to build your next action list.</div>`;
+    return;
+  }
+  target.innerHTML = actions.map((action) => `
+    <article class="audit-item">
+      <div><strong>${escapeHtml(action.title)}</strong><br><span>${escapeHtml(action.leadName || "Saved lead")} — ${escapeHtml(action.reason)}</span></div>
+      <a class="btn btn-secondary" href="/lead-details.html?id=${encodeURIComponent(action.leadId)}">${escapeHtml(action.actionLabel || "Open lead")}</a>
+    </article>
+  `).join("");
+}
+
 function renderMetrics(metrics) {
   const target = byId("dashboardMetrics");
   if (!target) return;
@@ -104,11 +123,26 @@ function mergeVaultIntoMetrics(metrics) {
   };
 }
 
+function showSubscribedBanner() {
+  const params = new URLSearchParams(window.location.search);
+  if (!params.has("subscribed")) return;
+  const user = getCurrentUser();
+  const planName = String(user?.planName || user?.subscription || "your plan").replace(/[<>&]/g, "");
+  const banner = document.createElement("section");
+  banner.className = "notice";
+  banner.style.cssText = "margin-bottom:14px;border-color:#16a34a;background:#f0fdf4;color:#166534;";
+  banner.innerHTML = `🎉 <strong>Subscribed successfully</strong> — ${planName} is active. Every feature in your plan is unlocked.`;
+  const workspace = document.querySelector(".workspace");
+  if (workspace) workspace.prepend(banner);
+  try { history.replaceState(null, "", "/dashboard.html"); } catch {}
+}
+
 async function initDashboard() {
   const target = byId("dashboardMetrics");
   if (!target) return;
   if (!requireAuth()) return;
   renderAccessState();
+  showSubscribedBanner();
   target.innerHTML = `<div class="skeleton">Loading revenue metrics...</div>`;
 
   try {
@@ -117,6 +151,7 @@ async function initDashboard() {
     const metrics = mergeVaultIntoMetrics(serverMetrics);
     renderMetrics(metrics);
     renderChart(metrics || { monthlyGrowth: [] });
+    renderDailyActions(serverMetrics.dailyActions || []);
     if (metrics.savedLeads > serverMetrics.savedLeads) {
       const note = document.createElement("p");
       note.className = "notice";
@@ -125,7 +160,8 @@ async function initDashboard() {
     }
   } catch (error) {
     const msg = String(error?.message || "Metrics unavailable");
-    target.innerHTML = `<div class="error-state">${msg}. Check Vercel env vars (Firebase/NVIDIA/JWT) and redeploy.</div>`;
+    target.innerHTML = `<div class="error-state">${msg}. If this keeps happening, reload the page or contact support.</div>`;
+    renderDailyActions([]);
   }
 }
 

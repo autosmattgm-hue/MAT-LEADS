@@ -95,7 +95,7 @@ export class WebsiteService {
       }
       aiError = `${reason} Used premium template so you still have a working site.`;
     }
-    const record = { id, shareToken, ownerId: user?.uid || "anon", leadId: lead?.id || "", leadName: lead?.name || options.businessName || "Business", businessType: lead?.businessType || lead?.category || "", address: lead?.address || "", phone: lead?.phone || "", email: lead?.email || "", businessName: options.businessName || lead?.name || "Business", style: options.style || "modern", html, provider, model, pageCount: pageCount, aiError, revisions: 1, history: [{ at: createdAt, instruction: "Initial AI website build" }], createdAt, updatedAt: createdAt };
+    const record = { id, shareToken, ownerId: user?.uid || "anon", leadId: lead?.leadId || lead?.id || "", leadName: lead?.name || options.businessName || "Business", businessType: lead?.businessType || lead?.category || "", address: lead?.address || "", phone: lead?.phone || "", email: lead?.email || "", businessName: options.businessName || lead?.name || "Business", style: options.style || "modern", html, provider, model, pageCount: pageCount, aiError, revisions: 1, history: [{ at: createdAt, instruction: "Initial AI website build" }], createdAt, updatedAt: createdAt };
     try { await this.websites.upsert(id, record); } catch {}
     memoryWebsites.set(id, record);
     memoryByToken.set(shareToken, id);
@@ -106,6 +106,9 @@ export class WebsiteService {
     try { record = await this.websites.findById(id); } catch {}
     record = record || memoryWebsites.get(id);
     if (!record) { const err = new Error("Website not found. Generate it first."); err.status = 404; err.code = "WEBSITE_NOT_FOUND"; throw err; }
+    if (String(record.ownerId || "") !== String(user?.uid || "") && String(user?.role || "").toLowerCase() !== "admin") {
+      const err = new Error("You can only refine your own websites."); err.status = 403; err.code = "FORBIDDEN"; throw err;
+    }
     let result = null; try { result = await this.pollinations.refineWebsite(record.html, instruction, record); } catch (e) { if (this.nvidia.configured()) { result = await this.nvidia.refineWebsite(record.html, instruction, record); } else { throw e; } }
     if (!result.html || result.html.length <= 500) {
       throw new AppError("AI returned an incomplete website update. Your current site was not changed; please try again.", 503, "AI_REFINER_EMPTY");
@@ -120,10 +123,35 @@ export class WebsiteService {
     try { const f = await this.websites.findById(id); if (f) return f; } catch {}
     return memoryWebsites.get(id) || null;
   }
+  // Every site the signed-in account owns, newest first — powers the Studio's
+  // "Your websites" list. Admins see their own sites only, not everyone's.
+  async listForUser(user) {
+    const uid = String(user?.uid || "");
+    let rows = [];
+    try {
+      rows = await this.websites.list({ limit: 200, where: [{ field: "ownerId", op: "==", value: uid }] });
+    } catch {
+      rows = [...memoryWebsites.values()].filter((w) => String(w.ownerId || "") === uid);
+    }
+    const merged = [...rows, ...[...memoryWebsites.values()].filter((w) => String(w.ownerId || "") === uid && !rows.find((r) => r.id === w.id))];
+    return merged
+      .map((w) => ({
+        id: w.id,
+        businessName: w.businessName || w.leadName || "Website",
+        pageCount: Number(w.pageCount || 1),
+        revisions: Number(w.revisions || 1),
+        provider: w.provider || "",
+        shareToken: w.shareToken || "",
+        shareUrl: `/s/${w.shareToken}`,
+        createdAt: w.createdAt || "",
+        updatedAt: w.updatedAt || w.createdAt || ""
+      }))
+      .sort((a, b) => String(b.updatedAt || b.createdAt).localeCompare(String(a.updatedAt || a.createdAt)));
+  }
   async saveHtml(id, html, user) {
     let record = await this.getById(id);
     if (!record) { const e = new Error("Website not found."); e.status = 404; e.code = "WEBSITE_NOT_FOUND"; throw e; }
-    if (String(record.ownerId || "") !== String(user?.uid || "") && String(user?.role || "") !== "admin") {
+    if (String(record.ownerId || "") !== String(user?.uid || "") && String(user?.role || "").toLowerCase() !== "admin") {
       const e = new Error("You can only edit your own websites."); e.status = 403; e.code = "FORBIDDEN"; throw e;
     }
     const updated = { ...record, html, updatedAt: new Date().toISOString(), history: [...(record.history || []), { at: new Date().toISOString(), instruction: "Manual visual edit (no code)" }] };

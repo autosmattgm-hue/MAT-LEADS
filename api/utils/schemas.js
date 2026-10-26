@@ -110,7 +110,14 @@ export const authSchemas = {
   register: schema((input) => ({
     name: stringField(input, "name", { required: true, min: 2, max: 120 }),
     email: stringField(input, "email", { required: true, email: true, max: 255 }).toLowerCase(),
-    password: stringField(input, "password", { required: true, min: 8, max: 128 })
+    password: stringField(input, "password", { required: true, min: 8, max: 128 }),
+    ref: stringField(input, "ref", { max: 40, truncate: true })
+  })),
+  verifyEmail: schema((input) => ({
+    token: stringField(input, "token", { required: true, min: 10, max: 200 })
+  })),
+  resendVerification: schema((input) => ({
+    email: stringField(input, "email", { required: true, email: true, max: 255 }).toLowerCase()
   })),
   login: schema((input) => ({
     email: stringField(input, "email", { required: true, email: true, max: 255 }).toLowerCase(),

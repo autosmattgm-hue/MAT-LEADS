@@ -1,10 +1,10 @@
 import crypto from "node:crypto";
 import { promisify } from "node:util";
 import { env } from "../config/env.js";
-import { isFirebaseAuthConfigured } from "../config/firebase.js";
 import { getPlan } from "../config/plans.js";
 import { FirestoreRepository } from "../repositories/firestoreRepository.js";
 import { AppError } from "../utils/errors.js";
+import { sendVerificationMail } from "../utils/emailService.js";
 import { applyAdminEntitlements } from "../utils/entitlements.js";
 import { signAccessToken, signRefreshToken, verifyRefreshToken } from "../middleware/auth.js";
 
@@ -151,6 +151,7 @@ export class AuthService {
 
   async register(input = {}) {
     const { name, email, password } = input;
+    const ref = String(input.ref || "").trim().slice(0, 40);
     if (!name || !email || !password) {
       throw new AppError("Name, email and password are required.", 422, "VALIDATION_ERROR");
     }
@@ -158,107 +159,176 @@ export class AuthService {
     if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(normalizedEmail)) {
       throw new AppError("Enter a valid email address.", 422, "VALIDATION_ERROR");
     }
-    let user;
 
     const passwordHash = await hashPassword(password);
-    const createLocalAccount = async () => {
-      let existing;
-      try {
-        existing = await this.users.list({
-          where: [{ field: "email", op: "==", value: normalizedEmail }],
-          limit: 1
-        });
-      } catch {
-        throw new AppError("Signup service is temporarily unavailable. Please try again.", 503, "AUTH_STORE_UNAVAILABLE");
-      }
-      if (existing.length) throw new AppError("An account with this email already exists. Try logging in instead.", 409, "ACCOUNT_EXISTS");
-      try {
-        return await this.users.create({ name, email: normalizedEmail, passwordHash, role: "user", tokenVersion: 1 });
-      } catch {
-        throw new AppError("Signup service is temporarily unavailable. Please try again.", 503, "AUTH_STORE_UNAVAILABLE");
-      }
-    };
-
-    if (isFirebaseAuthConfigured()) {
-      let response;
-      try {
-        response = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${env.firebase.webApiKey}`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            email: normalizedEmail,
-            password,
-            returnSecureToken: true
-          })
-        });
-      } catch {
-        throw new AppError("Signup service is temporarily unavailable. Please try again.", 503, "AUTH_UPSTREAM_UNAVAILABLE");
-      }
-      if (response.ok) {
-        const payload = await response.json();
-        user = {
-          uid: payload.localId,
-          name,
-          email: normalizedEmail,
-          passwordHash,
-          role: "user",
-          idToken: payload.idToken,
-          firebaseRefreshToken: payload.refreshToken
-        };
-      } else {
-        const failure = await response.json().catch(() => ({}));
-        const firebaseCode = String(failure?.error?.message || "");
-        if (firebaseCode.includes("EMAIL_EXISTS")) {
-          throw new AppError("An account with this email already exists. Try logging in instead.", 409, "ACCOUNT_EXISTS");
-        }
-        const firebaseNotUsable = response.status === 400 && /OPERATION_NOT_ALLOWED|API_KEY_INVALID|CONFIGURATION_NOT_FOUND|INVALID_EMAIL/.test(firebaseCode);
-        if (!firebaseNotUsable) {
-          throw new AppError("Unable to create Firebase account.", 400, "FIREBASE_SIGNUP_FAILED");
-        }
-        // Firebase email/password isn't usable for this project yet — create
-        // the account in the backend store so signup + login keep working.
-        user = await createLocalAccount();
-      }
-    } else {
-      user = await createLocalAccount();
-    }
-
+    let existing;
     try {
-      await this.users.upsert(user.uid || user.id, {
-        uid: user.uid || user.id,
+      existing = await this.users.list({
+        where: [{ field: "email", op: "==", value: normalizedEmail }],
+        limit: 1
+      });
+    } catch {
+      throw new AppError("Signup service is temporarily unavailable. Please try again.", 503, "AUTH_STORE_UNAVAILABLE");
+    }
+    if (existing.length) throw new AppError("An account with this email already exists. Try logging in instead.", 409, "ACCOUNT_EXISTS");
+
+    // Accounts live in our own store (single source of truth) and stay locked
+    // until the owner confirms the email address from a mailed link.
+    const verificationRequired = env.email.verificationRequired;
+    const uid = crypto.randomUUID();
+    let user;
+    try {
+      user = await this.users.create({
+        uid,
+        id: uid,
         name,
         email: normalizedEmail,
-        passwordHash: user.passwordHash || passwordHash,
-        role: user.role,
+        passwordHash,
+        role: "user",
+        tokenVersion: 1,
         ...planFields("trial"),
         billingStatus: "trial",
         trialSearchesUsed: 0,
         entitlements: trialEntitlements(0),
-        emailVerified: false,
-        tokenVersion: user.tokenVersion || 1
+        emailVerified: !verificationRequired,
+        verificationRequired,
+        ...(ref ? { pendingReferralCode: ref } : {})
       });
     } catch {
-      // Profile persistence is best-effort — the account already exists, so a
-      // broken user store must not turn a successful signup into a 500.
+      throw new AppError("Signup service is temporarily unavailable. Please try again.", 503, "AUTH_STORE_UNAVAILABLE");
     }
-
-    const sessionUser = applyAdminEntitlements({
+    const baseUser = {
       uid: user.uid || user.id,
       name,
       email: normalizedEmail,
-      role: user.role,
-      ...planFields("trial"),
-      billingStatus: "trial",
-      trialSearchesUsed: 0,
-      entitlements: trialEntitlements(0)
-    });
+      role: user.role || "user"
+    };
+
+    if (!verificationRequired) {
+      const sessionUser = applyAdminEntitlements({
+        ...baseUser,
+        ...planFields("trial"),
+        billingStatus: "trial",
+        trialSearchesUsed: 0,
+        entitlements: trialEntitlements(0),
+        emailVerified: true
+      });
+      if (ref) await this.awardReferralSignup(sessionUser, ref);
+      return {
+        user: sessionUser,
+        accessToken: signAccessToken(sessionUser),
+        refreshToken: signRefreshToken({ uid: sessionUser.uid, email: normalizedEmail, role: sessionUser.role, tokenVersion: 1 })
+      };
+    }
+
+    const verification = await this.issueVerification(user, normalizedEmail, name);
 
     return {
-      user: sessionUser,
-      idToken: user.idToken,
-      firebaseRefreshToken: user.firebaseRefreshToken,
-      accessToken: signAccessToken(sessionUser),
-      refreshToken: signRefreshToken({ uid: user.uid || user.id, email: normalizedEmail, role: user.role || "user", tokenVersion: user.tokenVersion || 1 })
+      user: publicUser({ ...baseUser, emailVerified: false }),
+      verificationRequired: true,
+      verificationSent: verification.delivered,
+      message: verification.delivered
+        ? "One last step — open the verification link we emailed you to activate your account."
+        : "Your account is ready. Confirm your email address to activate it.",
+      ...(verification.delivered ? {} : { verificationUrl: verification.url, verificationToken: verification.token })
+    };
+  }
+
+  async issueVerification(user, email, name = "") {
+    const uid = user.uid || user.id;
+    const token = crypto.randomBytes(24).toString("hex");
+    try {
+      await this.users.upsert(uid, {
+        emailVerified: false,
+        verificationToken: token,
+        verificationTokenExpiresAt: Date.now() + 24 * 60 * 60 * 1000,
+        verificationSentAt: new Date().toISOString()
+      });
+    } catch {
+      // Best-effort persistence — verifyEmail matches on the token we hold.
+    }
+    const sent = await sendVerificationMail({ to: email, name, token });
+    if (!sent.delivered) {
+      console.warn(`[auth] verification mail not delivered for ${email} (${sent.error || "no mail provider"}). Link: ${sent.url}`);
+    }
+    return { ...sent, token };
+  }
+
+  assertEmailVerified(user = {}) {
+    if (!user?.verificationRequired || user?.emailVerified) return;
+    throw new AppError(
+      "Your email address hasn't been verified yet. Open the verification link we sent you, then sign in again.",
+      403,
+      "ACCOUNT_NOT_VERIFIED",
+      { email: user.email || "" }
+    );
+  }
+
+  async awardReferralSignup(user, refCode) {
+    if (!refCode) return;
+    try {
+      const { EarnService } = await import("./earnService.js");
+      await new EarnService().trackSignup(user, String(refCode).slice(0, 40));
+    } catch (error) {
+      console.warn(`[auth] referral award skipped: ${error?.message || error}`);
+    }
+  }
+
+  async verifyEmail(rawToken) {
+    const token = String(rawToken || "").trim();
+    if (!token) throw new AppError("Verification link is missing or invalid.", 422, "VALIDATION_ERROR");
+    let match = null;
+    try {
+      const found = await this.users.list({ where: [{ field: "verificationToken", op: "==", value: token }], limit: 1 });
+      match = found[0] || null;
+    } catch {
+      throw new AppError("Verification service is temporarily unavailable. Please try again.", 503, "AUTH_STORE_UNAVAILABLE");
+    }
+    if (!match) {
+      throw new AppError("This verification link is invalid or has already been used. Request a fresh link below.", 404, "VERIFICATION_INVALID");
+    }
+    if (Number(match.verificationTokenExpiresAt || 0) < Date.now()) {
+      throw new AppError("This verification link has expired. Request a fresh one below.", 410, "VERIFICATION_EXPIRED");
+    }
+    const uid = match.uid || match.id;
+    try {
+      await this.users.upsert(uid, {
+        emailVerified: true,
+        emailVerifiedAt: new Date().toISOString(),
+        verificationToken: "",
+        verificationTokenExpiresAt: 0
+      });
+    } catch {
+      throw new AppError("Verification service is temporarily unavailable. Please try again.", 503, "AUTH_STORE_UNAVAILABLE");
+    }
+    const refCode = String(match.pendingReferralCode || "").trim();
+    if (refCode) {
+      await this.awardReferralSignup({ uid, email: match.email || "", name: match.name || "" }, refCode);
+      try { await this.users.upsert(uid, { pendingReferralCode: "" }); } catch {}
+    }
+    return { verified: true, email: match.email || "" };
+  }
+
+  async resendVerification(rawEmail) {
+    const email = String(rawEmail || "").toLowerCase().trim();
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+      throw new AppError("Enter a valid email address.", 422, "VALIDATION_ERROR");
+    }
+    // Neutral response — never reveals whether the address is registered.
+    const neutral = { sent: true, message: "If that address is waiting for verification, a fresh link is on its way." };
+    let found = null;
+    try {
+      const rows = await this.users.list({ where: [{ field: "email", op: "==", value: email }], limit: 1 });
+      found = rows[0] || null;
+    } catch {
+      throw new AppError("Verification service is temporarily unavailable. Please try again.", 503, "AUTH_STORE_UNAVAILABLE");
+    }
+    if (!found || found.emailVerified) return neutral;
+    const verification = await this.issueVerification(found, email, found.name || "");
+    return {
+      ...neutral,
+      verificationSent: verification.delivered,
+      ...(verification.delivered ? {} : { verificationUrl: verification.url, verificationToken: verification.token })
     };
   }
 
@@ -289,6 +359,7 @@ export class AuthService {
       throw new AppError("Login service is temporarily unavailable. Please try again.", 503, "AUTH_STORE_UNAVAILABLE");
     }
     if (localUser?.passwordHash && await verifyPassword(password, localUser.passwordHash)) {
+      this.assertEmailVerified(localUser);
       const sessionUser = applyAdminEntitlements({
         uid: localUser.uid || localUser.id,
         name: localUser.name,
@@ -334,8 +405,11 @@ export class AuthService {
         storedUser = null;
       }
       if (!storedUser) storedUser = localUser;
+      this.assertEmailVerified(storedUser);
       const user = applyAdminEntitlements({
-        uid: payload.localId,
+        // Keep the token subject aligned with the durable Firebase account
+        // record so trial usage survives every supported sign-in method.
+        uid: storedUser?.uid || storedUser?.id || `firebase:${payload.localId}`,
         name: storedUser?.name || "",
         email: normalizedEmail,
         role: storedUser?.role || "user",
@@ -366,7 +440,7 @@ export class AuthService {
     const user = users[0];
     if (!user) {
       if (process.env.VERCEL && !this.users.client()) {
-        throw new AppError("No account found on this server instance. On Vercel without Firebase, registered accounts are ephemeral — please sign up again, or add Firebase vars for persistent users.", 401, "INVALID_CREDENTIALS");
+        throw new AppError("We couldn't find an account for that email on this server. Please create a new account, or check the address and try again.", 401, "INVALID_CREDENTIALS");
       }
       throw new AppError("Invalid email or password.", 401, "INVALID_CREDENTIALS");
     }
@@ -374,6 +448,7 @@ export class AuthService {
 
     const valid = await verifyPassword(password, user.passwordHash);
     if (!valid) throw new AppError("Invalid email or password.", 401, "INVALID_CREDENTIALS");
+    this.assertEmailVerified(user);
 
     const entitledUser = applyAdminEntitlements({
       uid: user.uid || user.id,

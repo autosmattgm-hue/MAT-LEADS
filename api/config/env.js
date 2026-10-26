@@ -87,7 +87,15 @@ export const env = {
   },
   pollinations: {
     apiKey: process.env.POLLINATIONS_API_KEY || "",
-    baseUrl: process.env.POLLINATIONS_BASE_URL || "https://gen.pollinations.ai"
+    baseUrl: process.env.POLLINATIONS_BASE_URL || "https://gen.pollinations.ai",
+    // Classic text endpoint (text.pollinations.ai/openai). The Gen endpoint is
+    // allow-list gated: a key whose permissions.models is empty is refused for
+    // EVERY model, so Classic is the only path that can actually answer.
+    classicBaseUrl: process.env.POLLINATIONS_CLASSIC_BASE_URL || "https://text.pollinations.ai",
+    classicModel: process.env.POLLINATIONS_CLASSIC_MODEL || "openai-fast",
+    // Classic free tier: 1 reply per 30s per IP (HTTP 402 FREE_LIMIT).
+    classicMinIntervalMs: number(process.env.POLLINATIONS_CLASSIC_MIN_INTERVAL_MS, 31000),
+    classicTimeoutMs: number(process.env.POLLINATIONS_CLASSIC_TIMEOUT_MS, 150000)
   },
   stripe: {
     secretKey: process.env.STRIPE_SECRET_KEY || "",
@@ -103,6 +111,16 @@ export const env = {
       growthPlus: process.env.PAYPAL_GROWTH_PLUS_PAYMENT_LINK || "https://www.paypal.com/ncp/payment/YVE74UL365V8W",
       agency: process.env.PAYPAL_AGENCY_PAYMENT_LINK || "https://www.paypal.com/ncp/payment/SY3RYMGDZ9A7E"
     }
+  },
+  email: {
+    // Verification mail is delivered through the Resend or SendGrid HTTPS APIs
+    // (no npm packages). Without a key the flow still runs: the verification
+    // link is returned to the client instead of being mailed.
+    resendApiKey: process.env.RESEND_API_KEY || "",
+    sendgridApiKey: process.env.SENDGRID_API_KEY || "",
+    from: process.env.EMAIL_FROM || "",
+    // EMAIL_VERIFICATION=off lets signups skip the verify step (tests/dev).
+    verificationRequired: String(process.env.EMAIL_VERIFICATION || "required").toLowerCase() !== "off"
   },
   rateLimit: {
     windowMs: number(process.env.RATE_LIMIT_WINDOW_MS, 60000),

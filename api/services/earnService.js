@@ -6,6 +6,10 @@ import { AppError } from "../utils/errors.js";
 const memReferrals = new Map();
 const memInvoices = new Map();
 const memPayouts = [];
+// code slug -> uid, minted whenever a user opens the Earn page (fast referrer lookup).
+const referralCodeRegistry = new Map();
+
+const REFERRAL_SEARCH_CREDITS = 2;
 
 function codeFor(emailOrUid) {
   return String(emailOrUid || "ref").toLowerCase().replace(/[^a-z0-9]+/g, "").slice(0, 10).padEnd(4, "x");
@@ -20,6 +24,7 @@ export class EarnService {
   }
   referralCodeFor(user) {
     const base = codeFor(user?.uid || user?.email);
+    try { if (user?.uid || user?.id) referralCodeRegistry.set(base, user.uid || user.id); } catch {}
     return `MAT-${base.toUpperCase()}-30`;
   }
   offers() {
@@ -41,10 +46,76 @@ export class EarnService {
   }
   async trackSignup(referredUser, refCode) {
     if (!refCode || !referredUser?.uid) return null;
-    const record = { id: randomUUID(), referrerUid: "", referrerCode: String(refCode).toUpperCase(), referredUid: referredUser.uid, referredEmail: referredUser.email || "", plan: "trial", amountCents: 0, commissionCents: 0, status: "signup", createdAt: new Date().toISOString() };
+    const code = String(refCode).toUpperCase();
+
+    // Idempotent — the same referred account never awards twice (register-time
+    // pending award, verify-time award and legacy track-signup can all fire).
+    let existing = null;
+    try {
+      const rows = await this.referrals.list({ limit: 200, where: [{ field: "referredUid", op: "==", value: referredUser.uid }] });
+      existing = rows.find((row) => row.referrerCode === code) || null;
+    } catch {
+      existing = [...memReferrals.values()].find((row) => row.referredUid === referredUser.uid && row.referrerCode === code) || null;
+    }
+    if (existing) return existing;
+
+    const referrer = await this.resolveReferrer(code);
+    const record = {
+      id: randomUUID(),
+      referrerUid: referrer?.uid || referrer?.id || "",
+      referrerCode: code,
+      referredUid: referredUser.uid,
+      referredEmail: referredUser.email || "",
+      plan: "trial",
+      amountCents: 0,
+      commissionCents: 0,
+      status: "signup",
+      searchCreditsAwarded: referrer ? REFERRAL_SEARCH_CREDITS : 0,
+      createdAt: new Date().toISOString()
+    };
     try { await this.referrals.create(record); } catch {}
     memReferrals.set(record.id, record);
+
+    if (referrer) await this.awardSearchCredits(referrer, REFERRAL_SEARCH_CREDITS);
     return record;
+  }
+
+  async resolveReferrer(refCode) {
+    const slug = String(refCode || "").toLowerCase().replace(/^mat-/, "").replace(/-\d+$/, "");
+    if (!slug) return null;
+
+    // Fast path: code minted when the referrer opened the Earn page.
+    const mintedUid = referralCodeRegistry.get(slug);
+    if (mintedUid) {
+      try {
+        const found = await this.users.findById(mintedUid);
+        if (found) return found;
+      } catch {}
+    }
+
+    // Derive from stored accounts — codes are codeFor(uid) or codeFor(email).
+    try {
+      const users = await this.users.list({ limit: 1000 });
+      const match = users.find((user) =>
+        codeFor(user.uid || user.id).toLowerCase() === slug || codeFor(user.email).toLowerCase() === slug
+      );
+      if (match) return match;
+    } catch {}
+    return null;
+  }
+
+  async awardSearchCredits(referrer, credits) {
+    const uid = referrer?.uid || referrer?.id;
+    if (!uid || !credits) return;
+    try {
+      const current = Math.max(0, Number(referrer.bonusSearchCredits || 0));
+      await this.users.upsert(uid, {
+        bonusSearchCredits: current + credits,
+        lastSearchCreditAwardAt: new Date().toISOString()
+      });
+    } catch (error) {
+      console.warn(`[earn] search credit award failed for ${uid}: ${error?.message || error}`);
+    }
   }
   async rewardForPaidUser(paidUser) {
     let rows = [];
