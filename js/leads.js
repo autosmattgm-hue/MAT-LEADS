@@ -1483,9 +1483,15 @@ function renderLead(lead) {
   const mapsUrl = safeExternalUrl(lead.googleMapsLink);
   const website = websiteUrl ? `<a href="${websiteUrl}" target="_blank" rel="noreferrer">${escapeHtml(websiteUrl)}</a>` : "Website missing";
   const market = lead.marketName ? `<span class="tag">${escapeHtml(lead.marketName)}</span>` : "";
-  const email = lead.email ? `<span class="tag">${escapeHtml(lead.email)}</span>` : "";
+  // Contact fields can come from OpenStreetMap, Google Places, or the verified
+  // public website profile. Resolve all sources before deciding what to show.
+  const phone = primaryPhone(lead);
+  const publicEmail = lead.email || lead.details?.contact?.email || lead.audit?.publicProfile?.emails?.[0] || "";
+  const email = publicEmail ? `<span class="tag success">Email: ${escapeHtml(publicEmail)}</span>` : "";
+  const phoneTag = phone ? `<span class="tag success">Phone: ${escapeHtml(phone)}</span>` : `<span class="tag">Phone unavailable</span>`;
   const hours = lead.openingHours ? `<span class="tag">Hours found</span>` : "";
   const source = lead.source ? `<span class="tag">${escapeHtml(lead.source.replaceAll("_", " "))}</span>` : "";
+  const storedResult = lead.searchResultOrigin === "previously_discovered" ? `<span class="tag">Previously discovered</span>` : "";
   const socialLinks = socialLinksFromLead(lead);
   const socialUrl = firstSocialUrl(lead);
   const whatsapp = whatsappActionFromLead(lead);
@@ -1493,7 +1499,7 @@ function renderLead(lead) {
     ? `<span class="tag success">Social found</span>`
     : "";
   const whatsappFound = whatsapp ? `<span class="tag success">${escapeHtml(whatsapp.status)}</span>` : "";
-  const contactReady = (lead.phone || lead.email || lead.social || Object.keys(socialLinks).length) ? `<span class="tag success">Contact ready</span>` : "";
+  const contactReady = (phone || publicEmail || lead.social || Object.keys(socialLinks).length) ? `<span class="tag success">Contact ready</span>` : "";
   const websiteGap = !lead.websiteUrl ? `<span class="tag warning">Needs website</span>` : "";
   return `
     <article class="lead-card">
@@ -1512,7 +1518,7 @@ function renderLead(lead) {
       <div class="lead-meta">
         <span class="tag">${escapeHtml(lead.rating || "No")} rating</span>
         <span class="tag">${escapeHtml(lead.reviewsCount || 0)} reviews</span>
-        <span class="tag">${escapeHtml(lead.phone || "No phone")}</span>
+        ${phoneTag}
         ${market}
         ${email}
         ${hours}
@@ -1520,6 +1526,7 @@ function renderLead(lead) {
         ${whatsappFound}
         ${contactReady}
         ${websiteGap}
+        ${storedResult}
         ${source}
       </div>
       <p>${website}</p>
@@ -1737,7 +1744,9 @@ function resetLeadResultPage() {
 }
 
 function selectedResultPageSize() {
-  return normalizedInteger(byId("limit")?.value, 20, 1, 200);
+  // Requested results and visible-card pagination are deliberately separate:
+  // requesting 100 should still give the user useful Next/Previous pages.
+  return normalizedInteger(byId("leadPageSize")?.value, 20, 5, 100);
 }
 
 function totalLeadResultPages() {
@@ -1780,11 +1789,20 @@ function renderLeadPagination() {
   const start = (currentResultPage - 1) * pageSize + 1;
   const end = Math.min(currentResultPage * pageSize, currentFilteredLeadResults.length);
   const needsPaging = totalPages > 1;
+  const firstPage = Math.max(1, Math.min(currentResultPage - 2, totalPages - 4));
+  const lastPage = Math.min(totalPages, firstPage + 4);
+  const pageButtons = Array.from({ length: lastPage - firstPage + 1 }, (_, offset) => {
+    const page = firstPage + offset;
+    return `<button class="btn ${page === currentResultPage ? "btn-primary" : "btn-secondary"}" type="button" data-lead-page="${page}" ${page === currentResultPage ? 'aria-current="page"' : ""} aria-label="Go to lead results page ${page}">${page}</button>`;
+  }).join("");
   target.innerHTML = `
     <div class="pagination-controls">
+      <button class="btn btn-secondary" type="button" data-lead-page="first" ${currentResultPage <= 1 ? "disabled" : ""}>First</button>
       <button class="btn btn-secondary" type="button" data-lead-page="prev" ${currentResultPage <= 1 ? "disabled" : ""}>Previous</button>
-      <span class="pagination-status">Showing ${start}-${end} of ${currentFilteredLeadResults.length} leads</span>
+      <span class="pagination-status" aria-live="polite">Showing ${start}-${end} of ${currentFilteredLeadResults.length} leads</span>
+      <span class="pagination-pages" aria-label="Lead result pages">${pageButtons}</span>
       <button class="btn btn-primary" type="button" data-lead-page="next" ${currentResultPage >= totalPages ? "disabled" : ""}>Next</button>
+      <button class="btn btn-secondary" type="button" data-lead-page="last" ${currentResultPage >= totalPages ? "disabled" : ""}>Last</button>
       <button class="btn btn-secondary" type="button" data-refresh-leads>Refresh Leads</button>
     </div>
     ${needsPaging ? "" : `<div class="notice pagination-note">All matching leads are on this page.</div>`}
@@ -1802,7 +1820,14 @@ function renderFilteredLeadResults() {
   currentVisibleLeadResults = currentFilteredLeadResults.slice(pageStart, pageStart + pageSize);
 
   if (!currentLeadResults.length) {
-    target.innerHTML = `<div class="empty-state">${hasLeadSearchRun ? "No leads found for this search yet. Try Refresh Leads, choose a different business type, or paste a more exact Google Maps city link." : "Start a search to discover leads."}</div>`;
+    const requiresContact = Boolean(byId("requireContact")?.checked) || byId("leadQuality")?.value === "contact_ready";
+    const requiresMissingWebsite = Boolean(byId("missingWebsiteOnly")?.checked) || byId("leadQuality")?.value === "needs_website";
+    const emptyMessage = requiresContact
+      ? "No businesses with a verified public phone, email, or social contact were found in this area. Try a larger radius, another city, or refresh the search."
+      : requiresMissingWebsite
+        ? "No businesses with an unavailable website URL matched this area. Try a larger radius, another city, or refresh the search."
+        : "No leads found for this search yet. Try Refresh Leads, choose a different business type, or paste a more exact Google Maps city link.";
+    target.innerHTML = `<div class="empty-state">${hasLeadSearchRun ? emptyMessage : "Start a search to discover leads."}</div>`;
     renderLeadPagination();
     updateLeadCommandSummary();
     return;
@@ -1890,7 +1915,26 @@ function initLeadSearch() {
         const relaxedText = result.searchStats?.filtersRelaxed ? " Strict filters had no matches, so top real candidates were shown." : "";
         const trialText = trialSearchText(result.trial);
         const pageText = (result.leads || []).length > selectedResultPageSize() ? " Use Next and Previous below the cards to browse all returned leads." : "";
-        note.textContent = `Real ${provider} results loaded${locationText}.${countryText}${stats}${cacheText}${refreshText}${relaxedText}${trialText}${pageText} Query: ${result.query || "businesses"}.`;
+        const strictCoverageText = result.searchStats?.strictContactFilter && result.searchStats?.strictMissingWebsiteFilter
+          ? " Both strict filters were verified against public map fields; only businesses with a public phone, email, or social tag and no listed website URL are included."
+          : "";
+        const limitedCoverageText = result.searchStats?.strictContactFilter && result.searchStats?.qualifiedCount < result.searchStats?.requestedLimit
+          ? " Fewer results means the selected market currently has fewer public map records meeting every strict requirement; use Refresh Leads or broaden the location to scan other real records."
+          : "";
+        const sourceCoverageText = result.searchStats?.contactCoverageLimited
+          ? " The fallback provider has limited public contact and website coverage; configure Google Places for more complete licensed business profiles."
+          : "";
+        const coverage = result.searchStats?.qualityCoverage;
+        const excludedText = result.searchStats?.searchExhausted && coverage
+          ? ` Of ${coverage.scanned} real records scanned, ${coverage.missingPublicContact} lacked a public contact method, ${coverage.websiteListed} already listed a website, and ${coverage.belowMinimumScore} were below the chosen score.`
+          : "";
+        const planLimitText = result.searchStats?.planResultLimited
+          ? ` Your current plan allows up to ${result.searchStats.appliedResultLimit} leads per search; upgrade to request 20, 100, or more.`
+          : "";
+        const storedResultText = result.searchStats?.usedStoredSearchResults
+          ? ` ${result.searchStats.storedResultCount} matching result(s) came from your authorized previously discovered public-map records while fresh provider data was limited.`
+          : "";
+        note.textContent = `Real ${provider} results loaded${locationText}.${countryText}${stats}${strictCoverageText}${limitedCoverageText}${excludedText}${sourceCoverageText}${storedResultText}${planLimitText}${cacheText}${refreshText}${relaxedText}${trialText}${pageText} Query: ${result.query || "businesses"}.`;
       }
     } catch (error) {
       const raw = String(error?.message || "Search failed");
@@ -1919,8 +1963,18 @@ function initLeadSearch() {
 
   document.addEventListener("click", async (event) => {
     const refreshButton = event.target.closest("[data-refresh-leads]");
-    if (!refreshButton) return;
-    if (!form.contains(refreshButton) && !byId("leadPagination")?.contains(refreshButton)) return;
+    if (refreshButton) {
+      if (!form.contains(refreshButton) && !byId("leadPagination")?.contains(refreshButton)) return;
+      await runLeadSearch({ refresh: true });
+      return;
+    }
+    const expandButton = event.target.closest("[data-expand-search]");
+    if (!expandButton || !form.contains(expandButton)) return;
+    const radiusField = byId("radiusMeters");
+    const currentRadius = normalizedInteger(radiusField?.value, 15000, 500, 50000);
+    const expandedRadius = Math.min(50000, Math.max(currentRadius + 5000, currentRadius * 2));
+    if (radiusField) radiusField.value = String(expandedRadius);
+    updateMapPreview();
     await runLeadSearch({ refresh: true });
   });
 
@@ -1944,7 +1998,7 @@ function initMapLinkPreview() {
 }
 
 function initLeadCommandCenter() {
-  ["visibleLeadSearch", "visibleLeadFilter", "visibleLeadMinScore"].forEach((id) => {
+  ["visibleLeadSearch", "visibleLeadFilter", "visibleLeadMinScore", "leadPageSize"].forEach((id) => {
     const field = byId(id);
     field?.addEventListener("input", () => {
       resetLeadResultPage();
@@ -1968,7 +2022,12 @@ function initLeadCommandCenter() {
 
     if (pageButton) {
       const totalPages = totalLeadResultPages();
-      currentResultPage += pageButton.dataset.leadPage === "next" ? 1 : -1;
+      const requestedPage = pageButton.dataset.leadPage;
+      if (requestedPage === "first") currentResultPage = 1;
+      else if (requestedPage === "last") currentResultPage = totalPages;
+      else if (requestedPage === "next") currentResultPage += 1;
+      else if (requestedPage === "prev") currentResultPage -= 1;
+      else currentResultPage = Number(requestedPage) || currentResultPage;
       currentResultPage = Math.min(Math.max(currentResultPage, 1), totalPages);
       renderFilteredLeadResults();
       byId("leadResults")?.scrollIntoView({ behavior: "smooth", block: "start" });

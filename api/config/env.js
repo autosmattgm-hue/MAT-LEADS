@@ -87,7 +87,15 @@ export const env = {
   },
   pollinations: {
     apiKey: process.env.POLLINATIONS_API_KEY || "",
-    baseUrl: process.env.POLLINATIONS_BASE_URL || "https://gen.pollinations.ai"
+    baseUrl: process.env.POLLINATIONS_BASE_URL || "https://gen.pollinations.ai",
+    // Classic text endpoint (text.pollinations.ai/openai). The Gen endpoint is
+    // allow-list gated: a key whose permissions.models is empty is refused for
+    // EVERY model, so Classic is the only path that can actually answer.
+    classicBaseUrl: process.env.POLLINATIONS_CLASSIC_BASE_URL || "https://text.pollinations.ai",
+    classicModel: process.env.POLLINATIONS_CLASSIC_MODEL || "openai-fast",
+    // Classic free tier: 1 reply per 30s per IP (HTTP 402 FREE_LIMIT).
+    classicMinIntervalMs: number(process.env.POLLINATIONS_CLASSIC_MIN_INTERVAL_MS, 31000),
+    classicTimeoutMs: number(process.env.POLLINATIONS_CLASSIC_TIMEOUT_MS, 150000)
   },
   stripe: {
     secretKey: process.env.STRIPE_SECRET_KEY || "",

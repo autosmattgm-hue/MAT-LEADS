@@ -1,5 +1,24 @@
 import { apiFetch, byId, formatCurrency, getCurrentUser, requireAuth } from "./api.js";
 
+function escapeHtml(value) {
+  return String(value ?? "").replace(/[&<>"']/g, (character) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[character]);
+}
+
+function renderDailyActions(actions = []) {
+  const target = byId("dailyActionList");
+  if (!target) return;
+  if (!actions.length) {
+    target.innerHTML = `<div class="empty-state">No urgent actions yet. Save leads, schedule follow-ups, or run a new search to build your next action list.</div>`;
+    return;
+  }
+  target.innerHTML = actions.map((action) => `
+    <article class="audit-item">
+      <div><strong>${escapeHtml(action.title)}</strong><br><span>${escapeHtml(action.leadName || "Saved lead")} — ${escapeHtml(action.reason)}</span></div>
+      <a class="btn btn-secondary" href="/lead-details.html?id=${encodeURIComponent(action.leadId)}">${escapeHtml(action.actionLabel || "Open lead")}</a>
+    </article>
+  `).join("");
+}
+
 function renderMetrics(metrics) {
   const target = byId("dashboardMetrics");
   if (!target) return;
@@ -45,6 +64,7 @@ function renderAccessState() {
   if (user.role === "admin" || user.entitlements?.unlimitedAccess) {
     plan.textContent = "Admin Unlimited";
     usage.textContent = "All features unlocked";
+    applySearchResultEntitlement(null);
     return;
   }
 
@@ -54,11 +74,23 @@ function renderAccessState() {
     const leadLimit = Number(user.trialLeadLimit || user.entitlements?.trialLeadLimit || 5);
     plan.textContent = "Free Trial";
     usage.textContent = `${Math.max(0, limit - used)} of ${limit} searches left, ${leadLimit} leads each`;
+    applySearchResultEntitlement(leadLimit);
     return;
   }
 
   plan.textContent = user.planName || user.subscription || "Starter";
   usage.textContent = "Paid plan active";
+  applySearchResultEntitlement(null);
+}
+
+function applySearchResultEntitlement(leadLimit) {
+  const select = document.querySelector("#limit");
+  if (!select) return;
+  const cap = Number(leadLimit || 0);
+  for (const option of select.options) {
+    option.disabled = Boolean(cap && Number(option.value) > cap);
+  }
+  if (cap && Number(select.value) > cap) select.value = String(cap);
 }
 
 function readVaultLeads() {
@@ -132,6 +164,7 @@ async function initDashboard() {
     const metrics = mergeVaultIntoMetrics(serverMetrics);
     renderMetrics(metrics);
     renderChart(metrics || { monthlyGrowth: [] });
+    renderDailyActions(serverMetrics.dailyActions || []);
     if (metrics.savedLeads > serverMetrics.savedLeads) {
       const note = document.createElement("p");
       note.className = "notice";
@@ -141,6 +174,7 @@ async function initDashboard() {
   } catch (error) {
     const msg = String(error?.message || "Metrics unavailable");
     target.innerHTML = `<div class="error-state">${msg}. If this keeps happening, reload the page or contact support.</div>`;
+    renderDailyActions([]);
   }
 }
 
