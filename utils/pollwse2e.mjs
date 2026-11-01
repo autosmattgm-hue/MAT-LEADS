@@ -1,5 +1,5 @@
 import { writeFileSync } from "node:fs";
-import { WebsiteService } from "../api/services/websiteService.js";
+import { WebsiteService } from "../server/services/websiteService.js";
 
 const out = process.argv[2] || "logs/_wse2e.txt";
 const lines = [];

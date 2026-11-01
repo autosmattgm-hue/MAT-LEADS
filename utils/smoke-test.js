@@ -1,5 +1,5 @@
 import http from "node:http";
-import { handleRequest } from "../api/nativeApp.js";
+import { handleRequest } from "../server/nativeApp.js";
 
 const server = http.createServer((req, res) => {
   handleRequest(req, res);
@@ -30,7 +30,7 @@ try {
   if (health.status !== "ok") throw new Error("Unexpected health payload");
 
   const indexHtml = await request("/");
-  if (!indexHtml.includes("Find Businesses That Need Websites")) throw new Error("Landing page did not render");
+  if (!indexHtml.includes("Turn local demand into your next")) throw new Error("Landing page did not render");
 
   const email = `smoke-${Date.now()}@example.com`;
   const auth = await request("/api/auth/register", {

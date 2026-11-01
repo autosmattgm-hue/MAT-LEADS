@@ -1,5 +1,5 @@
-import { missingPageSections, repairTruncatedHtml, hasRichVisibleContent, visibleWordCount } from "../api/utils/siteContent.js";
-import { PollinationsService } from "../api/services/pollinationsService.js";
+import { missingPageSections, repairTruncatedHtml, hasRichVisibleContent, visibleWordCount } from "../server/utils/siteContent.js";
+import { PollinationsService } from "../server/services/pollinationsService.js";
 
 const svc = new PollinationsService();
 const lead = { name: "ACME Roofing", businessType: "Roofing Contractor", address: "12 Allen Ave, Lagos", phone: "+2348012345678", email: "a@b.ng" };

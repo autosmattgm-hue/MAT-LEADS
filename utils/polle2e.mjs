@@ -1,5 +1,5 @@
 import { writeFileSync } from "node:fs";
-import { PollinationsService } from "../api/services/pollinationsService.js";
+import { PollinationsService } from "../server/services/pollinationsService.js";
 
 const out = process.argv[2] || "logs/_e2e.txt";
 const lines = [];

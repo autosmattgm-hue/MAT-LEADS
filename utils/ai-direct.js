@@ -1,5 +1,5 @@
 // Direct AI method test — isolates nvidiaService from HTTP routing.
-import { NvidiaService } from "../api/services/nvidiaService.js";
+import { NvidiaService } from "../server/services/nvidiaService.js";
 import fs from "node:fs";
 
 const s = new NvidiaService();

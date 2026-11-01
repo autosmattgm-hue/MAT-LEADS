@@ -21,7 +21,10 @@ function collectJsFiles(directory, found = []) {
   for (const entry of entries) {
     const fullPath = path.join(directory, entry.name);
     if (entry.isDirectory()) {
-      if (SKIP_DIRECTORIES.has(entry.name)) continue;
+      // Local deployment snapshots are intentionally kept for rollback, but
+      // they are not source files. Skipping them keeps checks deterministic
+      // and prevents validating the same large bundle several times.
+      if (SKIP_DIRECTORIES.has(entry.name) || entry.name.startsWith(".vercel-deploy-fix-")) continue;
       collectJsFiles(fullPath, found);
       continue;
     }
