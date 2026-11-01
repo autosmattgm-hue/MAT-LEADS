@@ -323,7 +323,22 @@
   }
 
   .lead-card {
-    padding: 12px;
+    padding: 10px 10px 12px;
+    border-radius: 10px;
+  }
+
+  .lead-card__title,
+  .lead-card h3,
+  .lead-card strong {
+    font-size: 0.94rem;
+    line-height: 1.2;
+  }
+
+  .lead-card p,
+  .lead-card small,
+  .lead-card span {
+    font-size: 0.72rem;
+    line-height: 1.35;
   }
 
   .saved-search-panel {
@@ -380,5 +395,9 @@
   .action-search-row input,
   .action-search-row button {
     min-height: 40px;
+  }
+
+  .lead-card {
+    padding: 9px 9px 10px;
   }
 }
