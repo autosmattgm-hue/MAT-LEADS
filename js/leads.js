@@ -225,6 +225,7 @@ let currentFilteredLeadResults = [];
 let currentVisibleLeadResults = [];
 let currentResultPage = 1;
 let hasLeadSearchRun = false;
+let currentSearchMetadata = null;
 const localSavedLeadsKey = "mat_local_saved_leads_v1";
 const defaultCountries = ["Germany"];
 const defaultBusinessTypes = ["restaurants", "hotels", "boutiques", "car_dealers"];
@@ -642,10 +643,39 @@ function leadDedupeKey(lead = {}) {
   return [name, phone || website || address].filter(Boolean).join("|") || localLeadId(lead);
 }
 
+function searchResultDedupeKey(lead = {}) {
+  // Search providers already supply a stable record ID (for example an OSM
+  // node/way ID or a Google Place ID). Preserve that identity in the visible
+  // result list: different branches can legitimately share one switchboard
+  // phone number, website, or street address and must not collapse into one
+  // card before the user has seen them.
+  const providerId = String(lead.id || lead.raw?.placeId || lead.raw?.id || "").trim();
+  if (providerId) return `provider:${providerId.toLowerCase()}`;
+
+  const latitude = Number(lead.latitude ?? lead.details?.location?.latitude);
+  const longitude = Number(lead.longitude ?? lead.details?.location?.longitude);
+  if (Number.isFinite(latitude) && Number.isFinite(longitude)) {
+    return `location:${normalizedName(lead.name)}|${latitude.toFixed(5)}|${longitude.toFixed(5)}`;
+  }
+  return leadDedupeKey(lead);
+}
+
 function dedupeLeads(leads = []) {
   const byKey = new Map();
   for (const lead of leads) {
     const key = leadDedupeKey(lead);
+    const existing = byKey.get(key);
+    if (!existing || leadStrengthScore(lead) >= leadStrengthScore(existing)) {
+      byKey.set(key, { ...(existing || {}), ...lead });
+    }
+  }
+  return [...byKey.values()];
+}
+
+function dedupeSearchResults(leads = []) {
+  const byKey = new Map();
+  for (const lead of leads) {
+    const key = searchResultDedupeKey(lead);
     const existing = byKey.get(key);
     if (!existing || leadStrengthScore(lead) >= leadStrengthScore(existing)) {
       byKey.set(key, { ...(existing || {}), ...lead });
@@ -1501,6 +1531,10 @@ function renderLead(lead) {
   const whatsappFound = whatsapp ? `<span class="tag success">${escapeHtml(whatsapp.status)}</span>` : "";
   const contactReady = (phone || publicEmail || lead.social || Object.keys(socialLinks).length) ? `<span class="tag success">Contact ready</span>` : "";
   const websiteGap = !lead.websiteUrl ? `<span class="tag warning">Needs website</span>` : "";
+  const enrichmentConfidence = Number(lead.details?.enrichment?.confidence);
+  const confidenceTag = Number.isFinite(enrichmentConfidence) && enrichmentConfidence > 0
+    ? `<span class="tag" title="Based on publicly observed business fields">Data confidence ${enrichmentConfidence}%</span>`
+    : "";
   return `
     <article class="lead-card">
       <div class="lead-card__top">
@@ -1526,6 +1560,7 @@ function renderLead(lead) {
         ${whatsappFound}
         ${contactReady}
         ${websiteGap}
+        ${confidenceTag}
         ${storedResult}
         ${source}
       </div>
@@ -1533,6 +1568,7 @@ function renderLead(lead) {
       ${renderContactActions(lead)}
       <div class="lead-actions">
         <a class="btn btn-secondary" href="/lead-details.html?id=${encodeURIComponent(lead.id)}">View</a>
+        <button class="btn btn-primary" type="button" data-open-deal-closer="${escapeHtml(lead.id)}">Close Deal</button>
         <button class="btn btn-primary" type="button" data-save-lead="${lead.id}">Save Lead</button>
         <label class="select-check" title="Tick to reveal the AI website builder for this lead">
           <input type="checkbox" data-ai-website-toggle="${escapeHtml(lead.id)}">
@@ -1582,6 +1618,7 @@ function renderLocalSavedLead(lead) {
       ${renderLocalLeadTools(lead)}
       <div class="lead-actions">
         <a class="btn btn-secondary" href="/lead-details.html?id=${encodeURIComponent(localLeadId(lead))}">View</a>
+        <button class="btn btn-primary" type="button" data-open-deal-closer="${escapeHtml(localLeadId(lead))}">Close Deal</button>
         <label class="select-check" title="Tick to reveal the AI website builder for this lead">
           <input type="checkbox" data-ai-website-toggle="${escapeHtml(localLeadId(lead))}">
           <span>Use AI to create website</span>
@@ -1726,7 +1763,10 @@ function visibleLeadFilterState() {
 function leadMatchesVisibleFilter(lead, state) {
   if (state.query && !leadText(lead).includes(state.query)) return false;
   if (leadStrengthScore(lead) < state.minScore) return false;
-  if (state.filter === "contact_ready" && !(primaryPhone(lead) || lead.email || whatsappActionFromLead(lead))) return false;
+  // A verified public social profile is a valid contact path. Keep this
+  // browser-side command-center filter consistent with the server's
+  // Contact details only rule so it never hides qualifying social-only leads.
+  if (state.filter === "contact_ready" && !(primaryPhone(lead) || lead.email || whatsappActionFromLead(lead) || hasSocialLinks(lead))) return false;
   if (state.filter === "has_whatsapp" && !whatsappActionFromLead(lead)) return false;
   if (state.filter === "needs_website" && lead.websiteUrl) return false;
   if (state.filter === "has_social" && !hasSocialLinks(lead)) return false;
@@ -1743,10 +1783,34 @@ function resetLeadResultPage() {
   currentResultPage = 1;
 }
 
+function updateSearchRunDetails() {
+  const target = byId("searchRunDetails");
+  if (!target) return;
+  if (!currentSearchMetadata) {
+    target.hidden = true;
+    target.textContent = "";
+    return;
+  }
+  const stats = currentSearchMetadata.searchStats || {};
+  const requested = Number(stats.appliedResultLimit || stats.requestedLimit || currentLeadResults.length);
+  const returned = Number(stats.returnedLimit ?? currentLeadResults.length);
+  const filtered = currentFilteredLeadResults.length;
+  const pageSize = selectedResultPageSize();
+  const totalPages = totalLeadResultPages();
+  const start = filtered ? ((currentResultPage - 1) * pageSize) + 1 : 0;
+  const end = Math.min(currentResultPage * pageSize, filtered);
+  target.hidden = false;
+  target.textContent = `Search status: requested ${requested}, returned ${returned}, currently matching ${filtered}. Page ${currentResultPage} of ${totalPages}; showing ${start}-${end}.`;
+}
+
 function selectedResultPageSize() {
   // Requested results and visible-card pagination are deliberately separate:
   // requesting 100 should still give the user useful Next/Previous pages.
-  return normalizedInteger(byId("leadPageSize")?.value, 20, 5, 100);
+  // Never silently fall back to the old five-card layout. Search volume and
+  // card pagination are separate, and the professional dashboard starts at
+  // twenty cards per page while still allowing smaller values only through
+  // an explicit, current control.
+  return normalizedInteger(byId("leadPageSize")?.value, 20, 10, 100);
 }
 
 function totalLeadResultPages() {
@@ -1769,7 +1833,7 @@ function updateLeadCommandSummary() {
   const totalPages = totalLeadResultPages();
   const whatsappCount = currentFilteredLeadResults.filter((lead) => whatsappActionFromLead(lead)).length;
   const noWebsiteCount = currentFilteredLeadResults.filter((lead) => !lead.websiteUrl).length;
-  const contactCount = currentFilteredLeadResults.filter((lead) => primaryPhone(lead) || lead.email || whatsappActionFromLead(lead)).length;
+  const contactCount = currentFilteredLeadResults.filter((lead) => primaryPhone(lead) || lead.email || whatsappActionFromLead(lead) || hasSocialLinks(lead)).length;
   target.textContent = currentLeadResults.length
     ? `Page ${currentResultPage} of ${totalPages}. Showing ${currentVisibleLeadResults.length} of ${currentFilteredLeadResults.length} filtered leads (${currentLeadResults.length} total). ${contactCount} contact-ready, ${whatsappCount} WhatsApp actions, ${noWebsiteCount} need websites. ${selectedCount} selected on this page.`
     : "Run a search to activate lead filters and bulk actions.";
@@ -1818,6 +1882,7 @@ function renderFilteredLeadResults() {
   const pageSize = selectedResultPageSize();
   const pageStart = (currentResultPage - 1) * pageSize;
   currentVisibleLeadResults = currentFilteredLeadResults.slice(pageStart, pageStart + pageSize);
+  updateSearchRunDetails();
 
   if (!currentLeadResults.length) {
     const requiresContact = Boolean(byId("requireContact")?.checked) || byId("leadQuality")?.value === "contact_ready";
@@ -1825,7 +1890,7 @@ function renderFilteredLeadResults() {
     const emptyMessage = requiresContact
       ? "No businesses with a verified public phone, email, or social contact were found in this area. Try a larger radius, another city, or refresh the search."
       : requiresMissingWebsite
-        ? "No businesses with an unavailable website URL matched this area. Try a larger radius, another city, or refresh the search."
+        ? "No businesses without a website URL listed in the available public map data matched this area. Try a larger radius, another city, or refresh the search."
         : "No leads found for this search yet. Try Refresh Leads, choose a different business type, or paste a more exact Google Maps city link.";
     target.innerHTML = `<div class="empty-state">${hasLeadSearchRun ? emptyMessage : "Start a search to discover leads."}</div>`;
     renderLeadPagination();
@@ -1845,19 +1910,31 @@ function renderFilteredLeadResults() {
   updateLeadCommandSummary();
 }
 
-function renderResults(leads) {
+function renderResults(leads, metadata = null) {
   const target = byId("leadResults");
   if (!target) return;
   hasLeadSearchRun = true;
-  currentLeadResults = dedupeLeads(Array.isArray(leads) ? leads : []);
+  currentSearchMetadata = metadata;
+  // Search results use provider identity, while the explicit Local Saved
+  // Leads cleanup keeps its broader name/contact duplicate behavior.
+  currentLeadResults = dedupeSearchResults(Array.isArray(leads) ? leads : []);
   resetLeadResultPage();
   renderFilteredLeadResults();
+}
+
+function requiresNodeLeadApi() {
+  const isLocalHost = ["localhost", "127.0.0.1", "::1"].includes(window.location.hostname);
+  if (!isLocalHost || !window.location.port || window.location.port === "3000") return false;
+  const note = byId("searchNote");
+  if (note) note.textContent = "Connected to the MAT LEADS Node API at localhost:3000. Your search will run through the secure server even from this local preview.";
+  return false;
 }
 
 function initLeadSearch() {
   const form = byId("leadSearchForm");
   const target = byId("leadResults");
   if (!form || !target) return;
+  if (requiresNodeLeadApi()) return;
   if (!requireAuth()) return;
 
   const params = new URLSearchParams(window.location.search);
@@ -1879,19 +1956,28 @@ function initLeadSearch() {
     }
   }
 
+  let searchInFlight = false;
+
   async function runLeadSearch({ refresh = false } = {}) {
     if (!requireAuth()) return;
+    if (searchInFlight) return;
+    searchInFlight = true;
     const actionButtons = form.querySelectorAll("button");
+    form.setAttribute("aria-busy", "true");
     actionButtons.forEach((button) => {
       button.disabled = true;
     });
     currentLeadResults = [];
     currentFilteredLeadResults = [];
     currentVisibleLeadResults = [];
+    currentSearchMetadata = null;
     resetLeadResultPage();
     renderLeadPagination();
     updateLeadCommandSummary();
+    updateSearchRunDetails();
     target.innerHTML = `<div class="skeleton">${refresh ? "Refreshing with new real leads..." : "Searching real business map data..."}</div>`;
+    const note = byId("searchNote");
+    if (note) note.textContent = refresh ? "Refreshing the selected market with fresh provider data..." : "Connecting to the secure lead provider and scanning the selected market...";
 
     try {
       const result = await apiFetch("/api/leads/search", {
@@ -1899,7 +1985,7 @@ function initLeadSearch() {
         body: JSON.stringify(getSearchPayload(form, { refresh }))
       });
       syncTrialUsage(result.trial);
-      renderResults(result.leads || []);
+      renderResults(result.leads || [], result);
       const note = byId("searchNote");
       if (note) {
         const locationText = result.location
@@ -1931,16 +2017,25 @@ function initLeadSearch() {
         const planLimitText = result.searchStats?.planResultLimited
           ? ` Your current plan allows up to ${result.searchStats.appliedResultLimit} leads per search; upgrade to request 20, 100, or more.`
           : "";
+        const adminAccessText = result.adminUnlimited
+          ? " Admin access confirmed: no plan result cap was applied."
+          : "";
+        const providerWarningText = result.pagination?.warning
+          ? ` Provider note: ${result.pagination.warning}`
+          : "";
         const storedResultText = result.searchStats?.usedStoredSearchResults
           ? ` ${result.searchStats.storedResultCount} matching result(s) came from your authorized previously discovered public-map records while fresh provider data was limited.`
           : "";
-        note.textContent = `Real ${provider} results loaded${locationText}.${countryText}${stats}${strictCoverageText}${limitedCoverageText}${excludedText}${sourceCoverageText}${storedResultText}${planLimitText}${cacheText}${refreshText}${relaxedText}${trialText}${pageText} Query: ${result.query || "businesses"}.`;
+        const availabilityText = result.searchStats?.searchExhausted
+          ? ` ${result.searchStats.returnedLimit} verified matching result(s) are currently available for the exact filters selected; the requested total cannot be padded with unverified businesses.`
+          : "";
+        note.textContent = `Real ${provider} results loaded${locationText}.${countryText}${stats}${strictCoverageText}${limitedCoverageText}${excludedText}${sourceCoverageText}${storedResultText}${availabilityText}${planLimitText}${adminAccessText}${providerWarningText}${cacheText}${refreshText}${relaxedText}${trialText}${pageText} Query: ${result.query || "businesses"}.`;
       }
     } catch (error) {
       const raw = String(error?.message || "Search failed");
       target.innerHTML = `<div class="error-state">${raw}</div>`;
       const note = byId("searchNote");
-      if (note) note.textContent = error.message.includes("free trial")
+      if (note) note.textContent = raw.includes("free trial")
         ? `${error.message} Open Pricing to subscribe.`
         : /validation|invalid request/i.test(raw)
           ? `${raw} — pick at least one Country or Business Type, then Search again.`
@@ -1953,12 +2048,22 @@ function initLeadSearch() {
       actionButtons.forEach((button) => {
         button.disabled = false;
       });
+      searchInFlight = false;
+      form.removeAttribute("aria-busy");
     }
   }
 
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
     await runLeadSearch();
+  });
+
+  byId("searchNote")?.setAttribute("aria-live", "polite");
+  form.querySelector("[data-search-submit]")?.addEventListener("click", () => {
+    if (!searchInFlight) {
+      const note = byId("searchNote");
+      if (note) note.textContent = "Preparing your real lead search...";
+    }
   });
 
   document.addEventListener("click", async (event) => {
@@ -2077,6 +2182,19 @@ function initWebsiteStudioActions() {
 
 function initLeadActions() {
   document.addEventListener("click", async (event) => {
+    const closerButton = event.target.closest("[data-open-deal-closer]");
+    if (closerButton) {
+      if (!requireAuth()) return;
+      const leadId = closerButton.dataset.openDealCloser;
+      const lead = currentLeadResults.find((item) => String(item.id) === String(leadId))
+        || currentFilteredLeadResults.find((item) => String(item.id) === String(leadId))
+        || readLocalSavedLeads().find((item) => String(localLeadId(item)) === String(leadId) || String(item.id) === String(leadId));
+      if (lead) {
+        try { sessionStorage.setItem("mat_deal_closer_lead", JSON.stringify(lead)); } catch {}
+      }
+      window.location.href = `/proposals.html?leadId=${encodeURIComponent(leadId)}`;
+      return;
+    }
     const button = event.target.closest("[data-save-lead]");
     if (!button) return;
     if (!requireAuth()) return;
@@ -2291,9 +2409,34 @@ function initLeadDetails() {
             <button class="btn btn-primary" type="button" data-copy-brief>Copy Website Brief</button>
             <button class="btn btn-secondary" type="button" data-download-json>JSON</button>
             <button class="btn btn-secondary" type="button" data-download-csv>CSV</button>
+            <a class="btn btn-primary" href="/outreach.html?leadId=${encodeURIComponent(lead.id)}">Open Outreach Studio</a>
+            <a class="btn btn-secondary" href="/website-studio.html?leadId=${encodeURIComponent(lead.id)}&business=${encodeURIComponent(lead.name || "")}">Build Website</a>
+            <button class="btn btn-secondary" type="button" data-detail-refresh>Refresh data</button>
           </div>
           <h2 style="margin-top:20px;">Verified Contact Actions</h2>
           ${renderContactActions(lead)}
+        </section>
+
+        <section class="panel lead-detail-controls">
+          <div class="section-header compact-header">
+            <div>
+              <h2>Pipeline control</h2>
+              <p>Update the CRM stage and record a verified note without leaving this lead.</p>
+            </div>
+            <span id="detailSaveStatus" class="muted-value" role="status" aria-live="polite">Changes save to your CRM.</span>
+          </div>
+          <div class="form-grid compact">
+            <div class="field">
+              <label for="detailStage">Pipeline stage</label>
+              <select id="detailStage" data-detail-stage>
+                ${["New", "Contacted", "Follow Up", "Proposal Sent", "Meeting Scheduled", "Negotiation", "Won", "Lost"].map((stage) => `<option value="${stage}" ${String(lead.stage || "New") === stage ? "selected" : ""}>${stage}</option>`).join("")}
+              </select>
+            </div>
+            <form class="field" data-detail-note-form>
+              <label for="detailNote">Add CRM note</label>
+              <div class="inline-form"><input id="detailNote" name="note" maxlength="1000" placeholder="Next step, objection, or client context"><button class="btn btn-secondary" type="submit">Save note</button></div>
+            </form>
+          </div>
         </section>
 
         <section class="panel" style="grid-column:1 / -1;">
@@ -2449,6 +2592,61 @@ function initOutreachActions() {
   });
 }
 
+function initLeadDetailControls() {
+  document.addEventListener("change", async (event) => {
+    const stage = event.target.closest("[data-detail-stage]");
+    if (!stage || !activeLeadReport?.lead?.id) return;
+    const status = byId("detailSaveStatus");
+    stage.disabled = true;
+    if (status) status.textContent = "Saving stage...";
+    try {
+      const result = await apiFetch(`/api/crm/leads/${encodeURIComponent(activeLeadReport.lead.id)}/stage`, {
+        method: "PATCH",
+        body: JSON.stringify({ stage: stage.value })
+      });
+      activeLeadReport.lead.stage = result.lead?.stage || stage.value;
+      if (status) status.textContent = `Saved as ${activeLeadReport.lead.stage}.`;
+    } catch (error) {
+      if (status) status.textContent = error.message || "Stage could not be saved.";
+    } finally {
+      stage.disabled = false;
+    }
+  });
+
+  document.addEventListener("submit", async (event) => {
+    const form = event.target.closest("[data-detail-note-form]");
+    if (!form || !activeLeadReport?.lead?.id) return;
+    event.preventDefault();
+    const input = form.querySelector("[name=note]");
+    const note = String(input?.value || "").trim();
+    const status = byId("detailSaveStatus");
+    if (!note) {
+      if (status) status.textContent = "Write a note before saving.";
+      input?.focus();
+      return;
+    }
+    const button = form.querySelector("button[type=submit]");
+    if (button) button.disabled = true;
+    if (status) status.textContent = "Saving note...";
+    try {
+      await apiFetch(`/api/crm/leads/${encodeURIComponent(activeLeadReport.lead.id)}/notes`, {
+        method: "POST",
+        body: JSON.stringify({ note, tags: ["lead-details"] })
+      });
+      if (input) input.value = "";
+      if (status) status.textContent = "Note saved to CRM activity.";
+    } catch (error) {
+      if (status) status.textContent = error.message || "Note could not be saved.";
+    } finally {
+      if (button) button.disabled = false;
+    }
+  });
+
+  document.addEventListener("click", (event) => {
+    if (event.target.closest("[data-detail-refresh]")) window.location.reload();
+  });
+}
+
 function initAiButtons() {
   document.addEventListener("click", async (event) => {
     const analyze = event.target.closest("[data-ai-analyze]");
@@ -2544,6 +2742,7 @@ document.addEventListener("DOMContentLoaded", () => {
   backfillLocalLeadIds();
   renderLocalSavedLeads();
   initLeadDetails();
+  initLeadDetailControls();
   initOutreachActions();
   initAiButtons();
   initLeadDossierActions();

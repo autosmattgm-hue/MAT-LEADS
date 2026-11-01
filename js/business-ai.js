@@ -107,8 +107,12 @@ async function ask(prompt) {
   const bubble = shell.querySelector(".tycoon-bubble");
   try {
     const status = await apiFetch("/api/ai/status").catch(() => null);
-    if (status && (!status.configured || status.verification === "failed")) {
-      throw new Error(status.hint || "NVIDIA AI is unavailable. Please try again in a moment.");
+    // A previous request can leave the server's diagnostic state as a
+    // transient timeout. Do not block a fresh prompt on that stale flag: the
+    // actual endpoint performs its bounded retry/fallback and returns the
+    // authoritative provider error when a key/model really is unavailable.
+    if (status && !status.configured) {
+      throw new Error(status.hint || "NVIDIA AI is not configured on this deployment. Add NVIDIA_API_KEY in Vercel and redeploy.");
     }
     const leadId = byId("tycoonLead").value.trim();
     let lead = null;

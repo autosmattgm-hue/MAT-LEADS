@@ -1,133 +1,162 @@
-// PWA Registration & Install Prompt Handler
-(function() {
-  'use strict';
+// MAT LEADS install, update, offline, and browser-notification controls.
+(function () {
+  "use strict";
 
   let deferredPrompt = null;
-  let installResolve = null;
+  let registration = null;
 
-  // Register service worker
-  function registerSW() {
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js', { scope: '/' })
-        .then((reg) => {
-          console.log('[PWA] Service Worker registered:', reg.scope);
-          reg.addEventListener('updatefound', () => {
-            const newWorker = reg.installing;
-            if (newWorker) {
-              newWorker.addEventListener('statechange', () => {
-                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                  showUpdateToast();
-                }
-              });
-            }
-          });
-        })
-        .catch((err) => console.error('[PWA] SW registration failed:', err));
-    }
+  function isInstalled() {
+    return window.matchMedia?.("(display-mode: standalone)").matches || window.navigator.standalone === true;
   }
 
-  // Show update notification
-  function showUpdateToast() {
-    const toast = document.createElement('div');
-    toast.className = 'pwa-toast';
-    toast.innerHTML = `
-      <span>New version available!</span>
-      <button class="btn btn-primary btn-sm" onclick="location.reload()">Update</button>
-    `;
-    document.body.appendChild(toast);
-    setTimeout(() => toast.classList.add('pwa-toast--visible'), 100);
-  }
-
-  // Create install button
-  function createInstallButton() {
-    const btn = document.createElement('button');
-    btn.className = 'pwa-install-btn';
-    btn.setAttribute('aria-label', 'Install app');
-    btn.innerHTML = `
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-        <polyline points="7 10 12 15 17 10"/>
-        <line x1="12" y1="15" x2="12" y2="3"/>
-      </svg>
-      <span>Install App</span>
-    `;
-    btn.addEventListener('click', showInstallPrompt);
-    return btn;
-  }
-
-  // Show install prompt
-  function showInstallPrompt() {
-    if (!deferredPrompt) return;
-    deferredPrompt.prompt();
-    deferredPrompt.userChoice.then((choiceResult) => {
-      if (choiceResult.outcome === 'accepted') {
-        console.log('[PWA] User accepted install');
-        hideInstallButton();
-      } else {
-        console.log('[PWA] User dismissed install');
-      }
-      deferredPrompt = null;
+  function setNotificationStatus(message, state = "") {
+    document.querySelectorAll("[data-pwa-notification-status]").forEach((node) => {
+      node.textContent = message;
+      node.dataset.state = state;
     });
   }
 
-  // Hide install button
-  function hideInstallButton() {
-    const btn = document.querySelector('.pwa-install-btn');
-    if (btn) btn.remove();
+  function notificationSupport() {
+    if (!("Notification" in window)) return { supported: false, permission: "unsupported" };
+    return { supported: true, permission: Notification.permission };
   }
 
-  // Check if already installed
-  function isAppInstalled() {
-    return window.matchMedia('(display-mode: standalone)').matches ||
-           window.navigator.standalone === true;
+  async function requestNotifications() {
+    const support = notificationSupport();
+    if (!support.supported) throw new Error("Browser notifications are not supported on this device.");
+    if (support.permission === "denied") throw new Error("Notifications are blocked. Enable them in your browser or device settings.");
+    const permission = support.permission === "granted" ? "granted" : await Notification.requestPermission();
+    setNotificationStatus(permission === "granted" ? "Notifications are enabled on this device." : "Notification permission was not granted.", permission === "granted" ? "success" : "error");
+    return permission;
   }
 
-  // Inject install button into topbar
-  function injectInstallButton() {
-    if (isAppInstalled()) return;
-    if (!deferredPrompt) return;
-
-    const topbar = document.querySelector('.topbar-actions');
-    if (!topbar) return;
-
-    const existing = topbar.querySelector('.pwa-install-btn');
-    if (existing) return;
-
-    const btn = createInstallButton();
-    topbar.insertBefore(btn, topbar.firstChild);
+  async function showNotification(title, options = {}) {
+    const permission = await requestNotifications();
+    if (permission !== "granted") return false;
+    const opts = {
+      body: options.body || "Open MAT LEADS to review your next best action.",
+      icon: "/assets/logo-mark.svg",
+      badge: "/assets/logo-mark.svg",
+      tag: options.tag || "mat-leads-notification",
+      data: { url: options.url || "/dashboard.html", ...(options.data || {}) },
+      renotify: Boolean(options.renotify)
+    };
+    if (registration?.showNotification) await registration.showNotification(title, opts);
+    else new Notification(title, opts);
+    return true;
   }
 
-  // Listen for beforeinstallprompt
-  window.addEventListener('beforeinstallprompt', (event) => {
-    event.preventDefault();
-    deferredPrompt = event;
-    injectInstallButton();
-  });
-
-  // Listen for app installed
-  window.addEventListener('appinstalled', () => {
-    console.log('[PWA] App was installed');
-    deferredPrompt = null;
-    hideInstallButton();
-  });
-
-  // Listen for display mode changes
-  window.matchMedia('(display-mode: standalone)').addEventListener('change', (event) => {
-    if (event.matches) hideInstallButton();
-  });
-
-  // Register SW on DOM ready
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', registerSW);
-  } else {
-    registerSW();
+  function ensureInstallBanner() {
+    if (isInstalled() || document.querySelector("[data-pwa-install-banner]")) return;
+    const banner = document.createElement("aside");
+    banner.className = "pwa-install-banner";
+    banner.dataset.pwaInstallBanner = "true";
+    banner.setAttribute("aria-label", "Install MAT LEADS");
+    banner.innerHTML = `<img src="/assets/logo-mark.svg" alt="" width="34" height="34"><div><strong>Install MAT LEADS</strong><span>Keep your workspace one tap away.</span></div><button class="btn btn-primary" type="button" data-pwa-install>Install</button><button class="icon-button" type="button" data-pwa-install-dismiss aria-label="Dismiss install offer">×</button>`;
+    document.body.appendChild(banner);
+    // Normalize the dismiss glyph for hosts that serve legacy text encoding.
+    const dismissButton = banner.querySelector("[data-pwa-install-dismiss]");
+    if (dismissButton) dismissButton.textContent = "x";
+    banner.querySelector("[data-pwa-install]")?.addEventListener("click", installApp);
+    banner.querySelector("[data-pwa-install-dismiss]")?.addEventListener("click", () => {
+      banner.remove();
+      try { sessionStorage.setItem("mat-pwa-install-dismissed", "1"); } catch {}
+    });
   }
 
-  // Re-inject button when DOM changes (for SPA-like navigation)
-  const observer = new MutationObserver(() => {
-    if (deferredPrompt && !isAppInstalled()) {
-      injectInstallButton();
+  function showInstallBanner() {
+    if (isInstalled()) return;
+    try { if (sessionStorage.getItem("mat-pwa-install-dismissed") === "1") return; } catch {}
+    ensureInstallBanner();
+  }
+
+  async function installApp() {
+    if (!deferredPrompt) {
+      showInstallBanner();
+      return false;
     }
-  });
-  observer.observe(document.body, { childList: true, subtree: true });
-})();
+    deferredPrompt.prompt();
+    const choice = await deferredPrompt.userChoice;
+    deferredPrompt = null;
+    if (choice.outcome === "accepted") document.querySelector("[data-pwa-install-banner]")?.remove();
+    return choice.outcome === "accepted";
+  }
+
+  function showUpdateBanner(waitingWorker) {
+    if (document.querySelector("[data-pwa-update]")) return;
+    const banner = document.createElement("aside");
+    banner.className = "pwa-update-banner";
+    banner.dataset.pwaUpdate = "true";
+    banner.innerHTML = `<span><strong>New MAT LEADS version ready.</strong> Refresh to apply the latest improvements.</span><button class="btn btn-primary" type="button" data-pwa-update-apply>Refresh</button>`;
+    document.body.appendChild(banner);
+    banner.querySelector("[data-pwa-update-apply]")?.addEventListener("click", () => {
+      // Wait for activation before reloading so the first refresh actually uses
+      // the new worker. The timeout keeps the button reliable in older browsers
+      // that do not emit controllerchange consistently.
+      let reloaded = false;
+      const reload = () => {
+        if (reloaded) return;
+        reloaded = true;
+        window.location.reload();
+      };
+      navigator.serviceWorker?.addEventListener("controllerchange", reload, { once: true });
+      waitingWorker?.postMessage({ type: "SKIP_WAITING" });
+      window.setTimeout(reload, 1500);
+    });
+  }
+
+  function updateOfflineStatus() {
+    document.querySelectorAll("[data-pwa-connection]").forEach((node) => {
+      const offline = !navigator.onLine;
+      node.textContent = offline ? "Offline mode · cached workspace available" : "Online · workspace synced when you save";
+      node.dataset.state = offline ? "offline" : "online";
+      node.textContent = offline ? "Offline mode - cached workspace available" : "Online - workspace synced when you save";
+    });
+  }
+
+  function initNotificationControls() {
+    const support = notificationSupport();
+    const enable = document.querySelector("[data-pwa-notification-enable]");
+    const test = document.querySelector("[data-pwa-notification-test]");
+    if (enable) {
+      enable.disabled = !support.supported;
+      enable.textContent = support.permission === "granted" ? "Notifications enabled" : "Enable notifications";
+      if (support.permission === "granted") enable.setAttribute("aria-pressed", "true");
+      enable.addEventListener("click", async () => {
+        try { await requestNotifications(); enable.textContent = "Notifications enabled"; enable.setAttribute("aria-pressed", "true"); }
+        catch (error) { setNotificationStatus(error.message, "error"); }
+      });
+    }
+    test?.addEventListener("click", async () => {
+      try {
+        const shown = await showNotification("MAT LEADS is ready", { body: "Your notification channel is working. Review today’s actions when you are ready.", tag: "mat-leads-test" });
+        if (shown) setNotificationStatus("Test notification sent to this device.", "success");
+      } catch (error) { setNotificationStatus(error.message, "error"); }
+    });
+    updateOfflineStatus();
+  }
+
+  function registerServiceWorker() {
+    if (!("serviceWorker" in navigator)) return;
+    navigator.serviceWorker.register("/sw.js", { scope: "/" }).then((reg) => {
+      registration = reg;
+      if (reg.waiting && navigator.serviceWorker.controller) showUpdateBanner(reg.waiting);
+      reg.addEventListener("updatefound", () => {
+        const worker = reg.installing;
+        worker?.addEventListener("statechange", () => {
+          if (worker.state === "installed" && navigator.serviceWorker.controller) showUpdateBanner(worker);
+        });
+      });
+    }).catch((error) => console.warn("[PWA] Service Worker registration failed", error));
+  }
+
+  window.MatPwa = { install: installApp, requestNotifications, notify: showNotification, status: notificationSupport };
+  window.addEventListener("beforeinstallprompt", (event) => { event.preventDefault(); deferredPrompt = event; showInstallBanner(); });
+  window.addEventListener("appinstalled", () => { deferredPrompt = null; document.querySelector("[data-pwa-install-banner]")?.remove(); });
+  window.addEventListener("online", updateOfflineStatus);
+  window.addEventListener("offline", updateOfflineStatus);
+
+  const ready = () => { registerServiceWorker(); initNotificationControls(); if (deferredPrompt) showInstallBanner(); };
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", ready, { once: true });
+  else ready();
+}());

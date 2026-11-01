@@ -10,7 +10,8 @@ const navGroups = [
     items: [
       { href: "/dashboard.html", page: "dashboard", label: "Dashboard", icon: "D" },
       { href: "/crm.html", page: "crm", label: "CRM", icon: "C" },
-      { href: "/lead-details.html", page: "lead-details", label: "Lead Details", icon: "L" }
+      { href: "/lead-details.html", page: "lead-details", label: "Lead Details", icon: "L" },
+      { href: "/community.html", page: "community", label: "Chat", icon: "M" }
     ]
   },
   {
@@ -19,8 +20,10 @@ const navGroups = [
       { href: "/website-studio.html", page: "website-studio", label: "Website Studio", icon: "W", pro: true },
       { href: "/website-editor.html", page: "website-editor", label: "Website Editor", icon: "E", pro: true },
       { href: "/business-ai.html", page: "business-ai", label: "Business AI", icon: "B", pro: true },
+      { href: "/ai-agent.html", page: "ai-agent", label: "AI Agent", icon: "A", pro: true },
       { href: "/outreach.html", page: "outreach", label: "Outreach", icon: "O" },
-      { href: "/proposals.html", page: "proposals", label: "Proposals", icon: "P" }
+      { href: "/proposals.html", page: "proposals", label: "Client Closer", icon: "P" }
+      ,{ href: "/playbook.html", page: "playbook", label: "Growth Playbook", icon: "G", pro: true }
     ]
   },
   {
@@ -45,7 +48,8 @@ const navGroups = [
       { href: "/earn.html", page: "earn", label: "Earn Hub", icon: "E" },
       { href: "/gigs.html", page: "gigs", label: "Gigs", icon: "G" },
       { href: "/students.html", page: "students", label: "Earn Starter", icon: "E" },
-      { href: "/learn.html", page: "learn", label: "Learn", icon: "T" }
+      { href: "/learn.html", page: "learn", label: "Learn", icon: "T" },
+      { href: "/academy.html", page: "academy", label: "Academy", icon: "A" }
     ]
   },
   {
@@ -164,6 +168,7 @@ function initPublicNav() {
       <a href="/about.html">About</a>
       <a href="/features/phone-lead-generation">Features</a>
       <a href="/faq.html">FAQ</a>
+      <a href="/login.html?next=/academy.html">Academy</a>
       <a href="/pricing.html">Pricing</a>
       <a href="/login.html">Login</a>
     </nav>
@@ -184,7 +189,10 @@ function initAppShell() {
   sidebar.className = "sidebar";
   sidebar.id = "sidebar";
   sidebar.innerHTML = `
-    ${brandMarkup()}
+    <div class="sidebar-header">
+      ${brandMarkup()}
+      <button class="icon-button sidebar-close" type="button" data-sidebar-close aria-label="Close sidebar">×</button>
+    </div>
     <nav aria-label="Application">
       ${navGroups.map((group) => `
         <div class="nav-group">
@@ -199,6 +207,12 @@ function initAppShell() {
         </div>
       `).join("")}
     </nav>
+    <div class="sidebar-ai-entry">
+      <button class="sidebar-ai-launcher" type="button" data-ai-quick-toggle aria-controls="quickAiPanel" aria-expanded="false" aria-label="Open AI Agent">
+        <span class="sidebar-ai-mark" aria-hidden="true">AI</span>
+        <span><strong>Ask AI Agent</strong><small>Get your next best action</small></span>
+      </button>
+    </div>
   `;
 
   // Admin nav is role-gated: rendered immediately when the cached account is
@@ -220,6 +234,7 @@ function initAppShell() {
     </button>
     <div class="notice" role="status" data-session-badge>NVIDIA-only AI pipeline connected through secure server endpoints.</div>
     <div class="topbar-actions">
+      <span class="pwa-connection-status" data-pwa-connection role="status" aria-live="polite">Online</span>
       <button class="icon-button" type="button" data-theme-toggle aria-label="Toggle theme">T</button>
       <a class="btn btn-secondary" href="/reports.html">Reports</a>
       <a class="btn btn-primary" href="/dashboard.html">Search Leads</a>
@@ -228,6 +243,16 @@ function initAppShell() {
 
   shell.prepend(sidebar);
   workspace.prepend(topbar);
+
+  // The compact assistant is deliberately loaded only inside the signed-in
+  // workspace. It uses the same server-authorized AI route as the full Agent
+  // page, so no provider key or client-side fallback is introduced here.
+  if (!document.querySelector('script[src="/js/ai-quick-chat.js"]')) {
+    const quickAiScript = document.createElement("script");
+    quickAiScript.type = "module";
+    quickAiScript.src = "/js/ai-quick-chat.js";
+    document.body.appendChild(quickAiScript);
+  }
 
   // Paint the Pro badge state from the cached account right away so the
   // sidebar never flashes the locked styling before /api/auth/me resolves.
@@ -284,22 +309,34 @@ async function initSessionBadge() {
 function initMenu() {
   document.addEventListener("click", (event) => {
     const toggle = event.target.closest("[data-menu-toggle]");
+    const close = event.target.closest("[data-sidebar-close]");
     const sidebar = document.getElementById("sidebar");
+    const shell = document.querySelector("[data-app-shell]");
+    const setOpen = (open) => {
+      if (!sidebar) return;
+      sidebar.classList.toggle("open", open);
+      shell?.classList.toggle("sidebar-collapsed", !open && window.innerWidth > 820);
+      document.body.classList.toggle("locked", open && window.innerWidth <= 820);
+      document.querySelector("[data-menu-toggle]")?.setAttribute("aria-expanded", String(open));
+      document.querySelector("[data-menu-toggle]")?.setAttribute("aria-label", open ? "Close navigation" : "Open navigation");
+    };
+    if (close && sidebar) {
+      setOpen(false);
+      document.querySelector("[data-menu-toggle]")?.focus();
+      return;
+    }
     if (toggle && sidebar) {
-      sidebar.classList.toggle("open");
-      const isOpen = sidebar.classList.contains("open");
-      document.body.classList.toggle("locked", isOpen);
-      toggle.setAttribute("aria-expanded", String(isOpen));
-      toggle.setAttribute("aria-label", isOpen ? "Close navigation" : "Open navigation");
+      setOpen(!sidebar.classList.contains("open") || shell?.classList.contains("sidebar-collapsed"));
       return;
     }
 
     if (sidebar?.classList.contains("open") && !event.target.closest(".sidebar")) {
-      sidebar.classList.remove("open");
-      document.body.classList.remove("locked");
-      document.querySelector("[data-menu-toggle]")?.setAttribute("aria-expanded", "false");
+      setOpen(false);
     }
   });
+
+  const sidebar = document.getElementById("sidebar");
+  if (sidebar && window.innerWidth > 820) sidebar.classList.add("open");
 }
 
 function initThemeButtons() {

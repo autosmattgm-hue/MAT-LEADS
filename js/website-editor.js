@@ -1,5 +1,7 @@
 ﻿import { apiFetch, byId, getCurrentUser, isProUser, requireAuth } from "./api.js";
 
+import { inspectWebsiteHtml, qualityMarkup, qualityText } from "./site-quality.js";
+
 // The editor works on a parsed copy of the site's HTML, applies the user's
 // edits to that DOM, and writes it back. Nothing here needs a build step or a
 // code editor â€” every control maps to a visible change in the preview.
@@ -11,6 +13,7 @@ let originalHtml = "";
 let workingHtml = "";
 let busy = false;
 let activePageIndex = 0;
+let dirty = false;
 
 // The editable model: everything the panel can change.
 const model = {
@@ -28,6 +31,7 @@ const model = {
   pages: [],
   nav: [],
   style: {
+    preset: "custom",
     accent: "#0f172a",
     background: "#f4f6fb",
     text: "#16233a",
@@ -41,6 +45,13 @@ const model = {
     description: "",
     keywords: ""
   }
+};
+
+const STYLE_PRESETS = {
+  modern: { accent: "#2563eb", background: "#f6f8fc", text: "#14213d", font: "'Segoe UI',Inter,system-ui,Arial,sans-serif", rounded: true, shadows: true },
+  editorial: { accent: "#b45309", background: "#fffaf2", text: "#2b2118", font: "Georgia,'Times New Roman',serif", rounded: false, shadows: false },
+  warm: { accent: "#c2410c", background: "#fff7ed", text: "#431407", font: "'Trebuchet MS',Arial,sans-serif", rounded: true, shadows: true },
+  contrast: { accent: "#111827", background: "#ffffff", text: "#111111", font: "'Segoe UI',Inter,system-ui,Arial,sans-serif", rounded: false, shadows: false },
 };
 
 const undoStack = [];
@@ -65,6 +76,28 @@ function setStatus(message, state = "info") {
   node.textContent = message;
   node.classList.toggle("error", state === "error");
   node.classList.toggle("success", state === "success");
+}
+
+function setDirty(nextDirty) {
+  dirty = Boolean(nextDirty);
+  const node = byId("wedDirty");
+  if (!node) return;
+  node.textContent = dirty ? "Unsaved changes" : "Saved";
+  node.classList.toggle("is-dirty", dirty);
+}
+
+function safeClientUrl(value, { image = false } = {}) {
+  const raw = String(value || "").trim();
+  if (!raw) return image ? "" : "#contact";
+  if (/^(javascript|vbscript|file|filesystem):/i.test(raw.replace(/[\u0000-\u001f\s]/g, ""))) return image ? "" : "#contact";
+  if (image && /^data:image\/(?:avif|gif|jpeg|jpg|png|svg\+xml|webp);/i.test(raw)) return raw;
+  if (/^(https?:|mailto:|tel:|#|\/|\.\/|\.\.\/)/i.test(raw)) return raw;
+  return image ? "" : "#contact";
+}
+
+function refreshQuality() {
+  const target = byId("wedQuality");
+  if (target) target.innerHTML = qualityMarkup(inspectWebsiteHtml(workingHtml || originalHtml));
 }
 
 function abs(url) {
@@ -95,6 +128,7 @@ function pushUndo() {
   pendingUndo = null;
   const btn = byId("wedUndo");
   if (btn) btn.disabled = undoStack.length === 0;
+  setDirty(true);
 }
 
 // Called on the first "input" of an edit burst: remember the HTML as it was
@@ -107,6 +141,7 @@ function captureUndo() {
   }
   const btn = byId("wedUndo");
   if (btn) btn.disabled = undoStack.length === 0;
+  setDirty(true);
 }
 
 function undo() {
@@ -119,6 +154,7 @@ function undo() {
   setStatus("Undid the last change.");
   const btn = byId("wedUndo");
   if (btn) btn.disabled = undoStack.length === 0;
+  setDirty(workingHtml !== originalHtml);
 }
 
 
@@ -200,6 +236,19 @@ function hydrateFromHtml() {
   model.seo.title = doc.title || "";
   model.seo.description = doc.querySelector('meta[name="description"]')?.getAttribute("content") || "";
   model.seo.keywords = doc.querySelector('meta[name="keywords"]')?.getAttribute("content") || "";
+
+  // Preserve visual editor settings after a save/reload when the editor's own
+  // style override is present in the published HTML.
+  const editorStyle = String(doc.querySelector("style[data-wed-style]")?.textContent || "");
+  const cssValue = (pattern) => editorStyle.match(pattern)?.[1]?.trim() || "";
+  model.style.accent = cssValue(/--wed-accent:([^;}]+)/i) || model.style.accent;
+  model.style.background = cssValue(/--wed-bg:([^;}]+)/i) || model.style.background;
+  model.style.text = cssValue(/--wed-text:([^;}]+)/i) || model.style.text;
+  model.style.font = cssValue(/font-family:([^!;}]+)/i) || model.style.font;
+  const headingScale = Number(cssValue(/h1,h2\{font-size:calc\(1em \* ([\d.]+)/i));
+  if (Number.isFinite(headingScale) && headingScale > 0) model.style.headingScale = Math.round(headingScale * 100);
+  model.style.rounded = !/border-radius:0!important/i.test(editorStyle);
+  model.style.shadows = /box-shadow:(?!none)/i.test(editorStyle);
 }
 
 
@@ -236,6 +285,8 @@ function applyStyleOverrides(doc) {
 
 function buildPageSection(page) {
   const e = esc;
+  const ctaHref = safeClientUrl(model.ctaUrl);
+  const heroImage = safeClientUrl(model.heroImage, { image: true });
   const services = model.services
     .map((s) => `<div class="wed-card" style="background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:20px"><h3 style="margin:.1em 0 .3em">${e(s)}</h3><p style="margin:0;color:#475569">${e(`Professional ${s.toLowerCase()} delivered with care and clear pricing.`)}</p></div>`)
     .join("");
@@ -254,9 +305,9 @@ function buildPageSection(page) {
     model.intro ? `<p style="max-width:660px;margin:0 auto;color:#475569;font-size:1.08rem;line-height:1.6">${e(model.intro)}</p>` : "",
     page.body ? `<p class="wed-pagebody" style="max-width:660px;margin:14px auto 0;color:#475569;line-height:1.6">${e(page.body)}</p>` : "",
     `<div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:18px">`,
-    model.ctaLabel ? `<a href="${e(model.ctaUrl || "#contact")}" style="padding:14px 28px;border-radius:12px;background:${e(model.style.accent)};color:#fff;font-weight:700;text-decoration:none">${e(model.ctaLabel)}</a>` : "",
+    model.ctaLabel ? `<a href="${e(ctaHref)}" style="padding:14px 28px;border-radius:12px;background:${e(model.style.accent)};color:#fff;font-weight:700;text-decoration:none">${e(model.ctaLabel)}</a>` : "",
     `</div></div>`,
-    model.heroImage ? `<img src="${e(model.heroImage)}" alt="${e(model.businessName || "Business")}" style="width:100%;max-height:440px;object-fit:cover;display:block;margin-top:20px">` : "",
+    heroImage ? `<img src="${e(heroImage)}" alt="${e(model.businessName || "Business")}" style="width:100%;max-height:440px;object-fit:cover;display:block;margin-top:20px">` : "",
     services ? `<div class="wrap"><h2>What we do</h2><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:16px;margin-top:16px">${services}</div></div>` : "",
     faq ? `<div class="wrap"><h2>Questions</h2><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-top:16px">${faq}</div></div>` : "",
     contact ? `<div class="wrap" id="contact"><h2>Get in touch</h2><div style="display:grid;gap:6px;margin-top:10px">${contact}</div></div>` : ""
@@ -285,7 +336,7 @@ function applyModelToHtml() {
     const cta = firstPage.querySelector("a.btn, a[class*='btn']");
     if (cta) {
       if (model.ctaLabel) cta.textContent = model.ctaLabel;
-      if (model.ctaUrl) cta.setAttribute("href", model.ctaUrl);
+      if (model.ctaUrl) cta.setAttribute("href", safeClientUrl(model.ctaUrl));
     }
   }
 
@@ -344,7 +395,8 @@ function applyModelToHtml() {
   // Hero image - swap the first <img> when one exists.
   if (model.heroImage) {
     const img = doc.querySelector("img");
-    if (img) img.setAttribute("src", model.heroImage);
+    const heroImage = safeClientUrl(model.heroImage, { image: true });
+    if (img && heroImage) img.setAttribute("src", heroImage);
   }
 
   // Services - replace the first card group.
@@ -386,10 +438,10 @@ function applyModelToHtml() {
     navEl.querySelectorAll(".nav-a").forEach((a) => a.remove());
     model.nav.forEach((item, index) => {
       const a = doc.createElement("a");
-      a.href = "#";
+      const pageIndex = Math.min(Math.max(0, Number(item.target ?? index)), Math.max(0, model.pages.length - 1));
+      a.href = `#pg-${pageIndex}`;
       a.className = `nav-a${index === 0 ? " active" : ""}`;
       a.textContent = item.label || `Page ${index + 1}`;
-      a.setAttribute("onclick", `return showPage(${item.target ?? index})`);
       navEl.append(a);
     });
   }
@@ -411,14 +463,16 @@ function applyModelToHtml() {
 
 // ---------- rendering ----------
 function renderPreview() {
-  const frame = byId("wedPreview");
+  const frame = byId("wedPreviewFrame");
   if (!frame) return;
+  frame.setAttribute("sandbox", "allow-scripts allow-forms allow-popups");
   frame.srcdoc = workingHtml || originalHtml || "";
 }
 
 function render() {
   workingHtml = applyModelToHtml();
   renderPreview();
+  refreshQuality();
 }
 
 function fillField(id, value) {
@@ -447,6 +501,7 @@ function renderPanel() {
   fillField("wedBackground", model.style.background);
   fillField("wedTextColor", model.style.text);
   fillField("wedFont", model.style.font);
+  fillField("wedStylePreset", model.style.preset || "custom");
   fillField("wedHeadingScale", String(model.style.headingScale));
   const rounded = byId("wedRounded");
   if (rounded) rounded.checked = model.style.rounded;
@@ -504,6 +559,7 @@ const applyChange = debounce(() => {
 function commitChange() {
   pendingUndo = null;
   render();
+  setDirty(true);
 }
 
 function bindTextFields() {
@@ -573,22 +629,32 @@ function bindStyleControls() {
   for (const [id, key] of colours) {
     const node = byId(id);
     if (!node) continue;
-    node.addEventListener("input", () => { captureUndo(); model.style[key] = node.value; applyChange(); });
-    node.addEventListener("change", () => { model.style[key] = node.value; commitChange(); });
+    node.addEventListener("input", () => { captureUndo(); model.style[key] = node.value; model.style.preset = "custom"; fillField("wedStylePreset", "custom"); applyChange(); });
+    node.addEventListener("change", () => { model.style[key] = node.value; model.style.preset = "custom"; fillField("wedStylePreset", "custom"); commitChange(); });
   }
 
   const font = byId("wedFont");
-  font?.addEventListener("change", () => { model.style.font = font.value; commitChange(); });
+  font?.addEventListener("change", () => { captureUndo(); model.style.font = font.value; model.style.preset = "custom"; fillField("wedStylePreset", "custom"); commitChange(); });
+
+  const preset = byId("wedStylePreset");
+  preset?.addEventListener("change", () => {
+    captureUndo();
+    const picked = STYLE_PRESETS[preset.value];
+    model.style.preset = picked ? preset.value : "custom";
+    if (picked) Object.assign(model.style, picked);
+    renderPanel();
+    commitChange();
+  });
 
   const scale = byId("wedHeadingScale");
-  scale?.addEventListener("input", () => { captureUndo(); model.style.headingScale = Number(scale.value || 100); applyChange(); });
-  scale?.addEventListener("change", () => { model.style.headingScale = Number(scale.value || 100); commitChange(); });
+  scale?.addEventListener("input", () => { captureUndo(); model.style.headingScale = Number(scale.value || 100); model.style.preset = "custom"; fillField("wedStylePreset", "custom"); applyChange(); });
+  scale?.addEventListener("change", () => { model.style.headingScale = Number(scale.value || 100); model.style.preset = "custom"; fillField("wedStylePreset", "custom"); commitChange(); });
 
   const rounded = byId("wedRounded");
-  rounded?.addEventListener("change", () => { model.style.rounded = rounded.checked; commitChange(); });
+  rounded?.addEventListener("change", () => { captureUndo(); model.style.rounded = rounded.checked; model.style.preset = "custom"; fillField("wedStylePreset", "custom"); commitChange(); });
 
   const shadows = byId("wedShadows");
-  shadows?.addEventListener("change", () => { model.style.shadows = shadows.checked; commitChange(); });
+  shadows?.addEventListener("change", () => { captureUndo(); model.style.shadows = shadows.checked; model.style.preset = "custom"; fillField("wedStylePreset", "custom"); commitChange(); });
 }
 
 
@@ -725,7 +791,7 @@ function bindTabs() {
 
 // ---------- device toggle, upload, save ----------
 function setDevice(device) {
-  byId("wedPreview")?.classList.toggle("mobile", device === "mobile");
+  byId("wedPreviewFrame")?.classList.toggle("mobile", device === "mobile");
   byId("wedDesktop")?.classList.toggle("on", device === "desktop");
   byId("wedMobile")?.classList.toggle("on", device === "mobile");
 }
@@ -749,6 +815,7 @@ function bindImageUpload() {
     if (message) message.textContent = "Reading image...";
     try {
       const dataUrl = await readFileAsDataUrl(file);
+      captureUndo();
       model.heroImage = dataUrl;
       commitChange();
       fillField("wedHeroImage", "");
@@ -783,10 +850,15 @@ async function saveSite() {
     if (result.website) {
       originalHtml = result.website.html;
       workingHtml = result.website.html;
+      hydrateFromHtml();
+      renderPanel();
+      renderPreview();
+      refreshQuality();
     }
     if (result.shareUrl) shareUrl = result.shareUrl;
     fillField("wedShareUrl", shareUrl ? abs(shareUrl) : "");
     setStatus("Saved and published. Your share link now shows these changes.", "success");
+    setDirty(false);
   } catch (error) {
     setStatus(error.message || "We couldn't save your changes. Please try again.", "error");
   } finally {
@@ -795,15 +867,148 @@ async function saveSite() {
   }
 }
 
+function downloadSite() {
+  const html = workingHtml || originalHtml;
+  if (!html) return;
+  const slug = String(model.businessName || "website").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 50) || "website";
+  const blob = new Blob([html], { type: "text/html;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `${slug}.html`;
+  document.body.append(link);
+  link.click();
+  link.remove();
+  window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+  setStatus("Downloaded the current draft. Publish separately when you are ready.", "success");
+}
+
+function resetDraft() {
+  if (!dirty) {
+    setStatus("There are no unsaved changes to reset.");
+    return;
+  }
+  if (!window.confirm("Discard unsaved visual edits and restore the last published version?")) return;
+  workingHtml = originalHtml;
+  undoStack.length = 0;
+  pendingUndo = null;
+  activePageIndex = 0;
+  hydrateFromHtml();
+  render();
+  renderPanel();
+  const undoButton = byId("wedUndo");
+  if (undoButton) undoButton.disabled = true;
+  setDirty(false);
+  setStatus("Restored the last published version.");
+}
+
+async function applyAiUpdate() {
+  if (busy || !websiteId) return;
+  const instructionNode = byId("wedAiInstruction");
+  const instruction = String(instructionNode?.value || "").trim();
+  if (!instruction) {
+    setStatus("Describe the edit you want the AI to make.", "error");
+    instructionNode?.focus();
+    return;
+  }
+  if (dirty) {
+    setStatus("Save or reset your visual edits before applying an AI update so no work is lost.", "error");
+    return;
+  }
+  busy = true;
+  const button = byId("wedAiApply");
+  const originalLabel = button?.textContent;
+  if (button) { button.disabled = true; button.textContent = "Applying AI update..."; }
+  setStatus("Requesting the configured AI provider. This may take a moment...");
+  try {
+    const result = await apiFetch(`/api/ai/websites/${encodeURIComponent(websiteId)}`, {
+      method: "PATCH",
+      body: JSON.stringify({ instruction }),
+    });
+    if (!result.website?.html) throw new Error("The AI did not return a usable website update. Your published site was not changed.");
+    originalHtml = result.website.html;
+    workingHtml = result.website.html;
+    shareUrl = result.shareUrl || shareUrl;
+    hydrateFromHtml();
+    render();
+    renderPanel();
+    undoStack.length = 0;
+    pendingUndo = null;
+    const undoButton = byId("wedUndo");
+    if (undoButton) undoButton.disabled = true;
+    if (instructionNode) instructionNode.value = "";
+    byId("wedSiteName").textContent = `${result.website.businessName || result.website.leadName || "Your website"} - rev ${result.website.revisions || 1}`;
+    setDirty(false);
+    setStatus(`AI update applied and published (revision ${result.website.revisions || "new"}). Review the preview before sharing.`, "success");
+  } catch (error) {
+    setStatus(error.message || "The AI update could not be applied. Your current website was not changed.", "error");
+  } finally {
+    busy = false;
+    if (button) { button.disabled = false; button.textContent = originalLabel || "Apply AI update"; }
+  }
+}
+
+function bindQualityControls() {
+  byId("wedRunQuality")?.addEventListener("click", () => {
+    refreshQuality();
+    setStatus("Markup readiness review refreshed.");
+  });
+  byId("wedCopyQuality")?.addEventListener("click", async () => {
+    const report = qualityText(inspectWebsiteHtml(workingHtml || originalHtml));
+    try {
+      await navigator.clipboard.writeText(report);
+      setStatus("Quality review copied.", "success");
+    } catch {
+      setStatus("Could not access the clipboard. Select the review text manually.", "error");
+    }
+  });
+}
+
+function bindAiControls() {
+  document.querySelectorAll("[data-wed-ai-suggestion]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const instruction = byId("wedAiInstruction");
+      if (instruction) {
+        instruction.value = String(button.dataset.wedAiSuggestion || "");
+        instruction.focus();
+      }
+    });
+  });
+  byId("wedAiApply")?.addEventListener("click", applyAiUpdate);
+}
+
+function bindPreviewSelection() {
+  window.addEventListener("message", (event) => {
+    const frame = byId("wedPreviewFrame");
+    if (!frame || event.source !== frame.contentWindow || event.data?.type !== "mat-site-selection") return;
+    const data = event.data;
+    const note = byId("wedSelectionNote");
+    if (note) {
+      note.hidden = false;
+      note.textContent = data.text ? `Selected ${data.tagName}: ${String(data.text).slice(0, 90)}` : "Selected an element in the preview.";
+    }
+    const focusField = data.tagName === "h1" ? "wedHeadline" : (data.tagName === "a" || data.tagName === "button" ? "wedCtaLabel" : "");
+    if (focusField) {
+      document.querySelector('[data-wed-tab="content"]')?.click();
+      window.setTimeout(() => byId(focusField)?.focus(), 0);
+    }
+  });
+}
+
 function openFullPreview() {
-  const w = window.open("", "_blank");
+  const publishedUrl = !dirty && shareUrl ? abs(shareUrl) : "";
+  const w = window.open(publishedUrl || "", "_blank");
   if (!w) {
     setStatus("Pop-up blocked - allow pop-ups for this site, then click Preview again.", "error");
     return;
   }
-  w.document.open();
-  w.document.write(workingHtml || originalHtml);
-  w.document.close();
+  if (!publishedUrl) {
+    w.document.open();
+    w.document.write(workingHtml || originalHtml);
+    w.document.close();
+  } else {
+    try { w.opener = null; } catch {}
+  }
 }
 
 function paintPlanBadge() {
@@ -845,12 +1050,17 @@ async function initEditor() {
   bindPageControls();
   bindNavControls();
   bindImageUpload();
+  bindAiControls();
+  bindQualityControls();
+  bindPreviewSelection();
 
   byId("wedDesktop")?.addEventListener("click", () => setDevice("desktop"));
   byId("wedMobile")?.addEventListener("click", () => setDevice("mobile"));
   byId("wedUndo")?.addEventListener("click", undo);
   byId("wedSave")?.addEventListener("click", saveSite);
   byId("wedPreview")?.addEventListener("click", openFullPreview);
+  byId("wedDownload")?.addEventListener("click", downloadSite);
+  byId("wedReset")?.addEventListener("click", resetDraft);
   byId("wedCopyLink")?.addEventListener("click", async () => {
     if (!shareUrl) return;
     try {
@@ -874,6 +1084,7 @@ async function initEditor() {
     renderPanel();
     const undoBtn = byId("wedUndo");
     if (undoBtn) undoBtn.disabled = true;
+    setDirty(false);
     setStatus("Ready. Edit anything on the left - the preview updates as you type.", "success");
   } catch (error) {
     setStatus(error.message || "We couldn't open that website.", "error");

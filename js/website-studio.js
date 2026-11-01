@@ -1,4 +1,5 @@
 import { apiFetch, byId, getCurrentUser, isProUser, requireAuth } from "./api.js";
+import { inspectWebsiteHtml, qualityMarkup } from "./site-quality.js";
 
 const SAVED_LEADS_KEY = "mat_local_saved_leads_v1";
 
@@ -36,6 +37,82 @@ function setStatus(message) {
 function setStatusLine(message) {
   const node = byId("studioStatusLine");
   if (node) node.textContent = message;
+}
+
+function setBriefValue(id, value, { overwrite = false } = {}) {
+  const node = byId(id);
+  if (!node || (node.value && !overwrite)) return;
+  node.value = String(value || "");
+}
+
+function listHttpUrls(value, limit = 6) {
+  return String(value || "").split(/\r?\n|,/).map((item) => item.trim()).filter((item) => {
+    try {
+      const parsed = new URL(item);
+      return parsed.protocol === "https:" || parsed.protocol === "http:";
+    } catch { return false; }
+  }).slice(0, limit);
+}
+
+function readBrief() {
+  const pages = Math.min(4, Math.max(1, Number(byId("wsxPages")?.value || chosenPages || 1)));
+  const hero = listHttpUrls(byId("wsxHeroImage")?.value, 1)[0] || "";
+  return {
+    businessName: String(byId("wsxBusinessName")?.value || businessIdentity() || "").trim().slice(0, 160),
+    businessType: String(byId("wsxBusinessType")?.value || "").trim().slice(0, 120),
+    location: String(byId("wsxLocation")?.value || "").trim().slice(0, 160),
+    targetAudience: String(byId("wsxAudience")?.value || "").trim().slice(0, 400),
+    primaryGoal: String(byId("wsxGoal")?.value || "enquiries"),
+    pages,
+    style: String(byId("wsxStyle")?.value || "modern"),
+    palette: String(byId("wsxPalette")?.value || "blue"),
+    tone: String(byId("wsxTone")?.value || "professional"),
+    language: String(byId("wsxLanguage")?.value || "English").trim().slice(0, 40),
+    cta: String(byId("wsxCta")?.value || "").trim().slice(0, 160),
+    services: String(byId("wsxServices")?.value || "").trim().slice(0, 1200),
+    about: String(byId("wsxAbout")?.value || "").trim().slice(0, 1200),
+    followBrief: Boolean(byId("wsxFollowBrief")?.checked),
+    images: { hero, gallery: listHttpUrls(byId("wsxGalleryImages")?.value, 6) },
+  };
+}
+
+function applyBrief(brief = {}) {
+  if (!brief || typeof brief !== "object") return;
+  setBriefValue("wsxBusinessName", brief.businessName, { overwrite: true });
+  setBriefValue("wsxBusinessType", brief.businessType, { overwrite: true });
+  setBriefValue("wsxLocation", brief.location, { overwrite: true });
+  setBriefValue("wsxAudience", brief.targetAudience, { overwrite: true });
+  setBriefValue("wsxGoal", brief.primaryGoal || "enquiries", { overwrite: true });
+  setBriefValue("wsxPages", String(brief.pages || 1), { overwrite: true });
+  setBriefValue("wsxStyle", brief.style || "modern", { overwrite: true });
+  setBriefValue("wsxPalette", brief.palette || "blue", { overwrite: true });
+  setBriefValue("wsxTone", brief.tone || "professional", { overwrite: true });
+  setBriefValue("wsxLanguage", brief.language || "English", { overwrite: true });
+  setBriefValue("wsxCta", brief.cta, { overwrite: true });
+  setBriefValue("wsxServices", brief.services, { overwrite: true });
+  setBriefValue("wsxAbout", brief.about, { overwrite: true });
+  setBriefValue("wsxHeroImage", brief.images?.hero, { overwrite: true });
+  setBriefValue("wsxGalleryImages", Array.isArray(brief.images?.gallery) ? brief.images.gallery.join("\n") : "", { overwrite: true });
+  const follow = byId("wsxFollowBrief");
+  if (follow) follow.checked = brief.followBrief !== false;
+}
+
+function syncBuildBriefButton() {
+  const button = byId("wsxBuildBrief");
+  if (button) button.disabled = busy;
+}
+
+function updateQuality() {
+  const panel = byId("studioQuality");
+  const body = byId("studioQualityBody");
+  if (!panel || !body) return;
+  if (!currentHtml) {
+    panel.hidden = true;
+    body.innerHTML = "";
+    return;
+  }
+  panel.hidden = false;
+  body.innerHTML = qualityMarkup(inspectWebsiteHtml(currentHtml));
 }
 
 // Same ID scheme as js/leads.js — every saved lead carries an ML-XXXXXX id.
@@ -226,6 +303,7 @@ function loadLeadPicker() {
       return;
     }
     typedBusiness = String(handoff.name || "");
+    setBriefValue("wsxBusinessName", typedBusiness, { overwrite: true });
   } catch {}
 }
 
@@ -238,6 +316,12 @@ function applySelectedLead(lead) {
     return;
   }
   card.hidden = false;
+  setBriefValue("wsxBusinessName", lead.name, { overwrite: true });
+  setBriefValue("wsxBusinessType", lead.businessType || lead.category);
+  setBriefValue("wsxLocation", lead.address || [lead.city, lead.state, lead.country].filter(Boolean).join(", "));
+  setBriefValue("wsxCta", lead.phone ? "Call us" : "Get in touch");
+  setBriefValue("wsxAudience", lead.businessType || lead.category ? `People looking for ${lead.businessType || lead.category} services` : "");
+  setBriefValue("wsxServices", Array.isArray(lead.services) ? lead.services.join("\n") : lead.services || "");
   byId("wsxLeadName").textContent = lead.name || "Business";
   byId("wsxLeadId").textContent = lead.leadId || lead.id || "no id";
   byId("wsxLeadMeta").textContent = [lead.phone, lead.address].filter(Boolean).join(" • ");
@@ -264,6 +348,7 @@ function askPageCount() {
 
 function pickPageCount(count, silent = false) {
   chosenPages = count;
+  setBriefValue("wsxPages", String(count), { overwrite: true });
   if (!silent) addUser(count === 1 ? "1 page" : `${count} pages`);
   if (businessIdentity()) {
     beginBuild();
@@ -277,7 +362,9 @@ function pickPageCount(count, silent = false) {
 
 function beginBuild() {
   if (busy) return;
-  const businessName = businessIdentity();
+  const brief = readBrief();
+  const businessName = brief.businessName || businessIdentity();
+  chosenPages = brief.pages || chosenPages;
   if (!chosenPages || !businessName) {
     if (!chosenPages) {
       askPageCount();
@@ -298,17 +385,37 @@ function beginBuild() {
 
 async function runBuild(businessName) {
   busy = true;
+  syncBuildBriefButton();
   const send = byId("wsxSend");
   if (send) send.disabled = true;
   showOverlay(true);
   setStatusLine("Designing your site…");
   setStatus(`Building a ${chosenPages}-page site for ${businessName}…`);
   try {
+    const brief = readBrief();
+    const lead = { ...(selectedLead || {}) };
+    lead.name = lead.name || businessName;
+    lead.businessType = lead.businessType || lead.category || brief.businessType;
+    lead.category = lead.category || brief.businessType;
+    lead.address = lead.address || brief.location;
     const payload = {
-      leadId: selectedLead?.leadId || "",
-      lead: selectedLead || {},
+      leadId: selectedLead?.leadId || selectedLead?.id || "",
+      lead,
       businessName,
-      pages: chosenPages
+      pages: chosenPages,
+      style: brief.style,
+      palette: brief.palette,
+      design: brief.style,
+      tone: brief.tone,
+      targetAudience: brief.targetAudience,
+      primaryGoal: brief.primaryGoal,
+      location: brief.location,
+      services: brief.services,
+      cta: brief.cta,
+      about: brief.about,
+      language: brief.language,
+      followBrief: brief.followBrief,
+      images: brief.images,
     };
     const r = await apiFetch("/api/ai/websites", { method: "POST", body: JSON.stringify(payload) });
     websiteId = r.websiteId;
@@ -345,6 +452,7 @@ async function runBuild(businessName) {
     busy = false;
     showOverlay(false);
     if (send) send.disabled = false;
+    syncBuildBriefButton();
   }
 }
 
@@ -385,7 +493,11 @@ async function runRefine(instruction) {
 function setPreview(html) {
   currentHtml = html || "";
   const frame = byId("studioPreview");
-  if (frame) frame.srcdoc = currentHtml;
+  if (frame) {
+    frame.setAttribute("sandbox", "allow-scripts allow-forms allow-popups");
+    frame.srcdoc = currentHtml;
+  }
+  updateQuality();
 }
 
 function showOverlay(show) {
@@ -408,14 +520,19 @@ function setDevice(device) {
 
 function openPreviewWindow() {
   if (!currentHtml) return;
-  const w = window.open("", "_blank");
+  const target = shareUrl ? abs(shareUrl) : "";
+  const w = window.open(target || "", "_blank");
   if (!w) {
     setStatus("Pop-up blocked — allow pop-ups for this site, then click Open again.");
     return;
   }
-  w.document.open();
-  w.document.write(currentHtml);
-  w.document.close();
+  if (!target) {
+    w.document.open();
+    w.document.write(currentHtml);
+    w.document.close();
+  } else {
+    try { w.opener = null; } catch {}
+  }
 }
 
 async function loadFromQuery() {
@@ -429,6 +546,7 @@ async function loadFromQuery() {
     shareToken = r.website.shareToken || "";
     shareUrl = r.shareUrl || "";
     setPreview(r.website.html);
+    applyBrief(r.website.brief || { businessName: r.website.businessName, pages: r.website.pageCount || 1 });
     chosenPages = chosenPages || Number(r.website.pageCount || 1);
     const pageLabel = r.website.pageCount > 1 ? ` • ${r.website.pageCount} pages` : "";
     byId("studioMeta").textContent = `${r.website.businessName || r.website.leadName || "Website"} • rev ${r.website.revisions}${pageLabel}`;
@@ -472,6 +590,7 @@ function handleUserMessage(raw) {
 
   if (stage === "business") {
     typedBusiness = text.slice(0, 120);
+    setBriefValue("wsxBusinessName", typedBusiness, { overwrite: true });
     beginBuild();
     return;
   }
@@ -592,9 +711,32 @@ function bindLeadPicker() {
   if (!select) return;
   select.addEventListener("change", () => {
     const lead = savedLeads.find((item) => String(item.leadId || item.id || "") === select.value);
-    if (lead) applySelectedLead(lead);
-    else applySelectedLead(null);
+    if (lead) {
+      applySelectedLead(lead);
+      if (stage === "business") beginBuild();
+    } else applySelectedLead(null);
   });
+}
+
+function buildFromBrief() {
+  if (busy) return;
+  const brief = readBrief();
+  if (!brief.businessName) {
+    setStatus("Add a business name before building the website.", "error");
+    byId("wsxBusinessName")?.focus();
+    return;
+  }
+  chosenPages = brief.pages;
+  typedBusiness = brief.businessName;
+  addUser(`Build brief: ${brief.businessName} · ${brief.pages} page${brief.pages === 1 ? "" : "s"} · ${brief.primaryGoal}`);
+  beginBuild();
+}
+
+function bindBrief() {
+  byId("wsxPages")?.addEventListener("change", () => {
+    chosenPages = Number(byId("wsxPages")?.value || 1);
+  });
+  byId("wsxBuildBrief")?.addEventListener("click", buildFromBrief);
 }
 
 // ---------- your websites list ----------
@@ -645,6 +787,15 @@ function resetConversation() {
   setPreview("");
   byId("studioMeta").textContent = "AI";
   applySelectedLead(null);
+  ["wsxBusinessName", "wsxBusinessType", "wsxLocation", "wsxAudience", "wsxCta", "wsxServices", "wsxAbout", "wsxHeroImage", "wsxGalleryImages"].forEach((id) => setBriefValue(id, "", { overwrite: true }));
+  setBriefValue("wsxGoal", "enquiries", { overwrite: true });
+  setBriefValue("wsxPages", "1", { overwrite: true });
+  setBriefValue("wsxStyle", "modern", { overwrite: true });
+  setBriefValue("wsxPalette", "blue", { overwrite: true });
+  setBriefValue("wsxTone", "professional", { overwrite: true });
+  setBriefValue("wsxLanguage", "English", { overwrite: true });
+  const follow = byId("wsxFollowBrief");
+  if (follow) follow.checked = true;
   try { history.replaceState(null, "", "/website-studio.html"); } catch {}
   askPageCount();
 }
@@ -677,6 +828,7 @@ async function initStudio() {
   bindComposer();
   bindPreviewControls();
   bindLeadPicker();
+  bindBrief();
   bindHistory();
   loadLeadPicker();
 
@@ -729,9 +881,11 @@ async function initStudio() {
       if (select) select.value = String(lead.leadId || lead.id || "");
     } else if (business) {
       typedBusiness = business;
+      setBriefValue("wsxBusinessName", business, { overwrite: true });
     }
   } else if (business) {
     typedBusiness = business;
+    setBriefValue("wsxBusinessName", business, { overwrite: true });
   }
 
   askPageCount();

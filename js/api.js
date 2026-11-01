@@ -18,7 +18,8 @@ const PROTECTED_API_PREFIXES = [
   "/api/admin/",
   "/api/ai/",
   "/api/billing/",
-  "/api/earn/"
+  "/api/earn/",
+  "/api/social/"
 ];
 
 const PUBLIC_API_EXACT = new Set([
@@ -131,6 +132,19 @@ export function redirectToLogin() {
   window.location.replace(`/login.html?next=${encodeURIComponent(current || "/dashboard.html")}`);
 }
 
+// Static previews and JSON Server commonly run on a different local port than
+// the real Node API. Keep production same-origin, but route local /api calls
+// to the authenticated Node server so search, CRM, and AI buttons still work.
+function apiEndpoint(path) {
+  const value = String(path || "");
+  if (typeof window === "undefined" || !value.startsWith("/api/")) return value;
+  const host = String(window.location.hostname || "").toLowerCase();
+  const port = String(window.location.port || "");
+  const isLocal = ["localhost", "127.0.0.1", "::1"].includes(host);
+  if (isLocal && port && port !== "3000") return `http://localhost:3000${value}`;
+  return value;
+}
+
 export function requireAuth() {
   if (hasStoredSession()) return true;
   redirectToLogin();
@@ -141,7 +155,7 @@ async function refreshSession() {
   const refreshToken = getRefreshToken();
   if (!refreshToken) throw new Error("Login required.");
 
-  const response = await fetch("/api/auth/refresh", {
+  const response = await fetch(apiEndpoint("/api/auth/refresh"), {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ refreshToken })
@@ -157,6 +171,38 @@ async function refreshSession() {
 
   setSession(payload);
   return payload.accessToken || payload.idToken;
+}
+
+async function fetchWithTimeout(path, options = {}) {
+  const timeoutMs = Number(options.timeoutMs || (
+    String(path).startsWith("/api/leads/search") ? 70000
+      : String(path).startsWith("/api/ai/") ? 65000
+        : 30000
+  ));
+  const controller = new AbortController();
+  const externalSignal = options.signal;
+  let relayAbort;
+  if (externalSignal) {
+    relayAbort = () => controller.abort(externalSignal.reason);
+    if (externalSignal.aborted) relayAbort();
+    else externalSignal.addEventListener("abort", relayAbort, { once: true });
+  }
+  const timeout = setTimeout(() => controller.abort("request-timeout"), Math.max(1000, timeoutMs));
+  const { timeoutMs: _timeoutMs, signal: _signal, ...fetchOptions } = options;
+  try {
+    return await fetch(apiEndpoint(path), { ...fetchOptions, signal: controller.signal });
+  } catch (error) {
+    if (error?.name === "AbortError" || controller.signal.aborted) {
+      const timedOut = controller.signal.reason === "request-timeout";
+      throw new Error(timedOut
+        ? "The server took too long to respond. The search/provider may be busy; use Refresh Leads to retry without losing your current filters."
+        : "Request cancelled.");
+    }
+    throw error;
+  } finally {
+    clearTimeout(timeout);
+    if (externalSignal && relayAbort) externalSignal.removeEventListener("abort", relayAbort);
+  }
 }
 
 export async function apiFetch(path, options = {}) {
@@ -177,10 +223,11 @@ export async function apiFetch(path, options = {}) {
   const token = getToken();
   if (token) headers.Authorization = `Bearer ${token}`;
 
-  const response = await fetch(path, {
+  const response = await fetchWithTimeout(path, {
     ...options,
     headers
-  }).catch(() => {
+  }).catch((error) => {
+    if (error?.message) throw error;
     throw new Error("Cannot reach the server. Check your internet connection, then reload the page. If this is the live site, the API may still be deploying — wait a minute and retry.");
   });
 
@@ -216,6 +263,9 @@ export async function apiFetch(path, options = {}) {
       }
     }
     var baseMessage = typeof payload === "object" && payload && payload.error ? payload.error.message : "Request failed";
+    if (response.status === 504) {
+      baseMessage = "The production function timed out while waiting for a provider. Use Refresh Leads, reduce the search area, or configure Google Places/NVIDIA in Vercel.";
+    }
     var message = fieldMessage ? baseMessage + " (" + fieldMessage + ")" : baseMessage;
     var error = new Error(message);
     error.code = typeof payload === "object" && payload && payload.error && payload.error.code ? payload.error.code : undefined;
