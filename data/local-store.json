@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-01T10:51:45.425Z",
+  "updatedAt": "2026-11-01T22:36:26.995Z",
   "collections": {
     "socialBlocks": [],
     "users": [
@@ -237,9 +237,9 @@
           "autoScore": true
         },
         "id": "owner",
-        "updatedAt": "2026-11-01T10:51:40.383Z",
+        "updatedAt": "2026-11-01T22:35:28.281Z",
         "createdAt": "2026-10-11T22:37:55.425Z",
-        "lastSeenAt": "2026-11-01T10:51:40.383Z"
+        "lastSeenAt": "2026-11-01T22:35:28.281Z"
       },
       {
         "name": "Smoke Tester",
@@ -666,6 +666,133 @@
         "createdAt": "2026-10-31T22:23:57.841Z",
         "updatedAt": "2026-10-31T22:36:52.785Z",
         "lastSeenAt": "2026-10-31T22:36:52.785Z"
+      },
+      {
+        "uid": "d336ea1e-32ad-406d-a089-0d48b02911f0",
+        "id": "d336ea1e-32ad-406d-a089-0d48b02911f0",
+        "name": "mat autos",
+        "email": "sammyzyang1122@gmail.com",
+        "passwordHash": "scrypt$1f6cdc7e1034c8cb6a633d78f108224e$d03ed6c802ed2ec085e0068546a89ba7ab0f882ab7869e98bab043ef3b7fef414cd01413a2319fac059b2e116501809cc3f36d181ff18870a098f4a26478f667",
+        "role": "user",
+        "tokenVersion": 1,
+        "subscription": "trial",
+        "planName": "Free Trial",
+        "monthlyLeadLimit": 5,
+        "trialSearchLimit": 2,
+        "trialLeadLimit": 5,
+        "billingStatus": "trial",
+        "trialSearchesUsed": 0,
+        "entitlements": {
+          "billingRequired": true,
+          "trial": true,
+          "trialSearchesUsed": 0,
+          "trialSearchLimit": 2,
+          "trialLeadLimit": 5,
+          "upgradeRequiredAfterTrial": true
+        },
+        "emailVerified": true,
+        "verificationRequired": true,
+        "createdAt": "2026-11-01T21:39:03.340Z",
+        "updatedAt": "2026-11-01T21:58:19.256Z",
+        "verificationToken": "",
+        "verificationTokenExpiresAt": 0,
+        "verificationSentAt": "2026-11-01T21:39:06.972Z",
+        "emailVerifiedAt": "2026-11-01T21:39:32.246Z",
+        "lastSeenAt": "2026-11-01T21:58:19.256Z"
+      },
+      {
+        "uid": "084d76e4-a018-4ff6-baf8-e1fb952c8205",
+        "id": "084d76e4-a018-4ff6-baf8-e1fb952c8205",
+        "name": "jaden",
+        "email": "sammzyang1122@gmail.com",
+        "passwordHash": "scrypt$0eb9edd315bd0d13ae5878d8c42678b8$f8ea891fe7d4b247eab6396b7c6598c56d8359df445c2edca1401f2469444ecb77b85a2d147e1db89ec8732cab57835d5cb5506099852e7dc3bd4e0454a090c5",
+        "role": "user",
+        "tokenVersion": 1,
+        "subscription": "trial",
+        "planName": "Free Trial",
+        "monthlyLeadLimit": 5,
+        "trialSearchLimit": 2,
+        "trialLeadLimit": 5,
+        "billingStatus": "trial",
+        "trialSearchesUsed": 0,
+        "entitlements": {
+          "billingRequired": true,
+          "trial": true,
+          "trialSearchesUsed": 0,
+          "trialSearchLimit": 2,
+          "trialLeadLimit": 5,
+          "upgradeRequiredAfterTrial": true
+        },
+        "emailVerified": true,
+        "verificationRequired": true,
+        "createdAt": "2026-11-01T21:40:35.899Z",
+        "updatedAt": "2026-11-01T21:42:32.192Z",
+        "verificationToken": "",
+        "verificationTokenExpiresAt": 0,
+        "verificationSentAt": "2026-11-01T21:41:06.764Z",
+        "emailVerifiedAt": "2026-11-01T21:42:32.192Z"
+      },
+      {
+        "uid": "f2a289d6-6cd4-46f6-ab95-ae3e8e14b18f",
+        "id": "f2a289d6-6cd4-46f6-ab95-ae3e8e14b18f",
+        "name": "mat autos",
+        "email": "autosmattgmwmm@gmail.com",
+        "passwordHash": "scrypt$b12a8e11e00ce8b0c56652fce2f4d0c8$9fc861f4bfeaff4b562fcbc00dacfdf26fadb064894ae35023e80d385ff531a554fe2498c3c4c288233f83411a6fc949c1efa5a1e6cac9f2c78d3f5c2d56e989",
+        "role": "user",
+        "tokenVersion": 1,
+        "subscription": "trial",
+        "planName": "Free Trial",
+        "monthlyLeadLimit": 5,
+        "trialSearchLimit": 2,
+        "trialLeadLimit": 5,
+        "billingStatus": "trial",
+        "trialSearchesUsed": 0,
+        "entitlements": {
+          "billingRequired": true,
+          "trial": true,
+          "trialSearchesUsed": 0,
+          "trialSearchLimit": 2,
+          "trialLeadLimit": 5,
+          "upgradeRequiredAfterTrial": true
+        },
+        "emailVerified": false,
+        "verificationRequired": true,
+        "createdAt": "2026-11-01T21:59:30.143Z",
+        "updatedAt": "2026-11-01T21:59:40.172Z",
+        "verificationToken": "7d45d12511a9584ec3ad24f4039283e244ae49e5c3b0a979",
+        "verificationTokenExpiresAt": 1793656780172,
+        "verificationSentAt": "2026-11-01T21:59:40.172Z"
+      },
+      {
+        "uid": "ca236843-ae53-4f1a-af15-e7265772d729",
+        "id": "ca236843-ae53-4f1a-af15-e7265772d729",
+        "name": "Yrttt Tethu",
+        "email": "tethuyrttt@gmail.com",
+        "passwordHash": "scrypt$61f22a823f501207dc96ae405f2f2631$46865b282f17a18ee2bec9d3298475c286a3b24486c52b76700653f8a8881c075f3a162e34c46c19a087d4ac53223fdcc7a43f5f1a87626a125212f5dfb49ab7",
+        "role": "user",
+        "tokenVersion": 1,
+        "subscription": "trial",
+        "planName": "Free Trial",
+        "monthlyLeadLimit": 5,
+        "trialSearchLimit": 2,
+        "trialLeadLimit": 5,
+        "billingStatus": "trial",
+        "trialSearchesUsed": 0,
+        "entitlements": {
+          "billingRequired": true,
+          "trial": true,
+          "trialSearchesUsed": 0,
+          "trialSearchLimit": 2,
+          "trialLeadLimit": 5,
+          "upgradeRequiredAfterTrial": true
+        },
+        "emailVerified": false,
+        "verificationRequired": true,
+        "createdAt": "2026-11-01T22:06:08.574Z",
+        "updatedAt": "2026-11-01T22:06:11.659Z",
+        "verificationToken": "7e06c2bd0f903b5231002ba0cfa5c88731ac4544c167046f",
+        "verificationTokenExpiresAt": 1793657171658,
+        "verificationSentAt": "2026-11-01T22:06:11.658Z"
       }
     ],
     "leads": [
@@ -88217,6 +88344,16 @@
         "updatedAt": "2026-10-31T22:31:45.401Z",
         "createdAt": "2026-10-31T22:31:17.784Z",
         "respondedAt": "2026-10-31T22:31:45.401Z"
+      },
+      {
+        "id": "friend:d336ea1e-32ad-406d-a089-0d48b02911f0:firebase:3yphdiFw0gZRYI3HW3eG84mWNSI2",
+        "userA": "d336ea1e-32ad-406d-a089-0d48b02911f0",
+        "userB": "firebase:3yphdiFw0gZRYI3HW3eG84mWNSI2",
+        "requestedBy": "d336ea1e-32ad-406d-a089-0d48b02911f0",
+        "recipientId": "firebase:3yphdiFw0gZRYI3HW3eG84mWNSI2",
+        "status": "pending",
+        "updatedAt": "2026-11-01T21:52:33.526Z",
+        "createdAt": "2026-11-01T21:52:33.526Z"
       }
     ],
     "socialMessages": [
@@ -88387,6 +88524,19 @@
         "readAt": "",
         "createdAt": "2026-10-31T22:33:38.625Z",
         "updatedAt": "2026-10-31T22:33:38.625Z"
+      },
+      {
+        "id": "153db15d-99ee-48c0-9d96-ad4aea6dba9c",
+        "recipientId": "firebase:3yphdiFw0gZRYI3HW3eG84mWNSI2",
+        "type": "friend_request",
+        "title": "New friend request",
+        "body": "A MAT LEADS member wants to connect with you.",
+        "data": {
+          "userId": "d336ea1e-32ad-406d-a089-0d48b02911f0"
+        },
+        "readAt": "",
+        "createdAt": "2026-11-01T21:52:38.458Z",
+        "updatedAt": "2026-11-01T21:52:38.458Z"
       }
     ]
   }

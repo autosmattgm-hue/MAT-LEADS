@@ -232,9 +232,8 @@ function initAppShell() {
       <span aria-hidden="true"></span>
       <span aria-hidden="true"></span>
     </button>
-    <div class="notice" role="status" data-session-badge>NVIDIA-only AI pipeline connected through secure server endpoints.</div>
+    <div class="topbar-status-stack" aria-live="polite"><div class="notice topbar-announcement" role="status" data-session-badge>NVIDIA-only AI pipeline connected through secure server endpoints.</div><span class="pwa-connection-status" data-pwa-connection role="status" aria-live="polite">Online</span></div>
     <div class="topbar-actions">
-      <span class="pwa-connection-status" data-pwa-connection role="status" aria-live="polite">Online</span>
       <button class="icon-button" type="button" data-theme-toggle aria-label="Toggle theme">T</button>
       <a class="btn btn-secondary" href="/reports.html">Reports</a>
       <a class="btn btn-primary" href="/dashboard.html">Search Leads</a>
@@ -276,19 +275,35 @@ async function initSessionBadge() {
   const target = document.querySelector("[data-session-badge]");
   if (!target) return;
 
+  let announcements = [];
+  let announcementIndex = 0;
+  const paintAnnouncement = (value) => { target.textContent = value; target.classList.remove("is-changing"); void target.offsetWidth; target.classList.add("is-changing"); };
+  const setAnnouncements = (user) => {
+    const primary = sessionText(user);
+    announcements = [primary, "Secure workspace: saved records stay linked to your account.", "AI tools are ready when you need a faster next action."];
+    announcementIndex = 0;
+    paintAnnouncement(announcements[0]);
+  };
+  const rotate = () => {
+    if (announcements.length < 2) return;
+    announcementIndex = (announcementIndex + 1) % announcements.length;
+    paintAnnouncement(announcements[announcementIndex]);
+  };
+  window.setInterval(rotate, 8000);
+
   const cached = localStorage.getItem("mat_user");
   if (cached) {
     try {
       const user = JSON.parse(cached);
-      target.textContent = sessionText(user);
+      setAnnouncements(user);
       syncProNavState(user);
     } catch {
-      target.textContent = "Workspace session active.";
+      setAnnouncements({});
     }
   }
 
   if (!hasStoredSession()) {
-    target.textContent = "Login required to access the workspace.";
+    setAnnouncements({ planName: "Login required" });
     syncAdminNavItem(null);
     syncProNavState(null);
     return;
@@ -298,11 +313,11 @@ async function initSessionBadge() {
     const result = await apiFetch("/api/auth/me");
     const user = result.user;
     localStorage.setItem("mat_user", JSON.stringify(user));
-    target.textContent = sessionText(user);
+    setAnnouncements(user);
     syncAdminNavItem(user);
     syncProNavState(user);
   } catch {
-    target.textContent = "Workspace session active.";
+    setAnnouncements({});
   }
 }
 

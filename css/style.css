@@ -707,6 +707,17 @@ button:disabled {
 .dashboard-hero .toolbar { justify-content: flex-end; max-width: 360px; }
 .dashboard-hero .plan-pill, .dashboard-hero .status-pill { backdrop-filter: blur(10px); }
 .dashboard-access-status { display: flex; align-items: center; flex: 0 0 auto; gap: 8px; min-width: max-content; white-space: nowrap; }
+.topbar-status-stack { display: grid; min-width: 0; max-width: min(620px, 100%); gap: 3px; }
+.topbar-announcement { min-width: 0; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; transition: opacity .2s ease, transform .2s ease; }
+.topbar-announcement.is-changing { animation: topbar-announcement-in 7.8s linear both; }
+@keyframes topbar-announcement-in { 0% { opacity: 0; transform: translateX(100%); } 12% { opacity: 1; transform: translateX(0); } 82% { opacity: 1; transform: translateX(0); } 100% { opacity: 0; transform: translateX(-100%); } }
+@media (max-width: 700px) {
+  .topbar { align-items: flex-start; flex-wrap: wrap; gap: 8px; }
+  .topbar-status-stack { order: 2; flex: 1 1 100%; width: 100%; max-width: 100%; }
+  .topbar-announcement { width: 100%; font-size: .72rem; line-height: 1.35; white-space: normal; overflow-wrap: anywhere; }
+  .topbar-status-stack .pwa-connection-status { width: 100%; white-space: normal; font-size: .68rem; }
+  .topbar-actions { order: 3; width: 100%; min-width: 0; overflow-x: auto; }
+}
 
 .metrics-grid { margin-top: 16px; }
 .metrics-grid .metric { position: relative; min-height: 138px; padding: 17px; overflow: hidden; transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease; }
@@ -2038,6 +2049,72 @@ body[data-page="dashboard"] .lead-results-workspace .map-preview iframe {
   .community-composer-footer .btn { width: 100%; min-height: 42px; }
   .community-notification { align-items: flex-start; flex-wrap: wrap; }
   .community-notification .btn { margin-left: 38px; }
+}
+
+/* Final mobile safety layer: this is intentionally at the end so broad shared
+   layout rules cannot reintroduce horizontal overflow on product workspaces. */
+body[data-page="website-studio"],
+body[data-page="website-editor"],
+body[data-page="community"] { max-width: 100%; overflow-x: hidden; }
+
+body[data-page="website-studio"] .workspace,
+body[data-page="website-editor"] .workspace,
+body[data-page="community"] .workspace,
+.wsx-shell, .wsx-grid, .wsx-chat, .wsx-preview, .wed-shell, .wed-grid,
+.wed-panel, .wed-canvas, .wed-canvas-inner, .community-grid, .community-chat,
+.community-discover, .community-member, .community-member-copy { min-width: 0; }
+
+.wsx-preview iframe, .wed-canvas-inner iframe { max-width: 100%; }
+.wsx-msg-body, .wsx-brief-field input, .wsx-brief-field textarea,
+.community-member-copy, .community-chat-identity > div { overflow-wrap: anywhere; }
+
+@media (max-width: 760px) {
+  body[data-page="website-studio"] .workspace,
+  body[data-page="website-editor"] .workspace { padding: 10px max(10px, env(safe-area-inset-right)) 24px max(10px, env(safe-area-inset-left)); }
+  .wsx-shell, .wed-shell { padding: 6px 0 22px; }
+  .wsx-top, .wed-top { gap: 10px; }
+  .wsx-top-actions, .wed-top-actions { width: 100%; margin-left: 0; justify-content: space-between; }
+  .wsx-grid, .wed-grid { grid-template-columns: minmax(0, 1fr); gap: 10px; }
+  .wsx-preview { order: 2; }
+  .wsx-chat { order: 1; }
+  .wsx-chat, .wsx-preview, .wed-panel, .wed-canvas { border-radius: 12px; }
+  .wsx-chathead, .wsx-previewbar { padding: 11px; }
+  .wsx-previewbar { align-items: flex-start; flex-direction: column; }
+  .wsx-preview-actions { width: 100%; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
+  .wsx-preview-actions .chip-btn { width: 100%; min-width: 0; padding-inline: 7px; }
+  .wsx-brief-grid { grid-template-columns: minmax(0, 1fr); }
+  .wsx-brief-grid .wsx-brief-field--wide { grid-column: auto; }
+  .wsx-leads, .wsx-log { padding-inline: 11px; }
+  .wsx-log { min-height: 280px; max-height: 54vh; }
+  .wsx-composer { margin: 9px 11px 11px; }
+  .wsx-composer button { min-width: 42px; }
+  .wsx-preview iframe { min-height: 56vh; }
+  .wed-top-left { width: 100%; align-items: flex-start; }
+  .wed-top-left .sub { overflow-wrap: anywhere; }
+  .wed-top-actions { gap: 6px; }
+  .wed-top-actions .btn, .wed-top-actions button { min-height: 38px; }
+  .wed-tabs { overflow-x: auto; overscroll-behavior-inline: contain; scrollbar-width: thin; }
+  .wed-tab { flex: 0 0 auto; white-space: nowrap; }
+  .wed-panel { padding: 11px; }
+  .wed-row, .wed-inline { grid-template-columns: minmax(0, 1fr); }
+  .wed-canvas-inner { min-height: 58vh; }
+  .wed-canvas-inner iframe { min-height: 56vh; }
+  .community-workspace .workspace-header-actions { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .community-workspace .workspace-header-actions .status-pill { grid-column: 1 / -1; }
+  .community-member { align-items: center; grid-template-columns: auto minmax(0, 1fr) auto auto; }
+  .community-member .btn { min-width: 0; padding-inline: 7px; }
+}
+
+@media (max-width: 420px) {
+  .wsx-top-actions, .wed-top-actions { align-items: stretch; flex-direction: column; }
+  .wsx-top-actions > *, .wed-top-actions > * { width: 100%; }
+  .wsx-preview-actions { grid-template-columns: minmax(0, 1fr); }
+  .wsx-device, .wed-device { width: 100%; }
+  .wsx-device button, .wed-device button { flex: 1; }
+  .community-workspace .workspace-header-actions { grid-template-columns: minmax(0, 1fr); }
+  .community-member { grid-template-columns: auto minmax(0, 1fr); align-items: start; }
+  .community-member .btn { grid-row: 2; }
+  .community-member .btn:last-child { grid-column: 2; justify-self: start; }
 }
 
 /* ============================================================================
@@ -4054,5 +4131,43 @@ details.faq-item .faq-answer {
   .community-composer-footer .btn { width: 100%; min-height: 42px; }
   .community-notification { align-items: flex-start; flex-wrap: wrap; }
   .community-notification .btn { margin-left: 38px; }
+}
+
+/* End-of-file product layout override: keep Studio, Editor and Messages inside
+   every phone viewport even when shared dashboard styles are loaded earlier. */
+@media (max-width: 760px) {
+  body[data-page="website-studio"] .workspace,
+  body[data-page="website-editor"] .workspace { padding: 10px max(10px, env(safe-area-inset-right)) 24px max(10px, env(safe-area-inset-left)); overflow-x: hidden; }
+  body[data-page="website-studio"] .wsx-shell,
+  body[data-page="website-editor"] .wed-shell { padding: 6px 0 22px; max-width: 100%; }
+  body[data-page="website-studio"] .wsx-grid,
+  body[data-page="website-editor"] .wed-grid { grid-template-columns: minmax(0, 1fr); gap: 10px; }
+  body[data-page="website-studio"] .wsx-chat,
+  body[data-page="website-studio"] .wsx-preview,
+  body[data-page="website-editor"] .wed-panel,
+  body[data-page="website-editor"] .wed-canvas { min-width: 0; border-radius: 12px; }
+  body[data-page="website-studio"] .wsx-previewbar { align-items: flex-start; flex-direction: column; padding: 11px; }
+  body[data-page="website-studio"] .wsx-preview-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); width: 100%; gap: 6px; }
+  body[data-page="website-studio"] .wsx-preview-actions .chip-btn { min-width: 0; width: 100%; padding-inline: 7px; }
+  body[data-page="website-studio"] .wsx-brief-grid { grid-template-columns: minmax(0, 1fr); }
+  body[data-page="website-studio"] .wsx-brief-grid .wsx-brief-field--wide { grid-column: auto; }
+  body[data-page="website-studio"] .wsx-log { min-height: 280px; max-height: 54vh; padding-inline: 11px; }
+  body[data-page="website-studio"] .wsx-preview iframe,
+  body[data-page="website-editor"] .wed-canvas-inner iframe { width: 100%; min-height: 56vh; max-width: 100%; }
+  body[data-page="website-editor"] .wed-top-actions { width: 100%; margin-left: 0; }
+  body[data-page="website-editor"] .wed-tabs { overflow-x: auto; overscroll-behavior-inline: contain; }
+  body[data-page="website-editor"] .wed-tab { flex: 0 0 auto; white-space: nowrap; }
+  body[data-page="website-editor"] .wed-row,
+  body[data-page="website-editor"] .wed-inline { grid-template-columns: minmax(0, 1fr); }
+}
+
+@media (max-width: 420px) {
+  body[data-page="website-studio"] .wsx-top-actions,
+  body[data-page="website-editor"] .wed-top-actions { align-items: stretch; flex-direction: column; }
+  body[data-page="website-studio"] .wsx-preview-actions { grid-template-columns: minmax(0, 1fr); }
+  body[data-page="website-studio"] .wsx-device,
+  body[data-page="website-editor"] .wed-device { width: 100%; }
+  body[data-page="website-studio"] .wsx-device button,
+  body[data-page="website-editor"] .wed-device button { flex: 1; }
 }
 
