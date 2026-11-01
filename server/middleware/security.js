@@ -21,11 +21,11 @@ function csrfGuard(req, _res, next) {
 function securityHeaders(_req, res, next) {
   res.setHeader("Content-Security-Policy", [
     "default-src 'self'",
-    "script-src 'self' 'unsafe-inline'",
+    "script-src 'self' 'unsafe-inline' https://www.gstatic.com https://apis.google.com",
     "style-src 'self' 'unsafe-inline'",
     "img-src 'self' data: https:",
-    "connect-src 'self'",
-    "frame-src 'self' https://www.google.com https://maps.google.com",
+    "connect-src 'self' https://www.gstatic.com https://www.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://firebaseinstallations.googleapis.com",
+    "frame-src 'self' https://www.google.com https://maps.google.com https://accounts.google.com https://*.firebaseapp.com",
     "font-src 'self' data:",
     "object-src 'none'",
     "base-uri 'self'",

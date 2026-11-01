@@ -229,8 +229,8 @@ export class AuthService {
       verificationSent: verification.delivered,
       message: verification.delivered
         ? "One last step — open the verification link we emailed you to activate your account."
-        : "Your account is ready. Confirm your email address to activate it.",
-      ...(verification.delivered ? {} : { verificationUrl: verification.url, verificationToken: verification.token })
+        : "We could not send the verification email yet. Please ask the administrator to configure transactional email, then request a fresh link.",
+      verificationDeliveryConfigured: verification.delivered
     };
   }
 
@@ -249,7 +249,7 @@ export class AuthService {
     }
     const sent = await sendVerificationMail({ to: email, name, token });
     if (!sent.delivered) {
-      console.warn(`[auth] verification mail not delivered for ${email} (${sent.error || "no mail provider"}). Link: ${sent.url}`);
+      console.warn(`[auth] verification mail not delivered for ${email} (${sent.error || "no mail provider"}). Configure RESEND_API_KEY or SENDGRID_API_KEY.`);
     }
     return { ...sent, token };
   }
@@ -328,7 +328,10 @@ export class AuthService {
     return {
       ...neutral,
       verificationSent: verification.delivered,
-      ...(verification.delivered ? {} : { verificationUrl: verification.url, verificationToken: verification.token })
+      verificationDeliveryConfigured: verification.delivered,
+      message: verification.delivered
+        ? neutral.message
+        : "We could not send the verification email. Configure Resend or SendGrid, then try again."
     };
   }
 
@@ -542,6 +545,10 @@ export class AuthService {
         }
       }
     }
+    this.assertEmailVerified({
+      ...stored,
+      emailVerified: Boolean(stored.emailVerified ?? identity.emailVerified)
+    });
     const sessionUser = applyAdminEntitlements({
       uid: stored.id || `firebase:${identity.uid}`,
       name: stored.name || identity.displayName || "",
@@ -585,6 +592,9 @@ export class AuthService {
     }
 
     const source = stored || decoded;
+    // Refresh tokens must not restore access for accounts that still need to
+    // confirm their email address.
+    this.assertEmailVerified(source);
     const sessionUser = applyAdminEntitlements({
       uid: decoded.uid,
       name: source.name || "",
@@ -634,6 +644,7 @@ export class AuthService {
       trialSearchesUsed: Number(source.trialSearchesUsed || 0),
       permissions: source.permissions || [],
       entitlements: storedEntitlements(source),
+      verificationRequired: Boolean(source.verificationRequired),
       emailVerified: Boolean(source.emailVerified),
       company: source.company || "",
       signature: source.signature || "",

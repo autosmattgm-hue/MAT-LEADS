@@ -57,6 +57,18 @@ export class SocialService {
     return user ? this.profile(user) : null;
   }
 
+  async publicProfile(user, uid) {
+    const me = this.idFor(user);
+    const profile = await this.userById(uid);
+    if (!profile || profile.uid === me) throw new AppError("That member could not be found.", 404, "MEMBER_NOT_FOUND");
+    return {
+      uid: profile.uid,
+      name: profile.name,
+      company: profile.company,
+      lastSeenAt: profile.lastSeenAt
+    };
+  }
+
   async notify(recipientId, type, title, body, data = {}) {
     return this.notifications.create({
       id: randomUUID(),
@@ -100,7 +112,7 @@ export class SocialService {
     // Keep the query bounded while remaining compatible with both Firestore and
     // the local repository fallback. Production installations can add an index
     // later without changing this API contract.
-    const candidates = await this.users.list({ limit: 500, orderBy: "updatedAt" });
+    const candidates = await this.users.list({ limit: 1000, orderBy: "updatedAt" });
     return candidates
       .map((candidate) => this.profile(candidate))
       .filter((candidate) => candidate.uid !== me)

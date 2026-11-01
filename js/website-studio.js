@@ -16,6 +16,15 @@ let selectedLead = null;
 let savedLeads = [];
 let busy = false;
 
+function syncStage(next = stage) {
+  const active = next === "pages" || next === "business" ? "brief" : next === "building" ? "build" : next === "ready" ? "review" : next === "published" ? "publish" : "brief";
+  document.querySelectorAll("[data-wsx-stage]").forEach((node) => {
+    const keys = ["brief", "build", "review", "publish"];
+    node.classList.toggle("is-active", node.dataset.wsxStage === active);
+    node.classList.toggle("is-complete", keys.indexOf(node.dataset.wsxStage) < keys.indexOf(active));
+  });
+}
+
 // ---------- small helpers ----------
 function abs(url) {
   try { return new URL(url, window.location.origin).href; } catch { return url; }
@@ -31,7 +40,12 @@ function esc(value) {
 
 function setStatus(message) {
   const node = byId("studioStatus");
-  if (node) node.textContent = message;
+  if (node) {
+    const title = node.querySelector("strong");
+    const body = node.querySelector("span");
+    if (title && body) body.textContent = message;
+    else node.textContent = message;
+  }
 }
 
 function setStatusLine(message) {
@@ -336,6 +350,7 @@ function businessIdentity() {
 // ---------- conversation flow ----------
 function askPageCount() {
   stage = "pages";
+  syncStage(stage);
   chosenPages = 0;
   typeAi("Hi! I'm MAT Studio AI 👋\nI'll design a professional website for your business.\nFirst — how many pages do you need?");
   renderChips([1, 2, 3, 4].map((n) => ({
@@ -348,6 +363,7 @@ function askPageCount() {
 
 function pickPageCount(count, silent = false) {
   chosenPages = count;
+  syncStage("business");
   setBriefValue("wsxPages", String(count), { overwrite: true });
   if (!silent) addUser(count === 1 ? "1 page" : `${count} pages`);
   if (businessIdentity()) {
@@ -376,6 +392,7 @@ function beginBuild() {
     return;
   }
   stage = "building";
+  syncStage(stage);
   const leadTag = selectedLead?.leadId ? ` (lead ${selectedLead.leadId})` : "";
   addNote(`Building for ${businessName}${leadTag}`);
   typeAi(`Building your ${chosenPages}-page website for ${businessName} now — hero, services, gallery, FAQ and contact. This takes about 30–50 seconds…`);
@@ -430,12 +447,14 @@ async function runBuild(businessName) {
     setStatus(r.website.aiError ? `Built with a fallback: ${r.website.aiError}` : "Ready — chat to refine, or edit in the builder.");
     setStatusLine("Site ready — refine below");
     stage = "ready";
+    syncStage(stage);
     loadHistory();
     try { history.replaceState(null, "", `/website-studio.html?id=${encodeURIComponent(websiteId)}`); } catch {}
   } catch (err) {
     const msg = String(err?.message || "The build didn't finish.");
     const upgrade = /pro plan|402|PRO_REQUIRED/i.test(msg);
     stage = "error";
+    syncStage("brief");
     if (upgrade) {
       addErrorBubble(msg);
       renderChips([{ label: "Upgrade to Pro", onPick: () => { window.location.href = "/pricing.html?upgrade=pro"; } }]);

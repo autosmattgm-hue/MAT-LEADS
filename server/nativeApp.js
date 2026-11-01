@@ -182,7 +182,7 @@ function securityHeaders(extra = {}) {
       "script-src 'self' 'unsafe-inline' https://www.gstatic.com https://apis.google.com",
       "style-src 'self' 'unsafe-inline'",
       "img-src 'self' data: https:",
-      "connect-src 'self' https://www.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://firebaseinstallations.googleapis.com",
+      "connect-src 'self' https://www.gstatic.com https://www.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://firebaseinstallations.googleapis.com",
       "frame-src 'self' https://www.google.com https://maps.google.com https://accounts.google.com https://*.firebaseapp.com",
       "font-src 'self' data:",
       "object-src 'none'",
@@ -293,8 +293,15 @@ async function getUser(req) {
     throw new AppError("Authentication required.", 401, "AUTH_REQUIRED");
   }
   try {
-    return await verifyAccessToken(token);
-  } catch {
+    const tokenUser = await verifyAccessToken(token);
+    // JWT claims are only a session hint. Resolve the account record on every
+    // protected operation so an address awaiting verification cannot use an
+    // old token, refresh token, or a hand-entered dashboard URL.
+    const currentUser = await authService.currentUser(tokenUser);
+    authService.assertEmailVerified(currentUser);
+    return currentUser;
+  } catch (error) {
+    if (error instanceof AppError) throw error;
     throw new AppError("Invalid or expired token.", 401, "INVALID_TOKEN");
   }
 }
@@ -742,6 +749,12 @@ const routes = [
     regex: /^\/api\/social\/users$/,
     keys: [],
     handler: async ({ req, url }) => ({ users: await socialService.searchUsers(await getUser(req), validate(socialSchemas.userSearch, { q: url.searchParams.get("q") || "" }).q) })
+  },
+  {
+    method: "GET",
+    regex: /^\/api\/social\/profile\/([^/]+)$/,
+    keys: ["userId"],
+    handler: async ({ req, params }) => ({ profile: await socialService.publicProfile(await getUser(req), params.userId) })
   },
   {
     method: "GET",

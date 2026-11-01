@@ -94,6 +94,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const params = new URLSearchParams(window.location.search);
   const token = params.get("token") || "";
   const email = params.get("email") || "";
+  const deliverySent = params.get("sent") !== "0";
   const pending = readPending();
 
   bindResendForm("resendForm", "resendStatus", email);
@@ -110,7 +111,9 @@ document.addEventListener("DOMContentLoaded", () => {
   // No token in the URL — show the "check your inbox" state.
   const target = email || pending?.email || "";
   const sentLine = byId("verifySentLine");
-  if (sentLine && target) sentLine.textContent = `We sent a verification link to ${target}.`;
+  if (sentLine && target) sentLine.textContent = deliverySent
+    ? `We sent a verification link to ${target}.`
+    : `We could not send a verification link to ${target} yet. Configure transactional email, then use Resend below.`;
   const resendField = byId("resendEmail");
   if (resendField && target) resendField.value = target;
   const errorField = byId("errorResendEmail");

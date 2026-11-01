@@ -72,16 +72,19 @@ export const env = {
     // Live probe (Oct 2026): openai/gpt-oss-20b answered in ~2.6s and is healthy.
     // kimi-k3 is 410 Gone (EOL 2026-10-15); the z-ai glm models ran ~44s under
     // load, so they are fallbacks only. gpt-oss-20b is the fast, reliable primary.
-    model: process.env.NVIDIA_MODEL || "openai/gpt-oss-20b",
-    modelFallbacks: list(process.env.NVIDIA_MODEL_FALLBACKS, ["z-ai/glm-5.3-flash", "z-ai/glm-5.3"]),
-    websiteModel: process.env.NVIDIA_WEBSITE_MODEL || "openai/gpt-oss-20b",
-    websiteFallbacks: list(process.env.NVIDIA_WEBSITE_FALLBACKS, ["z-ai/glm-5.3-flash", "z-ai/glm-5.3"]),
-    tycoonModel: process.env.NVIDIA_TYCOON_MODEL || "openai/gpt-oss-20b",
+    model: process.env.NVIDIA_MODEL || "nvidia/nemotron-3.5-lightning-30b-a3b",
+    modelFallbacks: list(process.env.NVIDIA_MODEL_FALLBACKS, ["openai/gpt-oss-20b", "z-ai/glm-5.3-flash"]),
+    websiteModel: process.env.NVIDIA_WEBSITE_MODEL || "nvidia/nemotron-3.5-lightning-30b-a3b",
+    websiteFallbacks: list(process.env.NVIDIA_WEBSITE_FALLBACKS, ["openai/gpt-oss-20b", "z-ai/glm-5.3-flash"]),
+    tycoonModel: process.env.NVIDIA_TYCOON_MODEL || "nvidia/nemotron-3.5-lightning-30b-a3b",
     // Interactive budget: gpt-oss-20b normally answers in 5-11s, but under load a
     // single attempt can spike past the 17s per-attempt cap. 30s lets attempt 1
     // run its full cap and still gives a primary retry real room before giving up.
-    timeoutMs: number(process.env.NVIDIA_TIMEOUT_MS, 30000),
-    websiteTimeoutMs: number(process.env.NVIDIA_WEBSITE_TIMEOUT_MS, 50000),
+    // NVIDIA reasoning models can legitimately take 20–35 seconds during
+    // provider load. Keep a bounded interactive window, but do not abort the
+    // primary model before it has a chance to finish.
+    timeoutMs: Math.max(45000, number(process.env.NVIDIA_TIMEOUT_MS, 45000)),
+    websiteTimeoutMs: Math.max(60000, number(process.env.NVIDIA_WEBSITE_TIMEOUT_MS, 60000)),
     cacheTtlMs: number(process.env.NVIDIA_CACHE_TTL_MS, 600000),
     maxTokens: number(process.env.NVIDIA_MAX_TOKENS, 420)
   },

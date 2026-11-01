@@ -62,7 +62,8 @@ function htmlMail(name, url) {
 export async function sendVerificationMail({ to, name = "", token = "" }) {
   const url = verificationLink(token);
   const kind = provider();
-  if (!kind || !to || !token) return { delivered: false, url };
+  if (!kind || !to || !token) return { delivered: false, url, error: "EMAIL_PROVIDER_NOT_CONFIGURED" };
+  if (!env.email.from) return { delivered: false, url, error: "EMAIL_FROM_NOT_CONFIGURED" };
   const subject = "Verify your email — MAT LEADS AI PRO X";
 
   try {
@@ -74,7 +75,7 @@ export async function sendVerificationMail({ to, name = "", token = "" }) {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          from: process.env.EMAIL_FROM || "MAT LEADS <onboarding@resend.dev>",
+          from: env.email.from,
           to: [to],
           subject,
           text: plainText(name, url),
@@ -95,7 +96,7 @@ export async function sendVerificationMail({ to, name = "", token = "" }) {
         },
         body: JSON.stringify({
           personalizations: [{ to: [{ email: to }] }],
-          from: { email: process.env.EMAIL_FROM || "no-reply@matleads.com", name: "MAT LEADS AI PRO X" },
+          from: { email: env.email.from, name: "MAT LEADS AI PRO X" },
           subject,
           content: [
             { type: "text/plain", value: plainText(name, url) },

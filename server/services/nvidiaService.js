@@ -17,6 +17,7 @@ const TRANSIENT_COOLDOWN_MS = 30 * 1000;
 // Live-per-probe (Oct 2026): these exist; your key returns 403 until activated on
 // https://build.nvidia.com/<model> ("Get API Key"). Dead IDs never get called.
 const DEFAULT_MODELS = [
+  "nvidia/nemotron-3.5-lightning-30b-a3b",
   "openai/gpt-oss-20b",
   "z-ai/glm-5.3-flash",
   "z-ai/glm-5.3",
@@ -209,6 +210,9 @@ function modelRequestOptions(model) {
   if (/gpt-oss/i.test(model)) {
     return { reasoning_effort: "low" };
   }
+  if (/nemotron-3\.5-lightning/i.test(model)) {
+    return { chat_template_kwargs: { clear_thinking: true } };
+  }
   return {};
 }
 
@@ -368,12 +372,12 @@ export class NvidiaService {
       .filter((m) => !isRetiredModel(m))
       .slice(0, Math.max(1, Math.min(Number(maxAttempts) || 2, 2)));
     if (!queue.length) throw new AppError("No usable NVIDIA model is configured. Set NVIDIA_MODEL=z-ai/glm-5.3-flash and activate it at https://build.nvidia.com, then restart or redeploy.", 503, "NVIDIA_NO_LIVE_MODEL");
-    const deadlineAt = Date.now() + requestBudget(timeoutMs, 32000);
+    const deadlineAt = Date.now() + requestBudget(timeoutMs, 60000);
     for (let index = 0; index < queue.length; index += 1) {
       const model = queue[index];
-      // 17s per-attempt cap: gpt-oss-20b runs 9-11s on real business prompts, so
-      // the old 12s cap cut it off mid-answer and forced a needless fallback.
-      const attemptTimeoutMs = nextAttemptTimeout(deadlineAt, queue.length - index, 17000);
+      // Give the primary model enough time under NVIDIA load while retaining a
+      // hard total deadline for serverless requests.
+      const attemptTimeoutMs = nextAttemptTimeout(deadlineAt, queue.length - index, 30000);
       if (!attemptTimeoutMs) break;
       const requestPayload = { ...basePayload, ...modelRequestOptions(model), model, top_p: modelTopP(model, topP) };
       const cacheKey = !stream && cacheTtlMs > 0 ? cacheKeyFor(requestPayload) : "";
@@ -581,7 +585,7 @@ export class NvidiaService {
       const a = creatorAnswer();
       return Promise.resolve({ configured: true, provider: "brand-identity", model: "brand-identity", content: a.content, usage: null, cached: false, intent: a.intent });
     }
-    return this.completeSafe([
+    const messages = [
       {
         role: "system",
         content: "You are BUSINESS AI TYCOON, a ruthless professional business tycoon mentor. You think like a billionaire closer: pricing psychology, negotiation, objection handling, WhatsApp scripts, follow-up cadence, upsells, retainers. Always give: 1) What to say (copy-paste script), 2) Price to quote, 3) Why it wins, 4) Next move. Keep it practical, confident, street-smart. Plain text only, no markdown symbols. " + identityLine()
@@ -590,21 +594,35 @@ export class NvidiaService {
         role: "user",
         content: `${String(prompt || "").slice(0, 1200)}\n\nLead context: ${ctx}`
       }
-    ], { temperature: 0.5, topP: 1, maxTokens: 360, timeoutMs: env.nvidia.timeoutMs, cacheTtlMs: 600000, preferredModels: [env.nvidia.tycoonModel, "z-ai/glm-5.3-flash", "z-ai/glm-5.3"], maxAttempts: 2 });
+    ];
+    return this.completeSafe(messages, { temperature: 0.35, topP: 1, maxTokens: 360, timeoutMs: env.nvidia.timeoutMs, cacheTtlMs: 600000, preferredModels: [env.nvidia.tycoonModel, "nvidia/nemotron-3.5-lightning-30b-a3b", "openai/gpt-oss-20b"], maxAttempts: 2 }).catch(async (error) => {
+      // A shorter retry handles occasional reasoning-budget exhaustion on the
+      // long mentor system prompt without returning a fake answer.
+      return this.completeSafe([
+        { role: "system", content: "You are a concise business mentor. Plain text only. Give what to say, price, why it wins, and next move." },
+        { role: "user", content: `${String(prompt || "").slice(0, 900)}\nLead context: ${ctx.slice(0, 800)}` }
+      ], { temperature: 0.25, maxTokens: 260, timeoutMs: env.nvidia.timeoutMs, cacheTtlMs: 0, preferredModels: ["nvidia/nemotron-3.5-lightning-30b-a3b"], maxAttempts: 1 }).catch(() => { throw error; });
+    });
   }
 
   agentChat(prompt, accountContext = {}) {
-    const context = JSON.stringify(accountContext).slice(0, 7000);
-    return this.completeSafe([
+    const context = JSON.stringify(accountContext).slice(0, 3200);
+    const messages = [
       {
         role: "system",
-        content: "You are MAT LEADS COMMAND AGENT for MAT LEADS AI PRO X, an account-aware sales operations assistant inside a global lead discovery, website opportunity, outreach, CRM, and revenue workspace. Use the platform capabilities and operating rules in the verified snapshot to explain how the user can accomplish tasks across the website. Work only from the verified account snapshot provided. Give a concise prioritized plan that helps the user find, qualify, contact, and close leads. Never claim a search, message, invoice, audit, or CRM update was executed. Never invent business facts, contact details, revenue, or account metrics. If the snapshot is empty, say exactly what the user should do next. Include: Priority today, Why, Next action, and one useful draft or search suggestion. Plain text only, no markdown symbols. " + identityLine()
+        content: "You are the friendly human-like MAT LEADS AI Agent. You help users understand and use every part of MAT LEADS AI PRO X: lead search, filters, saved leads, CRM, website audits, Website Studio, outreach, analytics, billing, settings, and chat. Respond naturally and empathetically, like a patient expert teammate. For greetings, greet the user and offer useful ways you can help. When a user describes a problem, acknowledge it, explain the likely cause in simple language, give clear numbered steps using the actual page or button names, and ask one helpful follow-up question if needed. Use the supplied account snapshot for personalized recommendations. Never claim that you performed a search, sent a message, changed CRM data, completed an audit, or changed billing. Never invent contacts, metrics, or business facts. If something requires a user click, say so. Plain text only; no markdown symbols."
       },
       {
         role: "user",
-        content: `User request: ${String(prompt || "").slice(0, 2200)}\n\nVerified account snapshot: ${context}`
+        content: `User message: ${String(prompt || "").slice(0, 1800)}\nVerified account snapshot: ${context}`
       }
-    ], { temperature: 0.35, maxTokens: 520, timeoutMs: env.nvidia.timeoutMs, cacheTtlMs: 120000, preferredModels: [env.nvidia.tycoonModel, "openai/gpt-oss-20b", "z-ai/glm-5.3-flash"], maxAttempts: 2 });
+    ];
+    return this.completeSafe(messages, { temperature: 0.45, maxTokens: 460, timeoutMs: env.nvidia.timeoutMs, cacheTtlMs: 120000, preferredModels: ["nvidia/nemotron-3.5-lightning-30b-a3b", "openai/gpt-oss-20b"], maxAttempts: 2 }).catch(async (error) => {
+      return this.completeSafe([
+        { role: "system", content: "You are a warm, patient MAT LEADS support agent. Answer the user's question naturally, explain the next steps clearly, and never claim an action was completed. Plain text only." },
+        { role: "user", content: `User message: ${String(prompt || "").slice(0, 1000)}` }
+      ], { temperature: 0.35, maxTokens: 300, timeoutMs: env.nvidia.timeoutMs, cacheTtlMs: 0, preferredModels: ["nvidia/nemotron-3.5-lightning-30b-a3b"], maxAttempts: 1 }).catch(() => { throw error; });
+    });
   }
 
   async completeRaw(messages, { temperature = 0.5, topP = 1, maxTokens = 2200, timeoutMs = 0 } = {}) {

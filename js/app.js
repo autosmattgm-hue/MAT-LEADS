@@ -64,7 +64,8 @@ function initAuthForm() {
           } catch {}
           if (status) status.textContent = result.message || "Check your inbox for the verification link.";
           setTimeout(() => {
-            window.location.href = `/verify-email.html?sent=1&email=${encodeURIComponent(payload.email || "")}`;
+            const sent = result.verificationSent ? "1" : "0";
+            window.location.href = `/verify-email.html?sent=${sent}&email=${encodeURIComponent(payload.email || "")}`;
           }, 900);
           return;
         }
