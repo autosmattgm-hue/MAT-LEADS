@@ -212,6 +212,7 @@ function initAppShell() {
         <span class="sidebar-ai-mark" aria-hidden="true">AI</span>
         <span><strong>Ask AI Agent</strong><small>Get your next best action</small></span>
       </button>
+      <button class="sidebar-theme-toggle" type="button" data-theme-toggle aria-label="Toggle theme" title="Toggle light and dark theme"><span aria-hidden="true">T</span><span>Theme</span></button>
     </div>
   `;
 
@@ -234,7 +235,6 @@ function initAppShell() {
     </button>
     <div class="topbar-status-stack" aria-live="polite"><div class="notice topbar-announcement" role="status" data-session-badge>NVIDIA-only AI pipeline connected through secure server endpoints.</div><span class="pwa-connection-status" data-pwa-connection role="status" aria-live="polite">Online</span></div>
     <div class="topbar-actions">
-      <button class="icon-button" type="button" data-theme-toggle aria-label="Toggle theme">T</button>
       <a class="btn btn-secondary" href="/reports.html">Reports</a>
       <a class="btn btn-primary" href="/dashboard.html">Search Leads</a>
     </div>

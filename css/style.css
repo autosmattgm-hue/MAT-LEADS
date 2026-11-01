@@ -708,6 +708,9 @@ button:disabled {
 .dashboard-hero .plan-pill, .dashboard-hero .status-pill { backdrop-filter: blur(10px); }
 .dashboard-access-status { display: flex; align-items: center; flex: 0 0 auto; gap: 8px; min-width: max-content; white-space: nowrap; }
 .topbar-status-stack { display: grid; min-width: 0; max-width: min(620px, 100%); gap: 3px; }
+.sidebar-theme-toggle { display: inline-flex; align-items: center; justify-content: center; gap: 7px; width: 100%; min-height: 36px; margin-top: 8px; padding: 7px 10px; border: 1px solid var(--border); border-radius: 9px; background: var(--surface); color: var(--muted); cursor: pointer; font: inherit; font-size: .75rem; font-weight: 750; }
+.sidebar-theme-toggle span:first-child { display: grid; place-items: center; width: 21px; height: 21px; border-radius: 6px; background: var(--surface-2); color: var(--text); font-size: .68rem; }
+.sidebar-theme-toggle:hover { border-color: var(--accent); color: var(--accent); }
 .topbar-announcement { min-width: 0; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; transition: opacity .2s ease, transform .2s ease; }
 .topbar-announcement.is-changing { animation: topbar-announcement-in 7.8s linear both; }
 @keyframes topbar-announcement-in { 0% { opacity: 0; transform: translateX(100%); } 12% { opacity: 1; transform: translateX(0); } 82% { opacity: 1; transform: translateX(0); } 100% { opacity: 0; transform: translateX(-100%); } }
@@ -3265,6 +3268,18 @@ details.faq-item .faq-answer {
   border-top-left-radius: 4px;
 }
 
+.wsx-stage { display: flex; align-items: center; gap: 8px; margin: 0 0 14px; padding: 9px 12px; border: 1px solid var(--border); border-radius: 13px; background: var(--surface); }
+.wsx-stage__item { display: inline-flex; align-items: center; gap: 6px; min-width: 0; color: var(--muted); font-size: .72rem; font-weight: 750; }
+.wsx-stage__item span { display: grid; place-items: center; width: 22px; height: 22px; border: 1px solid var(--border-strong); border-radius: 50%; font-size: .62rem; }
+.wsx-stage__item.is-active { color: var(--accent); }
+.wsx-stage__item.is-active span { border-color: var(--accent); background: var(--accent); color: #fff; }
+.wsx-stage__item.is-complete { color: var(--accent-2, #087a54); }
+.wsx-stage__item.is-complete span { border-color: var(--accent-2, #087a54); color: var(--accent-2, #087a54); }
+.wsx-stage > i { height: 1px; flex: 1; min-width: 12px; background: var(--border); }
+.wsx-status { display: flex; align-items: baseline; gap: 7px; }
+.wsx-status strong { color: var(--text); font-size: .78rem; }
+.wsx-status span { color: inherit; }
+
 /* Client Closer */
 .closer-trust {
   margin: 14px 0;
@@ -4147,6 +4162,9 @@ details.faq-item .faq-answer {
   body[data-page="website-editor"] .wed-panel,
   body[data-page="website-editor"] .wed-canvas { min-width: 0; border-radius: 12px; }
   body[data-page="website-studio"] .wsx-previewbar { align-items: flex-start; flex-direction: column; padding: 11px; }
+  body[data-page="website-studio"] .wsx-stage { gap: 5px; padding: 8px; overflow-x: auto; }
+  body[data-page="website-studio"] .wsx-stage__item { flex: 0 0 auto; font-size: .66rem; }
+  body[data-page="website-studio"] .wsx-stage > i { min-width: 10px; }
   body[data-page="website-studio"] .wsx-preview-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); width: 100%; gap: 6px; }
   body[data-page="website-studio"] .wsx-preview-actions .chip-btn { min-width: 0; width: 100%; padding-inline: 7px; }
   body[data-page="website-studio"] .wsx-brief-grid { grid-template-columns: minmax(0, 1fr); }
@@ -4165,6 +4183,7 @@ details.faq-item .faq-answer {
   body[data-page="website-studio"] .wsx-top-actions,
   body[data-page="website-editor"] .wed-top-actions { align-items: stretch; flex-direction: column; }
   body[data-page="website-studio"] .wsx-preview-actions { grid-template-columns: minmax(0, 1fr); }
+  body[data-page="website-studio"] .wsx-stage__item b { display: none; }
   body[data-page="website-studio"] .wsx-device,
   body[data-page="website-editor"] .wed-device { width: 100%; }
   body[data-page="website-studio"] .wsx-device button,

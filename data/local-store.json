@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-01T22:36:26.995Z",
+  "updatedAt": "2026-11-01T23:50:28.314Z",
   "collections": {
     "socialBlocks": [],
     "users": [
@@ -237,9 +237,9 @@
           "autoScore": true
         },
         "id": "owner",
-        "updatedAt": "2026-11-01T22:35:28.281Z",
+        "updatedAt": "2026-11-01T23:50:28.314Z",
         "createdAt": "2026-10-11T22:37:55.425Z",
-        "lastSeenAt": "2026-11-01T22:35:28.281Z"
+        "lastSeenAt": "2026-11-01T23:50:28.314Z"
       },
       {
         "name": "Smoke Tester",
@@ -88075,6 +88075,46 @@
         "id": "726d0597-bb3f-4f85-9766-9334118b9290",
         "createdAt": "2026-10-31T21:50:36.874Z",
         "updatedAt": "2026-10-31T21:50:36.874Z"
+      },
+      {
+        "actor": "owner@matleads.local",
+        "action": "lead_search",
+        "query": {
+          "country": "Canada",
+          "countries": [
+            "Canada",
+            "United Kingdom",
+            "Germany"
+          ],
+          "state": "",
+          "city": "",
+          "zip": "",
+          "industry": "restaurants, hotels, boutiques, car_dealers",
+          "keyword": "",
+          "businessTypes": [
+            "restaurants",
+            "hotels",
+            "boutiques",
+            "car_dealers"
+          ],
+          "mapLink": "",
+          "latitude": null,
+          "longitude": null,
+          "radiusMeters": 15000,
+          "limit": 20,
+          "searchDepth": "deep",
+          "leadQuality": "all",
+          "sortBy": "opportunity",
+          "minOpportunityScore": 0,
+          "requireContact": true,
+          "missingWebsiteOnly": true,
+          "bypassCache": false,
+          "refreshSeed": ""
+        },
+        "count": 11,
+        "id": "f4d1db85-4452-4733-943f-67bda0598ef9",
+        "createdAt": "2026-11-01T23:42:25.486Z",
+        "updatedAt": "2026-11-01T23:42:25.486Z"
       }
     ],
     "activities": [
