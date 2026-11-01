@@ -18,14 +18,16 @@
         <section class="report-grid">
           <article class="panel" style="grid-column:1 / -1;">
             <h2>AI Console</h2>
+            <p class="muted-value">Use the configured server-side AI to prepare a report outline, proposal section, or outreach angle. Outputs stay editable and are never sent automatically.</p>
             <form id="aiConsoleForm" class="form-grid compact">
               <div class="field" style="grid-column:1 / -1;">
                 <label for="prompt">Prompt</label>
                 <textarea id="prompt" name="prompt" required>Write a concise cold email for a local business that has no website and needs a modern web presence.</textarea>
               </div>
-              <button class="btn btn-primary" type="submit">Run AI</button>
+              <button class="btn btn-primary" id="aiConsoleRun" type="submit">Generate a real response</button>
             </form>
-            <div id="aiConsoleOutput" class="notice" style="margin-top:14px;">Ready for real reports.</div>
+            <div class="toolbar" style="margin-top:12px;"><button class="btn btn-secondary" id="aiConsoleCopy" type="button" disabled>Copy response</button><button class="btn btn-secondary" id="aiConsoleRetry" type="button" disabled>Regenerate</button><span id="aiConsoleMeta" class="muted-value" role="status" aria-live="polite">Ready to use the configured AI service.</span></div>
+            <div id="aiConsoleOutput" class="copy-brief ai-console-output" role="status" aria-live="polite" style="margin-top:14px;">Ready for a real AI response.</div>
           </article>
           <article class="panel"><h2>Website Audit</h2><p>HTTPS, metadata, mobile viewport, forms, social links, and speed signals.</p></article>
           <article class="panel"><h2>SEO Audit</h2><p>Title, description, heading structure, local intent, and conversion gaps.</p></article>

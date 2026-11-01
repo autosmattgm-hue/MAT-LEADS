@@ -73,6 +73,7 @@ For broad links like `/place/Europe/...` or `/place/United+States/...`, selected
 
 - `POST /api/leads/search`
 - `POST /api/leads/:id/save`
+- `GET /api/leads/:id` (account-authorized lead record)
 - `GET /api/leads/:id/report`
 - `POST /api/ai/analyze`
 - `POST /api/ai/outreach`
@@ -84,6 +85,9 @@ For broad links like `/place/Europe/...` or `/place/United+States/...`, selected
 - `GET /api/crm/leads`
 - `PATCH /api/crm/leads/:id/stage`
 - `GET /api/dashboard/metrics`
+- `GET` / `POST /api/earn/invoices` (owner-only invoice workspace)
+- `GET /api/earn/invoices/:id` (public, sanitized client payment request)
+- `POST /api/earn/invoices/:id/paid` (invoice owner or admin only)
 - `POST /api/billing/stripe/payment-intent`
 - `POST /api/billing/paypal/order`
 - `POST /api/billing/paypal/confirm`
@@ -93,6 +97,17 @@ For broad links like `/place/Europe/...` or `/place/United+States/...`, selected
 - Lead cards + saved leads now show `Use AI to create website` toggle. Create Website stays hidden until ticked, then redirects to `/website-studio.html?leadId=...`.
 - Website Studio: NVIDIA `deepseek-ai/deepseek-v4-flash` -> `z-ai/glm-5.3-flash` builds full HTML, chat-refine, download HTML, copy/open live `/s/:token` link. Pro/Admin only, free users go to `/pricing.html?upgrade=pro`.
 - Business AI Tycoon page (`/business-ai.html`): NVIDIA `deepseek-ai/deepseek-v4-flash` closer brain, Pro/Admin only, Copy + Share-to-WhatsApp buttons.
-- New earn pages: `/earn.html` referrals + invoices + payouts, `/gigs.html` claimable paid gigs, `/learn.html` student/adult tracks, `/outreach.html` money scripts, `/proposals.html` priced proposals, `/pay.html` client pay links.
+- Client Closer (`/proposals.html`) turns an authorized CRM lead into a reviewable proposal and payment request. Browser-local saved leads can be deliberately imported into the signed-in CRM with raw provider payloads removed. Payment pages expose only the client-safe request details; only the invoice owner or an admin can record payment.
+- New earn pages: `/earn.html` referrals + invoices + payouts, `/gigs.html` claimable paid gigs, `/learn.html` student/adult tracks, `/outreach.html` money scripts, `/proposals.html` Client Closer, `/pay.html` client payment requests.
 - Pricing pushes Professional as the money plan with Studio + Tycoon; plans config also advertises the features.
 - You add `NVIDIA_API_KEY` yourself in `.env` / Vercel. Base URL + models are prewired in `.env.example`.
+
+## Verification
+
+```bash
+npm run check
+npm run smoke:closer
+npm run smoke
+```
+
+`smoke:closer` uses a temporary local data store and verifies browser-local CRM import, public payment-request privacy, and owner-only payment confirmation. It does not call a live payment provider.

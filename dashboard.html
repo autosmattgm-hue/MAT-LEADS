@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <title>Dashboard | MAT LEADS AI PRO X</title>
     <meta name="description" content="Search Google Maps businesses, audit websites, and manage high-value agency leads.">
     <link rel="icon" href="/assets/logo-mark.svg" type="image/svg+xml">
@@ -11,14 +11,20 @@
   <body data-page="dashboard">
     <div class="app-layout" data-app-shell>
       <main class="workspace">
-        <section class="workspace-header">
+        <section class="workspace-header dashboard-hero">
           <div>
-            <h1>Lead Dashboard</h1>
-            <p>Search real map business data and qualify revenue opportunities.</p>
+            <span class="dashboard-eyebrow">REVENUE OPERATIONS</span>
+            <h1>Lead command center</h1>
+            <p>Discover qualified businesses, prioritize the right next action, and move opportunities through your pipeline.</p>
+            <div class="dashboard-hero-meta"><span class="dashboard-live-dot"></span><span>Live account workspace</span><span aria-hidden="true">&middot;</span><span data-dashboard-date>Today</span></div>
           </div>
           <div class="toolbar">
-            <span class="plan-pill" data-plan-pill>Admin Unlimited</span>
-            <span class="status-pill success" data-usage-pill>All features unlocked</span>
+            <a class="btn btn-secondary" href="/ai-agent.html">Ask AI Agent</a>
+            <button class="btn btn-secondary" type="button" data-action-center-toggle aria-controls="dailyActionCenter" aria-expanded="false">Daily actions</button>
+            <div class="dashboard-access-status" role="status" aria-live="polite">
+              <span class="plan-pill" data-plan-pill>Admin Unlimited</span>
+              <span class="status-pill success" data-usage-pill>All features unlocked</span>
+            </div>
           </div>
         </section>
 
@@ -27,21 +33,65 @@
           <button class="btn btn-ghost" type="button" data-resend-verification>Resend verification email</button>
         </section>
 
-        <section class="panel" id="dailyActionCenter" aria-live="polite">
-          <div class="section-header">
+        <div class="action-drawer-backdrop" data-action-center-backdrop hidden></div>
+        <aside class="panel action-drawer" id="dailyActionCenter" aria-live="polite" aria-hidden="true" aria-labelledby="dailyActionCenterTitle">
+          <div class="action-drawer__header">
             <div>
-              <h2>Daily Action Center</h2>
-              <p>Prioritized from your saved CRM records, follow-up dates, and completed audits.</p>
+              <span class="action-drawer__eyebrow">OPERATIONS</span>
+              <h2 id="dailyActionCenterTitle">Daily Action Center</h2>
+              <p>Focus on the next actions that move real CRM opportunities forward.</p>
             </div>
             <div class="toolbar">
-              <a class="btn btn-secondary" href="/crm.html">Open Pipeline</a>
-              <a class="btn btn-primary" href="#leadSearchForm">Find Leads</a>
+              <button class="icon-button" type="button" data-action-center-close aria-label="Close daily action center">×</button>
             </div>
           </div>
-          <div id="dailyActionList" class="audit-list"><div class="skeleton">Reviewing your lead actions...</div></div>
-        </section>
-
+          <div class="action-drawer__quick-links">
+            <a class="btn btn-secondary" href="/crm.html">Open Pipeline</a>
+            <a class="btn btn-primary" href="#leadSearchForm">Find Leads</a>
+          </div>
+          <div class="action-summary-grid" aria-label="Action summary">
+            <div class="action-summary-card action-summary-card--danger"><span>Overdue</span><strong data-action-count="overdue">—</strong></div>
+            <div class="action-summary-card"><span>Due today</span><strong data-action-count="dueToday">—</strong></div>
+            <div class="action-summary-card"><span>High opportunity</span><strong data-action-count="highOpportunity">—</strong></div>
+            <div class="action-summary-card"><span>Website audits</span><strong data-action-count="websiteAudits">—</strong></div>
+          </div>
+          <div class="action-drawer__toolbar">
+            <div class="action-filter-bar" role="group" aria-label="Filter daily actions">
+              <button class="action-filter is-active" type="button" data-action-filter="all">All</button>
+              <button class="action-filter" type="button" data-action-filter="follow_up">Follow-ups</button>
+              <button class="action-filter" type="button" data-action-filter="high_opportunity">High value</button>
+              <button class="action-filter" type="button" data-action-filter="website_audit">Audits</button>
+            </div>
+            <div class="action-search-row">
+              <label class="sr-only" for="dailyActionSearch">Search actions</label>
+              <input id="dailyActionSearch" type="search" placeholder="Search actions or leads" autocomplete="off">
+              <button class="icon-button" type="button" data-action-refresh aria-label="Refresh daily actions" title="Refresh">Refresh</button>
+            </div>
+          </div>
+          <div id="dailyActionStatus" class="action-drawer__status" aria-live="polite"></div>
+          <div id="dailyActionList" class="action-list"><div class="skeleton">Reviewing your lead actions...</div></div>
+          <footer class="action-drawer__footer">Actions are based on your account's saved CRM records. Nothing is sent automatically.</footer>
+        </aside>
         <section class="metrics-grid" id="dashboardMetrics" aria-live="polite"></section>
+
+        <section class="dashboard-command-grid" aria-label="Dashboard command center">
+          <article class="panel dashboard-focus-panel">
+            <div class="section-header compact-header">
+              <div><span class="dashboard-eyebrow">TODAY'S FOCUS</span><h2>Turn activity into momentum</h2></div>
+              <a class="text-link" href="/crm.html">Open pipeline <span aria-hidden="true">→</span></a>
+            </div>
+            <div id="dashboardFocus" class="dashboard-focus-content"><div class="skeleton">Preparing your workspace focus...</div></div>
+          </article>
+          <article class="panel dashboard-quick-panel">
+            <div class="section-header compact-header"><div><span class="dashboard-eyebrow">QUICK ACTIONS</span><h2>Move faster</h2></div></div>
+            <div class="dashboard-quick-actions">
+              <a href="#leadSearchForm"><span class="quick-action-icon">+</span><span><strong>Find leads</strong><small>Start a targeted scan</small></span></a>
+              <a href="/website-studio.html"><span class="quick-action-icon">W</span><span><strong>Build a website</strong><small>Create a client-ready draft</small></span></a>
+              <a href="/outreach.html"><span class="quick-action-icon">↗</span><span><strong>Prepare outreach</strong><small>Draft your next message</small></span></a>
+              <a href="/analytics.html"><span class="quick-action-icon">▥</span><span><strong>View analytics</strong><small>Measure your pipeline</small></span></a>
+            </div>
+          </article>
+        </section>
 
         <section class="panel niche-pack-panel" style="margin-top:14px;">
           <div class="section-header compact-header">
@@ -145,18 +195,36 @@
               <label><input id="missingWebsiteOnly" name="missingWebsiteOnly" type="checkbox"> Missing website only</label>
             </div>
             <div class="form-actions">
-              <button class="btn btn-primary" type="submit">Search Leads</button>
+              <button class="btn btn-primary" type="submit" data-search-submit>Search Leads</button>
               <button class="btn btn-secondary" type="button" data-refresh-leads>Refresh Leads</button>
               <button class="btn btn-secondary" type="button" data-expand-search>Broaden Area</button>
               <button class="btn btn-secondary" type="button" data-save-visible-leads>Save All</button>
               <button class="btn btn-secondary" type="button" data-export-visible-leads>Export CSV</button>
             </div>
             <p id="searchNote" class="notice" style="grid-column:1 / -1;">Selected countries and business types control the scan. Free trial users get 2 lead searches with up to 5 leads per search; paid plans unlock higher volume.</p>
+            <p id="searchRunDetails" class="notice" style="grid-column:1 / -1;" aria-live="polite" hidden></p>
           </form>
         </section>
 
-        <section class="detail-layout">
-          <div>
+        <section class="panel saved-search-panel" aria-labelledby="savedSearchHeading">
+          <div class="section-header compact-header">
+            <div>
+              <h2 id="savedSearchHeading">Saved search library</h2>
+              <p>Save a high-intent search once, then reuse its exact filters without rebuilding the form.</p>
+            </div>
+            <span class="tag">Account synced</span>
+          </div>
+          <form id="savedSearchForm" class="toolbar" style="margin-top:12px;">
+            <label class="sr-only" for="savedSearchName">Saved search name</label>
+            <input id="savedSearchName" name="name" required maxlength="100" placeholder="e.g. Austin restaurants without websites">
+            <button class="btn btn-secondary" type="submit">Save current filters</button>
+            <span id="savedSearchStatus" class="muted-value" role="status" aria-live="polite"></span>
+          </form>
+          <div id="savedSearchList" class="saved-search-list" aria-live="polite"><span class="muted-value">Loading saved searches…</span></div>
+        </section>
+
+        <section class="detail-layout lead-results-workspace">
+          <div class="lead-results-section">
             <div class="section-header">
               <div>
                 <h2>Lead Results</h2>
@@ -211,7 +279,7 @@
             </div>
             <div id="leadPagination" aria-label="Lead result pages"></div>
           </div>
-          <aside class="panel">
+          <aside class="panel lead-map-panel">
             <h2>Map Location</h2>
             <div id="mapPreview" class="map-preview" aria-label="Selected Google Maps area">
               <iframe title="Germany default map preview" src="https://www.google.com/maps?q=52.52,13.405&amp;z=6&amp;output=embed" loading="lazy"></iframe>
@@ -272,5 +340,6 @@
     <script type="module" src="/js/app.js"></script>
     <script type="module" src="/js/dashboard.js"></script>
     <script type="module" src="/js/leads.js"></script>
+    <script type="module" src="/js/saved-searches.js"></script>
   </body>
 </html>

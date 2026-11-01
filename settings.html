@@ -48,6 +48,7 @@
           </article>
           <article class="panel">
             <h2>Notifications</h2>
+            <p class="muted-value">Browser notifications are enabled only after you approve them on this device. Email and SMS delivery require a configured provider.</p>
             <div class="field checkbox-field">
               <label><input id="leadAlerts" name="leadAlerts" type="checkbox" checked> Lead alerts</label>
               <label><input id="weeklyDigest" name="weeklyDigest" type="checkbox" checked> Weekly digest</label>
@@ -55,6 +56,11 @@
               <label><input id="smsNotifications" name="smsNotifications" type="checkbox"> SMS notifications</label>
               <label><input id="browserNotifications" name="browserNotifications" type="checkbox" checked> Browser push notifications</label>
             </div>
+            <div class="toolbar" style="margin-top:12px;">
+              <button class="btn btn-secondary" type="button" data-pwa-notification-enable>Enable notifications</button>
+              <button class="btn btn-ghost" type="button" data-pwa-notification-test>Send test notification</button>
+            </div>
+            <p class="notice" data-pwa-notification-status data-state="" role="status" aria-live="polite">Notification permission has not been requested.</p>
           </article>
           <article class="panel">
             <h2>Search Defaults</h2>

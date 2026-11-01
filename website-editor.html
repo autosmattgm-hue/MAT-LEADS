@@ -23,12 +23,15 @@
             </div>
             <div class="wed-top-actions">
               <span class="plan-pill" id="wedPlan">Pro</span>
+              <span class="wed-dirty" id="wedDirty" role="status">Saved</span>
               <div class="wed-device">
                 <button type="button" id="wedDesktop" class="on">Desktop</button>
                 <button type="button" id="wedMobile">Mobile</button>
               </div>
               <button class="btn btn-secondary" type="button" id="wedUndo" title="Undo the last change">↶ Undo</button>
               <button class="btn btn-secondary" type="button" id="wedPreview">Preview</button>
+              <button class="btn btn-secondary" type="button" id="wedDownload">Download</button>
+              <button class="btn btn-secondary" type="button" id="wedReset">Reset</button>
               <button class="btn btn-primary" type="button" id="wedSave">Save &amp; publish</button>
             </div>
           </header>
@@ -41,11 +44,14 @@
                 <button type="button" class="wed-tab" data-wed-tab="style" role="tab">Style</button>
                 <button type="button" class="wed-tab" data-wed-tab="nav" role="tab">Menu</button>
                 <button type="button" class="wed-tab" data-wed-tab="seo" role="tab">SEO</button>
+                <button type="button" class="wed-tab" data-wed-tab="ai" role="tab">AI</button>
+                <button type="button" class="wed-tab" data-wed-tab="quality" role="tab">Quality</button>
               </nav>
 
               <div class="wed-tabpanes">
                 <section class="wed-pane on" data-wed-pane="content">
-                  <p class="wed-hint">Click any text in the preview to edit it, or use the fields below.</p>
+                  <p class="wed-hint">Click text in the preview to select the matching editor control, or use the fields below.</p>
+                  <p class="wed-selection-note" id="wedSelectionNote" hidden></p>
 
                   <label class="wed-field">
                     <span>Business name</span>
@@ -128,6 +134,16 @@
                 <section class="wed-pane" data-wed-pane="style">
                   <p class="wed-hint">Tune the look of your site. Changes apply to the live preview instantly.</p>
                   <label class="wed-field">
+                    <span>Style preset</span>
+                    <select id="wedStylePreset">
+                      <option value="custom">Custom</option>
+                      <option value="modern">Modern blue</option>
+                      <option value="editorial">Editorial</option>
+                      <option value="warm">Warm studio</option>
+                      <option value="contrast">High contrast</option>
+                    </select>
+                  </label>
+                  <label class="wed-field">
                     <span>Accent colour</span>
                     <input type="color" id="wedAccent" value="#0f172a">
                   </label>
@@ -191,13 +207,40 @@
                     <button class="btn btn-secondary btn-sm" type="button" id="wedCopyLink">Copy link</button>
                   </div>
                 </section>
+
+                <section class="wed-pane" data-wed-pane="ai">
+                  <div class="wed-ai-card">
+                    <p class="wed-hint">Use the configured server-side AI to revise the published website. Save visual changes first so the AI works from the latest version. Review its result before sharing.</p>
+                    <label class="wed-field">
+                      <span>What should change?</span>
+                      <textarea id="wedAiInstruction" rows="6" maxlength="2000" placeholder="Example: Make the hero more premium, keep all verified contact details, and add a clear consultation CTA."></textarea>
+                    </label>
+                    <div class="wed-ai-suggestions" aria-label="AI edit suggestions">
+                      <button type="button" data-wed-ai-suggestion="Strengthen the hero headline and clarify the primary action without inventing facts.">Improve hero</button>
+                      <button type="button" data-wed-ai-suggestion="Improve mobile readability, spacing, and button hierarchy while keeping the verified business details.">Improve mobile layout</button>
+                      <button type="button" data-wed-ai-suggestion="Make the services section clearer and add only factual, non-invented copy.">Clarify services</button>
+                    </div>
+                    <button class="btn btn-primary" type="button" id="wedAiApply">Apply AI update</button>
+                  </div>
+                </section>
+
+                <section class="wed-pane" data-wed-pane="quality">
+                  <div class="wed-quality-card">
+                    <p class="wed-hint">This review checks the current HTML for visible structure and configured contact/form markup. It does not claim live speed, rankings, or external security results.</p>
+                    <div id="wedQuality"></div>
+                    <div class="wed-inline">
+                      <button class="btn btn-secondary btn-sm" type="button" id="wedRunQuality">Refresh review</button>
+                      <button class="btn btn-secondary btn-sm" type="button" id="wedCopyQuality">Copy review</button>
+                    </div>
+                  </div>
+                </section>
               </div>
             </aside>
 
             <section class="wed-canvas" aria-label="Website preview">
               <div class="wed-status" id="wedStatus">Loading your site…</div>
               <div class="wed-canvas-inner" id="wedCanvas">
-                <iframe id="wedPreview" title="Website editing preview"></iframe>
+                <iframe id="wedPreviewFrame" title="Website editing preview" sandbox="allow-scripts allow-forms allow-popups"></iframe>
               </div>
             </section>
           </div>

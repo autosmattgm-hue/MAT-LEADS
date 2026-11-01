@@ -59,6 +59,13 @@
       "icons": [{ "src": "/assets/logo-mark.svg", "sizes": "any", "type": "image/svg+xml" }]
     },
     {
+      "name": "Community & Chat",
+      "short_name": "Community",
+      "description": "Connect with members and chat privately",
+      "url": "/community.html",
+      "icons": [{ "src": "/assets/logo-mark.svg", "sizes": "any", "type": "image/svg+xml" }]
+    },
+    {
       "name": "Pricing",
       "short_name": "Pricing",
       "description": "View subscription plans",

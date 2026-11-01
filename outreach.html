@@ -12,21 +12,22 @@
 <div class="app-layout" data-app-shell>
 <main class="workspace">
 <section class="workspace-header">
-<div><h1>Outreach Studio</h1><p>Turn any lead into booked calls with AI scripts you can sell.</p></div>
+<div><h1>Outreach Studio</h1><p>Create a real, editable outreach draft from saved lead data before you send anything.</p></div>
 <div class="toolbar"><a class="btn btn-secondary" href="/earn.html">Earn Hub</a><a class="btn btn-primary" href="/proposals.html">Proposals</a></div>
 </section>
 <section class="detail-layout">
 <article class="panel">
 <h2>Generate Outreach</h2>
 <form id="outForm" class="form-grid compact">
-<div class="field" style="grid-column:1/-1;"><label for="outLead">Lead ID</label><input id="outLead" placeholder="Paste lead id from dashboard"></div>
+<div class="field" style="grid-column:1/-1;"><label for="outLeadPicker">Saved lead</label><select id="outLeadPicker"><option value="">Loading your saved leads...</option></select></div>
+<div class="field" style="grid-column:1/-1;"><label for="outLead">Lead ID</label><input id="outLead" placeholder="Paste a lead ID, or choose a saved lead above" autocomplete="off"></div>
 <div class="field"><label for="outType">Type</label><select id="outType"><option value="cold_email">Cold email</option><option value="follow_up">Follow-up</option><option value="website_redesign">Website redesign pitch</option><option value="seo">SEO pitch</option><option value="marketing">Marketing pitch</option><option value="ai_automation">AI automation pitch</option><option value="business_audit">Paid audit pitch</option></select></div>
 <div class="field"><label for="outOffer">Attach paid offer</label><select id="outOffer"></select></div>
-<button class="btn btn-primary" type="submit">Generate + Price It</button>
+<button class="btn btn-primary" id="outGenerate" type="submit">Generate an editable draft</button>
 </form>
-<div class="toolbar" style="margin-top:12px;"><button class="btn btn-secondary" type="button" id="outCopy">Copy</button><button class="btn btn-secondary" type="button" id="outWa">WhatsApp</button><button class="btn btn-secondary" type="button" id="outInvoice">Create Invoice</button></div>
+<div class="toolbar" style="margin-top:12px;"><button class="btn btn-secondary" type="button" id="outCopy" disabled>Copy</button><button class="btn btn-secondary" type="button" id="outWa" disabled>Open WhatsApp</button><button class="btn btn-secondary" type="button" id="outRecord" disabled>Record outreach</button><button class="btn btn-secondary" type="button" id="outInvoice" disabled>Create Invoice</button><span id="outStatus" class="muted-value" role="status" aria-live="polite">Choose a saved lead or enter its ID.</span></div>
 </article>
-<article class="panel"><h2>Script Output</h2><div id="outResult" class="notice">Your money script appears here.</div></article>
+<article class="panel"><h2>Draft workspace</h2><p class="muted-value">AI drafts use the lead record you selected. Review and edit the text before any outreach is sent.</p><div id="outResult" class="copy-brief outreach-result" role="status" aria-live="polite">Your real, editable outreach draft will appear here.</div></article>
 </section>
 </main>
 </div>

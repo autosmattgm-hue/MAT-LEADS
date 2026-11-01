@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Proposals | MAT LEADS AI PRO X</title>
-<meta name="description" content="Client-ready proposals with pricing, guarantee and pay link.">
+<title>Client Closer | MAT LEADS AI PRO X</title>
+<meta name="description" content="Turn a verified lead into a clear proposal and a professional payment request.">
 <link rel="icon" href="/assets/logo-mark.svg" type="image/svg+xml">
 <link rel="stylesheet" href="/css/style.css">
 </head>
@@ -12,23 +12,107 @@
 <div class="app-layout" data-app-shell>
 <main class="workspace">
 <section class="workspace-header">
-<div><h1>Proposal Closer</h1><p>Generate a priced proposal + invoice + pay link in one flow.</p></div>
-<div class="toolbar"><a class="btn btn-secondary" href="/outreach.html">Outreach</a><a class="btn btn-primary" href="/earn.html">Earn Hub</a></div>
+  <div>
+    <span class="plan-pill">Revenue workflow</span>
+    <h1>Client Closer</h1>
+    <p>Move a real lead from discovery to a reviewed proposal and a shareable payment request.</p>
+  </div>
+  <div class="toolbar">
+    <a class="btn btn-secondary" href="/dashboard.html">Find Leads</a>
+    <a class="btn btn-secondary" href="/crm.html">Open CRM</a>
+    <a class="btn btn-primary" href="/earn.html">Payment Requests</a>
+  </div>
 </section>
-<section class="detail-layout">
-<article class="panel">
-<h2>Build Proposal</h2>
-<form id="propForm" class="form-grid compact">
-<div class="field" style="grid-column:1/-1;"><label for="propLead">Lead ID</label><input id="propLead" placeholder="Paste lead id"></div>
-<div class="field"><label for="propOffer">Offer + price</label><select id="propOffer"></select></div>
-<div class="field"><label for="propAmount">Price USD</label><input id="propAmount" type="number" min="1" required></div>
-<div class="field"><label for="propClient">Client name</label><input id="propClient" placeholder="Client name"></div>
-<div class="field"><label for="propEmail">Client email</label><input id="propEmail" type="email" placeholder="client@biz.com"></div>
-<button class="btn btn-primary" type="submit">Write Proposal + Invoice</button>
-</form>
-<div class="toolbar" style="margin-top:12px;"><button class="btn btn-secondary" type="button" id="propCopy">Copy</button><button class="btn btn-secondary" type="button" id="propWa">WhatsApp</button></div>
-</article>
-<article class="panel"><h2>Proposal Output</h2><div id="propOut" class="notice">Priced proposal appears here.</div></article>
+
+<section class="notice closer-trust" aria-label="Workflow safety notice">
+  <strong>Human-reviewed by design.</strong> MAT LEADS uses the selected lead’s stored public data. It does not invent results, send messages automatically, or mark an invoice paid for you. Review the draft, confirm your scope, and use a payment link from a provider you control.
+</section>
+
+<section class="detail-layout closer-layout">
+  <article class="panel">
+    <div class="section-header compact-header">
+      <div><span class="step-label">STEP 1</span><h2>Choose the real lead</h2></div>
+      <button class="btn btn-secondary" type="button" id="propLoadLead">Load lead</button>
+    </div>
+    <div class="field">
+      <label for="propLeadSelect">Saved CRM leads</label>
+      <select id="propLeadSelect" aria-describedby="propLeadHint">
+        <option value="">Loading saved leads...</option>
+      </select>
+      <small id="propLeadHint" class="field-hint">Only leads authorized for your account are listed.</small>
+    </div>
+    <div class="field">
+      <label for="propLead">Lead ID</label>
+      <input id="propLead" placeholder="Paste a lead ID from your dashboard">
+    </div>
+    <div id="propLeadSummary" class="notice closer-summary">Select or load a lead to see its verified business details.</div>
+
+    <div class="section-header compact-header closer-step-divider">
+      <div><span class="step-label">STEP 2</span><h2>Shape the offer</h2></div>
+    </div>
+    <form id="propForm" class="form-grid compact">
+      <div class="field" style="grid-column:1/-1;">
+        <label for="propOffer">Offer</label>
+        <select id="propOffer" required><option value="">Loading offers...</option></select>
+      </div>
+      <div class="field">
+        <label for="propAmount">Amount due (USD)</label>
+        <input id="propAmount" type="number" min="1" max="100000" step="1" required>
+      </div>
+      <div class="field">
+        <label for="propDueDate">Due date</label>
+        <input id="propDueDate" type="date">
+      </div>
+      <div class="field">
+        <label for="propClient">Client / business name</label>
+        <input id="propClient" placeholder="Business or decision-maker name">
+      </div>
+      <div class="field">
+        <label for="propEmail">Client email (optional)</label>
+        <input id="propEmail" type="email" placeholder="client@business.com">
+      </div>
+      <div class="field" style="grid-column:1/-1;">
+        <label for="propPaymentUrl">Your payment-provider link (optional)</label>
+        <input id="propPaymentUrl" type="url" placeholder="https://checkout.stripe.com/... or https://paypal.me/...">
+        <small class="field-hint">Use a link from your own Stripe, PayPal, bank, or invoicing provider. MAT LEADS never stores provider secrets.</small>
+      </div>
+      <div class="field" style="grid-column:1/-1;">
+        <label for="propPaymentInstructions">Payment instructions (optional)</label>
+        <textarea id="propPaymentInstructions" rows="2" maxlength="1200" placeholder="Example: Pay the deposit using the secure link above. Work starts after payment and written approval."></textarea>
+      </div>
+      <button class="btn btn-primary" type="submit" id="propCreate">Build proposal + payment request</button>
+    </form>
+    <p class="notice" id="propStatus" aria-live="polite">Load a lead to begin.</p>
+  </article>
+
+  <article class="panel">
+    <div class="section-header compact-header">
+      <div><span class="step-label">STEP 3</span><h2>Review and send</h2></div>
+      <button class="btn btn-secondary" type="button" id="propAi" disabled>Improve with AI</button>
+    </div>
+    <pre id="propOut" class="code-block closer-output">Your proposal draft will appear here. It is a draft for your review—not an automatic message.</pre>
+    <div id="propInvoiceActions" class="closer-invoice-actions" hidden>
+      <div class="notice success" id="propInvoiceMeta"></div>
+      <div class="toolbar">
+        <a class="btn btn-primary" id="propInvoiceLink" href="#" target="_blank" rel="noreferrer">Open payment request</a>
+        <button class="btn btn-secondary" type="button" id="propMarkPaid">Confirm payment received</button>
+      </div>
+    </div>
+    <div class="toolbar closer-share-actions">
+      <button class="btn btn-secondary" type="button" id="propCopy">Copy draft</button>
+      <button class="btn btn-secondary" type="button" id="propEmailShare">Email draft</button>
+      <button class="btn btn-secondary" type="button" id="propWa">WhatsApp draft</button>
+    </div>
+    <p class="field-hint">Only open a communication channel after you have reviewed the wording and confirmed the recipient.</p>
+  </article>
+</section>
+
+<section class="panel closer-recent" style="margin-top:14px;">
+  <div class="section-header compact-header">
+    <div><h2>Recent payment requests</h2><p>Track requests created by this account. A request is not marked paid until you confirm receipt.</p></div>
+    <button class="btn btn-secondary" type="button" id="propRefreshInvoices">Refresh</button>
+  </div>
+  <div id="propRecent" class="audit-list"><div class="empty-state">Loading payment requests...</div></div>
 </section>
 </main>
 </div>

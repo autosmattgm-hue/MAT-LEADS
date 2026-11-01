@@ -3,62 +3,21 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Verify Your Email | MAT LEADS AI PRO X</title>
+    <title>Verify your email | MAT LEADS AI PRO X</title>
     <meta name="description" content="Confirm your email address to activate your MAT LEADS AI PRO X workspace.">
     <link rel="icon" href="/assets/logo-mark.svg" type="image/svg+xml">
     <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/auth.css">
   </head>
-  <body>
-    <main class="auth-page">
-      <section class="auth-visual">
-        <a class="brand" href="/index.html"><img src="/assets/logo-mark.svg" alt="" width="34" height="34"><span>MAT LEADS AI PRO X</span></a>
-        <h1>One click from your lead engine.</h1>
-        <p>Verifying your email keeps your workspace secure and activates your free trial.</p>
-      </section>
-      <section class="auth-panel">
-        <div id="verifyWorking">
-          <h2>Verifying your email…</h2>
-          <p>Hold on a moment while we confirm your link.</p>
-          <div class="notice" role="status">This only takes a second.</div>
-        </div>
-
-        <div id="verifySent" hidden>
-          <h2>Check your inbox</h2>
-          <p id="verifySentLine">We sent a verification link to your email address.</p>
-          <div class="notice" role="status">Open the link in that email to activate your account. Didn’t get it? Check spam, or resend below.</div>
-          <form id="resendForm" class="field" style="margin-top:14px;">
-            <label for="resendEmail">Email address</label>
-            <div style="display:flex;gap:8px;">
-              <input id="resendEmail" type="email" autocomplete="email" required placeholder="you@business.com">
-              <button class="btn btn-secondary" type="submit">Resend</button>
-            </div>
-          </form>
-          <button class="btn btn-primary" id="openPendingLink" type="button" hidden>Open my verification link</button>
-          <div class="notice" id="resendStatus" role="status" hidden></div>
-          <a class="btn btn-ghost" href="/login.html">Back to login</a>
-        </div>
-
-        <div id="verifySuccess" hidden>
-          <h2>Email verified ✓</h2>
-          <p id="verifySuccessLine">Your account is active. Taking you to the login page…</p>
-          <div class="notice success" role="status">Your free trial is ready — 2 lead searches with up to 5 leads each.</div>
-          <a class="btn btn-primary" href="/login.html">Continue to login</a>
-        </div>
-
-        <div id="verifyError" hidden>
-          <h2>That link didn’t work</h2>
-          <div class="notice error" id="verifyErrorLine" role="alert"></div>
-          <p>Request a fresh verification link below, or contact support if it keeps failing.</p>
-          <form id="errorResendForm" class="field">
-            <label for="errorResendEmail">Email address</label>
-            <div style="display:flex;gap:8px;">
-              <input id="errorResendEmail" type="email" autocomplete="email" required placeholder="you@business.com">
-              <button class="btn btn-secondary" type="submit">Send new link</button>
-            </div>
-          </form>
-          <div class="notice" id="errorResendStatus" role="status" hidden></div>
-          <a class="btn btn-ghost" href="/login.html">Back to login</a>
-        </div>
+  <body class="auth-body auth-body--verify">
+    <main class="auth-page auth-shell">
+      <section class="auth-visual" aria-label="Email verification"><div class="auth-visual__glow" aria-hidden="true"></div><div class="auth-visual__content"><a class="auth-brand" href="/index.html"><img src="/assets/logo-mark.svg" alt="" width="36" height="36"><span>MAT LEADS <b>AI PRO X</b></span></a><div class="auth-visual__copy"><span class="auth-eyebrow">One final security step</span><h1>Your workspace is almost <em>ready.</em></h1><p>Email verification keeps your account protected and confirms the right place for important account updates.</p></div><div class="auth-onboarding-list"><div><i>01</i><span><b>Confirm your address</b><small>Use the secure link sent to your inbox</small></span></div><div><i>02</i><span><b>Activate your workspace</b><small>Sign in and begin your first focused search</small></span></div></div></div></section>
+      <section class="auth-panel auth-panel--modern auth-panel--state">
+        <div class="auth-panel__top"><span class="auth-mobile-brand"><img src="/assets/logo-mark.svg" alt="" width="24" height="24"> <span>MAT LEADS <b>AI PRO X</b></span></span><a class="auth-return-link" href="/login.html">← Back to sign in</a></div>
+        <div id="verifyWorking" class="auth-state"><span class="auth-form-kicker">Secure verification</span><h2>Verifying your email…</h2><p>Hold on while we confirm your verification link.</p><div class="auth-state-icon auth-state-icon--loading" aria-hidden="true"><i></i></div><div class="notice auth-status" role="status">This only takes a moment.</div></div>
+        <div id="verifySent" class="auth-state" hidden><span class="auth-form-kicker">Check your inbox</span><h2>Confirm your email address</h2><p id="verifySentLine">We sent a verification link to your email address.</p><div class="notice auth-status" role="status">Open the link in that email to activate your account. Check spam if you don’t see it, or resend below.</div><form id="resendForm" class="auth-form-modern auth-state-form"><div class="field"><label for="resendEmail">Email address</label><input id="resendEmail" type="email" autocomplete="email" required placeholder="you@company.com"></div><button class="btn btn-primary auth-submit" type="submit">Resend verification link</button></form><button class="btn btn-secondary auth-wide-button" id="openPendingLink" type="button" hidden>Open my verification link</button><div class="notice auth-status" id="resendStatus" role="status" hidden></div><a class="btn btn-ghost auth-account-link" href="/login.html">Back to sign in</a></div>
+        <div id="verifySuccess" class="auth-state" hidden><span class="auth-form-kicker">Verified</span><h2>Email verified ✓</h2><p id="verifySuccessLine">Your account is active. Taking you to the sign-in page…</p><div class="auth-state-icon auth-state-icon--success" aria-hidden="true">✓</div><div class="notice success auth-status" role="status">Your free trial is ready — 2 lead searches with up to 5 leads each.</div><a class="btn btn-primary auth-submit" href="/login.html">Continue to sign in <span aria-hidden="true">→</span></a></div>
+        <div id="verifyError" class="auth-state" hidden><span class="auth-form-kicker">Link needs attention</span><h2>That link didn’t work</h2><div class="notice error auth-status" id="verifyErrorLine" role="alert"></div><p>Request a new verification link below. If it keeps failing, check that you are using the latest email.</p><form id="errorResendForm" class="auth-form-modern auth-state-form"><div class="field"><label for="errorResendEmail">Email address</label><input id="errorResendEmail" type="email" autocomplete="email" required placeholder="you@company.com"></div><button class="btn btn-primary auth-submit" type="submit">Send a new link</button></form><div class="notice auth-status" id="errorResendStatus" role="status" hidden></div><a class="btn btn-ghost auth-account-link" href="/login.html">Back to sign in</a></div>
       </section>
     </main>
     <script type="module" src="/components/layout.js"></script>

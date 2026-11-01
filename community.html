@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Chat | MAT LEADS AI PRO X</title>
+    <meta name="description" content="Chat securely with your MAT LEADS network and collaborators.">
+    <link rel="icon" href="/assets/logo-mark.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="/css/style.css">
+  </head>
+  <body data-page="community">
+    <div class="app-layout" data-app-shell>
+      <main class="workspace community-workspace">
+        <section class="workspace-header">
+          <div><p class="eyebrow">Secure workspace</p><h1>Messages</h1><p>Keep your client network, collaborators, and private conversations organized in one professional inbox.</p></div>
+          <div class="workspace-header-actions"><span class="status-pill success">Private & secure</span><button class="btn btn-secondary" type="button" data-community-notification-toggle aria-expanded="false">Notifications <span class="community-header-count" data-community-notification-count hidden>0</span></button><button class="btn btn-secondary" type="button" data-community-refresh>Refresh inbox</button></div>
+        </section>
+        <section class="panel community-notification-panel" data-community-notification-panel hidden>
+          <div class="panel-heading"><div><h2>Notifications</h2><p>Friend requests and new conversations from your network.</p></div><div class="community-chat-actions"><button class="btn btn-ghost btn-small" type="button" data-community-notification-read-all>Mark all read</button><button class="btn btn-ghost btn-small" type="button" data-community-notification-refresh>Refresh</button></div></div>
+          <div class="community-notifications" data-community-notifications></div>
+        </section>
+        <div class="community-grid">
+          <section class="panel community-discover">
+            <div class="panel-heading"><div><h2>Inbox & contacts</h2><p>Search members or open an existing conversation.</p></div><div class="community-badges"><span class="status-pill" data-community-count>0 friends</span><span class="status-pill warning" data-community-unread hidden>0 unread</span></div></div>
+            <form class="community-search" data-community-search-form>
+              <label class="sr-only" for="communityQuery">Search members</label>
+              <input id="communityQuery" type="search" minlength="2" maxlength="120" placeholder="Search members..." autocomplete="off" required>
+              <button class="btn btn-primary" type="submit">Search</button>
+            </form>
+            <div class="community-inbox-filter">
+              <label class="sr-only" for="conversationFilter">Filter conversations</label>
+              <input id="conversationFilter" type="search" maxlength="120" placeholder="Filter conversations" autocomplete="off">
+              <button class="btn btn-ghost btn-small" type="button" data-community-show-inbox hidden>Inbox</button>
+            </div>
+            <div class="community-tabs" role="tablist" aria-label="Conversation filters">
+              <button class="community-tab is-active" type="button" role="tab" aria-selected="true" data-community-filter="all">All conversations</button>
+              <button class="community-tab" type="button" role="tab" aria-selected="false" data-community-filter="unread">Unread</button>
+            </div>
+            <div class="community-results" data-community-results aria-live="polite"><div class="empty-state"><strong>Build your network</strong><span>Search for another member to send a friend request.</span></div></div>
+            <div class="community-section"><div class="panel-heading"><h2>Friend requests</h2></div><div class="community-requests" data-community-requests></div></div>
+            <div class="community-section"><div class="panel-heading"><h2>Blocked members</h2></div><div class="community-requests" data-community-blocks><p class="muted">No blocked members.</p></div></div>
+          </section>
+          <section class="panel community-chat" aria-label="Conversation">
+            <div class="community-chat-header"><div class="community-chat-identity"><span class="avatar avatar-large" data-community-chat-avatar aria-hidden="true">M</span><div><h2 data-community-chat-title>Choose a conversation</h2><p data-community-chat-subtitle>Select a contact from your inbox to start chatting.</p></div></div><div class="community-chat-actions"><input class="community-message-filter" data-community-message-filter type="search" placeholder="Search chat" aria-label="Search this conversation" hidden><button class="btn btn-ghost btn-small" type="button" data-community-message-search aria-expanded="false" aria-controls="communityMessages" title="Find a message in this conversation" hidden>Find</button><button class="btn btn-ghost btn-small" type="button" data-community-report hidden>Report</button><button class="btn btn-ghost btn-small danger" type="button" data-community-block hidden>Block</button><button class="btn btn-secondary btn-small" type="button" data-community-remove hidden>Remove</button></div></div>
+            <div class="community-messages" id="communityMessages" data-community-messages aria-live="polite"><div class="empty-state"><strong>Your conversations live here</strong><span>Friend requests must be accepted before messaging is enabled.</span></div></div>
+            <form class="community-composer" data-community-message-form hidden>
+              <label class="sr-only" for="communityMessage">Message</label>
+              <textarea id="communityMessage" maxlength="4000" rows="2" placeholder="Write a message..." required></textarea>
+              <div class="community-composer-footer"><span>Enter to send · Shift + Enter for a new line</span><button class="btn btn-primary" type="submit">Send <span aria-hidden="true">→</span></button></div>
+            </form>
+            <p class="form-status" data-community-status role="status"></p>
+          </section>
+        </div>
+      </main>
+    </div>
+    <script type="module" src="/components/layout.js"></script>
+    <script type="module" src="/js/community.js"></script>
+  </body>
+</html>

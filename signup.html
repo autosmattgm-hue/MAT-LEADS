@@ -3,46 +3,41 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Start Free Trial | MAT LEADS AI PRO X</title>
-    <meta name="description" content="Start your MAT LEADS AI PRO X trial and build a high-value Google Maps lead pipeline.">
+    <title>Create your workspace | MAT LEADS AI PRO X</title>
+    <meta name="description" content="Create your MAT LEADS AI PRO X workspace and start finding, qualifying, and converting better business leads.">
     <link rel="icon" href="/assets/logo-mark.svg" type="image/svg+xml">
     <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/auth.css">
   </head>
-  <body>
-    <main class="auth-page">
-      <section class="auth-visual">
-        <a class="brand" href="/index.html"><img src="/assets/logo-mark.svg" alt="" width="34" height="34"><span>MAT LEADS AI PRO X</span></a>
-        <h1>Launch an agency lead engine in minutes.</h1>
-        <p>Search Google Maps, qualify websites, generate proposals, and track deals from one workspace.</p>
+  <body class="auth-body auth-body--signup">
+    <main class="auth-page auth-shell">
+      <section class="auth-visual" aria-label="MAT LEADS platform overview">
+        <div class="auth-visual__glow" aria-hidden="true"></div>
+        <div class="auth-visual__content">
+          <a class="auth-brand" href="/index.html"><img src="/assets/logo-mark.svg" alt="" width="36" height="36"><span>MAT LEADS <b>AI PRO X</b></span></a>
+          <div class="auth-visual__copy"><span class="auth-eyebrow">A better way to grow</span><h1>Build a pipeline that works while you <em>do the work.</em></h1><p>Start with a focused search. Leave with a clear next action, a better message, and a repeatable system for winning clients.</p></div>
+          <div class="auth-onboarding-list"><div><i>01</i><span><b>Discover</b><small>Search businesses in markets worldwide</small></span></div><div><i>02</i><span><b>Understand</b><small>Review contacts, websites, and opportunity signals</small></span></div><div><i>03</i><span><b>Deliver</b><small>Prepare outreach, proposals, and websites</small></span></div></div>
+          <p class="auth-visual-note">Start with the free trial. Upgrade only when the workflow earns its place.</p>
+        </div>
       </section>
-      <section class="auth-panel">
-        <h2>Start Free Trial</h2>
-        <p>Create your workspace.</p>
-        <form data-auth-form="register">
-          <div class="field">
-            <label for="name">Full name</label>
-            <input id="name" name="name" type="text" autocomplete="name" required>
-          </div>
-          <div class="field">
-            <label for="email">Email</label>
-            <input id="email" name="email" type="email" autocomplete="email" required>
-          </div>
-          <div class="field">
-            <label for="password">Password</label>
-            <input id="password" name="password" type="password" autocomplete="new-password" minlength="8" required>
-          </div>
-          <button class="btn btn-primary" type="submit">Create Workspace</button>
-          <div class="notice" data-form-status role="status">Free trial includes 2 lead searches with up to 5 leads per search.</div>
-          <div class="auth-divider" role="separator"><span>or</span></div>
-          <button class="btn btn-google" type="button" data-google-auth>
-            <svg class="google-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-            Sign up with Google
-          </button>
-          <a class="btn btn-ghost" href="/login.html">Already have an account</a>
+      <section class="auth-panel auth-panel--modern">
+        <div class="auth-panel__top"><span class="auth-mobile-brand"><img src="/assets/logo-mark.svg" alt="" width="24" height="24"> <span>MAT LEADS <b>AI PRO X</b></span></span><span class="auth-step-label">Step 1 of 1</span></div>
+        <div class="auth-form-heading"><span class="auth-form-kicker">Start with clarity</span><h2>Create your workspace</h2><p>Set up your account and start building a better client pipeline today.</p></div>
+        <form data-auth-form="register" class="auth-form-modern">
+          <div class="field"><label for="name">Full name</label><input id="name" name="name" type="text" autocomplete="name" placeholder="Your name" required></div>
+          <div class="field"><label for="email">Work email</label><input id="email" name="email" type="email" autocomplete="email" placeholder="you@company.com" required></div>
+          <div class="field"><div class="auth-label-row"><label for="password">Create a password</label><span>8+ characters</span></div><div class="auth-password-field"><input id="password" name="password" type="password" autocomplete="new-password" minlength="8" placeholder="Choose a secure password" required><button type="button" class="auth-password-toggle" data-password-toggle data-target="password" aria-label="Show password">Show</button></div></div>
+          <button class="btn btn-primary auth-submit" type="submit">Create free workspace <span aria-hidden="true">→</span></button>
+          <div class="notice auth-status" data-form-status role="status">Free trial includes 2 lead searches with up to 5 leads per search.</div>
+          <div class="auth-divider" role="separator"><span>or continue with</span></div>
+          <button class="btn btn-google" type="button" data-google-auth><svg class="google-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>Continue with Google</button>
+          <a class="btn btn-ghost auth-account-link" href="/login.html">Already have an account? <b>Sign in</b></a>
         </form>
+        <p class="auth-legal">By creating an account, you agree to use MAT LEADS responsibly and follow applicable privacy, anti-spam, and messaging requirements.</p>
       </section>
     </main>
     <script type="module" src="/components/layout.js"></script>
     <script type="module" src="/js/app.js"></script>
+    <script type="module" src="/js/auth-ui.js"></script>
   </body>
 </html>

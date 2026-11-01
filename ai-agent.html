@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>AI Agent | MAT LEADS AI PRO X</title>
+    <meta name="description" content="An account-aware AI agent for lead priorities, follow-ups, sales planning, and next actions.">
+    <link rel="icon" href="/assets/logo-mark.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="/css/style.css">
+  </head>
+  <body data-page="ai-agent" class="tycoon-page">
+    <div class="app-layout" data-app-shell>
+      <main class="workspace">
+        <div class="tycoon-shell agent-shell">
+          <header class="tycoon-topbar agent-command-header">
+            <div class="tycoon-id">
+              <span class="tycoon-orb agent-orb" aria-hidden="true">A</span>
+              <div>
+                <span class="agent-overline">MAT LEADS AI PRO X</span>
+                <strong>Command Agent</strong>
+                <span class="muted-value">Your private workspace for decisions, priorities, and next actions.</span>
+              </div>
+            </div>
+            <div class="toolbar">
+              <span class="agent-live-pill"><i aria-hidden="true"></i> Live account context</span>
+              <button class="btn btn-secondary" type="button" id="agentNew">New conversation</button>
+              <a class="btn btn-secondary" href="/dashboard.html">Find Leads</a>
+              <a class="btn btn-primary" href="/crm.html">Open CRM</a>
+            </div>
+          </header>
+
+          <div id="agentGate" class="notice tycoon-gate" role="status" aria-live="polite">Checking AI Agent access&hellip;</div>
+
+          <div class="agent-workspace">
+            <section class="agent-conversation panel" aria-label="AI Agent conversation">
+              <div class="agent-conversation__bar"><div><span class="agent-overline">WORKSPACE CHAT</span><h2>What do you want to accomplish?</h2></div><span class="agent-secure-label">Private &middot; read-only context</span></div>
+              <section class="tycoon-thread" id="agentThread" aria-live="polite" aria-label="Conversation with MAT Leads Command Agent">
+                <div class="tycoon-empty" id="agentEmpty">
+                  <span class="tycoon-orb agent-orb big" aria-hidden="true">A</span>
+                  <h1>Turn your lead data into a clear plan</h1>
+                  <p>The Agent reads your saved CRM records and recommends practical next steps. You stay in control of every message, edit, and decision.</p>
+                  <div class="tycoon-chips">
+                    <button class="tycoon-chip" type="button">What should I do today to move my best leads forward?</button>
+                    <button class="tycoon-chip" type="button">Which leads should I contact first and why?</button>
+                    <button class="tycoon-chip" type="button">Give me a 3-step plan to turn my saved leads into meetings.</button>
+                    <button class="tycoon-chip" type="button">How should I improve my current conversion rate?</button>
+                  </div>
+                </div>
+              </section>
+              <footer class="tycoon-composer-wrap">
+                <form id="agentForm" class="tycoon-composer">
+                  <label class="sr-only" for="agentPrompt">Message MAT Leads Command Agent</label>
+                  <textarea id="agentPrompt" rows="1" placeholder="Ask about leads, follow-ups, offers, or your next action&hellip;" required></textarea>
+                  <button type="submit" id="agentSend" aria-label="Send message">&#10148;</button>
+                </form>
+                <p class="tycoon-hint muted-value">Enter to send &middot; Shift+Enter for a new line &middot; recommendations use your actual account data</p>
+              </footer>
+            </section>
+
+            <aside class="agent-brief" aria-label="Account snapshot and recommended actions">
+              <div class="agent-brief__heading"><span class="agent-overline">ACCOUNT PULSE</span><h2>Your workspace</h2><p>Updated from your CRM records.</p></div>
+              <section class="agent-context" aria-label="Live account snapshot">
+                <div><span class="muted-value">Saved leads</span><strong id="agentLeadCount">—</strong></div>
+                <div><span class="muted-value">Contacted</span><strong id="agentContactedCount">—</strong></div>
+                <div><span class="muted-value">Won deals</span><strong id="agentWonCount">—</strong></div>
+                <div><span class="muted-value">Follow-ups</span><strong id="agentActionCount">—</strong></div>
+              </section>
+              <div class="agent-brief__heading agent-brief__heading--actions"><span class="agent-overline">NEXT BEST ACTIONS</span><h2>Keep momentum</h2></div>
+              <section id="agentActions" class="agent-actions" aria-label="Recommended account actions"></section>
+              <div class="agent-safety-note"><strong>Human approval stays on.</strong><span>The Agent can recommend and draft, but it never sends outreach or changes CRM records automatically.</span></div>
+            </aside>
+          </div>
+        </div>
+      </main>
+    </div>
+    <script type="module" src="/components/layout.js"></script>
+    <script type="module" src="/js/ai-agent.js"></script>
+  </body>
+</html>

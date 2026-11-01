@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Client Growth Playbook | MAT LEADS AI PRO X</title>
+    <meta name="description" content="Turn a saved business lead into a focused, evidence-based client acquisition plan with MAT LEADS AI PRO X.">
+    <meta name="robots" content="noindex">
+    <link rel="icon" href="/assets/logo-mark.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/playbook.css">
+  </head>
+  <body data-page="playbook">
+    <div class="app-layout" data-app-shell>
+      <main class="workspace playbook-workspace">
+        <section class="playbook-hero"><div><span class="playbook-kicker">Premium workflow</span><h1>Build a client growth playbook from real lead evidence.</h1><p>Choose a saved lead, set your service angle, and get a practical plan for the next conversation. The plan stays grounded in the information you have confirmed.</p></div><div class="playbook-hero__badge"><span>✦</span><b>From saved lead<br>to next action</b></div></section>
+
+        <section class="playbook-layout">
+          <form class="panel playbook-brief" id="playbookForm">
+            <div class="playbook-panel-heading"><div><span class="playbook-kicker">01 · Choose context</span><h2>Build your brief</h2></div><span class="playbook-step">3 steps</span></div>
+            <div class="field"><label for="playbookLead">Saved lead</label><select id="playbookLead" required><option value="">Choose a lead…</option></select><small class="field-help" id="playbookLeadHint">Saved leads from this browser will appear here.</small></div>
+            <div class="field"><label for="playbookService">Service you want to offer</label><select id="playbookService"><option value="website">Website redesign or new website</option><option value="seo">SEO and local visibility</option><option value="automation">AI automation or workflow setup</option><option value="marketing">Digital marketing and content</option><option value="custom">Another service</option></select></div>
+            <div class="field"><label for="playbookGoal">Your next goal</label><select id="playbookGoal"><option value="reply">Get a first reply</option><option value="call">Book a discovery call</option><option value="audit">Offer a useful audit</option><option value="proposal">Move toward a proposal</option></select></div>
+            <div class="field"><label for="playbookNotes">What do you already know?</label><textarea id="playbookNotes" rows="4" placeholder="Add confirmed context, your delivery capacity, or a concern you want the plan to address."></textarea></div>
+            <button class="btn btn-primary playbook-generate" type="submit">Create playbook <span aria-hidden="true">→</span></button>
+            <div class="notice" id="playbookStatus" role="status">Select a saved lead to begin.</div>
+          </form>
+
+          <section class="panel playbook-output-panel" aria-live="polite"><div class="playbook-panel-heading"><div><span class="playbook-kicker">02 · Your plan</span><h2 id="playbookTitle">Your next best move</h2></div><span class="playbook-source" id="playbookSource">Waiting for context</span></div><div id="playbookEmpty" class="playbook-empty"><span class="playbook-empty__icon">✦</span><h3>A useful plan starts with a real lead.</h3><p>Choose a saved record and we’ll organise the evidence, message angle, offer, and follow-up into one client-ready brief.</p></div><div id="playbookResult" hidden><div class="playbook-summary" id="playbookSummary"></div><div class="playbook-result-grid"><article><span class="playbook-result-label">NEXT ACTION</span><h3 id="playbookNextAction">—</h3><p id="playbookNextDetail">—</p></article><article><span class="playbook-result-label">MESSAGE ANGLE</span><h3 id="playbookMessageAngle">—</h3><p id="playbookMessageDetail">—</p></article><article><span class="playbook-result-label">OFFER SHAPE</span><h3 id="playbookOffer">—</h3><p id="playbookOfferDetail">—</p></article><article><span class="playbook-result-label">FOLLOW-UP</span><h3 id="playbookFollowup">—</h3><p id="playbookFollowupDetail">—</p></article></div><div class="playbook-output-actions"><button class="btn btn-secondary" type="button" id="playbookCopy">Copy playbook</button><a class="btn btn-secondary" id="playbookOutreach" href="/outreach.html">Open Outreach</a><a class="btn btn-primary" id="playbookCrm" href="/crm.html">Open CRM</a></div></div></section>
+        </section>
+        <section class="playbook-principles"><div><span class="playbook-kicker">03 · Work responsibly</span><h2>Make the message useful before you make it persuasive.</h2></div><div class="playbook-principles__items"><span><b>Evidence first</b> Use only confirmed business details.</span><span><b>Human approval</b> Review every draft before sending.</span><span><b>Measure reality</b> Track replies, calls, proposals, and revenue—not guesses.</span></div></section>
+      </main>
+    </div>
+    <script type="module" src="/components/layout.js"></script>
+    <script type="module" src="/js/playbook.js"></script>
+  </body>
+</html>

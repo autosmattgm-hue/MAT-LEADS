@@ -1,7 +1,7 @@
 import http from "node:http";
-import { env } from "./config/env.js";
-import { handleRequest } from "./nativeApp.js";
-import { logger } from "./utils/logger.js";
+import { env } from "../server/config/env.js";
+import { handleRequest } from "../server/nativeApp.js";
+import { logger } from "../server/utils/logger.js";
 
 const server = http.createServer((req, res) => {
   handleRequest(req, res);

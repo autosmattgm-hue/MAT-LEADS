@@ -3,32 +3,52 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Pay Invoice | MAT LEADS AI PRO X</title>
+<title>Payment Request | MAT LEADS AI PRO X</title>
 <link rel="icon" href="/assets/logo-mark.svg" type="image/svg+xml">
 <link rel="stylesheet" href="/css/style.css">
 </head>
 <body class="page">
 <header class="public-nav" data-public-nav></header>
 <main class="section"><div class="container">
-<section class="panel" id="payBox"><span class="plan-pill">Client Payment</span><h1 id="payTitle">Loading invoice...</h1><p class="notice" id="payMeta"></p><div class="toolbar"><button class="btn btn-primary" type="button" id="markPaid">I Have Paid</button><a class="btn btn-secondary" href="/pricing.html">Buy Subscription Instead</a></div></section>
+<section class="panel" id="payBox">
+  <span class="plan-pill">Client Payment Request</span>
+  <h1 id="payTitle">Loading payment request...</h1>
+  <p class="notice" id="payMeta"></p>
+  <div id="payInstructions" class="notice" hidden></div>
+  <div class="toolbar">
+    <a class="btn btn-primary" id="payExternal" href="#" target="_blank" rel="noreferrer" hidden>Open payment provider</a>
+    <a class="btn btn-secondary" href="/pricing.html">Buy Subscription Instead</a>
+  </div>
+  <p class="field-hint" style="margin-top:14px;">After payment, contact the service provider with your receipt. The account owner confirms payment manually; this page never asks for your login or card details.</p>
+</section>
 </div></main>
 <script type="module" src="/components/layout.js"></script>
 <script type="module">
 const id = new URLSearchParams(location.search).get("invoice") || "";
 async function load() {
-  if (!id) { document.getElementById("payTitle").textContent = "Missing invoice."; return; }
+  if (!id) { document.getElementById("payTitle").textContent = "Missing payment request."; return; }
   try {
-    const r = await fetch(`/api/earn/invoices/${encodeURIComponent(id)}`).then((x) => x.json());
-    if (r.error) throw new Error(r.error.message);
-    document.getElementById("payTitle").textContent = `${r.invoice.offerName} — $${(r.invoice.amountCents / 100).toFixed(2)}`;
-    document.getElementById("payMeta").textContent = `${r.invoice.leadName || ""} • ${r.invoice.clientName || ""} • Status: ${r.invoice.status}`;
-  } catch (e) { document.getElementById("payTitle").textContent = e.message; }
+    const response = await fetch(`/api/earn/invoices/${encodeURIComponent(id)}`);
+    const r = await response.json();
+    if (!response.ok || r.error) throw new Error(r.error?.message || "Payment request could not be loaded.");
+    const invoice = r.invoice;
+    document.getElementById("payTitle").textContent = `${invoice.offerName} — $${(Number(invoice.amountCents || 0) / 100).toFixed(2)}`;
+    document.getElementById("payMeta").textContent = `${invoice.leadName || ""}${invoice.clientName ? ` · ${invoice.clientName}` : ""} · Status: ${invoice.status}${invoice.dueDate ? ` · Due ${invoice.dueDate}` : ""}`;
+    if (invoice.paymentInstructions) {
+      const instructions = document.getElementById("payInstructions");
+      instructions.textContent = invoice.paymentInstructions;
+      instructions.hidden = false;
+    }
+    if (invoice.paymentUrl) {
+      const link = document.getElementById("payExternal");
+      link.href = invoice.paymentUrl;
+      try { link.textContent = `Open payment provider (${new URL(invoice.paymentUrl).hostname})`; } catch {}
+      link.hidden = false;
+    }
+  } catch (error) {
+    document.getElementById("payTitle").textContent = error.message;
+  }
 }
-document.getElementById("markPaid")?.addEventListener("click", async () => {
-  const r = await fetch(`/api/earn/invoices/${encodeURIComponent(id)}/paid`, { method: "POST", headers: { "Content-Type": "application/json", Authorization: `Bearer ${localStorage.getItem("mat_access_token") || ""}` }, body: JSON.stringify({ transactionId: prompt("Paste payment reference:") || "" }) }).then((x) => x.json());
-  alert(r?.invoice ? `Marked ${r.invoice.status}` : (r?.error?.message || "Failed"));
-  load();
-});
 load();
 </script>
 </body>

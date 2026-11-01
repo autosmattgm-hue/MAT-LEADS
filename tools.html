@@ -3,56 +3,26 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Business Tools | MAT LEADS AI PRO X</title>
-    <meta name="description" content="Twenty practical business tools for pricing, sales, client delivery, marketing and daily online work.">
+    <title>Business Tools Hub | MAT LEADS AI PRO X</title>
+    <meta name="description" content="Professional business tools for pricing, sales, client delivery, outreach, marketing, and daily revenue planning.">
     <link rel="icon" href="/assets/logo-mark.svg" type="image/svg+xml">
     <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/tools.css">
   </head>
   <body data-page="tools">
     <div class="app-layout" data-app-shell>
-      <main class="workspace">
-        <section class="workspace-header">
-          <div>
-            <h1>Business Tools Hub</h1>
-            <p>20 fast tools for finding clients, pricing work, delivering projects and earning online. Every tool runs in your browser and keeps your draft private.</p>
-          </div>
-          <div class="toolbar">
-            <a class="btn btn-secondary" href="/work-planner.html">Plan Your Day</a>
-            <a class="btn btn-primary" href="/dashboard.html">Find Leads</a>
-          </div>
+      <main class="workspace tools-workspace">
+        <section class="tools-hero"><div><span class="tools-kicker">MAT LEADS toolkit</span><h1>Make the next business decision clearer.</h1><p>Twenty focused utilities for turning an idea into a price, a message, a proposal, or a delivery plan. Your drafts stay in this browser until you choose to copy or download them.</p><div class="tools-hero__actions"><a class="btn btn-primary" href="#toolLibrary">Browse tools <span aria-hidden="true">↓</span></a><a class="btn btn-secondary" href="/work-planner.html">Plan your day</a></div></div><div class="tools-hero__signal"><span class="tools-signal-icon">✦</span><strong>Built for the work between lead and invoice.</strong><span>Search · price · pitch · deliver</span></div></section>
+
+        <section class="tools-stats" aria-label="Tools Hub benefits"><div><strong>20</strong><span>focused utilities</span></div><div><strong>5</strong><span>work categories</span></div><div><strong>0</strong><span>provider calls required</span></div><div><strong>∞</strong><span>drafts in your browser</span></div></section>
+
+        <section class="tools-layout" id="toolLibrary">
+          <article class="panel tools-panel tools-library-panel"><div class="tools-panel-heading"><div><span class="tools-kicker">01 · Tool library</span><h2>Choose your tool</h2><p class="tool-note">Search by job, deliverable, or the result you want to create.</p></div><span class="tools-count">20 tools</span></div><label class="tools-search-field" for="toolSearch"><span aria-hidden="true">⌕</span><input id="toolSearch" class="tool-search" type="search" placeholder="Try pricing, proposal, caption or client" autocomplete="off"><kbd>/</kbd></label><div class="tools-library-hint"><span>Tip</span> Start with the outcome you want, then complete only the fields that matter.</div><div id="toolGrid" class="tool-grid" aria-live="polite"></div></article>
+
+          <article class="panel tools-panel tools-panel--workspace tools-workbench"><div class="tools-panel-heading"><div><span class="tools-kicker">02 · Workbench</span><p id="toolCategory" class="tool-card__category">Sales</p><h2 id="toolTitle">Offer Builder</h2><p id="toolDescription" class="tool-note"></p></div><span class="tools-workbench-status"><i></i>Draft locally</span></div><form id="toolForm" class="form-grid compact" novalidate></form><div class="tools-workbench-actions"><button id="toolGenerate" class="btn btn-primary" type="submit" form="toolForm">Create result <span aria-hidden="true">→</span></button><button id="toolCopy" class="btn btn-secondary" type="button">Copy</button><button id="toolDownload" class="btn btn-secondary" type="button">Download</button><button id="toolSave" class="btn btn-secondary" type="button">Save draft</button></div><div class="tools-output-heading"><span>Output preview</span><span>Private until you share it</span></div><pre id="toolOutput" class="tool-output" tabindex="0">Choose a tool and create your first business asset.</pre></article>
         </section>
 
-        <div class="notice" role="status">Choose a tool, add your details, then copy or download your result. These are instant business utilities, not simulated AI responses.</div>
-
-        <section class="tools-layout" style="margin-top:16px;">
-          <article class="panel tools-panel">
-            <div>
-              <h2>Choose a Tool</h2>
-              <p class="tool-note">Search the full toolkit by job, deliverable or sales task.</p>
-            </div>
-            <label class="field" for="toolSearch">
-              <span>Search tools</span>
-              <input id="toolSearch" class="tool-search" type="search" placeholder="Try pricing, proposal, caption or client">
-            </label>
-            <div id="toolGrid" class="tool-grid" aria-live="polite"></div>
-          </article>
-
-          <article class="panel tools-panel tools-panel--workspace">
-            <div>
-              <p id="toolCategory" class="tool-card__category">Sales</p>
-              <h2 id="toolTitle">Offer Builder</h2>
-              <p id="toolDescription" class="tool-note"></p>
-            </div>
-            <form id="toolForm" class="form-grid compact" novalidate></form>
-            <div class="toolbar">
-              <button id="toolGenerate" class="btn btn-primary" type="submit" form="toolForm">Create Result</button>
-              <button id="toolCopy" class="btn btn-secondary" type="button">Copy</button>
-              <button id="toolDownload" class="btn btn-secondary" type="button">Download</button>
-              <button id="toolSave" class="btn btn-secondary" type="button">Save Draft</button>
-            </div>
-            <pre id="toolOutput" class="tool-output" tabindex="0">Choose a tool and create your first business asset.</pre>
-          </article>
-        </section>
+        <section class="tools-footer-card"><div><span class="tools-kicker">Make it a habit</span><h2>Use the tools with your real pipeline.</h2><p>Find a lead in the Lead Engine, qualify it in CRM, then return here to price, write, and deliver with less friction.</p></div><div class="tools-footer-card__actions"><a class="btn btn-secondary" href="/dashboard.html">Find leads</a><a class="btn btn-primary" href="/playbook.html">Open Growth Playbook <span aria-hidden="true">→</span></a></div></section>
       </main>
     </div>
     <script type="module" src="/components/layout.js"></script>

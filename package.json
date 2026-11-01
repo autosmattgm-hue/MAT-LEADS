@@ -5,13 +5,15 @@
   "type": "module",
   "private": true,
   "engines": {
-    "node": ">=20"
+    "node": "26.x"
   },
   "scripts": {
     "dev": "node api/server.js",
     "start": "node api/server.js",
     "check": "node utils/syntax-check.js",
-    "smoke": "node utils/smoke-test.js"
+    "smoke": "node utils/smoke-test.js",
+    "smoke:closer": "node utils/client-closer-smoke.js",
+    "smoke:studio": "node utils/website-studio-smoke.js"
   },
   "dependencies": {}
 }

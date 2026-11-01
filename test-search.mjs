@@ -1,5 +1,5 @@
-import { env } from "./api/config/env.js";
-import { GooglePlacesService } from "./api/services/googlePlacesService.js";
+import { env } from "./server/config/env.js";
+import { GooglePlacesService } from "./server/services/googlePlacesService.js";
 
 const svc = new GooglePlacesService();
 
