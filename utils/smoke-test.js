@@ -51,9 +51,51 @@ try {
     if (!blockedMessage.includes("ACCOUNT_NOT_VERIFIED")) {
       throw new Error("Login was not blocked for an unverified email address");
     }
-    const token = auth.verificationToken;
+    // Regression check: an account waiting for verification must remain locked
+    // even if it somehow has an older access or refresh token in the browser.
+    const { signAccessToken, signRefreshToken } = await import("../server/middleware/auth.js");
+    const unverifiedSession = {
+      uid: auth.user?.uid || auth.user?.id,
+      email,
+      role: "user",
+      tokenVersion: 1
+    };
+    const staleAccessToken = signAccessToken(unverifiedSession);
+    const staleRefreshToken = signRefreshToken(unverifiedSession);
+    let protectedApiMessage = "";
+    try {
+      await request("/api/dashboard/metrics", {
+        headers: { Authorization: `Bearer ${staleAccessToken}` }
+      });
+    } catch (error) {
+      protectedApiMessage = String(error.message || "");
+    }
+    if (!protectedApiMessage.includes("ACCOUNT_NOT_VERIFIED")) {
+      throw new Error("Unverified account reached a protected dashboard route");
+    }
+    let refreshMessage = "";
+    try {
+      await request("/api/auth/refresh", {
+        method: "POST",
+        body: JSON.stringify({ refreshToken: staleRefreshToken })
+      });
+    } catch (error) {
+      refreshMessage = String(error.message || "");
+    }
+    if (!refreshMessage.includes("ACCOUNT_NOT_VERIFIED")) {
+      throw new Error("Unverified account received a refreshed session");
+    }
+    // The token must never be returned to a browser when mail delivery is
+    // unavailable. The smoke test reads the persisted server-side token only
+    // to complete its isolated fixture and verify the endpoint itself.
+    let token = auth.verificationToken;
     if (!token) {
-      throw new Error("Register did not expose a verification token (set EMAIL_VERIFICATION=off or no mail provider)");
+      const { FirestoreRepository } = await import("../server/repositories/firestoreRepository.js");
+      const smokeUsers = new FirestoreRepository("users");
+      token = (await smokeUsers.list({ where: [{ field: "email", op: "==", value: email }], limit: 1 }))[0]?.verificationToken || "";
+    }
+    if (!token) {
+      throw new Error("Register did not persist a server-side verification token");
     }
     const verified = await request("/api/auth/verify-email", {
       method: "POST",
