@@ -1,4 +1,4 @@
-import { apiFetch, setSession, clearToken } from "./api.js";
+import { apiFetch, setSession, clearToken, getCurrentUser, redirectToVerification } from "./api.js";
 
 function loadFirebaseAuth() {
   return import("./firebase-auth.js");
@@ -58,8 +58,6 @@ function initAuthForm() {
           try {
             localStorage.setItem("mat_pending_verification", JSON.stringify({
               email: payload.email || "",
-              url: result.verificationUrl || "",
-              token: result.verificationToken || "",
               sent: Boolean(result.verificationSent),
               at: Date.now()
             }));
@@ -128,6 +126,14 @@ function initVerifyBanner() {
     .catch(() => {});
 }
 
+function guardUnverifiedDashboard() {
+  if (window.location.pathname !== "/dashboard.html") return;
+  const user = getCurrentUser();
+  if (user?.verificationRequired && user?.emailVerified === false) {
+    redirectToVerification(user.email);
+  }
+}
+
 function initLogout() {
   document.addEventListener("click", (event) => {
     if (event.target.closest("[data-logout]")) {
@@ -138,6 +144,7 @@ function initLogout() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+  guardUnverifiedDashboard();
   initAuthForm();
   initForgotPassword();
   initVerifyBanner();

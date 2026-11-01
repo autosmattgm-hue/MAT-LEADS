@@ -132,6 +132,15 @@ export function redirectToLogin() {
   window.location.replace(`/login.html?next=${encodeURIComponent(current || "/dashboard.html")}`);
 }
 
+export function redirectToVerification(email = "") {
+  if (window.location.pathname === "/verify-email.html") return;
+  const storedEmail = String(getCurrentUser()?.email || "").trim();
+  const targetEmail = String(email || storedEmail).trim();
+  clearToken();
+  const query = targetEmail ? `?email=${encodeURIComponent(targetEmail)}` : "";
+  window.location.replace(`/verify-email.html${query}`);
+}
+
 // Static previews and JSON Server commonly run on a different local port than
 // the real Node API. Keep production same-origin, but route local /api calls
 // to the authenticated Node server so search, CRM, and AI buttons still work.
@@ -146,6 +155,11 @@ function apiEndpoint(path) {
 }
 
 export function requireAuth() {
+  const user = getCurrentUser();
+  if (user?.verificationRequired && user?.emailVerified === false) {
+    redirectToVerification(user.email);
+    return false;
+  }
   if (hasStoredSession()) return true;
   redirectToLogin();
   return false;
@@ -235,6 +249,10 @@ export async function apiFetch(path, options = {}) {
   const payload = contentType.includes("application/json") ? await response.json() : await response.text();
 
   if (!response.ok) {
+    const errorCode = typeof payload === "object" && payload?.error?.code ? payload.error.code : "";
+    if (errorCode === "ACCOUNT_NOT_VERIFIED") {
+      redirectToVerification(payload?.error?.details?.email || getCurrentUser()?.email || "");
+    }
     if (response.status === 401) {
       if (requiresAuth && getRefreshToken() && !options.__retriedAfterRefresh) {
         try {

@@ -71,8 +71,6 @@ function bindResendForm(formId, statusId, emailFallback) {
       try {
         localStorage.setItem(PENDING_KEY, JSON.stringify({
           email,
-          url: result.verificationUrl || "",
-          token: result.verificationToken || "",
           sent: Boolean(result.verificationSent),
           at: Date.now()
         }));
@@ -89,8 +87,7 @@ function refreshPendingButton(email) {
   const button = byId("openPendingLink");
   if (!button) return;
   const pending = readPending();
-  const usable = pending && (pending.token || pending.url) && (!email || !pending.email || pending.email === email);
-  button.hidden = !usable;
+  button.hidden = true;
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -103,12 +100,7 @@ document.addEventListener("DOMContentLoaded", () => {
   bindResendForm("errorResendForm", "errorResendStatus", email);
 
   const openPending = byId("openPendingLink");
-  openPending?.addEventListener("click", () => {
-    const stored = readPending();
-    const storedToken = stored?.token || "";
-    if (storedToken) runVerification(storedToken);
-    else if (stored?.url) window.location.href = stored.url;
-  });
+  openPending?.setAttribute("hidden", "");
 
   if (token) {
     runVerification(token);

@@ -24,7 +24,7 @@ function memberCard(member, action = "request") {
   const label = action === "request" ? "Add friend" : "Message";
   const online = member.lastSeenAt && Date.now() - new Date(member.lastSeenAt).getTime() < 5 * 60 * 1000;
   const unread = action === "message" ? Number(state.unreadBySender[member.uid] || 0) : 0;
-  return `<article class="community-member ${state.activeFriend?.uid === member.uid ? "is-active" : ""}"><span class="avatar" aria-hidden="true">${escapeHtml(initials(member.name))}</span><div class="community-member-copy"><strong>${escapeHtml(member.name)}</strong><span>${escapeHtml(member.company || member.email || "MAT LEADS member")}</span><small class="community-presence ${online ? "online" : ""}">${online ? "Online now" : "Available for collaboration"}</small></div>${unread ? `<span class="community-unread-count" aria-label="${unread} unread messages">${unread > 99 ? "99+" : unread}</span>` : ""}<button class="btn btn-secondary btn-small" type="button" data-community-${action}="${escapeHtml(member.uid)}">${label}</button></article>`;
+  return `<article class="community-member ${state.activeFriend?.uid === member.uid ? "is-active" : ""}"><span class="avatar" aria-hidden="true">${escapeHtml(initials(member.name))}</span><div class="community-member-copy"><strong>${escapeHtml(member.name)}</strong><span>${escapeHtml(member.company || member.email || "MAT LEADS member")}</span><small class="community-presence ${online ? "online" : ""}">${online ? "Online now" : "Available for collaboration"}</small></div>${unread ? `<span class="community-unread-count" aria-label="${unread} unread messages">${unread > 99 ? "99+" : unread}</span>` : ""}<button class="btn btn-ghost btn-small" type="button" data-community-share-member="${escapeHtml(member.uid)}">Share</button><button class="btn btn-secondary btn-small" type="button" data-community-${action}="${escapeHtml(member.uid)}">${label}</button></article>`;
 }
 
 function renderFriends() {
@@ -137,10 +137,41 @@ function openChat(friend) {
   document.querySelector("[data-community-remove]").hidden = false;
   document.querySelector("[data-community-block]").hidden = false;
   document.querySelector("[data-community-report]").hidden = false;
+  document.querySelector("[data-community-share-chat]").hidden = false;
   document.querySelector("[data-community-message-search]").hidden = false;
   const draft = document.querySelector("#communityMessage");
   if (draft) { try { draft.value = localStorage.getItem(draftKey(friend.uid)) || ""; } catch {} }
   loadMessages();
+}
+
+function communityUrl(params) {
+  const url = new URL("/community.html", window.location.origin);
+  Object.entries(params).forEach(([key, value]) => url.searchParams.set(key, value));
+  return url.toString();
+}
+
+async function shareLink(url, message = "Link copied to clipboard.") {
+  await copyText(url);
+  setStatus(message, "success");
+}
+
+async function openSharedLink() {
+  const params = new URLSearchParams(window.location.search);
+  const chatId = params.get("chat");
+  const profileId = params.get("profile");
+  if (chatId) {
+    const friend = state.friends.find((item) => item.uid === chatId);
+    if (friend) openChat(friend);
+    else setStatus("This chat link is not available until you are accepted as friends.", "error");
+    return;
+  }
+  if (profileId) {
+    try {
+      const result = await apiFetch(`/api/social/profile/${encodeURIComponent(profileId)}`);
+      showSearchResults([result.profile]);
+      setStatus("Profile loaded. Send a friend request to start chatting.", "success");
+    } catch (error) { setStatus(error.message, "error"); }
+  }
 }
 
 function reactionSummary(reactions = []) {
@@ -228,6 +259,9 @@ document.addEventListener("click", async (event) => {
   const editMessageButton = event.target.closest("[data-community-edit-message]");
   const copyMessageButton = event.target.closest("[data-community-copy-message]");
   const messageSearchButton = event.target.closest("[data-community-message-search]");
+  const shareProfileButton = event.target.closest("[data-community-share-profile]");
+  const shareChatButton = event.target.closest("[data-community-share-chat]");
+  const shareMemberButton = event.target.closest("[data-community-share-member]");
   try {
     if (inboxButton) showInbox();
     if (filterButton) {
@@ -245,6 +279,9 @@ document.addEventListener("click", async (event) => {
     if (notificationRead) { await apiFetch(`/api/social/notifications/${encodeURIComponent(notificationRead.dataset.communityNotificationRead)}/read`, { method: "POST" }); await loadNotifications(); }
     if (notificationReadAll) { await apiFetch("/api/social/notifications/read-all", { method: "POST" }); await loadNotifications(); }
     if (messageSearchButton) { const input = document.querySelector("[data-community-message-filter]"); if (input) { input.hidden = !input.hidden; messageSearchButton.setAttribute("aria-expanded", String(!input.hidden)); if (!input.hidden) input.focus(); else { input.value = ""; filterMessages(); } } }
+    if (shareProfileButton) { const me = getCurrentUser(); await shareLink(communityUrl({ profile: me?.uid || me?.id || "" }), "Your profile link is ready to share."); }
+    if (shareChatButton && state.activeFriend) await shareLink(communityUrl({ chat: state.activeFriend.uid }), "Secure chat link copied. Only accepted friends can open the conversation.");
+    if (shareMemberButton) await shareLink(communityUrl({ profile: shareMemberButton.dataset.communityShareMember }), "Profile link copied.");
     if (editMessageButton && state.activeFriend) { const row = editMessageButton.closest("[data-message-search-text]"); const current = row?.querySelector(".community-bubble p")?.textContent || ""; const updated = window.prompt("Edit your message:", current); if (updated !== null && updated.trim() && updated.trim() !== current.trim()) { await apiFetch(`/api/social/conversations/${encodeURIComponent(state.activeFriend.uid)}/messages/${encodeURIComponent(editMessageButton.dataset.communityEditMessage)}`, { method: "PATCH", body: JSON.stringify({ text: updated.trim() }) }); await loadMessages(); } }
     if (copyMessageButton) { const text = copyMessageButton.closest("[data-message-search-text]")?.querySelector(".community-bubble p")?.textContent || ""; await copyText(text); setStatus("Message copied.", "success"); }
     if (requestButton) { await apiFetch("/api/social/requests", { method: "POST", body: JSON.stringify({ userId: requestButton.dataset.communityRequest }) }); requestButton.disabled = true; requestButton.textContent = "Requested"; }
@@ -267,6 +304,7 @@ function resetChat() {
   if (avatar) avatar.textContent = "M";
   document.querySelector("[data-community-message-form]").hidden = true;
   ["[data-community-remove]", "[data-community-block]", "[data-community-report]", "[data-community-message-search]", "[data-community-message-filter]"].forEach((selector) => { const control = document.querySelector(selector); if (control) control.hidden = true; });
+  document.querySelector("[data-community-share-chat]")?.setAttribute("hidden", "");
   document.querySelector("[data-community-message-search]")?.setAttribute("aria-expanded", "false");
   const messages = document.querySelector("[data-community-messages]");
   if (messages) messages.innerHTML = `<div class="empty-state"><strong>Your conversations live here</strong><span>Choose a trusted contact to continue working together.</span></div>`;
@@ -281,7 +319,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   document.querySelector("[data-community-message-filter]")?.addEventListener("input", (event) => filterMessages(event.currentTarget.value));
   document.querySelector("#conversationFilter")?.addEventListener("input", (event) => { state.contactFilter = event.currentTarget.value.trim(); state.isSearching = false; document.querySelector("[data-community-show-inbox]")?.setAttribute("hidden", ""); renderFriends(); });
   document.querySelector("[data-community-refresh]")?.addEventListener("click", () => loadNetwork().catch((error) => setStatus(error.message, "error")));
-  try { await loadNetwork(); } catch (error) { setStatus(error.message, "error"); }
+  try { await loadNetwork(); await openSharedLink(); } catch (error) { setStatus(error.message, "error"); }
   const heartbeat = () => apiFetch("/api/social/presence", { method: "POST" }).catch(() => {});
   heartbeat();
   window.setInterval(heartbeat, 60000);
