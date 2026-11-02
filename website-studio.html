@@ -24,6 +24,16 @@
             </div>
           </div>
 
+          <div class="wsx-stage" aria-label="Website build progress">
+            <div class="wsx-stage__item is-active" data-wsx-stage="brief"><span>01</span><b>Brief</b></div>
+            <i aria-hidden="true"></i>
+            <div class="wsx-stage__item" data-wsx-stage="build"><span>02</span><b>Build</b></div>
+            <i aria-hidden="true"></i>
+            <div class="wsx-stage__item" data-wsx-stage="review"><span>03</span><b>Review</b></div>
+            <i aria-hidden="true"></i>
+            <div class="wsx-stage__item" data-wsx-stage="publish"><span>04</span><b>Publish</b></div>
+          </div>
+
           <div class="wsx-grid">
             <section class="wsx-chat" aria-label="AI website assistant">
               <div class="wsx-chathead">
@@ -103,7 +113,7 @@
                   <button class="chip-btn primary" type="button" id="studioEditManual" disabled>✎ Edit in builder</button>
                 </div>
               </div>
-              <div class="wsx-status" id="studioStatus">The AI will ask how many pages you need first.</div>
+              <div class="wsx-status" id="studioStatus"><strong>Ready to design</strong><span>The AI will ask how many pages you need first.</span></div>
               <div class="wsx-quality" id="studioQuality" hidden>
                 <div class="wsx-quality__title"><b>Build quality</b><small>Markup-based review only</small></div>
                 <div id="studioQualityBody"></div>
