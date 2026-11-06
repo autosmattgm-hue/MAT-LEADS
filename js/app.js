@@ -43,49 +43,38 @@ function initAuthForm() {
     const payload = Object.fromEntries(formData.entries());
 
     if (mode === "register") {
-      // Backend-owned signup: the account is created unverified and a
-      // verification link is emailed. No session is issued until confirmed.
       try {
-        const ref = new URLSearchParams(window.location.search).get("ref") || localStorage.getItem("mat_referral_code") || "";
-        const result = await apiFetch("/api/auth/register", {
-          method: "POST",
-          body: JSON.stringify({ ...payload, ...(ref ? { ref } : "") })
-        });
-        if (ref) {
-          try { localStorage.removeItem("mat_referral_code"); } catch {}
-        }
-        if (result.verificationRequired) {
-          try {
-            localStorage.setItem("mat_pending_verification", JSON.stringify({
-              email: payload.email || "",
-              sent: Boolean(result.verificationSent),
-              at: Date.now()
-            }));
-          } catch {}
-          if (status) status.textContent = result.message || "Check your inbox for the verification link.";
-          setTimeout(() => {
-            const sent = result.verificationSent ? "1" : "0";
-            window.location.href = `/verify-email.html?sent=${sent}&email=${encodeURIComponent(payload.email || "")}`;
-          }, 900);
-          return;
-        }
-        setSession(result);
-        if (status) status.textContent = "Success. Redirecting...";
-        redirectAfterAuth();
+        const { registerWithEmail } = await loadFirebaseAuth();
+        await registerWithEmail(payload.name, payload.email, payload.password, status);
       } catch (error) {
-        if (status) status.textContent = error.message;
+        try {
+          if (status) status.textContent = "Firebase is unreachable. Using local development sign-up...";
+          const result = await apiFetch("/api/auth/register", {
+            method: "POST",
+            body: JSON.stringify({ name: payload.name, email: payload.email, password: payload.password })
+          });
+          if (result.verificationRequired) {
+            if (status) status.textContent = result.message || "Check your email to verify your account.";
+            window.location.href = `/verify-email.html?sent=${result.verificationSent ? "1" : "0"}&email=${encodeURIComponent(payload.email || "")}`;
+            return;
+          }
+          setSession(result);
+          if (status) status.textContent = "Success. Redirecting...";
+          redirectAfterAuth();
+        } catch (fallbackError) {
+          if (status && fallbackError.code === "ACCOUNT_EXISTS") {
+            status.textContent = "This account already exists. Use Log in, then choose Resend verification link if needed.";
+          } else if (status) {
+            status.textContent = fallbackError.message || error.message || "Sign-up failed. Please try again.";
+          }
+        }
       }
       return;
     }
 
     try {
-      const result = await apiFetch(`/api/auth/${mode}`, {
-        method: "POST",
-        body: JSON.stringify(payload)
-      });
-      setSession(result);
-      if (status) status.textContent = "Success. Redirecting...";
-      redirectAfterAuth();
+      const { signInWithEmail } = await loadFirebaseAuth();
+      await signInWithEmail(payload.email, payload.password, status);
     } catch (error) {
       if (status && error.code === "ACCOUNT_NOT_VERIFIED") {
         status.textContent = "";

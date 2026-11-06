@@ -40,9 +40,16 @@ function appendMessage(panel, text, role) {
 
 function setOpen(panel, open) {
   panel.hidden = !open;
+  panel.setAttribute("aria-hidden", String(!open));
   document.querySelectorAll("[data-ai-quick-toggle]").forEach((button) => button.setAttribute("aria-expanded", String(open)));
   document.body.classList.toggle("quick-ai-open", open);
   if (open) panel.querySelector("[data-ai-quick-input]")?.focus();
+}
+
+function resetClosedState(panel) {
+  setOpen(panel, false);
+  document.body.classList.remove("quick-ai-open");
+  document.querySelectorAll("[data-ai-quick-toggle]").forEach((button) => button.setAttribute("aria-expanded", "false"));
 }
 
 async function sendMessage(panel, text) {
@@ -75,7 +82,10 @@ async function sendMessage(panel, text) {
 }
 
 function init() {
+  if (document.documentElement.dataset.aiQuickReady === "true") return;
+  document.documentElement.dataset.aiQuickReady = "true";
   const panel = createPanel();
+  resetClosedState(panel);
   if (!document.querySelector(".ai-quick-launcher")) {
     const launcher = document.createElement("button");
     launcher.className = "ai-quick-launcher";
@@ -98,7 +108,10 @@ function init() {
       setOpen(panel, panel.hidden);
       return;
     }
-    if (event.target.closest("[data-ai-quick-close]")) setOpen(panel, false);
+    if (event.target.closest("[data-ai-quick-close]")) {
+      event.preventDefault();
+      resetClosedState(panel);
+    }
   });
 
   panel.querySelectorAll("[data-ai-prompt]").forEach((button) => button.addEventListener("click", () => sendMessage(panel, button.dataset.aiPrompt || "")));
@@ -116,7 +129,8 @@ function init() {
       panel.querySelector("[data-ai-quick-form]")?.requestSubmit();
     }
   });
-  document.addEventListener("keydown", (event) => { if (event.key === "Escape" && !panel.hidden) setOpen(panel, false); });
+  document.addEventListener("keydown", (event) => { if (event.key === "Escape" && !panel.hidden) resetClosedState(panel); });
+  window.addEventListener("pagehide", () => resetClosedState(panel), { once: true });
 }
 
 if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init, { once: true });

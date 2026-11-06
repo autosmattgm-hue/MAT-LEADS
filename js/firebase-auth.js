@@ -15,17 +15,7 @@ try {
   const res = await fetch("/api/config", { headers: { Accept: "application/json" } });
   if (res.ok) {
     const data = await res.json();
-    if (data?.firebase?.configured) {
-      firebaseConfig = {
-        apiKey: data.firebase.apiKey,
-        authDomain: data.firebase.authDomain,
-        databaseURL: data.firebase.databaseURL,
-        projectId: data.firebase.projectId,
-        storageBucket: data.firebase.storageBucket,
-        messagingSenderId: data.firebase.messagingSenderId,
-        appId: data.firebase.appId
-      };
-    }
+    if (data?.firebase?.configured) firebaseConfig = { ...firebaseConfig, ...data.firebase };
   }
 } catch {}
 
@@ -34,9 +24,12 @@ const {
   getAuth,
   GoogleAuthProvider,
   signInWithPopup,
+  signInWithEmailAndPassword,
   sendEmailVerification,
   sendPasswordResetEmail,
   createUserWithEmailAndPassword,
+  signOut,
+  applyActionCode,
   onAuthStateChanged
 } = await import("https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js");
 
@@ -44,12 +37,30 @@ const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 auth.useDeviceLanguage();
 
+export function waitForFirebaseUser(timeoutMs = 8000) {
+  if (auth.currentUser) return Promise.resolve(auth.currentUser);
+  return new Promise((resolve, reject) => {
+    let settled = false;
+    let unsubscribe = () => {};
+    const timeout = setTimeout(() => {
+      if (settled) return;
+      settled = true;
+      unsubscribe();
+      reject(new Error("The verified account session was not found in this browser. Open the verification email on the same device where you signed up, then try again."));
+    }, timeoutMs);
+    unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (settled || !user) return;
+      settled = true;
+      clearTimeout(timeout);
+      unsubscribe();
+      resolve(user);
+    });
+  });
+}
+
 export async function sessionWithBackend(firebaseUser, extra = {}) {
   const idToken = await firebaseUser.getIdToken(true);
-  const result = await apiFetch("/api/auth/firebase", {
-    method: "POST",
-    body: JSON.stringify({ idToken, ...extra })
-  });
+  const result = await apiFetch("/api/auth/firebase", { method: "POST", body: JSON.stringify({ idToken, ...extra }) });
   setSession(result);
   return result;
 }
@@ -57,8 +68,7 @@ export async function sessionWithBackend(firebaseUser, extra = {}) {
 export async function signInWithGoogle(status) {
   try {
     if (status) status.textContent = "Opening Google sign-in...";
-    const provider = new GoogleAuthProvider();
-    const credential = await signInWithPopup(auth, provider);
+    const credential = await signInWithPopup(auth, new GoogleAuthProvider());
     if (status) status.textContent = "Verifying with MAT LEADS...";
     const result = await sessionWithBackend(credential.user);
     if (status) status.textContent = "Success. Redirecting...";
@@ -75,21 +85,71 @@ export async function registerWithEmail(name, email, password, status) {
   try {
     if (status) status.textContent = "Creating your workspace...";
     const credential = await createUserWithEmailAndPassword(auth, email, password);
-    try {
-      await sendEmailVerification(credential.user);
-    } catch {}
-    if (status) status.textContent = "Verification email sent — finalizing your workspace...";
-    await sessionWithBackend(credential.user, { name: name || "", password });
-    try {
-      const ref = new URLSearchParams(window.location.search).get("ref") || localStorage.getItem("mat_referral_code");
-      if (ref) {
-        localStorage.removeItem("mat_referral_code");
-        await apiFetch("/api/earn/track-signup", { method: "POST", body: JSON.stringify({ ref }) }).catch(() => {});
+    await sendEmailVerification(credential.user, { url: `${window.location.origin}/verify-email.html`, handleCodeInApp: true });
+    try { localStorage.setItem("mat_pending_verification", JSON.stringify({ email, at: Date.now() })); } catch {}
+    if (status) status.textContent = "Verification email sent. Check your inbox to activate your workspace...";
+    window.location.href = `/verify-email.html?email=${encodeURIComponent(email)}`;
+  } catch (error) {
+    if (String(error?.code || "").includes("email-already-in-use")) {
+      try {
+        const credential = await signInWithEmailAndPassword(auth, email, password);
+        await credential.user.reload();
+        if (credential.user.emailVerified) {
+          throw new Error("This email is already verified. Please sign in instead.");
+        }
+        await sendEmailVerification(credential.user, {
+          url: `${window.location.origin}/verify-email.html`,
+          handleCodeInApp: true
+        });
+        try { localStorage.setItem("mat_pending_verification", JSON.stringify({ email, at: Date.now() })); } catch {}
+        if (status) status.textContent = "Your account already exists but is not verified. A new verification email was sent.";
+        window.location.href = `/verify-email.html?email=${encodeURIComponent(email)}`;
+        return;
+      } catch (resendError) {
+        error = resendError;
       }
-    } catch {}
-    if (status) status.textContent = "Success. Check your email to verify, redirecting...";
+    }
+    if (status) status.textContent = friendlyAuthError(error);
+    throw error;
+  }
+}
+
+export async function signInWithEmail(email, password, status) {
+  try {
+    if (status) status.textContent = "Signing you in...";
+    const credential = await signInWithEmailAndPassword(auth, email, password);
+    await credential.user.reload();
+    if (!credential.user.emailVerified) {
+      await signOut(auth);
+      const error = new Error("Your email address hasn't been verified yet. Check your inbox, then try again.");
+      error.code = "ACCOUNT_NOT_VERIFIED";
+      throw error;
+    }
+    if (status) status.textContent = "Verifying your workspace...";
+    const result = await sessionWithBackend(credential.user);
+    if (status) status.textContent = "Success. Redirecting...";
     const next = new URLSearchParams(window.location.search).get("next");
     window.location.href = next && next.startsWith("/") ? next : "/dashboard.html";
+    return result;
+  } catch (error) {
+    try {
+      const result = await apiFetch("/api/auth/login", { method: "POST", body: JSON.stringify({ email, password }) });
+      setSession(result);
+      const next = new URLSearchParams(window.location.search).get("next");
+      window.location.href = next && next.startsWith("/") ? next : "/dashboard.html";
+      return result;
+    } catch {}
+    if (status) status.textContent = friendlyAuthError(error);
+    throw error;
+  }
+}
+
+export async function applyEmailVerificationCode(code, status) {
+  if (!code) throw new Error("Verification link is missing or invalid.");
+  try {
+    if (status) status.textContent = "Confirming your email...";
+    await applyActionCode(auth, code);
+    try { localStorage.removeItem("mat_pending_verification"); } catch {}
   } catch (error) {
     if (status) status.textContent = friendlyAuthError(error);
     throw error;
@@ -99,7 +159,7 @@ export async function registerWithEmail(name, email, password, status) {
 export async function sendVerificationEmail(status) {
   const user = auth.currentUser;
   if (!user) throw new Error("Log in first, then request a verification email.");
-  await sendEmailVerification(user);
+  await sendEmailVerification(user, { url: `${window.location.origin}/verify-email.html`, handleCodeInApp: true });
   if (status) status.textContent = "Verification email sent. Check your inbox and spam folder.";
 }
 
@@ -118,31 +178,14 @@ export function watchVerificationBanner() {
   const banner = document.querySelector("[data-verify-banner]");
   if (!banner) return;
   onAuthStateChanged(auth, async (user) => {
-    if (!user || user.emailVerified || !user.email) {
-      banner.hidden = true;
-      return;
-    }
+    if (!user || user.emailVerified || !user.email) { banner.hidden = true; return; }
     banner.hidden = false;
-    const resend = banner.querySelector("[data-resend-verification]");
-    if (resend && !resend.dataset.bound) {
-      resend.dataset.bound = "1";
-      resend.addEventListener("click", async () => {
-        resend.disabled = true;
-        try {
-          await sendEmailVerification(user);
-          resend.textContent = "Verification email sent — check your inbox";
-        } catch (error) {
-          resend.textContent = friendlyAuthError(error);
-        } finally {
-          setTimeout(() => { resend.disabled = false; }, 15000);
-        }
-      });
-    }
   });
 }
 
 function friendlyAuthError(error) {
   const code = String(error?.code || "").replace(/^auth\//, "");
+  if (code === "ACCOUNT_NOT_VERIFIED") return error.message;
   if (code.includes("popup-closed-by-user") || code.includes("cancelled-popup-request")) return "Google sign-in was closed before finishing. Try again.";
   if (code.includes("too-many-requests")) return "Too many attempts. Wait a few minutes and try again.";
   if (code.includes("email-already-in-use")) return "An account with this email already exists. Try logging in instead.";
@@ -150,10 +193,9 @@ function friendlyAuthError(error) {
   if (code.includes("user-not-found") || code.includes("wrong-password") || code.includes("invalid-credential")) return "Invalid email or password.";
   if (code.includes("operation-not-allowed")) return "Email and password sign-in is temporarily unavailable. Please try again in a moment.";
   if (code.includes("unauthorized-domain")) return "Sign-in from this site is not enabled yet. Please contact support.";
-  if (code.includes("billing-not-enabled") || code.includes("payment")) return "Sign-in is temporarily unavailable. Please try again in a moment.";
+  if (code.includes("invalid-api-key")) return "Firebase configuration is invalid. Check the Firebase Web API key.";
+  if (code.includes("network-request-failed")) return "Firebase could not be reached. Check your network connection and try again.";
   const raw = String(error?.message || "");
-  // Never surface SDK-internal wording (vendor names, auth/ codes) to users.
   if (!raw || /firebase|auth\/[a-z-]+/i.test(raw)) return "Something went wrong. Please try again.";
   return raw;
 }
-
