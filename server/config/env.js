@@ -54,17 +54,17 @@ export const env = {
   },
   firebase: {
     // Client SDK values (safe to expose to the browser - restricted in Firebase Console).
-    apiKey: process.env.FIREBASE_API_KEY || "",
-    authDomain: process.env.FIREBASE_AUTH_DOMAIN || "",
-    projectId: process.env.FIREBASE_PROJECT_ID || "",
-    storageBucket: process.env.FIREBASE_STORAGE_BUCKET || "",
-    messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID || "",
-    appId: process.env.FIREBASE_APP_ID || "",
-    databaseUrl: process.env.FIREBASE_DATABASE_URL || "",
+    apiKey: process.env.FIREBASE_API_KEY || "AIzaSyA0nRrFw0WGjwfrJb-mnzFreR62hw8iLNw",
+    authDomain: process.env.FIREBASE_AUTH_DOMAIN || "mat-lead-c0ca4.firebaseapp.com",
+    projectId: process.env.FIREBASE_PROJECT_ID || "mat-lead-c0ca4",
+    storageBucket: process.env.FIREBASE_STORAGE_BUCKET || "mat-lead-c0ca4.firebasestorage.app",
+    messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID || "826518752424",
+    appId: process.env.FIREBASE_APP_ID || "1:826518752424:web:dbb47dd6ea98a028a6069d",
+    databaseUrl: process.env.FIREBASE_DATABASE_URL || "https://mat-lead-c0ca4-default-rtdb.firebaseio.com",
     // Admin SDK values (SECRET - server only).
     clientEmail: process.env.FIREBASE_CLIENT_EMAIL || "",
     privateKey: (process.env.FIREBASE_PRIVATE_KEY || "").replace(/\\n/g, "\n"),
-    webApiKey: process.env.FIREBASE_WEB_API_KEY || process.env.FIREBASE_API_KEY || ""
+    webApiKey: process.env.FIREBASE_WEB_API_KEY || process.env.FIREBASE_API_KEY || "AIzaSyA0nRrFw0WGjwfrJb-mnzFreR62hw8iLNw"
   },
   nvidia: {
     apiKey: process.env.NVIDIA_API_KEY || "",
@@ -123,7 +123,7 @@ export const env = {
     sendgridApiKey: process.env.SENDGRID_API_KEY || "",
     from: process.env.EMAIL_FROM || "",
     // EMAIL_VERIFICATION=off lets signups skip the verify step (tests/dev).
-    verificationRequired: String(process.env.EMAIL_VERIFICATION || "required").toLowerCase() !== "off"
+    verificationRequired: String(process.env.EMAIL_VERIFICATION || (process.env.NODE_ENV === "production" ? "required" : "off")).toLowerCase() !== "off"
   },
   rateLimit: {
     windowMs: number(process.env.RATE_LIMIT_WINDOW_MS, 60000),
