@@ -1,4 +1,4 @@
-const CACHE_NAME = "mat-leads-ai-pro-x-v86";
+const CACHE_NAME = "mat-leads-ai-pro-x-v92";
 const STATIC_ASSETS = [
   "/",
   "/index.html",
@@ -95,6 +95,7 @@ self.addEventListener("install", (event) => {
     caches.open(CACHE_NAME)
       .then((cache) => cache.addAll(STATIC_ASSETS))
       .then(() => self.skipWaiting())
+      .catch(() => self.skipWaiting())
   );
 });
 
