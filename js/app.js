@@ -49,6 +49,26 @@ function initAuthForm() {
         const { registerWithEmail } = await loadFirebaseAuth();
         await registerWithEmail(payload.name, payload.email, payload.password, status);
       } catch (error) {
+        if (error?.code === "ACCOUNT_EXISTS") {
+          if (status) {
+            status.textContent = "This email already has an account. ";
+            const login = document.createElement("a");
+            login.href = `/login.html?email=${encodeURIComponent(payload.email || "")}`;
+            login.textContent = "Log in to resend verification";
+            login.style.textDecoration = "underline";
+            status.append(login);
+          }
+          return;
+        }
+        const hostname = String(window.location.hostname || "").toLowerCase();
+        const localDevelopment = ["localhost", "127.0.0.1", "::1"].includes(hostname);
+        if (!localDevelopment) {
+          if (status) {
+            try { status.textContent = (await loadFirebaseAuth()).authErrorMessage(error); }
+            catch { status.textContent = "We couldn't send the verification email. Please retry."; }
+          }
+          return;
+        }
         try {
           if (status) status.textContent = "Firebase is unreachable. Using local development sign-up...";
           const result = await apiFetch("/api/auth/register", {

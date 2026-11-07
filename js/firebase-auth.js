@@ -37,6 +37,14 @@ const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 auth.useDeviceLanguage();
 
+function verificationReturnUrl() {
+  const hostname = String(window.location.hostname || "").toLowerCase();
+  const origin = hostname === "mat-leads.world" || hostname === "www.mat-leads.world"
+    ? "https://mat-leads.world"
+    : window.location.origin;
+  return `${origin}/verify-email.html`;
+}
+
 export function waitForFirebaseUser(timeoutMs = 8000) {
   if (auth.currentUser) return Promise.resolve(auth.currentUser);
   return new Promise((resolve, reject) => {
@@ -89,7 +97,7 @@ export async function registerWithEmail(name, email, password, status) {
   try {
     if (status) status.textContent = "Creating your workspace...";
     const credential = await createUserWithEmailAndPassword(auth, email, password);
-    await sendEmailVerification(credential.user, { url: `${window.location.origin}/verify-email.html`, handleCodeInApp: true });
+    await sendEmailVerification(credential.user, { url: verificationReturnUrl(), handleCodeInApp: true });
     try { localStorage.setItem("mat_pending_verification", JSON.stringify({ email, at: Date.now() })); } catch {}
     if (status) status.textContent = "Verification email sent. Check your inbox to activate your workspace...";
     window.location.href = `/verify-email.html?email=${encodeURIComponent(email)}`;
@@ -102,7 +110,7 @@ export async function registerWithEmail(name, email, password, status) {
           throw new Error("This email is already verified. Please sign in instead.");
         }
         await sendEmailVerification(credential.user, {
-          url: `${window.location.origin}/verify-email.html`,
+          url: verificationReturnUrl(),
           handleCodeInApp: true
         });
         try { localStorage.setItem("mat_pending_verification", JSON.stringify({ email, at: Date.now() })); } catch {}
@@ -110,7 +118,10 @@ export async function registerWithEmail(name, email, password, status) {
         window.location.href = `/verify-email.html?email=${encodeURIComponent(email)}`;
         return;
       } catch (resendError) {
-        error = resendError;
+        const existingError = new Error("This email already has an account. Sign in with that account, then use Resend verification link if it is not verified.");
+        existingError.code = "ACCOUNT_EXISTS";
+        existingError.cause = resendError;
+        error = existingError;
       }
     }
     if (status) status.textContent = friendlyAuthError(error);
@@ -127,7 +138,7 @@ export async function signInWithEmail(email, password, status) {
       let verificationError = null;
       try {
         await sendEmailVerification(credential.user, {
-          url: `${window.location.origin}/verify-email.html`,
+          url: verificationReturnUrl(),
           handleCodeInApp: true
         });
       } catch (error) {
@@ -212,6 +223,8 @@ function friendlyAuthError(error) {
   if (code.includes("user-not-found") || code.includes("wrong-password") || code.includes("invalid-credential")) return "We couldn't sign you in. Check your email and password, then try again.";
   if (code.includes("operation-not-allowed")) return "Email and password sign-in is temporarily unavailable. Please try again in a moment.";
   if (code.includes("unauthorized-domain")) return "Sign-in from this site is not enabled yet. Please contact support.";
+  if (code.includes("invalid-continue-uri") || code.includes("unauthorized-continue-uri")) return "Verification email setup is not enabled for mat-leads.world yet. Add the domain in Firebase Authorized domains, then retry.";
+  if (code.includes("invalid-action-code")) return "This verification link is invalid or expired. Request a new verification email.";
   if (code.includes("invalid-api-key")) return "Firebase configuration is invalid. Check the Firebase Web API key.";
   if (code.includes("network-request-failed")) return "Firebase could not be reached. Check your network connection and try again.";
   const raw = String(error?.message || "");
