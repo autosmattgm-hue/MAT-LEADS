@@ -47,7 +47,7 @@ function renderReferral(referral) {
   const target = byId("refBox");
   if (!target) return;
   const credits = (referral.rows || []).reduce((sum, row) => sum + Number(row.searchCreditsAwarded || 0), 0);
-  target.innerHTML = `<strong>${escapeHtml(referral.code)}</strong><br>${escapeHtml(referralLink)}<br><span>You get <strong>2 lead-search credits</strong> for every new user who signs up and verifies through your link.</span><br>Credits earned: <strong>${credits}</strong> &bull; Pending ${escapeHtml(moneyCents(referral.pendingCents))} &bull; Earned ${escapeHtml(moneyCents(referral.paidCents))} &bull; ${Number(referral.rows?.length || 0)} referral(s)`;
+  target.innerHTML = `<strong>${escapeHtml(referral.code)}</strong><br>${escapeHtml(referralLink)}<br><span>Earn <strong>$0.20</strong> when someone registers through your link, or <strong>$4.00</strong> when that referral subscribes.</span><br><span>You also receive 2 lead-search credits for each verified referral.</span><br>Credits earned: <strong>${credits}</strong> &bull; Pending ${escapeHtml(moneyCents(referral.pendingCents))} &bull; Earned ${escapeHtml(moneyCents(referral.paidCents))} &bull; ${Number(referral.rows?.length || 0)} referral(s)`;
   return credits;
 }
 

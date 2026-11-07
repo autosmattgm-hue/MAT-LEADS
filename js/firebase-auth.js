@@ -98,9 +98,10 @@ export async function registerWithEmail(name, email, password, status) {
     if (status) status.textContent = "Creating your workspace...";
     const credential = await createUserWithEmailAndPassword(auth, email, password);
     await sendEmailVerification(credential.user, { url: verificationReturnUrl(), handleCodeInApp: true });
-    try { localStorage.setItem("mat_pending_verification", JSON.stringify({ email, at: Date.now() })); } catch {}
+    const ref = new URLSearchParams(window.location.search).get("ref") || "";
+    try { localStorage.setItem("mat_pending_verification", JSON.stringify({ email, ref, at: Date.now() })); } catch {}
     if (status) status.textContent = "Verification email sent. Check your inbox to activate your workspace...";
-    window.location.href = `/verify-email.html?email=${encodeURIComponent(email)}`;
+    window.location.href = `/verify-email.html?email=${encodeURIComponent(email)}${ref ? `&ref=${encodeURIComponent(ref)}` : ""}`;
   } catch (error) {
     if (String(error?.code || "").includes("email-already-in-use")) {
       try {
@@ -189,7 +190,7 @@ export async function applyEmailVerificationCode(code, status) {
 export async function sendVerificationEmail(status) {
   const user = auth.currentUser;
   if (!user) throw new Error("Log in first, then request a verification email.");
-  await sendEmailVerification(user, { url: `${window.location.origin}/verify-email.html`, handleCodeInApp: true });
+  await sendEmailVerification(user, { url: verificationReturnUrl(), handleCodeInApp: true });
   if (status) status.textContent = "Verification email sent. Check your inbox and spam folder.";
 }
 

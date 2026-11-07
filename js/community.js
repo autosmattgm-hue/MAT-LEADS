@@ -1,6 +1,7 @@
 import { apiFetch, requireAuth, getCurrentUser } from "./api.js";
 
 const state = { friends: [], requests: [], blocks: [], notifications: [], unreadBySender: {}, activeFriend: null, contactFilter: "", unreadOnly: false, isSearching: false, pollTimer: null };
+const ACTIVE_CHAT_KEY = "mat-community-active-chat";
 
 function escapeHtml(value) {
   return String(value ?? "").replace(/[&<>"']/g, (character) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[character]));
@@ -35,6 +36,29 @@ function renderFriends() {
   const needle = state.contactFilter.toLowerCase();
   const visibleFriends = state.friends.filter((friend) => [friend.name, friend.email, friend.company].some((value) => String(value || "").toLowerCase().includes(needle))).filter((friend) => !state.unreadOnly || Number(state.unreadBySender[friend.uid] || 0) > 0);
   list.innerHTML = visibleFriends.length ? `<div class="community-list-title">${needle ? "Matching conversations" : "Your conversations"}</div>${visibleFriends.map((friend) => memberCard(friend, "message")).join("")}` : `<div class="empty-state"><strong>${needle ? "No matching conversations" : "No friends yet"}</strong><span>${needle ? "Try another name or company." : "Search above to find other members."}</span></div>`;
+}
+
+function activeChatKey() {
+  const user = getCurrentUser();
+  return `${ACTIVE_CHAT_KEY}:${String(user?.uid || user?.id || "guest")}`;
+}
+
+function rememberActiveChat(friend) {
+  try { localStorage.setItem(activeChatKey(), friend.uid); } catch {}
+}
+
+function forgetActiveChat() {
+  try { localStorage.removeItem(activeChatKey()); } catch {}
+}
+
+function restoreActiveChat() {
+  const params = new URLSearchParams(window.location.search);
+  const preferredId = params.get("chat") || (() => { try { return localStorage.getItem(activeChatKey()); } catch { return ""; } })();
+  if (!preferredId) return false;
+  const friend = state.friends.find((item) => item.uid === preferredId);
+  if (!friend) return false;
+  openChat(friend, { updateUrl: false });
+  return true;
 }
 
 function renderRequests() {
@@ -77,6 +101,7 @@ async function loadNetwork() {
   renderRequests();
   renderBlocks();
   renderNotifications(notifications.unread);
+  if (!state.activeFriend && !new URLSearchParams(window.location.search).has("chat")) restoreActiveChat();
 }
 
 function showSearchResults(users) {
@@ -127,8 +152,16 @@ async function copyText(value) {
   textarea.remove();
 }
 
-function openChat(friend) {
+function openChat(friend, { updateUrl = true } = {}) {
+  if (!friend) return;
   state.activeFriend = friend;
+  rememberActiveChat(friend);
+  if (updateUrl) {
+    const url = new URL(window.location.href);
+    url.searchParams.set("chat", friend.uid);
+    url.searchParams.delete("profile");
+    window.history.replaceState(null, "", `${url.pathname}${url.search}`);
+  }
   const avatar = document.querySelector("[data-community-chat-avatar]");
   if (avatar) avatar.textContent = initials(friend.name);
   document.querySelector("[data-community-chat-title]").textContent = friend.name;
@@ -219,7 +252,11 @@ async function search(event) {
   const query = document.querySelector("#communityQuery").value.trim();
   if (query.length < 2) return setStatus("Enter at least two characters to search.", "error");
   setStatus("Searching...");
-  try { showSearchResults((await apiFetch(`/api/social/users?q=${encodeURIComponent(query)}`)).users || []); setStatus(""); } catch (error) { setStatus(error.message, "error"); }
+  try {
+    const users = (await apiFetch(`/api/social/users?q=${encodeURIComponent(query)}`)).users || [];
+    showSearchResults(users);
+    setStatus(users.length ? "" : "No member found with that name or email. Check the exact email address and try again.", users.length ? "" : "error");
+  } catch (error) { setStatus(error.message, "error"); }
 }
 
 async function sendMessage(event) {
@@ -298,6 +335,10 @@ document.addEventListener("click", async (event) => {
 
 function resetChat() {
   state.activeFriend = null;
+  forgetActiveChat();
+  const url = new URL(window.location.href);
+  url.searchParams.delete("chat");
+  window.history.replaceState(null, "", `${url.pathname}${url.search}`);
   document.querySelector("[data-community-chat-title]").textContent = "Choose a conversation";
   document.querySelector("[data-community-chat-subtitle]").textContent = "Select a contact from your inbox to start chatting.";
   const avatar = document.querySelector("[data-community-chat-avatar]");

@@ -97,7 +97,9 @@ async function completeFirebaseSession(user, statusLineId = "verifyWorking") {
   await user.reload();
   if (!user.emailVerified) return false;
   const { sessionWithBackend } = await import("./firebase-auth.js");
-  const session = await sessionWithBackend(user);
+  const pending = readPending();
+  const ref = new URLSearchParams(window.location.search).get("ref") || pending?.ref || "";
+  const session = await sessionWithBackend(user, ref ? { ref } : {});
   if (!session?.accessToken && !session?.idToken) throw new Error("Your email was verified, but your MAT LEADS session could not be created.");
   firebaseVerificationCompleted = true;
   clearPending();

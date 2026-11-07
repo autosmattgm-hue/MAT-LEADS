@@ -45,6 +45,7 @@ function initAuthForm() {
     const payload = Object.fromEntries(formData.entries());
 
     if (mode === "register") {
+      const ref = new URLSearchParams(window.location.search).get("ref") || "";
       try {
         const { registerWithEmail } = await loadFirebaseAuth();
         await registerWithEmail(payload.name, payload.email, payload.password, status);
@@ -73,7 +74,7 @@ function initAuthForm() {
           if (status) status.textContent = "Firebase is unreachable. Using local development sign-up...";
           const result = await apiFetch("/api/auth/register", {
             method: "POST",
-            body: JSON.stringify({ name: payload.name, email: payload.email, password: payload.password })
+            body: JSON.stringify({ name: payload.name, email: payload.email, password: payload.password, ref })
           });
           if (result.verificationRequired) {
             if (status) status.textContent = result.message || "Check your email to verify your account.";
