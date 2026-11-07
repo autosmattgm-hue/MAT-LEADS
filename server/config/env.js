@@ -37,7 +37,7 @@ export const env = {
   nodeEnv: process.env.NODE_ENV || "development",
   isProduction: process.env.NODE_ENV === "production",
   port: number(process.env.PORT, 3000),
-  appUrl: process.env.APP_URL || "http://localhost:3000",
+  appUrl: process.env.APP_URL || (process.env.VERCEL ? "https://mat-leads.world" : "http://localhost:3000"),
   corsOrigins: list(process.env.CORS_ORIGINS, ["http://localhost:3000"]),
   jwtSecret: process.env.JWT_SECRET || "development-jwt-secret-replace-before-production",
   jwtRefreshSecret: process.env.JWT_REFRESH_SECRET || "development-refresh-secret-replace-before-production",
