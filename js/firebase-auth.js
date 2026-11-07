@@ -120,8 +120,17 @@ export async function signInWithEmail(email, password, status) {
     const credential = await signInWithEmailAndPassword(auth, email, password);
     await credential.user.reload();
     if (!credential.user.emailVerified) {
+      let verificationError = null;
+      try {
+        await sendEmailVerification(credential.user, {
+          url: `${window.location.origin}/verify-email.html`,
+          handleCodeInApp: true
+        });
+      } catch (error) {
+        verificationError = error;
+      }
       await signOut(auth);
-      const error = new Error("Your email address hasn't been verified yet. Check your inbox, then try again.");
+      const error = verificationError || new Error("Your email is not verified yet. A new verification email was sent. Check your inbox and spam folder.");
       error.code = "ACCOUNT_NOT_VERIFIED";
       throw error;
     }
@@ -132,6 +141,10 @@ export async function signInWithEmail(email, password, status) {
     window.location.href = next && next.startsWith("/") ? next : "/dashboard.html";
     return result;
   } catch (error) {
+    if (error?.code === "ACCOUNT_NOT_VERIFIED") {
+      if (status) status.textContent = error.message;
+      throw error;
+    }
     try {
       const result = await apiFetch("/api/auth/login", { method: "POST", body: JSON.stringify({ email, password }) });
       setSession(result);
