@@ -25,8 +25,10 @@ function initAuthForm() {
         const { signInWithGoogle } = await loadFirebaseAuth();
         await signInWithGoogle(status);
       } catch (error) {
+        let message = "Google sign-in failed. Please try again.";
+        try { message = (await loadFirebaseAuth()).authErrorMessage(error); } catch {}
         if (status && !String(status.textContent).includes("Redirecting")) {
-          status.textContent = error?.message || "Google sign-in failed. Please try again.";
+          status.textContent = message;
         }
       } finally {
         googleBtn.disabled = false;
@@ -65,7 +67,7 @@ function initAuthForm() {
           if (status && fallbackError.code === "ACCOUNT_EXISTS") {
             status.textContent = "This account already exists. Use Log in, then choose Resend verification link if needed.";
           } else if (status) {
-            status.textContent = fallbackError.message || error.message || "Sign-up failed. Please try again.";
+            status.textContent = "We couldn't complete registration. Check your details and try again.";
           }
         }
       }
@@ -86,7 +88,11 @@ function initAuthForm() {
         resend.style.textDecoration = "underline";
         status.append(line, resend);
       } else if (status) {
-        status.textContent = error.message;
+        try {
+          status.textContent = (await loadFirebaseAuth()).authErrorMessage(error);
+        } catch {
+          status.textContent = "We couldn't sign you in. Check your details and try again.";
+        }
       }
     }
   });

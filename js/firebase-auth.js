@@ -65,6 +65,10 @@ export async function sessionWithBackend(firebaseUser, extra = {}) {
   return result;
 }
 
+export function authErrorMessage(error) {
+  return friendlyAuthError(error);
+}
+
 export async function signInWithGoogle(status) {
   try {
     if (status) status.textContent = "Opening Google sign-in...";
@@ -130,7 +134,9 @@ export async function signInWithEmail(email, password, status) {
         verificationError = error;
       }
       await signOut(auth);
-      const error = verificationError || new Error("Your email is not verified yet. A new verification email was sent. Check your inbox and spam folder.");
+      const error = new Error(verificationError
+        ? friendlyAuthError(verificationError)
+        : "Your email is not verified yet. A new verification email was sent. Check your inbox and spam folder.");
       error.code = "ACCOUNT_NOT_VERIFIED";
       throw error;
     }
@@ -203,7 +209,7 @@ function friendlyAuthError(error) {
   if (code.includes("too-many-requests")) return "Too many attempts. Wait a few minutes and try again.";
   if (code.includes("email-already-in-use")) return "An account with this email already exists. Try logging in instead.";
   if (code.includes("weak-password")) return "Password is too weak. Use at least 8 characters.";
-  if (code.includes("user-not-found") || code.includes("wrong-password") || code.includes("invalid-credential")) return "Invalid email or password.";
+  if (code.includes("user-not-found") || code.includes("wrong-password") || code.includes("invalid-credential")) return "We couldn't sign you in. Check your email and password, then try again.";
   if (code.includes("operation-not-allowed")) return "Email and password sign-in is temporarily unavailable. Please try again in a moment.";
   if (code.includes("unauthorized-domain")) return "Sign-in from this site is not enabled yet. Please contact support.";
   if (code.includes("invalid-api-key")) return "Firebase configuration is invalid. Check the Firebase Web API key.";
