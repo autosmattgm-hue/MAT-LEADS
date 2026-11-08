@@ -134,8 +134,14 @@ async function checkCommunityStorage() {
   try {
     const health = await apiFetch("/api/health");
     if (health?.integrations?.firebase === false || String(health?.auth?.userStore || "").includes("ephemeral")) {
+      const credentials = health?.persistence?.firestore || {};
+      const missing = [
+        !credentials.clientEmailSet && "FIREBASE_CLIENT_EMAIL",
+        !credentials.privateKeySet && "FIREBASE_PRIVATE_KEY",
+        credentials.privateKeySet && !credentials.privateKeyValid && "a valid FIREBASE_PRIVATE_KEY format"
+      ].filter(Boolean);
       warning.hidden = false;
-      warning.textContent = "Community data is currently using temporary server storage. The administrator must configure Firebase persistence in Vercel before requests, friendships, and chats remain available after a deployment restart.";
+      warning.textContent = `Community data is using temporary server storage. ${missing.length ? `Vercel Production is missing ${missing.join(" and ")}. ` : "Vercel has not activated the Firestore service account. "}Add the Firebase Admin service-account values, save them for Production, then redeploy. Requests, friendships, and chats cannot persist until health reports Firestore ready.`;
     }
   } catch {}
 }

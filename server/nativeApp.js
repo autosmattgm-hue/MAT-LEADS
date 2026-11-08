@@ -2,7 +2,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { env } from "./config/env.js";
-import { isFirebaseConfigured } from "./config/firebase.js";
+import { firestoreCredentialStatus, isFirebaseConfigured } from "./config/firebase.js";
 import { AdminService } from "./services/adminService.js";
 import { AuthService } from "./services/authService.js";
 import { BillingService } from "./services/billingService.js";
@@ -362,6 +362,9 @@ const routes = [
         paypal: Boolean((env.paypal.clientId && env.paypal.clientSecret) || Object.values(env.paypal.paymentLinks).every(Boolean)),
         paypalApi: Boolean(env.paypal.clientId && env.paypal.clientSecret),
         paypalHostedLinks: Object.values(env.paypal.paymentLinks).every(Boolean)
+      },
+      persistence: {
+        firestore: firestoreCredentialStatus()
       },
       leadSearch: {
         engineVersion: "strict-coverage-v4",

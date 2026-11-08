@@ -129,6 +129,21 @@ export function isFirebaseConfigured() {
   return hasFirestoreCredentials();
 }
 
+export function firestoreCredentialStatus() {
+  const privateKey = normalizedPrivateKey(env.firebase.privateKey);
+  let privateKeyValid = false;
+  if (privateKey) {
+    try { crypto.createPrivateKey(privateKey); privateKeyValid = true; } catch {}
+  }
+  return {
+    projectIdSet: Boolean(env.firebase.projectId),
+    clientEmailSet: Boolean(env.firebase.clientEmail),
+    privateKeySet: Boolean(env.firebase.privateKey),
+    privateKeyValid,
+    ready: Boolean(env.firebase.projectId && env.firebase.clientEmail && privateKeyValid)
+  };
+}
+
 function normalizedPrivateKey(raw = "") {
   const trimmed = String(raw || "").trim();
   if (!trimmed) return "";
