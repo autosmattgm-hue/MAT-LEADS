@@ -259,7 +259,7 @@ function initAppShell() {
 }
 
 function sessionText(user) {
-  if (user?.role === "admin" || user?.entitlements?.unlimitedAccess) {
+  if (String(user?.role || "").toLowerCase() === "admin") {
     return "Admin Unlimited Access: every feature is unlocked with no billing required.";
   }
   if (user?.subscription === "trial" || user?.billingStatus === "trial" || user?.entitlements?.trial) {
@@ -291,16 +291,9 @@ async function initSessionBadge() {
   };
   window.setInterval(rotate, 8000);
 
-  const cached = localStorage.getItem("mat_user");
-  if (cached) {
-    try {
-      const user = JSON.parse(cached);
-      setAnnouncements(user);
-      syncProNavState(user);
-    } catch {
-      setAnnouncements({});
-    }
-  }
+  // Do not show cached admin or plan claims before the server confirms the
+  // current session; cached data can belong to another account on this device.
+  setAnnouncements({});
 
   if (!hasStoredSession()) {
     setAnnouncements({ planName: "Login required" });
@@ -317,6 +310,7 @@ async function initSessionBadge() {
     syncAdminNavItem(user);
     syncProNavState(user);
   } catch {
+    try { localStorage.removeItem("mat_user"); } catch {}
     setAnnouncements({});
   }
 }

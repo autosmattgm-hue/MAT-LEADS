@@ -19,6 +19,9 @@ body[data-page="community"] .community-workspace .workspace-header-actions .btn:
 .community-quick-card > b { margin-left: auto; color: #087a66; font-size: 1rem; }
 .community-quick-icon { display: grid; place-items: center; flex: 0 0 34px; width: 34px; height: 34px; border-radius: 11px; color: #fff; background: #087a66; font-size: .72rem; font-weight: 800; }
 body[data-page="community"] .community-grid { min-height: 720px; border-color: rgba(7,94,84,.16); box-shadow: 0 20px 55px rgba(15,42,32,.1); }
+body[data-page="community"] .community-grid { grid-template-columns: minmax(0, 1fr); }
+body[data-page="community"] .community-grid > .community-chat { display: none; }
+body[data-page="community"] .community-discover { border-right: 0; }
 body[data-page="community"] .community-discover { background: #fbfdfc; }
 body[data-page="community"] .community-discover > .panel-heading { padding: 20px; background: #f7fbf9; color: #18332f; }
 body[data-page="community"] .community-discover > .panel-heading h2 { color: #18332f; font-size: 1rem; }
