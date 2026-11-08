@@ -364,5 +364,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   const heartbeat = () => apiFetch("/api/social/presence", { method: "POST" }).catch(() => {});
   heartbeat();
   window.setInterval(heartbeat, 60000);
-  state.pollTimer = window.setInterval(() => { if (state.activeFriend) loadMessages(); }, 5000);
+  state.pollTimer = window.setInterval(() => {
+    loadNetwork().catch(() => {});
+    if (state.activeFriend) loadMessages();
+  }, 10000);
 });

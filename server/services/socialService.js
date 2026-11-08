@@ -111,8 +111,9 @@ export class SocialService {
     if (needle.length < 2) return [];
     const exactEmail = /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(needle);
     if (exactEmail) {
-      const direct = await this.users.list({ where: [{ field: "email", op: "==", value: needle }], limit: 1 });
-      const candidate = direct[0] ? this.profile(direct[0]) : null;
+      const direct = await this.users.list({ limit: 1000 });
+      const match = direct.find((candidate) => String(candidate?.email || "").trim().toLowerCase() === needle);
+      const candidate = match ? this.profile(match) : null;
       return candidate && candidate.uid !== me ? [candidate] : [];
     }
     // Keep the query bounded while remaining compatible with both Firestore and
@@ -219,7 +220,11 @@ export class SocialService {
       recipientId: recipient.uid,
       status: "pending"
     });
-    await this.notify(recipient.uid, "friend_request", "New friend request", `${String(user?.name || "A MAT LEADS member")} wants to connect with you.`, { userId: senderId });
+    try {
+      await this.notify(recipient.uid, "friend_request", "New friend request", `${String(user?.name || "A MAT LEADS member")} wants to connect with you.`, { userId: senderId });
+    } catch (error) {
+      console.warn(`[social] friend request notification skipped: ${error?.message || error}`);
+    }
     return request;
   }
 
