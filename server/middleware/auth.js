@@ -52,6 +52,8 @@ export function signAccessToken(user) {
   return signJwt({
     uid: entitled.uid,
     email: entitled.email,
+    name: entitled.name || "",
+    company: entitled.company || "",
     role: entitled.role || "user",
     subscription: entitled.subscription || "trial",
     planName: entitled.planName || "",
@@ -80,6 +82,8 @@ export async function verifyAccessToken(token) {
   return applyAdminEntitlements({
     uid: decoded.uid,
     email: decoded.email,
+    name: decoded.name || "",
+    company: decoded.company || "",
     role: decoded.role || "user",
     subscription: decoded.subscription || "trial",
     planName: decoded.planName || "",

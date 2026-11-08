@@ -57,6 +57,22 @@ export class SocialService {
     return user ? this.profile(user) : null;
   }
 
+  async ensureProfile(user, { touch = true } = {}) {
+    const uid = this.idFor(user);
+    const stored = await this.users.findById(uid);
+    const name = String(stored?.name || user?.name || "MAT LEADS member").trim().slice(0, 120) || "MAT LEADS member";
+    const email = this.normalizeSearchValue(stored?.email || user?.email).slice(0, 255);
+    const company = String(stored?.company || user?.company || "").trim().slice(0, 160);
+    const profile = {
+      uid,
+      name,
+      email,
+      company,
+      ...(touch ? { lastSeenAt: new Date().toISOString() } : {})
+    };
+    return this.users.upsert(uid, profile);
+  }
+
   async publicProfile(user, uid) {
     const me = this.idFor(user);
     const profile = await this.userById(uid);
@@ -115,6 +131,7 @@ export class SocialService {
 
   async searchUsers(user, query) {
     const me = this.idFor(user);
+    await this.ensureProfile(user, { touch: false });
     const needle = this.normalizeSearchValue(query);
     if (needle.length < 2) return [];
     const exactEmail = /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(needle);
@@ -134,10 +151,8 @@ export class SocialService {
   }
 
   async touchPresence(user) {
-    const uid = this.idFor(user);
-    const lastSeenAt = new Date().toISOString();
-    await this.users.upsert(uid, { lastSeenAt });
-    return { lastSeenAt };
+    const profile = await this.ensureProfile(user);
+    return { lastSeenAt: profile.lastSeenAt };
   }
 
   async listBlocks(user) {
@@ -183,6 +198,7 @@ export class SocialService {
 
   async friends(user) {
     const me = this.idFor(user);
+    await this.ensureProfile(user, { touch: false });
     const records = await this.friendships.list({ limit: 500, orderBy: "updatedAt" });
     const accepted = records.filter((record) => record.status === "accepted" && [record.userA, record.userB].includes(me));
     const results = await Promise.all(accepted.map(async (record) => {
@@ -196,6 +212,7 @@ export class SocialService {
 
   async requests(user) {
     const me = this.idFor(user);
+    await this.ensureProfile(user, { touch: false });
     const records = await this.friendships.list({ limit: 500, orderBy: "updatedAt" });
     const relevant = records.filter((record) => record.status === "pending" && [record.requestedBy, record.recipientId].includes(me));
     const items = await Promise.all(relevant.map(async (record) => {
@@ -208,6 +225,7 @@ export class SocialService {
 
   async request(user, recipientId) {
     const senderId = this.idFor(user);
+    await this.ensureProfile(user, { touch: false });
     const recipient = await this.userById(recipientId);
     if (!recipient || recipient.uid === senderId) throw new AppError("That member could not be found.", 404, "MEMBER_NOT_FOUND");
     await this.assertNotBlocked(senderId, recipient.uid);
