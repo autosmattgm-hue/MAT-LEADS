@@ -258,8 +258,9 @@ export class SocialService {
     if (!record || record.recipientId !== me || record.status !== "pending") throw new AppError("Friend request not found.", 404, "REQUEST_NOT_FOUND");
     const status = action === "accept" ? "accepted" : "declined";
     const updated = await this.friendships.upsert(friendshipId, { ...record, status, respondedAt: new Date().toISOString() });
-    if (status === "accepted") await this.notify(record.requestedBy, "friend_accepted", "Friend request accepted", `${String(user?.name || "Your contact")} accepted your friend request.`, { userId: me });
-    return updated;
+    if (status !== "accepted") return updated;
+    await this.notify(record.requestedBy, "friend_accepted", "Friend request accepted", `${String(user?.name || "Your contact")} accepted your friend request.`, { userId: me });
+    return { ...updated, friend: await this.userById(record.requestedBy) };
   }
 
   async remove(user, otherId) {

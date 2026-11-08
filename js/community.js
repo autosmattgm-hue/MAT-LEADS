@@ -90,18 +90,27 @@ async function loadNotifications() {
 }
 
 async function loadNetwork() {
-  const [friends, requests, unread, blocks, notifications] = await Promise.all([apiFetch("/api/social/friends"), apiFetch("/api/social/requests"), apiFetch("/api/social/unread"), apiFetch("/api/social/blocks"), apiFetch("/api/social/notifications")]);
-  state.friends = friends.friends || [];
-  state.requests = requests.requests || [];
-  state.unreadBySender = unread.bySender || {};
-  state.blocks = blocks.members || [];
-  state.notifications = notifications.notifications || [];
-  renderUnreadBadge(unread.total);
+  const results = await Promise.allSettled([
+    apiFetch("/api/social/friends"),
+    apiFetch("/api/social/requests"),
+    apiFetch("/api/social/unread"),
+    apiFetch("/api/social/blocks"),
+    apiFetch("/api/social/notifications")
+  ]);
+  const [friends, requests, unread, blocks, notifications] = results;
+  if (friends.status === "fulfilled") state.friends = friends.value.friends || [];
+  if (requests.status === "fulfilled") state.requests = requests.value.requests || [];
+  if (unread.status === "fulfilled") state.unreadBySender = unread.value.bySender || {};
+  if (blocks.status === "fulfilled") state.blocks = blocks.value.members || [];
+  if (notifications.status === "fulfilled") state.notifications = notifications.value.notifications || [];
+  if (unread.status === "fulfilled") renderUnreadBadge(unread.value.total);
   renderFriends();
   renderRequests();
   renderBlocks();
-  renderNotifications(notifications.unread);
+  if (notifications.status === "fulfilled") renderNotifications(notifications.value.unread);
   if (!state.activeFriend && !new URLSearchParams(window.location.search).has("chat")) restoreActiveChat();
+  const failed = results.find((result) => result.status === "rejected");
+  if (failed && friends.status === "rejected") throw failed.reason;
 }
 
 async function loadLiveUpdates() {
@@ -364,7 +373,19 @@ document.addEventListener("click", async (event) => {
     if (copyMessageButton) { const text = copyMessageButton.closest("[data-message-search-text]")?.querySelector(".community-bubble p")?.textContent || ""; await copyText(text); setStatus("Message copied.", "success"); }
     if (requestButton) { await apiFetch("/api/social/requests", { method: "POST", body: JSON.stringify({ userId: requestButton.dataset.communityRequest }) }); requestButton.disabled = true; requestButton.textContent = "Requested"; }
     if (messageButton) openChat(state.friends.find((friend) => friend.uid === messageButton.dataset.communityMessage));
-    if (acceptButton) { await apiFetch(`/api/social/requests/${encodeURIComponent(acceptButton.dataset.communityAccept)}`, { method: "PATCH", body: JSON.stringify({ action: "accept" }) }); await loadNetwork(); }
+    if (acceptButton) {
+      const requestId = acceptButton.dataset.communityAccept;
+      const request = state.requests.find((item) => item.id === requestId);
+      acceptButton.disabled = true;
+      const result = await apiFetch(`/api/social/requests/${encodeURIComponent(requestId)}`, { method: "PATCH", body: JSON.stringify({ action: "accept" }) });
+      const acceptedFriend = result.request?.friend || (request && { uid: request.uid, name: request.name, email: request.email, company: request.company, lastSeenAt: request.lastSeenAt });
+      state.requests = state.requests.filter((item) => item.id !== requestId);
+      if (acceptedFriend && !state.friends.some((item) => item.uid === acceptedFriend.uid)) state.friends = [...state.friends, acceptedFriend];
+      renderRequests();
+      renderFriends();
+      setStatus(`${acceptedFriend?.name || "Friend"} is now in your friends. Open Friends to start chatting.`, "success");
+      await loadNetwork();
+    }
     if (declineButton) { await apiFetch(`/api/social/requests/${encodeURIComponent(declineButton.dataset.communityDecline)}`, { method: "PATCH", body: JSON.stringify({ action: "decline" }) }); await loadNetwork(); }
     if (reactionButton && state.activeFriend) { await apiFetch(`/api/social/conversations/${encodeURIComponent(state.activeFriend.uid)}/messages/${encodeURIComponent(reactionButton.dataset.communityMessageId)}/reactions`, { method: "POST", body: JSON.stringify({ emoji: reactionButton.dataset.communityReact }) }); await loadMessages(); }
     if (deleteMessageButton && state.activeFriend && window.confirm("Remove this message for everyone in the conversation?")) { await apiFetch(`/api/social/conversations/${encodeURIComponent(state.activeFriend.uid)}/messages/${encodeURIComponent(deleteMessageButton.dataset.communityDeleteMessage)}`, { method: "DELETE" }); await loadMessages(); }

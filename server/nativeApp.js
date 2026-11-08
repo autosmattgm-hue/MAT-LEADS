@@ -178,6 +178,7 @@ const publicFiles = new Set([
   "/social.html",
   "/community.html",
   "/community-chat.html",
+  "/community-friends.html",
   "/community-requests.html",
   "/community-blocked.html",
   "/pay.html",
