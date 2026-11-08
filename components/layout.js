@@ -262,6 +262,8 @@ function sessionText(user) {
   if (String(user?.role || "").toLowerCase() === "admin") {
     return "Admin Unlimited Access: every feature is unlocked with no billing required.";
   }
+  if (user?.entitlements?.promoMode === "unlimited") return "Promo Unlimited active: every feature is unlocked; admin access is not included.";
+  if (user?.entitlements?.promoMode === "credits") return `Promo Credits active: ${Number(user.entitlements?.promoCreditsRemaining || 0)} credits remaining.`;
   if (user?.subscription === "trial" || user?.billingStatus === "trial" || user?.entitlements?.trial) {
     const used = Number(user.trialSearchesUsed || user.entitlements?.trialSearchesUsed || 0);
     const limit = Number(user.trialSearchLimit || user.entitlements?.trialSearchLimit || 2);

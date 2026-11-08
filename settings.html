@@ -27,6 +27,16 @@
             </div>
           </article>
           <article class="panel">
+            <h2>Promo access</h2>
+            <p class="muted-value">Enter a code shared by an administrator. Each account can redeem one code.</p>
+            <div class="toolbar">
+              <label class="sr-only" for="promoCode">Promo code</label>
+              <input id="promoCode" type="text" maxlength="80" placeholder="Enter promo code" autocomplete="off">
+              <button class="btn btn-secondary" type="button" id="redeemPromo">Redeem</button>
+            </div>
+            <p class="notice" id="promoStatus" role="status" aria-live="polite">No promo code redeemed.</p>
+          </article>
+          <article class="panel">
             <h2>Scoring</h2>
             <div class="form-grid compact">
               <div class="field"><label for="noWebsiteWeight">No Website</label><input id="noWebsiteWeight" name="noWebsiteWeight" type="number" min="0" max="100" value="50"></div>
