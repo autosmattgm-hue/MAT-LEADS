@@ -1987,6 +1987,19 @@ body[data-page="dashboard"] .lead-results-workspace .map-preview iframe {
   }
 }
 
+/* Contain the rotating workspace announcement so it never shifts the page. */
+html, body { overflow-x: hidden; }
+.topbar { min-width: 0; overflow: hidden; }
+.topbar-status-stack { min-width: 0; overflow: hidden; }
+.topbar-announcement,
+.topbar-announcement.is-changing { display: block; min-width: 0; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; transform: none; animation: topbar-announcement-fade 260ms ease both; }
+@keyframes topbar-announcement-fade { from { opacity: .25; } to { opacity: 1; } }
+@media (max-width: 700px) {
+  .topbar-status-stack { min-height: 34px; }
+  .topbar-announcement,
+  .topbar-announcement.is-changing { white-space: nowrap; overflow: hidden; overflow-wrap: normal; }
+}
+
 /* Dedicated community destinations must win over shared panel styles. */
 body[data-page="community-chat"] { min-height: 100dvh; background: #efeae2; }
 body[data-page="community-chat"] .community-chat-page { display: flex; min-height: 100dvh; flex-direction: column; }
