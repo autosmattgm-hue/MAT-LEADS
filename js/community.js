@@ -128,6 +128,18 @@ async function loadLiveUpdates() {
   finally { state.updatesInFlight = false; }
 }
 
+async function checkCommunityStorage() {
+  const warning = document.querySelector("[data-community-storage-warning]");
+  if (!warning) return;
+  try {
+    const health = await apiFetch("/api/health");
+    if (health?.integrations?.firebase === false || String(health?.auth?.userStore || "").includes("ephemeral")) {
+      warning.hidden = false;
+      warning.textContent = "Community data is currently using temporary server storage. The administrator must configure Firebase persistence in Vercel before requests, friendships, and chats remain available after a deployment restart.";
+    }
+  } catch {}
+}
+
 function showSearchResults(users) {
   const target = document.querySelector("[data-community-results]");
   if (!target) return;
@@ -391,6 +403,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   try {
     await loadNetwork();
     await openSharedLink();
+    checkCommunityStorage();
     if (window.location.hash === "#notifications") {
       const panel = document.querySelector("[data-community-notification-panel]");
       const toggle = document.querySelector("[data-community-notification-toggle]");
