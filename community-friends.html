@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Friends | MAT LEADS AI PRO X</title>
+    <meta name="description" content="Choose an accepted MAT LEADS connection and open a private conversation.">
+    <link rel="icon" href="/assets/logo-mark.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/community-pages.css">
+  </head>
+  <body data-page="community-friends">
+    <div class="app-layout" data-app-shell>
+      <main class="workspace community-subpage">
+        <section class="workspace-header">
+          <div><p class="eyebrow">MAT LEADS COMMUNITY</p><h1>Your friends</h1><p>Choose an accepted connection to start a private conversation.</p></div>
+          <div class="workspace-header-actions"><a class="btn btn-secondary" href="/community.html">Community</a><a class="btn btn-secondary" href="/community-requests.html">Friend requests</a><a class="btn btn-secondary" href="/community-blocked.html">Blocked members</a></div>
+        </section>
+        <section class="panel community-subpage-panel community-friends-panel">
+          <div class="panel-heading"><div><h2>Accepted friends</h2><p data-community-count>Loading friends...</p></div><button class="btn btn-ghost btn-small" type="button" data-community-refresh>Refresh</button></div>
+          <div class="community-inbox-filter"><label class="sr-only" for="conversationFilter">Filter friends</label><input id="conversationFilter" type="search" maxlength="120" placeholder="Filter by name, company, or email" autocomplete="off"></div>
+          <div class="community-results community-subpage-list" data-community-results aria-live="polite"><p class="muted">Loading friends...</p></div>
+          <p class="form-status" data-community-status role="status"></p>
+        </section>
+      </main>
+    </div>
+    <script type="module" src="/components/layout.js"></script>
+    <script type="module" src="/js/community.js"></script>
+  </body>
+</html>
