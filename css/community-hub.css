@@ -8,7 +8,6 @@ body[data-page="community"] .community-workspace .workspace-header .eyebrow { co
 body[data-page="community"] .community-workspace .workspace-header-actions { justify-content: flex-end; }
 body[data-page="community"] .community-workspace .workspace-header-actions .btn { border-color: rgba(255,255,255,.3); color: #fff; background: rgba(255,255,255,.12); }
 body[data-page="community"] .community-workspace .workspace-header-actions .btn:hover { background: rgba(255,255,255,.2); }
-.community-storage-warning { margin: 0 0 16px; padding: 12px 15px; border: 1px solid #f0c36d; border-radius: 12px; color: #694b08; background: #fff8e6; font-size: .78rem; line-height: 1.45; }
 .community-quick-actions { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-bottom: 16px; }
 .community-quick-card { display: flex; align-items: center; gap: 11px; min-width: 0; padding: 15px 16px; border: 1px solid rgba(7,94,84,.12); border-radius: 15px; color: #18332f; background: rgba(255,255,255,.88); box-shadow: 0 8px 24px rgba(15,42,32,.06); transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease; }
 .community-quick-card:hover { transform: translateY(-2px); border-color: rgba(7,94,84,.3); box-shadow: 0 14px 30px rgba(15,42,32,.1); }

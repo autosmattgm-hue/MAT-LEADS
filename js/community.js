@@ -128,24 +128,6 @@ async function loadLiveUpdates() {
   finally { state.updatesInFlight = false; }
 }
 
-async function checkCommunityStorage() {
-  const warning = document.querySelector("[data-community-storage-warning]");
-  if (!warning) return;
-  try {
-    const health = await apiFetch("/api/health");
-    if (health?.integrations?.firebase === false || String(health?.auth?.userStore || "").includes("ephemeral")) {
-      const credentials = health?.persistence?.firestore || {};
-      const missing = [
-        !credentials.clientEmailSet && "FIREBASE_CLIENT_EMAIL",
-        !credentials.privateKeySet && "FIREBASE_PRIVATE_KEY",
-        credentials.privateKeySet && !credentials.privateKeyValid && "a valid FIREBASE_PRIVATE_KEY format"
-      ].filter(Boolean);
-      warning.hidden = false;
-      warning.textContent = `Community data is using temporary server storage. ${missing.length ? `Vercel Production is missing ${missing.join(" and ")}. ` : "Vercel has not activated the Firestore service account. "}Add the Firebase Admin service-account values, save them for Production, then redeploy. Requests, friendships, and chats cannot persist until health reports Firestore ready.`;
-    }
-  } catch {}
-}
-
 function showSearchResults(users) {
   const target = document.querySelector("[data-community-results]");
   if (!target) return;
@@ -409,7 +391,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   try {
     await loadNetwork();
     await openSharedLink();
-    checkCommunityStorage();
     if (window.location.hash === "#notifications") {
       const panel = document.querySelector("[data-community-notification-panel]");
       const toggle = document.querySelector("[data-community-notification-toggle]");
