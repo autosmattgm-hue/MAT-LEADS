@@ -1,6 +1,6 @@
 import { apiFetch, requireAuth, getCurrentUser } from "./api.js";
 
-const state = { friends: [], requests: [], blocks: [], notifications: [], unreadBySender: {}, activeFriend: null, contactFilter: "", unreadOnly: false, isSearching: false, pollTimer: null };
+const state = { friends: [], requests: [], blocks: [], notifications: [], unreadBySender: {}, activeFriend: null, contactFilter: "", unreadOnly: false, isSearching: false, pollTimer: null, updatesInFlight: false };
 const ACTIVE_CHAT_KEY = "mat-community-active-chat";
 
 function escapeHtml(value) {
@@ -102,6 +102,30 @@ async function loadNetwork() {
   renderBlocks();
   renderNotifications(notifications.unread);
   if (!state.activeFriend && !new URLSearchParams(window.location.search).has("chat")) restoreActiveChat();
+}
+
+async function loadLiveUpdates() {
+  if (state.updatesInFlight || document.visibilityState === "hidden") return;
+  state.updatesInFlight = true;
+  try {
+    const [requests, notifications, unread] = await Promise.all([
+      apiFetch("/api/social/requests"),
+      apiFetch("/api/social/notifications"),
+      apiFetch("/api/social/unread")
+    ]);
+    state.requests = requests.requests || [];
+    state.notifications = notifications.notifications || [];
+    state.unreadBySender = unread.bySender || {};
+    renderRequests();
+    renderNotifications(notifications.unread);
+    renderUnreadBadge(unread.total);
+    const requestCount = state.requests.filter((request) => request.direction === "incoming").length;
+    document.querySelectorAll("[data-community-request-count]").forEach((node) => {
+      node.textContent = String(requestCount);
+      node.hidden = !requestCount;
+    });
+  } catch {}
+  finally { state.updatesInFlight = false; }
 }
 
 function showSearchResults(users) {
@@ -364,12 +388,24 @@ document.addEventListener("DOMContentLoaded", async () => {
   document.querySelector("[data-community-message-filter]")?.addEventListener("input", (event) => filterMessages(event.currentTarget.value));
   document.querySelector("#conversationFilter")?.addEventListener("input", (event) => { state.contactFilter = event.currentTarget.value.trim(); state.isSearching = false; document.querySelector("[data-community-show-inbox]")?.setAttribute("hidden", ""); renderFriends(); });
   document.querySelector("[data-community-refresh]")?.addEventListener("click", () => loadNetwork().catch((error) => setStatus(error.message, "error")));
-  try { await loadNetwork(); await openSharedLink(); } catch (error) { setStatus(error.message, "error"); }
+  try {
+    await loadNetwork();
+    await openSharedLink();
+    if (window.location.hash === "#notifications") {
+      const panel = document.querySelector("[data-community-notification-panel]");
+      const toggle = document.querySelector("[data-community-notification-toggle]");
+      if (panel) panel.hidden = false;
+      toggle?.setAttribute("aria-expanded", "true");
+      await loadNotifications();
+    }
+  } catch (error) { setStatus(error.message, "error"); }
   const heartbeat = () => apiFetch("/api/social/presence", { method: "POST" }).catch(() => {});
   heartbeat();
   window.setInterval(heartbeat, 60000);
+  document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") { loadNetwork().catch(() => {}); loadLiveUpdates(); } });
+  window.addEventListener("focus", () => { loadNetwork().catch(() => {}); loadLiveUpdates(); });
   state.pollTimer = window.setInterval(() => {
-    loadNetwork().catch(() => {});
+    loadLiveUpdates();
     if (state.activeFriend) loadMessages();
-  }, 10000);
+  }, 3000);
 });
