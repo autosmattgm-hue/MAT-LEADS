@@ -828,8 +828,16 @@ function paintPlanBadge() {
     pill.textContent = "Sign in to build";
     return;
   }
-  if (String(user.role || "").toLowerCase() === "admin" || user.entitlements?.unlimitedAccess) {
+  if (String(user.role || "").toLowerCase() === "admin") {
     pill.textContent = "Admin — all features";
+    return;
+  }
+  if (user.entitlements?.promoMode === "unlimited") {
+    pill.textContent = "Promo unlimited";
+    return;
+  }
+  if (user.entitlements?.promoMode === "credits") {
+    pill.textContent = `${Number(user.entitlements?.promoCreditsRemaining ?? user.promoCreditsRemaining ?? 0)} promo credits`;
     return;
   }
   if (isProUser(user)) {
@@ -856,7 +864,7 @@ async function initStudio() {
   // The Studio is a Pro feature — everyone else gets a clear upgrade path
   // instead of a failed build.
   const user = getCurrentUser();
-  const isAdmin = String(user?.role || "").toLowerCase() === "admin" || user?.entitlements?.unlimitedAccess;
+  const isAdmin = String(user?.role || "").toLowerCase() === "admin";
   if (!isAdmin && !isProUser(user)) {
     stage = "locked";
     typeAi("Website Studio is part of the Professional plan. Upgrade to unlock AI site generation, the visual builder and shareable client links.");

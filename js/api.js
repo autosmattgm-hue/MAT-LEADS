@@ -18,6 +18,7 @@ const PROTECTED_API_PREFIXES = [
   "/api/admin/",
   "/api/ai/",
   "/api/billing/",
+  "/api/promos/",
   "/api/earn/",
   "/api/social/"
 ];
@@ -36,6 +37,7 @@ export function isProUser(user = {}) {
   if (!user) return false;
   if (String(user.role || "").toLowerCase() === "admin") return true;
   if (user?.entitlements?.unlimitedAccess) return true;
+  if (["unlimited", "credits"].includes(user?.entitlements?.promoMode)) return true;
   const sub = String(user?.subscription || user?.planName || "").toLowerCase();
   if (["professional", "growth_plus", "growth plus", "agency", "enterprise", "pro"].some((k) => sub.includes(k))) return true;
   if (user?.entitlements?.activePlan && !["trial", "starter", ""].includes(String(user.entitlements.activePlan))) return true;

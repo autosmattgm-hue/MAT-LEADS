@@ -189,8 +189,12 @@ function renderSettingsSummary(user, settings) {
   settings = settings || {};
   const target = document.querySelector("[data-settings-summary]");
   if (!target) return;
-  const plan = user.role === "admin" || user.entitlements?.unlimitedAccess
+  const plan = user.role === "admin"
     ? "Admin Unlimited"
+    : user.entitlements?.promoMode === "unlimited"
+      ? "Promo Unlimited"
+      : user.entitlements?.promoMode === "credits"
+        ? `Promo Credits (${Number(user.entitlements?.promoCreditsRemaining ?? user.promoCreditsRemaining ?? 0)} left)`
     : user.planName || user.subscription || "Workspace";
   const bookingUrl = safeExternalUrl(settings.bookingUrl);
   target.innerHTML = [
@@ -209,13 +213,38 @@ function renderSettingsSummary(user, settings) {
   ].join("\n    ");
 }
 
+function renderPromoStatus(user = {}) {
+  const target = document.querySelector("#promoStatus");
+  if (!target) return;
+  const mode = user.entitlements?.promoMode || user.promoMode || "";
+  if (mode === "unlimited") target.textContent = `Promo active: ${user.entitlements?.promoCode || user.promoCode}. Unlimited features enabled; admin access is not included.`;
+  else if (mode === "credits") target.textContent = `Promo active: ${user.entitlements?.promoCode || user.promoCode}. ${Number(user.entitlements?.promoCreditsRemaining ?? user.promoCreditsRemaining ?? 0)} credits remaining. This code can be redeemed again after 72 hours.`;
+}
+
+async function redeemPromo() {
+  const input = byId("promoCode");
+  const button = byId("redeemPromo");
+  const status = byId("promoStatus");
+  const code = input?.value.trim();
+  if (!code) { if (status) status.textContent = "Enter a promo code first."; return; }
+  if (button) { button.disabled = true; button.textContent = "Redeeming..."; }
+  try {
+    const result = await apiFetch("/api/promos/redeem", { method: "POST", body: JSON.stringify({ code }) });
+    if (result.accessToken) setToken(result.accessToken);
+    if (result.user) { setCurrentUser(result.user); renderPromoStatus(result.user); renderSettingsSummary(result.user, {}); }
+    if (input) input.value = "";
+    if (status) status.textContent = `${result.promo?.title || "Promo"} activated successfully.`;
+  } catch (error) { if (status) status.textContent = error.message; }
+  finally { if (button) { button.disabled = false; button.textContent = "Redeem"; } }
+}
+
 async function loadSettings() {
   if (!requireAuth()) return;
   try {
     const result = await apiFetch("/api/auth/settings");
     const settings = result.settings || {};
     populateSettings(settings);
-    if (result.user) setCurrentUser(result.user);
+    if (result.user) { setCurrentUser(result.user); renderPromoStatus(result.user); }
     renderSettingsSummary(result.user || {}, settings);
     setSettingsStatus("Settings loaded.");
   } catch (error) {
@@ -264,4 +293,5 @@ document.addEventListener("DOMContentLoaded", function () {
   loadSettings();
   loadAiConnectionStatus();
   byId("testAiConnection")?.addEventListener("click", testAiConnection);
+  byId("redeemPromo")?.addEventListener("click", redeemPromo);
 });

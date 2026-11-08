@@ -314,6 +314,12 @@ export const socialSchemas = {
   }))
 };
 
+export const promoSchemas = {
+  redeem: schema((input) => ({
+    code: stringField(input, "code", { required: true, min: 4, max: 80, truncate: true })
+  }))
+};
+
 const outreachTypes = ["cold_email", "follow_up", "website_redesign", "seo", "marketing", "ai_automation", "business_audit"];
 
 export const aiSchemas = {

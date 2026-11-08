@@ -182,9 +182,23 @@ function renderAccessState() {
   if (!plan || !usage || !user) return;
 
   const isAdmin = String(user.role || "").toLowerCase() === "admin";
-  if (isAdmin || user.entitlements?.unlimitedAccess) {
+  if (isAdmin) {
     plan.textContent = "Admin Unlimited";
     usage.textContent = "All features unlocked";
+    applySearchResultEntitlement(null);
+    return;
+  }
+
+  if (user.entitlements?.promoMode === "unlimited") {
+    plan.textContent = "Promo Unlimited";
+    usage.textContent = "All features unlocked";
+    applySearchResultEntitlement(null);
+    return;
+  }
+
+  if (user.entitlements?.promoMode === "credits") {
+    plan.textContent = "Promo Credits";
+    usage.textContent = `${Number(user.entitlements?.promoCreditsRemaining ?? user.promoCreditsRemaining ?? 0)} credits remaining`;
     applySearchResultEntitlement(null);
     return;
   }

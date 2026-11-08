@@ -431,6 +431,7 @@ export class LeadService {
 
   async assertTrialAccess(user) {
     if (isAdminUser(user) || user?.entitlements?.unlimitedAccess || user?.permissions?.includes?.("unlimited")) return null;
+    if (["unlimited", "credits"].includes(user?.promoMode || user?.entitlements?.promoMode)) return null;
     const planKey = String(user?.subscription || user?.entitlements?.activePlan || "trial").toLowerCase();
     if (planKey !== "trial") return null;
 
@@ -464,7 +465,7 @@ export class LeadService {
 
   async historicalMatchingLeads(search, user, maximum) {
     if (!maximum || search.mapLink || search.city || search.state || search.zip) return [];
-    const admin = isAdminUser(user) || user?.entitlements?.unlimitedAccess || user?.permissions?.includes?.("unlimited");
+    const admin = isAdminUser(user);
     const records = await this.leads.list({
       where: admin ? [] : [{ field: "discoveredBy", op: "==", value: user?.uid }],
       limit: 500,
@@ -480,7 +481,7 @@ export class LeadService {
   async search(search, user) {
     const accessUser = await this.currentAccessUser(user);
     const startingTrialUsage = await this.assertTrialAccess(accessUser);
-    const admin = isAdminUser(accessUser) || accessUser?.entitlements?.unlimitedAccess || accessUser?.permissions?.includes?.("unlimited");
+    const admin = isAdminUser(accessUser);
     const effectiveSearch = search;
     const bypassCache = Boolean(effectiveSearch?.bypassCache || effectiveSearch?.refreshSeed);
     const requestedLimit = effectiveSearch?.limit || 50;
@@ -805,7 +806,7 @@ export class LeadService {
 
   canAccessLead(lead, user) {
     if (!lead || !user?.uid) return false;
-    if (isAdminUser(user) || user?.entitlements?.unlimitedAccess || user?.permissions?.includes?.("unlimited")) return true;
+    if (isAdminUser(user)) return true;
     const uid = String(user.uid);
     return String(lead.ownerId || "") === uid || String(lead.discoveredBy || "") === uid;
   }

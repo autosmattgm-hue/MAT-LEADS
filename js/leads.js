@@ -2162,7 +2162,7 @@ function initWebsiteStudioActions() {
     if (!btn) return;
     if (!requireAuth()) return;
     const user = getCurrentUser();
-    const pro = user && (String(user.role || "").toLowerCase() === "admin" || user?.entitlements?.unlimitedAccess || /professional|growth|agency|enterprise|pro/i.test(String(user.subscription || user.planName || user?.entitlements?.activePlan || "")));
+    const pro = user && (String(user.role || "").toLowerCase() === "admin" || ["unlimited", "credits"].includes(user?.entitlements?.promoMode) || user?.entitlements?.unlimitedAccess || /professional|growth|agency|enterprise|pro/i.test(String(user.subscription || user.planName || user?.entitlements?.activePlan || "")));
     const leadId = btn.dataset.createWebsite;
     const lead = currentLeadResults.find((l) => String(l.id) === String(leadId))
       || currentFilteredLeadResults.find((l) => String(l.id) === String(leadId))

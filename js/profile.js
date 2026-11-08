@@ -19,13 +19,15 @@ function setStatus(message, state = "info") {
 }
 
 function accessLabel(user = {}) {
-  if (user.role === "admin" || user.entitlements?.unlimitedAccess) return "Admin Unlimited";
+  if (user.role === "admin") return "Admin Unlimited";
+  if (user.entitlements?.promoMode === "unlimited") return "Promo Unlimited";
+  if (user.entitlements?.promoMode === "credits") return `Promo Credits (${Number(user.entitlements?.promoCreditsRemaining ?? user.promoCreditsRemaining ?? 0)} left)`;
   if (user.subscription === "trial" || user.billingStatus === "trial" || user.entitlements?.trial) return "Free Trial";
   return user.planName || user.subscription || "Active";
 }
 
 function accessClass(user = {}) {
-  if (user.role === "admin" || user.entitlements?.unlimitedAccess) return "success";
+  if (user.role === "admin" || user.entitlements?.promoMode) return "success";
   if (user.subscription === "trial" || user.billingStatus === "trial" || user.entitlements?.trial) return "warning";
   return "success";
 }

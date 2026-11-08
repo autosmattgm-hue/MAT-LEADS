@@ -1016,10 +1016,12 @@ function paintPlanBadge() {
   if (!pill) return;
   const user = getCurrentUser();
   if (!user) { pill.textContent = "Sign in"; return; }
-  if (String(user.role || "").toLowerCase() === "admin" || user.entitlements?.unlimitedAccess) {
+  if (String(user.role || "").toLowerCase() === "admin") {
     pill.textContent = "Admin - all features";
     return;
   }
+  if (user.entitlements?.promoMode === "unlimited") { pill.textContent = "Promo unlimited"; return; }
+  if (user.entitlements?.promoMode === "credits") { pill.textContent = `${Number(user.entitlements?.promoCreditsRemaining ?? user.promoCreditsRemaining ?? 0)} promo credits`; return; }
   pill.textContent = isProUser(user) ? `${user.planName || user.subscription || "Pro"} plan` : "Pro required";
 }
 
@@ -1030,7 +1032,7 @@ async function initEditor() {
   paintPlanBadge();
 
   const user = getCurrentUser();
-  const isAdmin = String(user?.role || "").toLowerCase() === "admin" || user?.entitlements?.unlimitedAccess;
+  const isAdmin = String(user?.role || "").toLowerCase() === "admin";
   if (!isAdmin && !isProUser(user)) {
     setStatus("The Website Editor unlocks on the Professional plan.", "error");
     window.location.href = "/pricing.html?upgrade=pro";

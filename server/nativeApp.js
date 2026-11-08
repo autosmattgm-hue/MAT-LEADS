@@ -16,10 +16,12 @@ import { EarnService } from "./services/earnService.js";
 import { GigService } from "./services/gigService.js";
 import { SavedSearchService } from "./services/savedSearchService.js";
 import { SocialService } from "./services/socialService.js";
+import { PromoService } from "./services/promoService.js";
+import { CreditService } from "./services/creditService.js";
 import { isAdminUser } from "./utils/entitlements.js";
 import { AppError } from "./utils/errors.js";
-import { aiSchemas, authSchemas, billingSchema, crmSchemas, earnSchemas, gigSchemas, leadSearchSchema, paypalConfirmationSchema, profileSchema, savedSearchSchemas, settingsSchema, socialSchemas } from "./utils/schemas.js";
-import { verifyAccessToken } from "./middleware/auth.js";
+import { aiSchemas, authSchemas, billingSchema, crmSchemas, earnSchemas, gigSchemas, leadSearchSchema, paypalConfirmationSchema, profileSchema, promoSchemas, savedSearchSchemas, settingsSchema, socialSchemas } from "./utils/schemas.js";
+import { signAccessToken, verifyAccessToken } from "./middleware/auth.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -38,10 +40,23 @@ const earnService = new EarnService();
 const gigService = new GigService(earnService);
 const savedSearchService = new SavedSearchService();
 const socialService = new SocialService();
+const promoService = new PromoService();
+const creditService = new CreditService();
+
+async function runWithCredit(user, feature, action) {
+  const reservation = await creditService.consume(user, feature);
+  try {
+    return await action();
+  } catch (error) {
+    await creditService.refund(user, reservation).catch(() => {});
+    throw error;
+  }
+}
 
 function canUseProAi(user = {}) {
   if (isAdminUser(user)) return true;
   if (user?.entitlements?.unlimitedAccess) return true;
+  if (["unlimited", "credits"].includes(user?.entitlements?.promoMode)) return true;
   if (Array.isArray(user?.permissions) && (user.permissions.includes("unlimited") || user.permissions.includes("business_tycoon") || user.permissions.includes("website_builder"))) return true;
   const sub = String(user?.subscription || user?.planName || user?.entitlements?.activePlan || "").toLowerCase();
   if (["professional", "growth_plus", "growth plus", "growth-plus", "agency", "enterprise", "pro"].some((k) => sub.includes(k))) return true;
@@ -523,7 +538,10 @@ const routes = [
     method: "POST",
     regex: /^\/api\/leads\/search$/,
     keys: [],
-    handler: async ({ req, body }) => leadService.search(validate(leadSearchSchema, body), await getUser(req))
+    handler: async ({ req, body }) => {
+      const user = await getUser(req);
+      return runWithCredit(user, "lead_search", () => leadService.search(validate(leadSearchSchema, body), user));
+    }
   },
   {
     method: "POST",
@@ -601,9 +619,9 @@ const routes = [
     regex: /^\/api\/ai\/chat$/,
     keys: [],
     handler: async ({ req, body }) => {
-      await getUser(req);
+      const user = await getUser(req);
       const payload = validate(aiSchemas.chat, body);
-      return nvidiaService.chat(payload.prompt);
+      return runWithCredit(user, "ai_chat", () => nvidiaService.chat(payload.prompt));
     }
   },
   {
@@ -614,7 +632,7 @@ const routes = [
       const user = await getUser(req);
       requireProAi(user);
       const payload = validate(aiSchemas.agent, body);
-      return aiAgentService.ask(user, payload.prompt);
+      return runWithCredit(user, "ai_agent", () => aiAgentService.ask(user, payload.prompt));
     }
   },
   {
@@ -626,7 +644,7 @@ const routes = [
       const payload = validate(aiSchemas.analyze, body);
       const lead = await leadService.getForUser(payload.leadId, user);
       if (!lead) throw new AppError("Lead not found.", 404, "LEAD_NOT_FOUND");
-      return nvidiaService.analyzeLead(lead);
+      return runWithCredit(user, "ai_analyze", () => nvidiaService.analyzeLead(lead));
     }
   },
   {
@@ -638,7 +656,7 @@ const routes = [
       const payload = validate(aiSchemas.outreach, body);
       const lead = await leadService.getForUser(payload.leadId, user);
       if (!lead) throw new AppError("Lead not found.", 404, "LEAD_NOT_FOUND");
-      return nvidiaService.writeOutreach(lead, payload.type);
+      return runWithCredit(user, "ai_outreach", () => nvidiaService.writeOutreach(lead, payload.type));
     }
   },
   {
@@ -650,7 +668,7 @@ const routes = [
       const payload = validate(aiSchemas.proposal, body);
       const lead = await leadService.getForUser(payload.leadId, user);
       if (!lead) throw new AppError("Lead not found.", 404, "LEAD_NOT_FOUND");
-      return nvidiaService.proposalPack(lead, payload.offerKey || "pro_site");
+      return runWithCredit(user, "ai_proposal", () => nvidiaService.proposalPack(lead, payload.offerKey || "pro_site"));
     }
   },
   {
@@ -663,7 +681,7 @@ const routes = [
       const payload = validate(aiSchemas.tycoon, body);
       let lead = payload.lead && Object.keys(payload.lead).length ? payload.lead : null;
       if (!lead && payload.leadId) lead = await leadService.getById(payload.leadId);
-      return nvidiaService.tycoonChat(payload.prompt, { lead: lead || {}, user: user.email || "" });
+      return runWithCredit(user, "ai_tycoon", () => nvidiaService.tycoonChat(payload.prompt, { lead: lead || {}, user: user.email || "" }));
     }
   },
   {
@@ -677,8 +695,10 @@ const routes = [
       let lead = payload.lead && Object.keys(payload.lead).length ? payload.lead : null;
       if (!lead && payload.leadId) lead = await leadService.getById(payload.leadId);
       if (!lead) lead = { id: payload.leadId || "lead", name: payload.businessName || "Business" };
-      const result = await websiteService.build({ lead, options: { businessName: payload.businessName, style: payload.style, palette: payload.palette, pages: payload.pages || 1, images: payload.images || {}, design: payload.design, tone: payload.tone, targetAudience: payload.targetAudience, primaryGoal: payload.primaryGoal, location: payload.location, services: payload.services, cta: payload.cta, about: payload.about, language: payload.language, followBrief: payload.followBrief }, user });
-      return { websiteId: result.website.id, shareToken: result.website.shareToken, shareUrl: `/s/${result.website.shareToken}`, studioUrl: `/website-studio.html?id=${encodeURIComponent(result.website.id)}`, website: result.website };
+      return runWithCredit(user, "website_build", async () => {
+        const result = await websiteService.build({ lead, options: { businessName: payload.businessName, style: payload.style, palette: payload.palette, pages: payload.pages || 1, images: payload.images || {}, design: payload.design, tone: payload.tone, targetAudience: payload.targetAudience, primaryGoal: payload.primaryGoal, location: payload.location, services: payload.services, cta: payload.cta, about: payload.about, language: payload.language, followBrief: payload.followBrief }, user });
+        return { websiteId: result.website.id, shareToken: result.website.shareToken, shareUrl: `/s/${result.website.shareToken}`, studioUrl: `/website-studio.html?id=${encodeURIComponent(result.website.id)}`, website: result.website };
+      });
     }
   },
   {
@@ -689,8 +709,10 @@ const routes = [
       const user = await getUser(req);
       requireProAi(user);
       const payload = validate(aiSchemas.websiteRefine, { ...body, websiteId: params.id });
-      const result = await websiteService.refine({ id: params.id, instruction: payload.instruction, user });
-      return { websiteId: result.website.id, shareToken: result.website.shareToken, shareUrl: `/s/${result.website.shareToken}`, website: result.website };
+      return runWithCredit(user, "website_refine", async () => {
+        const result = await websiteService.refine({ id: params.id, instruction: payload.instruction, user });
+        return { websiteId: result.website.id, shareToken: result.website.shareToken, shareUrl: `/s/${result.website.shareToken}`, website: result.website };
+      });
     }
   },
   {
@@ -701,7 +723,7 @@ const routes = [
       const user = await getUser(req);
       requireProAi(user);
       const payload = validate(aiSchemas.websiteHtml, body);
-      return websiteService.saveHtml(params.id, payload.html, user);
+      return runWithCredit(user, "website_save", () => websiteService.saveHtml(params.id, payload.html, user));
     }
   },
   {
@@ -888,7 +910,10 @@ const routes = [
     method: "POST",
     regex: /^\/api\/saved-searches$/,
     keys: [],
-    handler: async ({ req, body }) => ({ search: await savedSearchService.create(await getUser(req), validate(savedSearchSchemas.create, body)) }),
+    handler: async ({ req, body }) => {
+      const user = await getUser(req);
+      return { search: await runWithCredit(user, "saved_search_create", () => savedSearchService.create(user, validate(savedSearchSchemas.create, body))) };
+    },
     status: 201
   },
   {
@@ -896,7 +921,8 @@ const routes = [
     regex: /^\/api\/saved-searches\/([^/]+)\/run$/,
     keys: ["id"],
     handler: async ({ req, params }) => {
-      const search = await savedSearchService.markRun(params.id, await getUser(req));
+      const user = await getUser(req);
+      const search = await runWithCredit(user, "saved_search_run", () => savedSearchService.markRun(params.id, user));
       if (!search) throw new AppError("Saved search not found.", 404, "SAVED_SEARCH_NOT_FOUND");
       return { search };
     }
@@ -917,7 +943,8 @@ const routes = [
     keys: ["id"],
     handler: async ({ req, body, params }) => {
       const payload = validate(crmSchemas.stage, body);
-      const lead = await crmService.updateStage(params.id, payload.stage, await getUser(req));
+      const user = await getUser(req);
+      const lead = await runWithCredit(user, "crm_stage_update", () => crmService.updateStage(params.id, payload.stage, user));
       if (!lead) throw new AppError("Lead not found.", 404, "LEAD_NOT_FOUND");
       return { lead };
     }
@@ -928,7 +955,8 @@ const routes = [
     keys: ["id"],
     handler: async ({ req, body, params }) => {
       const payload = validate(crmSchemas.note, body);
-      return { activity: await crmService.addNote(params.id, payload.note, payload.tags, await getUser(req)) };
+      const user = await getUser(req);
+      return { activity: await runWithCredit(user, "crm_note", () => crmService.addNote(params.id, payload.note, payload.tags, user)) };
     },
     status: 201
   },
@@ -937,7 +965,8 @@ const routes = [
     regex: /^\/api\/crm\/leads\/([^/]+)\/outreach$/,
     keys: ["id"],
     handler: async ({ req, body, params }) => {
-      const activity = await crmService.recordOutreach(params.id, validate(crmSchemas.outreachActivity, body), await getUser(req));
+      const user = await getUser(req);
+      const activity = await runWithCredit(user, "crm_outreach", () => crmService.recordOutreach(params.id, validate(crmSchemas.outreachActivity, body), user));
       if (!activity) throw new AppError("Lead not found.", 404, "LEAD_NOT_FOUND");
       return { activity };
     },
@@ -972,12 +1001,39 @@ const routes = [
     handler: async ({ req, body }) => billingService.confirmPaypalPayment(validate(paypalConfirmationSchema, body), await getUser(req))
   },
   {
+    method: "POST",
+    regex: /^\/api\/promos\/redeem$/,
+    keys: [],
+    handler: async ({ req, body }) => {
+      const user = await getUser(req);
+      const promo = await promoService.redeem(user, validate(promoSchemas.redeem, body).code);
+      const refreshedUser = await authService.currentUser(user);
+      return { promo: { code: promo.code, mode: promo.mode, credits: promo.credits, creditsRemaining: promo.creditsRemaining, cooldownHours: promo.cooldownHours, title: promo.title }, user: refreshedUser, accessToken: signAccessToken(refreshedUser) };
+    },
+    status: 201
+  },
+  {
+    method: "GET",
+    regex: /^\/api\/promos\/status$/,
+    keys: [],
+    handler: async ({ req }) => ({ credits: await creditService.status(await getUser(req)) })
+  },
+  {
     method: "GET",
     regex: /^\/api\/admin\/overview$/,
     keys: [],
     handler: async ({ req }) => {
       await getAdminUser(req);
       return adminService.overview();
+    }
+  },
+  {
+    method: "GET",
+    regex: /^\/api\/admin\/promos$/,
+    keys: [],
+    handler: async ({ req }) => {
+      await getAdminUser(req);
+      return { promos: promoService.catalog() };
     }
   },
   {

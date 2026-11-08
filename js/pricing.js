@@ -28,7 +28,9 @@ async function initOwnerPricingState() {
 
     const header = document.querySelector(".section-header p");
     if (header) {
-      header.textContent = "Admin unlimited access is active. All plans, lead volume, CRM, reports, admin, analytics, billing, and AI workflows are unlocked.";
+      header.textContent = result.user?.role === "admin"
+        ? "Admin unlimited access is active. All plans, lead volume, CRM, reports, admin, analytics, billing, and AI workflows are unlocked."
+        : "Promo unlimited access is active. All user features are unlocked; the Admin Panel remains restricted.";
     }
   } catch {
     // Keep pricing usable for anonymous visitors.

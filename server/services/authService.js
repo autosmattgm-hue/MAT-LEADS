@@ -61,6 +61,7 @@ function storedBillingStatus(user = {}) {
 }
 
 function storedEntitlements(user = {}) {
+  if (user.entitlements?.promoMode || user.promoMode) return user.entitlements || {};
   return storedPlanKey(user) === "trial"
     ? trialEntitlements(Number(user.trialSearchesUsed || 0))
     : user.entitlements || {};

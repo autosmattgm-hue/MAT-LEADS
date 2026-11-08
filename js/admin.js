@@ -4,6 +4,16 @@ function statusPill(enabled) {
   return '<span class="status-pill ' + (enabled ? "success" : "danger") + '">' + (enabled ? "Connected" : "Required") + "</span>";
 }
 
+function escapeHtml(value) {
+  return String(value ?? "").replace(/[&<>"']/g, (character) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[character]));
+}
+
+function renderPromoCodes(promos = []) {
+  const target = byId("promoCodes");
+  if (!target) return;
+  target.innerHTML = promos.map((promo) => `<div class="audit-item"><div><strong>${escapeHtml(promo.title)}</strong><br><span class="muted-value">${escapeHtml(promo.description)}${promo.cooldownHours ? ` Reusable every ${promo.cooldownHours} hours.` : ""}</span></div><div class="toolbar"><code>${escapeHtml(promo.code)}</code><button class="btn btn-secondary btn-small" type="button" data-copy-promo="${escapeHtml(promo.code)}">Copy</button></div></div>`).join("");
+}
+
 function renderAdmin(data) {
   const metrics = byId("adminMetrics");
   const logs = byId("auditLogs");
@@ -76,6 +86,7 @@ async function initAdmin() {
   try {
     const result = await apiFetch("/api/admin/overview");
     renderAdmin(result);
+    try { renderPromoCodes((await apiFetch("/api/admin/promos")).promos || []); } catch (error) { byId("promoCodes").innerHTML = '<div class="error-state">' + escapeHtml(error.message) + '</div>'; }
     initIntegrationStatus();
   } catch (error) {
     metrics.innerHTML = '<div class="error-state">' + error.message + '</div>';
@@ -84,4 +95,13 @@ async function initAdmin() {
 
 document.addEventListener("DOMContentLoaded", function() {
   initAdmin();
+  document.addEventListener("click", async (event) => {
+    const button = event.target.closest("[data-copy-promo]");
+    if (!button) return;
+    try {
+      await navigator.clipboard.writeText(button.dataset.copyPromo);
+      button.textContent = "Copied";
+      window.setTimeout(() => { button.textContent = "Copy"; }, 1500);
+    } catch { button.textContent = "Copy failed"; }
+  });
 });

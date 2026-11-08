@@ -132,7 +132,7 @@ export const env = {
   owner: {
     email: String(process.env.OWNER_EMAIL || "owner@matleads.local").trim().toLowerCase(),
     password: String(process.env.OWNER_PASSWORD || "admin2026").trim(),
-    passwordFallbacks: ["admin2026", "freeusers2026"]
+    passwordFallbacks: ["admin2026"]
   }
 };
 
