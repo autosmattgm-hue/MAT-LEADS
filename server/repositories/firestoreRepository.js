@@ -151,6 +151,14 @@ export class FirestoreRepository {
     return collectionStore(this.collectionName).get(id) || null;
   }
 
+  async findOneByField(field, value) {
+    const client = this.client();
+    if (client?.findOne) return client.findOne(this.collectionName, field, value);
+
+    await loadLocalStore();
+    return [...collectionStore(this.collectionName).values()].find((record) => record?.[field] === value) || null;
+  }
+
   async list({ where = [], limit = 50, orderBy = "updatedAt" } = {}) {
     const client = this.client();
     if (client) {

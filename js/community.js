@@ -277,14 +277,21 @@ async function loadMessages() {
 
 async function search(event) {
   event.preventDefault();
-  const query = document.querySelector("#communityQuery").value.trim();
+  const input = document.querySelector("#communityQuery");
+  const button = event.currentTarget.querySelector("button[type=submit]");
+  const query = input.value.trim();
   if (query.length < 2) return setStatus("Enter at least two characters to search.", "error");
   setStatus("Searching...");
+  if (button) { button.disabled = true; button.setAttribute("aria-busy", "true"); }
   try {
     const users = (await apiFetch(`/api/social/users?q=${encodeURIComponent(query)}`)).users || [];
     showSearchResults(users);
     setStatus(users.length ? "" : "No member found with that name or email. Check the exact email address and try again.", users.length ? "" : "error");
-  } catch (error) { setStatus(error.message, "error"); }
+  } catch (error) {
+    setStatus(error.message || "Search is temporarily unavailable. Please try again.", "error");
+  } finally {
+    if (button) { button.disabled = false; button.removeAttribute("aria-busy"); }
+  }
 }
 
 async function sendMessage(event) {

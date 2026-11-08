@@ -225,15 +225,52 @@ export function firestoreClient() {
 
     async list(collection, { limit = 50 } = {}) {
       const token = await getAccessToken();
-      const url = new URL(documentUrl(collection));
-      url.searchParams.set("pageSize", String(limit));
+      const requested = Math.min(Math.max(Number(limit) || 50, 1), 5000);
+      const documents = [];
+      let pageToken = "";
+      do {
+        const url = new URL(documentUrl(collection));
+        url.searchParams.set("pageSize", String(Math.min(1000, requested - documents.length)));
+        if (pageToken) url.searchParams.set("pageToken", pageToken);
+        const response = await fetch(url, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        if (response.status === 404) return [];
+        if (!response.ok) throw new Error(`Firestore list failed with ${response.status}`);
+        const payload = await response.json();
+        documents.push(...(payload.documents || []).map(decodeDocument));
+        pageToken = payload.nextPageToken || "";
+      } while (pageToken && documents.length < requested);
+      return documents.slice(0, requested);
+    },
+
+    async findOne(collection, field, value) {
+      const token = await getAccessToken();
+      const url = `https://firestore.googleapis.com/v1/projects/${env.firebase.projectId}/databases/(default)/documents:runQuery`;
       const response = await fetch(url, {
-        headers: { Authorization: `Bearer ${token}` }
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          structuredQuery: {
+            from: [{ collectionId: collection }],
+            where: {
+              fieldFilter: {
+                field: { fieldPath: field },
+                op: "EQUAL",
+                value: encodeValue(value)
+              }
+            },
+            limit: 1
+          }
+        })
       });
-      if (response.status === 404) return [];
-      if (!response.ok) throw new Error(`Firestore list failed with ${response.status}`);
-      const payload = await response.json();
-      return (payload.documents || []).map(decodeDocument);
+      if (!response.ok) throw new Error(`Firestore query failed with ${response.status}`);
+      const results = await response.json();
+      const document = Array.isArray(results) ? results.find((item) => item.document)?.document : null;
+      return document ? decodeDocument(document) : null;
     }
   };
 }

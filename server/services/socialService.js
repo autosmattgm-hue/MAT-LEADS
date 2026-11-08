@@ -105,25 +105,31 @@ export class SocialService {
     return { markedRead: records.filter((record) => !record.readAt).length };
   }
 
+  normalizeSearchValue(value) {
+    return String(value || "")
+      .normalize("NFKC")
+      .replace(/^mailto:/i, "")
+      .trim()
+      .toLowerCase();
+  }
+
   async searchUsers(user, query) {
     const me = this.idFor(user);
-    const needle = String(query || "").trim().toLowerCase();
+    const needle = this.normalizeSearchValue(query);
     if (needle.length < 2) return [];
     const exactEmail = /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(needle);
     if (exactEmail) {
-      const direct = await this.users.list({ limit: 1000 });
-      const match = direct.find((candidate) => String(candidate?.email || "").trim().toLowerCase() === needle);
+      const indexed = await this.users.findOneByField("email", needle);
+      const direct = indexed ? [indexed] : await this.users.list({ limit: 5000 });
+      const match = direct.find((candidate) => this.normalizeSearchValue(candidate?.email) === needle);
       const candidate = match ? this.profile(match) : null;
       return candidate && candidate.uid !== me ? [candidate] : [];
     }
-    // Keep the query bounded while remaining compatible with both Firestore and
-    // the local repository fallback. Production installations can add an index
-    // later without changing this API contract.
-    const candidates = await this.users.list({ limit: 1000, orderBy: "updatedAt" });
+    const candidates = await this.users.list({ limit: 5000, orderBy: "updatedAt" });
     return candidates
       .map((candidate) => this.profile(candidate))
       .filter((candidate) => candidate.uid !== me)
-      .filter((candidate) => [candidate.name, candidate.email, candidate.company].some((value) => value.toLowerCase().includes(needle)))
+      .filter((candidate) => [candidate.name, candidate.email, candidate.company].some((value) => this.normalizeSearchValue(value).includes(needle)))
       .slice(0, 25);
   }
 
