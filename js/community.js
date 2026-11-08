@@ -154,6 +154,10 @@ async function copyText(value) {
 
 function openChat(friend, { updateUrl = true } = {}) {
   if (!friend) return;
+  if (!window.location.pathname.endsWith("/community-chat.html")) {
+    window.location.href = `/community-chat.html?chat=${encodeURIComponent(friend.uid)}`;
+    return;
+  }
   state.activeFriend = friend;
   rememberActiveChat(friend);
   if (updateUrl) {
