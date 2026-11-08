@@ -405,6 +405,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   try {
     await heartbeat();
     await loadNetwork();
+  } catch (error) {
+    setStatus(error.message || "Your inbox could not be loaded. You can still open a shared profile link.", "error");
+  }
+  try {
     await openSharedLink();
     if (window.location.hash === "#notifications") {
       const panel = document.querySelector("[data-community-notification-panel]");
@@ -413,7 +417,9 @@ document.addEventListener("DOMContentLoaded", async () => {
       toggle?.setAttribute("aria-expanded", "true");
       await loadNotifications();
     }
-  } catch (error) { setStatus(error.message, "error"); }
+  } catch (error) {
+    setStatus(error.message || "This shared link could not be opened. Please ask the sender for a fresh link.", "error");
+  }
   heartbeat();
   window.setInterval(heartbeat, 60000);
   document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") { loadNetwork().catch(() => {}); loadLiveUpdates(); } });
