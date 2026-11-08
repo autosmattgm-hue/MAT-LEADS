@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto";
-import { clientOfferCatalog, referralCommissionForPlan } from "../config/plans.js";
+import { clientOfferCatalog } from "../config/plans.js";
 import { FirestoreRepository } from "../repositories/firestoreRepository.js";
 import { isAdminUser } from "../utils/entitlements.js";
 import { AppError } from "../utils/errors.js";
@@ -11,6 +11,9 @@ const memPayouts = [];
 const referralCodeRegistry = new Map();
 
 const REFERRAL_SEARCH_CREDITS = 2;
+const REFERRAL_SIGNUP_REWARD_CENTS = 20;
+const REFERRAL_SUBSCRIPTION_REWARD_CENTS = 400;
+const MINIMUM_PAYOUT_CENTS = 5000;
 
 function normalizedPaymentUrl(value) {
   const raw = String(value || "").trim();
@@ -72,6 +75,7 @@ export class EarnService {
     if (existing) return existing;
 
     const referrer = await this.resolveReferrer(code);
+    if (String(referrer?.uid || referrer?.id || "") === String(referredUser.uid)) return null;
     const record = {
       id: randomUUID(),
       referrerUid: referrer?.uid || referrer?.id || "",
@@ -80,7 +84,7 @@ export class EarnService {
       referredEmail: referredUser.email || "",
       plan: "trial",
       amountCents: 0,
-      commissionCents: 0,
+      commissionCents: REFERRAL_SIGNUP_REWARD_CENTS,
       status: "signup",
       searchCreditsAwarded: referrer ? REFERRAL_SEARCH_CREDITS : 0,
       createdAt: new Date().toISOString()
@@ -139,9 +143,8 @@ export class EarnService {
     const open = rows.find((r) => r.status === "signup");
     if (!open) return null;
     const planKey = paidUser.subscription || paidUser?.entitlements?.activePlan || "professional";
-    const pct = referralCommissionForPlan(planKey);
     const planPrice = { starter: 29, professional: 99, growth_plus: 149, agency: 249 }[planKey] || 99;
-    const updated = { ...open, plan: planKey, amountCents: Math.round(planPrice * 100), commissionCents: Math.round(planPrice * 100 * (pct / 100)), status: "pending", updatedAt: new Date().toISOString() };
+    const updated = { ...open, plan: planKey, amountCents: Math.round(planPrice * 100), commissionCents: REFERRAL_SUBSCRIPTION_REWARD_CENTS, signupRewardCents: REFERRAL_SIGNUP_REWARD_CENTS, subscriptionRewardCents: REFERRAL_SUBSCRIPTION_REWARD_CENTS, status: "pending", updatedAt: new Date().toISOString() };
     try { await this.referrals.upsert(open.id, updated); } catch {}
     memReferrals.set(open.id, updated);
     return updated;
@@ -216,7 +219,18 @@ export class EarnService {
   }
   async requestPayout(user, input = {}) {
     const amountCents = Math.round(Number(input.amountUsd || 0) * 100);
-    if (!amountCents || amountCents < 1000) { const e = new Error("Minimum payout is $10."); e.status = 422; e.code = "PAYOUT_MINIMUM"; throw e; }
+    if (!amountCents || amountCents < MINIMUM_PAYOUT_CENTS) { const e = new Error("Minimum payout is $50."); e.status = 422; e.code = "PAYOUT_MINIMUM"; throw e; }
+    const [referral, payouts] = await Promise.all([this.myReferral(user), this.myPayouts(user)]);
+    const reservedCents = payouts
+      .filter((payout) => ["requested", "processing", "approved"].includes(String(payout.status || "").toLowerCase()))
+      .reduce((sum, payout) => sum + Number(payout.amountCents || 0), 0);
+    const availableCents = Math.max(0, Number(referral.pendingCents || 0) - reservedCents);
+    if (amountCents > availableCents) {
+      const e = new Error(`You can request up to $${(availableCents / 100).toFixed(2)} from available referral rewards.`);
+      e.status = 422;
+      e.code = "PAYOUT_BALANCE_INSUFFICIENT";
+      throw e;
+    }
     const payout = { id: randomUUID(), ownerUid: user.uid, ownerEmail: user.email || "", amountCents, destination: String(input.destination || "").slice(0, 200), status: "requested", createdAt: new Date().toISOString() };
     try { await this.payouts.create(payout); } catch {}
     memPayouts.push(payout);

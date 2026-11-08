@@ -503,6 +503,8 @@ export class AuthService {
     } catch {
       throw new AppError("Login service is temporarily unavailable. Please try again.", 503, "AUTH_STORE_UNAVAILABLE");
     }
+    const referralCode = String(options.referralCode || "").trim().slice(0, 40);
+    let created = false;
     if (!stored) {
       if (typeof options.beforeCreate === "function") {
         await options.beforeCreate(email || phone || "");
@@ -521,6 +523,7 @@ export class AuthService {
           authProvider: identity.provider,
           emailVerified: identity.emailVerified
         });
+        created = true;
       } catch {
         throw new AppError("Signup service is temporarily unavailable. Please try again.", 503, "AUTH_STORE_UNAVAILABLE");
       }
@@ -549,6 +552,7 @@ export class AuthService {
       ...stored,
       emailVerified: Boolean(stored.emailVerified ?? identity.emailVerified)
     });
+    if (created && referralCode) await this.awardReferralSignup({ uid: stored.id, email: stored.email || email || "" }, referralCode);
     const sessionUser = applyAdminEntitlements({
       uid: stored.id || `firebase:${identity.uid}`,
       name: stored.name || identity.displayName || "",

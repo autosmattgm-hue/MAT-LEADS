@@ -463,12 +463,13 @@ const routes = [
     regex: /^\/api\/auth\/firebase$/,
     keys: [],
     handler: async ({ req, body }) => {
-      const { idToken, name, password } = validate(authSchemas.firebaseSession, body);
+      const { idToken, name, password, ref } = validate(authSchemas.firebaseSession, body);
       const { verifyFirebaseIdToken } = await import("./config/firebase.js");
       const identity = await verifyFirebaseIdToken(idToken);
       return authService.loginWithFirebase(idToken, {
         preVerifiedIdentity: identity,
         profile: { name, password },
+        referralCode: ref,
         beforeCreate: (emailOrPhone) => checkSignupAbuse(req, { email: emailOrPhone })
       });
     }

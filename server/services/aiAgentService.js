@@ -1,6 +1,8 @@
 import { CrmService } from "./crmService.js";
 import { DashboardService } from "./dashboardService.js";
 import { NvidiaService } from "./nvidiaService.js";
+import { identityLine } from "../utils/brand.js";
+import { siteMapText } from "../utils/siteMap.js";
 
 function compactLead(lead = {}) {
   return {
@@ -46,7 +48,13 @@ export class AiAgentService {
       .sort((left, right) => right.score - left.score)
       .slice(0, 6);
     const context = {
-      platform: "MAT LEADS AI PRO X: lead search, CRM, website audits, outreach, analytics and Website Studio.",
+      platform: `${identityLine()} Full website support map: ${siteMapText()}`,
+      creator: "Ebube John Okoye",
+      referralProgram: {
+        registrationRewardUsd: 0.2,
+        subscriptionRewardUsd: 4,
+        minimumWithdrawalUsd: 50
+      },
       account: {
         role: user?.role || "user",
         plan: user?.planName || user?.subscription || "unknown"

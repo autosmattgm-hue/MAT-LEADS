@@ -109,6 +109,12 @@ export class SocialService {
     const me = this.idFor(user);
     const needle = String(query || "").trim().toLowerCase();
     if (needle.length < 2) return [];
+    const exactEmail = /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(needle);
+    if (exactEmail) {
+      const direct = await this.users.list({ where: [{ field: "email", op: "==", value: needle }], limit: 1 });
+      const candidate = direct[0] ? this.profile(direct[0]) : null;
+      return candidate && candidate.uid !== me ? [candidate] : [];
+    }
     // Keep the query bounded while remaining compatible with both Firestore and
     // the local repository fallback. Production installations can add an index
     // later without changing this API contract.

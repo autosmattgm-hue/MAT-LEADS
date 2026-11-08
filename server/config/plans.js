@@ -11,7 +11,7 @@ export const plans = {
     trialSearchLimit: 2,
     trialLeadLimit: 5,
     referralCommissionPct: 20,
-    features: ["2 lead searches", "5 leads per search", "20% referral earnings"]
+    features: ["2 lead searches", "5 leads per search", "$0.20 registration or $4 subscription referral rewards"]
   },
   starter: {
     key: "starter",
@@ -21,7 +21,7 @@ export const plans = {
     stripePriceEnv: "STRIPE_STARTER_PRICE_ID",
     paypalPaymentLink: env.paypal.paymentLinks.starter,
     referralCommissionPct: 20,
-    features: ["100 leads/mo", "CRM + reports", "Sell audits + outreach packs", "20% referral earnings"]
+    features: ["100 leads/mo", "CRM + reports", "Sell audits + outreach packs", "$0.20 registration or $4 subscription referral rewards"]
   },
   professional: {
     key: "professional",
@@ -31,7 +31,7 @@ export const plans = {
     stripePriceEnv: "STRIPE_PRO_PRICE_ID",
     paypalPaymentLink: env.paypal.paymentLinks.professional,
     referralCommissionPct: 30,
-    features: ["1,000 leads/mo", "AI outreach", "AI Website Studio", "Business AI Tycoon + WhatsApp scripts", "Shareable website links + downloads", "Sell client websites + care plans", "30% referral earnings"]
+    features: ["1,000 leads/mo", "AI outreach", "AI Website Studio", "Business AI Tycoon + WhatsApp scripts", "Shareable website links + downloads", "Sell client websites + care plans", "$0.20 registration or $4 subscription referral rewards"]
   },
   growth_plus: {
     key: "growth_plus",
@@ -41,7 +41,7 @@ export const plans = {
     stripePriceEnv: "STRIPE_GROWTH_PLUS_PRICE_ID",
     paypalPaymentLink: env.paypal.paymentLinks.growthPlus,
     referralCommissionPct: 30,
-    features: ["3,500 leads/mo", "AI outreach", "CRM integrations", "AI Website Studio + priority builds", "Business AI Tycoon + WhatsApp scripts", "Invoice clients + paid audits", "30% referral earnings"]
+    features: ["3,500 leads/mo", "AI outreach", "CRM integrations", "AI Website Studio + priority builds", "Business AI Tycoon + WhatsApp scripts", "Invoice clients + paid audits", "$0.20 registration or $4 subscription referral rewards"]
   },
   agency: {
     key: "agency",
@@ -51,7 +51,7 @@ export const plans = {
     stripePriceEnv: "STRIPE_AGENCY_PRICE_ID",
     paypalPaymentLink: env.paypal.paymentLinks.agency,
     referralCommissionPct: 30,
-    features: ["Unlimited leads", "Team workflows", "AI Website Studio + white-label links", "Business AI Tycoon for closers", "White-label client portal", "30% referral earnings"]
+    features: ["Unlimited leads", "Team workflows", "AI Website Studio + white-label links", "Business AI Tycoon for closers", "White-label client portal", "$0.20 registration or $4 subscription referral rewards"]
   },
   enterprise: {
     key: "enterprise",

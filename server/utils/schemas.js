@@ -169,7 +169,7 @@ export const authSchemas = {
     if (password && password.length < 8) {
       throw validationError({ password: ["Must be at least 8 characters"] });
     }
-    return { idToken, name, password };
+    return { idToken, name, password, ref: stringField(input, "ref", { max: 40, truncate: true }) };
   })
 };
 
@@ -390,7 +390,7 @@ export const earnSchemas = {
     paymentInstructions: stringField(input, "paymentInstructions", { max: 1200, truncate: true })
   })),
   payout: schema((input) => ({
-    amountUsd: numberField(input, "amountUsd", { min: 10, max: 100000, defaultOnInvalid: false }),
+    amountUsd: numberField(input, "amountUsd", { min: 50, max: 100000, defaultOnInvalid: false }),
     destination: stringField(input, "destination", { max: 200, truncate: true })
   })),
   invoicePaid: schema((input) => ({
