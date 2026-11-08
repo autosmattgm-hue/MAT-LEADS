@@ -257,6 +257,57 @@ function mergeVaultIntoMetrics(metrics) {
   };
 }
 
+function buildLocalDailyActions(leads = []) {
+  const now = Date.now();
+  const endOfToday = new Date(new Date().setHours(23, 59, 59, 999)).getTime();
+  const contactedStages = new Set(["Contacted", "Follow Up", "Proposal Sent", "Meeting Scheduled", "Negotiation", "Won", "Lost"]);
+  const actions = [];
+  for (const lead of leads) {
+    const stage = lead.stage || "New";
+    const dueAt = lead.nextActionAt || lead.nextFollowUpAt || lead.followUpAt || lead.reminderAt;
+    const dueTime = dueAt ? new Date(dueAt).getTime() : Number.NaN;
+    const score = Number(lead.opportunityScore || lead.audit?.score || 0);
+    const leadId = lead.id || lead.leadId;
+    if (!leadId) continue;
+    if (Number.isFinite(dueTime) && dueTime <= endOfToday && !["Won", "Lost"].includes(stage)) {
+      actions.push({ priority: dueTime < now - 86400000 ? 1 : 2, type: "follow_up", leadId, leadName: lead.name, dueAt, title: dueTime < now - 86400000 ? "Overdue follow-up" : "Follow-up due today", reason: `Next action was scheduled for ${new Date(dueAt).toLocaleDateString()}.`, actionLabel: "Open lead", source: "browser-vault" });
+    } else if (stage === "New" && score >= 70 && !contactedStages.has(stage)) {
+      actions.push({ priority: 3, type: "high_opportunity", leadId, leadName: lead.name, title: "Contact a high-opportunity lead", reason: `Opportunity score is ${score}/100 and no outreach stage is recorded.`, actionLabel: "Open lead", source: "browser-vault" });
+    } else if (lead.websiteUrl && !lead.audit?.completedAt && !lead.audit?.status) {
+      actions.push({ priority: 4, type: "website_audit", leadId, leadName: lead.name, title: "Review website opportunity", reason: "A website URL is available but no completed audit is stored.", actionLabel: "Open audit", source: "browser-vault" });
+    }
+  }
+  return actions.sort((left, right) => left.priority - right.priority).slice(0, 8);
+}
+
+function mergeVaultIntoDailyActions(actions = []) {
+  const serverActions = Array.isArray(actions) ? actions : [];
+  const existing = new Set(serverActions.map((action) => `${action.type}:${action.leadId}`));
+  const localActions = buildLocalDailyActions(readVaultLeads()).filter((action) => !existing.has(`${action.type}:${action.leadId}`));
+  return [...serverActions, ...localActions].sort((left, right) => Number(left.priority || 4) - Number(right.priority || 4)).slice(0, 8);
+}
+
+function summarizeDailyActions(actions = [], base = {}) {
+  const summary = { ...base };
+  for (const key of ["total", "overdue", "dueToday", "highOpportunity", "websiteAudits", "upcoming"]) summary[key] = Number(summary[key] || 0);
+  const serverLeadKeys = new Set();
+  for (const action of actions) {
+    const key = `${action.type}:${action.leadId}`;
+    if (action.source !== "browser-vault") serverLeadKeys.add(key);
+  }
+  const localActions = actions.filter((action) => action.source === "browser-vault" && !serverLeadKeys.has(`${action.type}:${action.leadId}`));
+  summary.total += localActions.length;
+  for (const action of localActions) {
+    if (action.type === "follow_up") {
+      const due = new Date(action.dueAt).getTime();
+      if (due < new Date().setHours(0, 0, 0, 0)) summary.overdue += 1;
+      else summary.dueToday += 1;
+    } else if (action.type === "high_opportunity") summary.highOpportunity += 1;
+    else if (action.type === "website_audit") summary.websiteAudits += 1;
+  }
+  return summary;
+}
+
 function showSubscribedBanner() {
   const params = new URLSearchParams(window.location.search);
   if (!params.has("subscribed")) return;
@@ -282,9 +333,9 @@ async function refreshDashboardMetrics() {
     const metrics = mergeVaultIntoMetrics(serverMetrics);
     renderMetrics(metrics);
     renderChart(metrics);
-    renderDashboardFocus(serverMetrics);
-    dailyActionState = Array.isArray(serverMetrics.dailyActions) ? serverMetrics.dailyActions : [];
-    dailyActionSummaryState = serverMetrics.dailyActionSummary || {};
+    dailyActionState = mergeVaultIntoDailyActions(serverMetrics.dailyActions);
+    dailyActionSummaryState = summarizeDailyActions(dailyActionState, serverMetrics.dailyActionSummary || {});
+    renderDashboardFocus({ ...serverMetrics, dailyActionSummary: dailyActionSummaryState });
     renderActionSummary(dailyActionSummaryState);
     renderDailyActions();
   } catch (error) {
@@ -320,9 +371,9 @@ async function initDashboard() {
     const metrics = mergeVaultIntoMetrics(serverMetrics);
     renderMetrics(metrics);
     renderChart(metrics || { monthlyGrowth: [] });
-    renderDashboardFocus(serverMetrics);
-    dailyActionState = Array.isArray(serverMetrics.dailyActions) ? serverMetrics.dailyActions : [];
-    dailyActionSummaryState = serverMetrics.dailyActionSummary || {};
+    dailyActionState = mergeVaultIntoDailyActions(serverMetrics.dailyActions);
+    dailyActionSummaryState = summarizeDailyActions(dailyActionState, serverMetrics.dailyActionSummary || {});
+    renderDashboardFocus({ ...serverMetrics, dailyActionSummary: dailyActionSummaryState });
     renderActionSummary(dailyActionSummaryState);
     renderDailyActions();
     if (metrics.savedLeads > serverMetrics.savedLeads) {
