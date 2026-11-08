@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Chat | MAT LEADS AI PRO X</title>
+    <meta name="description" content="Full-screen private chat for MAT LEADS connections.">
+    <link rel="icon" href="/assets/logo-mark.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/community-pages.css">
+  </head>
+  <body data-page="community-chat">
+    <div class="app-layout" data-app-shell>
+      <main class="community-chat-page">
+        <nav class="community-page-nav" aria-label="Community navigation">
+          <a class="btn btn-ghost btn-small" href="/community.html">Community</a>
+          <a class="btn btn-secondary btn-small" href="/community-requests.html">Friend requests</a>
+          <a class="btn btn-secondary btn-small" href="/community-blocked.html">Blocked members</a>
+          <a class="btn btn-secondary btn-small" href="/community.html#notifications">Notifications</a>
+        </nav>
+        <section class="panel community-chat community-chat--fullscreen" aria-label="Conversation">
+          <div class="community-chat-header"><div class="community-chat-identity"><span class="avatar avatar-large" data-community-chat-avatar aria-hidden="true">M</span><div><h1 data-community-chat-title>Choose a conversation</h1><p data-community-chat-subtitle>Return to Community to choose a contact.</p></div></div><div class="community-chat-actions"><input class="community-message-filter" data-community-message-filter type="search" placeholder="Search chat" aria-label="Search this conversation" hidden><button class="btn btn-ghost btn-small" type="button" data-community-message-search aria-expanded="false" aria-controls="communityMessages" hidden>Find</button><button class="btn btn-secondary btn-small" type="button" data-community-share-chat hidden>Share chat</button><button class="btn btn-ghost btn-small" type="button" data-community-report hidden>Report</button><button class="btn btn-ghost btn-small danger" type="button" data-community-block hidden>Block</button><button class="btn btn-secondary btn-small" type="button" data-community-remove hidden>Remove</button></div></div>
+          <div class="community-messages" id="communityMessages" data-community-messages aria-live="polite"><div class="empty-state"><strong>Choose a conversation</strong><span>Open a chat from your Community inbox.</span></div></div>
+          <form class="community-composer" data-community-message-form hidden>
+            <label class="sr-only" for="communityMessage">Message</label>
+            <textarea id="communityMessage" maxlength="4000" rows="2" placeholder="Write a message..." required></textarea>
+            <div class="community-composer-footer"><span>Enter to send · Shift + Enter for a new line</span><button class="btn btn-primary" type="submit">Send <span aria-hidden="true">→</span></button></div>
+          </form>
+          <p class="form-status" data-community-status role="status"></p>
+        </section>
+      </main>
+    </div>
+    <script type="module" src="/components/layout.js"></script>
+    <script type="module" src="/js/community.js"></script>
+  </body>
+</html>
