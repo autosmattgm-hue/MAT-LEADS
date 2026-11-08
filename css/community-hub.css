@@ -1,0 +1,39 @@
+body[data-page="community"] { background: #edf4f1; }
+body[data-page="community"] .community-workspace { max-width: 1540px; padding-top: 24px; }
+body[data-page="community"] .community-workspace .workspace-header { padding: 22px 26px; margin-bottom: 16px; border: 1px solid rgba(7,94,84,.12); border-radius: 20px; background: linear-gradient(135deg, #073f3b 0%, #075e54 55%, #159b87 100%); box-shadow: 0 18px 45px rgba(7,94,84,.16); }
+body[data-page="community"] .community-workspace .workspace-header h1,
+body[data-page="community"] .community-workspace .workspace-header p { color: #fff; }
+body[data-page="community"] .community-workspace .workspace-header > div:first-child p:last-child { color: rgba(255,255,255,.75); }
+body[data-page="community"] .community-workspace .workspace-header .eyebrow { color: #8ce4c8; letter-spacing: .14em; font-weight: 800; }
+body[data-page="community"] .community-workspace .workspace-header-actions { justify-content: flex-end; }
+body[data-page="community"] .community-workspace .workspace-header-actions .btn { border-color: rgba(255,255,255,.3); color: #fff; background: rgba(255,255,255,.12); }
+body[data-page="community"] .community-workspace .workspace-header-actions .btn:hover { background: rgba(255,255,255,.2); }
+.community-quick-actions { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-bottom: 16px; }
+.community-quick-card { display: flex; align-items: center; gap: 11px; min-width: 0; padding: 15px 16px; border: 1px solid rgba(7,94,84,.12); border-radius: 15px; color: #18332f; background: rgba(255,255,255,.88); box-shadow: 0 8px 24px rgba(15,42,32,.06); transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease; }
+.community-quick-card:hover { transform: translateY(-2px); border-color: rgba(7,94,84,.3); box-shadow: 0 14px 30px rgba(15,42,32,.1); }
+.community-quick-card--primary { border-color: rgba(7,94,84,.24); background: linear-gradient(135deg, #e5f8f0, #fff); }
+.community-quick-card > span:nth-child(2) { display: grid; min-width: 0; gap: 3px; }
+.community-quick-card strong { font-size: .82rem; }
+.community-quick-card small { color: #67817a; font-size: .7rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.community-quick-card > b { margin-left: auto; color: #087a66; font-size: 1rem; }
+.community-quick-icon { display: grid; place-items: center; flex: 0 0 34px; width: 34px; height: 34px; border-radius: 11px; color: #fff; background: #087a66; font-size: .72rem; font-weight: 800; }
+body[data-page="community"] .community-grid { min-height: 720px; border-color: rgba(7,94,84,.16); box-shadow: 0 20px 55px rgba(15,42,32,.1); }
+body[data-page="community"] .community-discover { background: #fbfdfc; }
+body[data-page="community"] .community-discover > .panel-heading { padding: 20px; background: #f7fbf9; color: #18332f; }
+body[data-page="community"] .community-discover > .panel-heading h2 { color: #18332f; font-size: 1rem; }
+body[data-page="community"] .community-discover > .panel-heading p { color: #71857f; }
+body[data-page="community"] .community-search { margin-top: 2px; padding: 8px; border: 1px solid #dce9e4; border-radius: 13px; background: #f1f7f4; }
+body[data-page="community"] .community-search input { border: 0; background: transparent; box-shadow: none; }
+body[data-page="community"] .community-search input:focus { box-shadow: none; }
+body[data-page="community"] .community-search .btn { border-radius: 9px; }
+body[data-page="community"] .community-inbox-filter input { border-radius: 9px; }
+body[data-page="community"] .community-tabs { border: 1px solid #dce9e4; background: #f1f7f4; }
+body[data-page="community"] .community-tab.is-active { color: #075e54; background: #fff; }
+body[data-page="community"] .community-chat { box-shadow: none; }
+@media (max-width: 860px) { .community-quick-actions { grid-template-columns: 1fr; } }
+@media (max-width: 560px) {
+  body[data-page="community"] .community-workspace { padding-top: 10px; }
+  body[data-page="community"] .community-workspace .workspace-header { padding: 18px 14px; border-radius: 15px; }
+  body[data-page="community"] .community-quick-actions { gap: 8px; }
+  .community-quick-card { padding: 12px; }
+}
