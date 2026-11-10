@@ -9,6 +9,13 @@
     return window.matchMedia?.("(display-mode: standalone)").matches || window.navigator.standalone === true;
   }
 
+  function restoreStandaloneScrolling() {
+    if (!isInstalled()) return;
+    const sidebarOpen = document.querySelector("#sidebar.open");
+    if (!sidebarOpen) document.body.classList.remove("locked");
+    document.documentElement.classList.add("pwa-scroll-ready");
+  }
+
   function setNotificationStatus(message, state = "") {
     document.querySelectorAll("[data-pwa-notification-status]").forEach((node) => {
       node.textContent = message;
@@ -155,8 +162,13 @@
   window.addEventListener("appinstalled", () => { deferredPrompt = null; document.querySelector("[data-pwa-install-banner]")?.remove(); });
   window.addEventListener("online", updateOfflineStatus);
   window.addEventListener("offline", updateOfflineStatus);
+  window.addEventListener("pageshow", restoreStandaloneScrolling);
+  window.addEventListener("resize", restoreStandaloneScrolling);
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") restoreStandaloneScrolling();
+  });
 
-  const ready = () => { registerServiceWorker(); initNotificationControls(); if (deferredPrompt) showInstallBanner(); };
+  const ready = () => { restoreStandaloneScrolling(); registerServiceWorker(); initNotificationControls(); if (deferredPrompt) showInstallBanner(); };
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", ready, { once: true });
   else ready();
 }());

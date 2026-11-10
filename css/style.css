@@ -2749,6 +2749,12 @@ body[data-page="dashboard"] .table-wrap {
 
 /* ===== Standalone App Adjustments ===== */
 @media (display-mode: standalone) {
+  html {
+    min-height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior-y: auto;
+  }
   .topbar {
     padding-top: max(12px, env(safe-area-inset-top));
   }
@@ -2759,8 +2765,20 @@ body[data-page="dashboard"] .table-wrap {
     display: none !important;
   }
   body {
+    min-height: 100dvh;
+    overflow-x: hidden;
+    overflow-y: auto;
     -webkit-tap-highlight-color: transparent;
-    overscroll-behavior: none;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: auto;
+    touch-action: pan-y pinch-zoom;
+  }
+  body.locked {
+    overflow-y: hidden;
+    touch-action: none;
+  }
+  .app-layout {
+    min-height: 100dvh;
   }
   a, button, [role="button"] {
     cursor: default;

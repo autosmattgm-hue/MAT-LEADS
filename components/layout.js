@@ -318,19 +318,28 @@ async function initSessionBadge() {
 }
 
 function initMenu() {
+  const sidebar = document.getElementById("sidebar");
+  const shell = document.querySelector("[data-app-shell]");
+  const setOpen = (open) => {
+    if (!sidebar) return;
+    sidebar.classList.toggle("open", open);
+    shell?.classList.toggle("sidebar-collapsed", !open && window.innerWidth > 820);
+    document.body.classList.toggle("locked", open && window.innerWidth <= 820);
+    document.querySelector("[data-menu-toggle]")?.setAttribute("aria-expanded", String(open));
+    document.querySelector("[data-menu-toggle]")?.setAttribute("aria-label", open ? "Close navigation" : "Open navigation");
+  };
+
+  // A standalone PWA can be suspended while its off-canvas menu is closing.
+  // Always release the document scroll lock when it resumes to prevent a
+  // stale mobile menu state from making the whole installed app unscrollable.
+  const restoreDocumentScroll = () => {
+    if (window.innerWidth <= 820) setOpen(false);
+    else document.body.classList.remove("locked");
+  };
+
   document.addEventListener("click", (event) => {
     const toggle = event.target.closest("[data-menu-toggle]");
     const close = event.target.closest("[data-sidebar-close]");
-    const sidebar = document.getElementById("sidebar");
-    const shell = document.querySelector("[data-app-shell]");
-    const setOpen = (open) => {
-      if (!sidebar) return;
-      sidebar.classList.toggle("open", open);
-      shell?.classList.toggle("sidebar-collapsed", !open && window.innerWidth > 820);
-      document.body.classList.toggle("locked", open && window.innerWidth <= 820);
-      document.querySelector("[data-menu-toggle]")?.setAttribute("aria-expanded", String(open));
-      document.querySelector("[data-menu-toggle]")?.setAttribute("aria-label", open ? "Close navigation" : "Open navigation");
-    };
     if (close && sidebar) {
       setOpen(false);
       document.querySelector("[data-menu-toggle]")?.focus();
@@ -346,8 +355,13 @@ function initMenu() {
     }
   });
 
-  const sidebar = document.getElementById("sidebar");
+  window.addEventListener("pageshow", restoreDocumentScroll);
+  window.addEventListener("resize", restoreDocumentScroll);
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") restoreDocumentScroll();
+  });
   if (sidebar && window.innerWidth > 820) sidebar.classList.add("open");
+  else restoreDocumentScroll();
 }
 
 function initThemeButtons() {
