@@ -190,6 +190,7 @@ function initPublicNav() {
       <a href="/about.html">About</a>
       <a href="/features/phone-lead-generation">Features</a>
       <a href="/faq.html">FAQ</a>
+      <a href="/referral-program.html">Earn by referring</a>
       <a href="/login.html?next=/academy.html">Academy</a>
       <a href="/pricing.html">Pricing</a>
       <a href="/login.html">Login</a>

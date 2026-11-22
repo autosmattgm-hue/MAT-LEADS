@@ -1,4 +1,4 @@
-const CACHE_NAME = "mat-leads-ai-pro-x-v118";
+const CACHE_NAME = "mat-leads-ai-pro-x-v119";
 const STATIC_ASSETS = [
   "/",
   "/index.html",
@@ -36,6 +36,7 @@ const STATIC_ASSETS = [
   "/students.html",
   "/ecommerce.html",
   "/affiliate.html",
+  "/referral-program.html",
   "/coaching.html",
   "/social.html",
   "/community.html",

@@ -175,6 +175,7 @@ const publicFiles = new Set([
   "/students.html",
   "/ecommerce.html",
   "/affiliate.html",
+  "/referral-program.html",
   "/coaching.html",
   "/social.html",
   "/community.html",
