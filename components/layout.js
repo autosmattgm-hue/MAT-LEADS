@@ -118,31 +118,53 @@ function brandMarkup() {
 }
 
 function injectPwaMeta() {
-  if (document.querySelector('link[rel="manifest"]')) return;
-  const link = document.createElement('link');
-  link.rel = 'manifest';
-  link.href = '/manifest.webmanifest';
-  document.head.appendChild(link);
+  // Every page imports this shared shell.  Add a real, explicit favicon here
+  // instead of relying on each browser's /favicon.ico fallback (which used to
+  // be missing).  The root URL is stable for crawlers and deployed caches.
+  if (!document.querySelector('link[data-mat-favicon]')) {
+    const favicon = document.createElement('link');
+    favicon.rel = 'icon';
+    favicon.type = 'image/svg+xml';
+    favicon.sizes = 'any';
+    favicon.href = '/favicon.svg';
+    favicon.dataset.matFavicon = 'true';
+    document.head.appendChild(favicon);
+  }
 
-  const appleIcon = document.createElement('link');
-  appleIcon.rel = 'apple-touch-icon';
-  appleIcon.href = '/assets/logo-mark.svg';
-  document.head.appendChild(appleIcon);
+  if (!document.querySelector('link[rel="manifest"]')) {
+    const link = document.createElement('link');
+    link.rel = 'manifest';
+    link.href = '/manifest.webmanifest';
+    document.head.appendChild(link);
+  }
 
-  const appleTitle = document.createElement('meta');
-  appleTitle.name = 'apple-mobile-web-app-title';
-  appleTitle.content = 'MAT Leads';
-  document.head.appendChild(appleTitle);
+  if (!document.querySelector('link[rel="apple-touch-icon"]')) {
+    const appleIcon = document.createElement('link');
+    appleIcon.rel = 'apple-touch-icon';
+    appleIcon.href = '/assets/logo-mark.svg';
+    document.head.appendChild(appleIcon);
+  }
 
-  const appleCapable = document.createElement('meta');
-  appleCapable.name = 'apple-mobile-web-app-capable';
-  appleCapable.content = 'yes';
-  document.head.appendChild(appleCapable);
+  if (!document.querySelector('meta[name="apple-mobile-web-app-title"]')) {
+    const appleTitle = document.createElement('meta');
+    appleTitle.name = 'apple-mobile-web-app-title';
+    appleTitle.content = 'MAT Leads';
+    document.head.appendChild(appleTitle);
+  }
 
-  const themeColor = document.createElement('meta');
-  themeColor.name = 'theme-color';
-  themeColor.content = '#101828';
-  document.head.appendChild(themeColor);
+  if (!document.querySelector('meta[name="apple-mobile-web-app-capable"]')) {
+    const appleCapable = document.createElement('meta');
+    appleCapable.name = 'apple-mobile-web-app-capable';
+    appleCapable.content = 'yes';
+    document.head.appendChild(appleCapable);
+  }
+
+  if (!document.querySelector('meta[name="theme-color"]')) {
+    const themeColor = document.createElement('meta');
+    themeColor.name = 'theme-color';
+    themeColor.content = '#101828';
+    document.head.appendChild(themeColor);
+  }
 }
 
 function initTheme() {

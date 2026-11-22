@@ -78,6 +78,7 @@ const mimeTypes = new Map([
   [".js", "text/javascript; charset=utf-8"],
   [".json", "application/json; charset=utf-8"],
   [".svg", "image/svg+xml"],
+  [".ico", "image/x-icon"],
   [".png", "image/png"],
   [".jpg", "image/jpeg"],
   [".jpeg", "image/jpeg"],
@@ -190,6 +191,7 @@ const publicFiles = new Set([
   "/forgot-password.html",
   "/verify-email.html",
   "/favicon.ico"
+  ,"/favicon.svg"
 ]);
 const publicFolders = ["/css/", "/js/", "/assets/", "/components/", "/features/"];
 
