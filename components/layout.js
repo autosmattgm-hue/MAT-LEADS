@@ -118,15 +118,13 @@ function brandMarkup() {
 }
 
 function injectPwaMeta() {
-  // Every page imports this shared shell.  Add a real, explicit favicon here
-  // instead of relying on each browser's /favicon.ico fallback (which used to
-  // be missing).  The root URL is stable for crawlers and deployed caches.
+  // Every page imports this shared shell.  Use a real multi-size ICO rather
+  // than relying on browser SVG support or a missing /favicon.ico fallback.
   if (!document.querySelector('link[data-mat-favicon]')) {
     const favicon = document.createElement('link');
     favicon.rel = 'icon';
-    favicon.type = 'image/svg+xml';
     favicon.sizes = 'any';
-    favicon.href = '/favicon.svg';
+    favicon.href = '/favicon.ico?v=20261124';
     favicon.dataset.matFavicon = 'true';
     document.head.appendChild(favicon);
   }

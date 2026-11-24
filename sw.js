@@ -1,4 +1,4 @@
-const CACHE_NAME = "mat-leads-ai-pro-x-v119";
+const CACHE_NAME = "mat-leads-ai-pro-x-v120";
 const STATIC_ASSETS = [
   "/",
   "/index.html",
@@ -94,6 +94,7 @@ const STATIC_ASSETS = [
   "/js/website-runtime.js",
   "/js/pwa.js",
   "/assets/logo-mark.svg",
+  "/favicon.ico",
   "/favicon.svg",
   "/manifest.webmanifest"
 ];
