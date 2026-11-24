@@ -17,6 +17,35 @@ Disallow: /analytics.html
 Disallow: /billing-success.html
 Disallow: /pay.html
 Disallow: /forgot-password.html
+Disallow: /verify-email.html
+Disallow: /website-studio.html
+Disallow: /website-editor.html
+Disallow: /business-ai.html
+Disallow: /ai-agent.html
+Disallow: /tools.html
+Disallow: /work-planner.html
+Disallow: /earn.html
+Disallow: /gigs.html
+Disallow: /learn.html
+Disallow: /academy.html
+Disallow: /outreach.html
+Disallow: /proposals.html
+Disallow: /playbook.html
+Disallow: /money.html
+Disallow: /freelance.html
+Disallow: /digital.html
+Disallow: /content.html
+Disallow: /sales.html
+Disallow: /students.html
+Disallow: /ecommerce.html
+Disallow: /affiliate.html
+Disallow: /coaching.html
+Disallow: /social.html
+Disallow: /community.html
+Disallow: /community-chat.html
+Disallow: /community-friends.html
+Disallow: /community-requests.html
+Disallow: /community-blocked.html
 
 # AI search agents / answer engines — explicitly allowed (do not block).
 User-agent: GPTBot

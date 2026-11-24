@@ -141,6 +141,7 @@ const publicFiles = new Set([
   "/index.html",
   "/login.html",
   "/about.html",
+  "/features.html",
   "/signup.html",
   "/dashboard.html",
   "/crm.html",
