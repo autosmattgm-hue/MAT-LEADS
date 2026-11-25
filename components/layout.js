@@ -118,13 +118,15 @@ function brandMarkup() {
 }
 
 function injectPwaMeta() {
-  // Every page imports this shared shell.  Use a real multi-size ICO rather
-  // than relying on browser SVG support or a missing /favicon.ico fallback.
+  // Every page imports this shared shell. Google reads the source of the home
+  // page, but the explicit PNG here also gives regular browsers a consistent
+  // high-resolution icon on every application page.
   if (!document.querySelector('link[data-mat-favicon]')) {
     const favicon = document.createElement('link');
     favicon.rel = 'icon';
-    favicon.sizes = 'any';
-    favicon.href = '/favicon.ico?v=20261124';
+    favicon.type = 'image/png';
+    favicon.sizes = '96x96';
+    favicon.href = '/favicon-96.png';
     favicon.dataset.matFavicon = 'true';
     document.head.appendChild(favicon);
   }

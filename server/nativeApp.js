@@ -194,6 +194,7 @@ const publicFiles = new Set([
   "/verify-email.html",
   "/favicon.ico"
   ,"/favicon.svg"
+  ,"/favicon-96.png"
 ]);
 const publicFolders = ["/css/", "/js/", "/assets/", "/components/", "/features/"];
 
