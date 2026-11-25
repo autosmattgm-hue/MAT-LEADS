@@ -1994,7 +1994,7 @@ function initLeadSearch() {
         const provider = result.providerLabel || (result.source === "openstreetmap_overpass" ? "OpenStreetMap Overpass" : "Google Places");
         const countryText = result.selectedCountries?.length ? ` Countries: ${result.selectedCountries.join(", ")}.` : "";
         const stats = result.searchStats
-          ? ` Scanned ${result.searchStats.rawCount} raw, qualified ${result.searchStats.qualifiedCount} from ${result.searchStats.qualifiedPoolCount || result.searchStats.qualifiedCount} matching candidates, depth ${result.searchStats.searchDepth}.`
+          ? ` Scanned ${result.searchStats.rawCount} raw, qualified ${result.searchStats.qualifiedCount} from ${result.searchStats.qualifiedPoolCount || result.searchStats.qualifiedCount} matching candidates, depth ${result.searchStats.searchDepth}${result.searchStats.highVolumeRequest ? ` with a high-volume sweep across ${result.searchStats.sampledMarketCount || "multiple"} markets` : ""}.`
           : "";
         const cacheText = result.cached ? " Cached repeat search." : "";
         const refreshText = result.refreshed ? " Fresh lead refresh was used." : "";
@@ -2009,6 +2009,9 @@ function initLeadSearch() {
           : "";
         const sourceCoverageText = result.searchStats?.contactCoverageLimited
           ? " The fallback provider has limited public contact and website coverage; configure Google Places for more complete licensed business profiles."
+          : "";
+        const providerSetupText = !result.searchStats?.googlePlacesConfigured
+          ? " Google Places is not configured on this server, so this search is using public OpenStreetMap coverage; add a server-side Google Places API key for broader licensed business coverage."
           : "";
         const coverage = result.searchStats?.qualityCoverage;
         const excludedText = result.searchStats?.searchExhausted && coverage
@@ -2029,7 +2032,7 @@ function initLeadSearch() {
         const availabilityText = result.searchStats?.searchExhausted
           ? ` ${result.searchStats.returnedLimit} verified matching result(s) are currently available for the exact filters selected; the requested total cannot be padded with unverified businesses.`
           : "";
-        note.textContent = `Real ${provider} results loaded${locationText}.${countryText}${stats}${strictCoverageText}${limitedCoverageText}${excludedText}${sourceCoverageText}${storedResultText}${availabilityText}${planLimitText}${adminAccessText}${providerWarningText}${cacheText}${refreshText}${relaxedText}${trialText}${pageText} Query: ${result.query || "businesses"}.`;
+        note.textContent = `Real ${provider} results loaded${locationText}.${countryText}${stats}${strictCoverageText}${limitedCoverageText}${excludedText}${sourceCoverageText}${providerSetupText}${storedResultText}${availabilityText}${planLimitText}${adminAccessText}${providerWarningText}${cacheText}${refreshText}${relaxedText}${trialText}${pageText} Query: ${result.query || "businesses"}.`;
       }
     } catch (error) {
       const raw = String(error?.message || "Search failed");
@@ -2075,10 +2078,18 @@ function initLeadSearch() {
     }
     const expandButton = event.target.closest("[data-expand-search]");
     if (!expandButton || !form.contains(expandButton)) return;
-    const radiusField = byId("radiusMeters");
-    const currentRadius = normalizedInteger(radiusField?.value, 15000, 500, 50000);
-    const expandedRadius = Math.min(50000, Math.max(currentRadius + 5000, currentRadius * 2));
-    if (radiusField) radiusField.value = String(expandedRadius);
+    const hasExactArea = Boolean(String(byId("mapLink")?.value || "").trim() || String(byId("city")?.value || "").trim() || String(byId("state")?.value || "").trim() || String(byId("zip")?.value || "").trim());
+    if (hasExactArea) {
+      const radiusField = byId("radiusMeters");
+      const currentRadius = normalizedInteger(radiusField?.value, 15000, 500, 50000);
+      const expandedRadius = Math.min(50000, Math.max(currentRadius + 5000, currentRadius * 2));
+      if (radiusField) radiusField.value = String(expandedRadius);
+    } else {
+      // Country-wide scans do not use a single radius. Broaden Area must add
+      // more cities/markets, so move the engine to its maximum coverage mode.
+      const depthField = byId("searchDepth");
+      if (depthField) depthField.value = "maximum";
+    }
     updateMapPreview();
     await runLeadSearch({ refresh: true });
   });
