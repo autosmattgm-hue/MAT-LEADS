@@ -1,4 +1,4 @@
-const CACHE_NAME = "mat-leads-ai-pro-x-v122";
+const CACHE_NAME = "mat-leads-ai-pro-x-v124";
 const STATIC_ASSETS = [
   "/",
   "/index.html",

@@ -15,7 +15,7 @@ const INTERACTIVE_PROVIDER_TIMEOUT_MS = 45000;
 const HISTORY_ASSISTED_PROVIDER_TIMEOUT_MS = 14000;
 const MAX_INLINE_AUDITS = 24;
 const INLINE_AUDIT_CONCURRENCY = 4;
-const SEARCH_ENGINE_VERSION = "strict-coverage-v4";
+const SEARCH_ENGINE_VERSION = "strict-coverage-v5";
 
 function getCachedSearch(cacheKey) {
   const entry = searchCache.get(cacheKey);
@@ -498,12 +498,24 @@ export class LeadService {
     // needs a wider real candidate pool before filtering. This is discovery
     // only: the response still includes only verified matching records.
     const strictDataSearch = requiresPublicContact || requiresMissingWebsite;
+    const highVolumeRequest = requestedLimit >= 100;
     const candidateMultiplier = requiresPublicContact && requiresMissingWebsite
       ? 20
+      : requiresMissingWebsite ? 12
       : strictDataSearch ? 8 : 2;
+    // A "Needs Website" search has a naturally low yield: we have to inspect
+    // many real businesses before keeping only records without a listed URL.
+    // The old 320-candidate ceiling made a selected 100/200 look like a hard
+    // result cap even though more markets had not been queried yet.
     const providerCandidateCap = requiresPublicContact && requiresMissingWebsite
-      ? Math.min(1200, Math.max(800, requestedLimit * 20))
-      : 320;
+      // Public OSM is a shared service. A 1,200-record interactive pull can
+      // exhaust the 45s response budget before any verified result is shown.
+      // 720 remains more than twice the former 320 cap, while allowing the
+      // multi-market scan to return useful verified matches instead of 503ing.
+      ? Math.min(720, Math.max(highVolumeRequest ? 720 : 480, requestedLimit * 12))
+      : requiresMissingWebsite
+        ? Math.min(1200, Math.max(highVolumeRequest ? 800 : 400, requestedLimit * 12))
+        : highVolumeRequest ? 600 : 320;
     const providerSearch = {
       ...effectiveSearch,
       limit: Math.min(
@@ -728,6 +740,9 @@ export class LeadService {
         planResultLimited: Boolean(startingTrialUsage && resultLimit < requestedLimit),
         returnedLimit: qualified.length,
         providerCandidateLimit: providerSearch.limit,
+        highVolumeRequest,
+        sampledMarketCount: Array.isArray(result.location?.sampledMarkets) ? result.location.sampledMarkets.length : 0,
+        googlePlacesConfigured: Boolean(env.google.placesApiKey),
         searchEngineVersion: SEARCH_ENGINE_VERSION,
         rawCount: result.leads?.length || 0,
         inlineAuditCount,

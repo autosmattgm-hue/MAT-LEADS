@@ -388,7 +388,7 @@ const routes = [
         firestore: firestoreCredentialStatus()
       },
       leadSearch: {
-        engineVersion: "strict-coverage-v4",
+        engineVersion: "strict-coverage-v5",
         interactiveOverpassMirrors: Math.min(2, env.osm.overpassEndpoints.length),
         googlePlacesConfigured: Boolean(env.google.placesApiKey)
       },

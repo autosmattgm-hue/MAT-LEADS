@@ -74,6 +74,10 @@ const OSM_DETAIL_BATCH_TIMEOUT_MS = 5000;
 // that one mirror is congested. Rotate concurrent market searches across
 // mirrors without serial retries that could exceed the response deadline.
 const INTERACTIVE_OVERPASS_ENDPOINT_ATTEMPTS = 1;
+// A country-wide request runs several markets concurrently. Never make all
+// responsive markets wait for one congested public endpoint and its fallback
+// chain; the caller can still receive the verified results that completed.
+const INTERACTIVE_MARKET_SEARCH_TIMEOUT_MS = 20000;
 const STRICT_PHOTON_PAGE_SIZE = 50;
 const GOOGLE_TEXT_SEARCH_PAGE_SIZE = 20;
 const GOOGLE_TEXT_SEARCH_MAX_RESULTS = 60;
@@ -729,7 +733,13 @@ function searchDepthConfig(search = {}) {
     deep: { maxMarkets: 10, marketsPerCountry: 3, perMarketMin: 5, marketRadius: 8000, overpassTimeout: 16, outMultiplier: 14 },
     maximum: { maxMarkets: 18, marketsPerCountry: 4, perMarketMin: 6, marketRadius: 12000, overpassTimeout: 20, outMultiplier: 18 }
   };
-  const config = configs[depth] || configs.deep;
+  const highVolumeRequest = Number(search.limit || 0) >= 100;
+  // A user who explicitly selects 100 or 200 is asking for coverage, not the
+  // quick interactive preview. Promote that request to the maximum market
+  // profile even if the form was left on Deep.
+  const config = highVolumeRequest && depth !== "maximum"
+    ? configs.maximum
+    : (configs[depth] || configs.deep);
   // Dashboard searches run behind an interactive/serverless response deadline.
   // Keep external-provider fan-out bounded; full enrichment belongs on saved
   // lead detail views, not the initial result request.
@@ -744,9 +754,9 @@ function searchDepthConfig(search = {}) {
     // They therefore get a wider, bounded market sample.  This is important
     // in serverless production where one slow public map mirror can otherwise
     // leave a legitimate 50-result request looking like a five-result cap.
-    maxMarkets: Math.min(config.maxMarkets, strictDataSearch ? 10 : 6),
-    marketsPerCountry: Math.min(config.marketsPerCountry, strictDataSearch ? 3 : 2),
-    overpassTimeout: Math.min(config.overpassTimeout, 8)
+    maxMarkets: Math.min(config.maxMarkets, strictDataSearch ? (highVolumeRequest ? 14 : 10) : (highVolumeRequest ? 12 : 6)),
+    marketsPerCountry: Math.min(config.marketsPerCountry, strictDataSearch ? (highVolumeRequest ? 4 : 3) : (highVolumeRequest ? 3 : 2)),
+    overpassTimeout: Math.min(config.overpassTimeout, highVolumeRequest ? 10 : 8)
   };
 }
 
@@ -1675,6 +1685,16 @@ function mergeProviderLeads(primary = [], supplemental = [], maximum = 60) {
   return [...byIdentity.values()].slice(0, Math.max(1, maximum));
 }
 
+function withinInteractiveMarketBudget(promise, timeoutMs = INTERACTIVE_MARKET_SEARCH_TIMEOUT_MS) {
+  let timer;
+  return Promise.race([
+    promise,
+    new Promise((resolve) => {
+      timer = setTimeout(() => resolve(null), timeoutMs);
+    })
+  ]).finally(() => clearTimeout(timer));
+}
+
 export class GooglePlacesService {
   async enrichOpenStreetMapContacts(leads, search) {
     const requiresPublicContact = Boolean(search.requireContact || search.leadQuality === "contact_ready" || search.leadQuality === "owner_data");
@@ -2154,12 +2174,17 @@ export class GooglePlacesService {
         countryName: normalizedMarket.countryName,
         countryCode: normalizedMarket.countryCode
       };
-      const result = await this.searchOpenStreetMapSingle(search, marketLocation, perMarketLimit, marketIndex);
+      const result = search.interactive === true
+        ? await withinInteractiveMarketBudget(
+          this.searchOpenStreetMapSingle(search, marketLocation, perMarketLimit, marketIndex)
+        )
+        : await this.searchOpenStreetMapSingle(search, marketLocation, perMarketLimit, marketIndex);
+      if (!result) return null;
       return { normalizedMarket, leads: result.leads, source: result.source, providerLabel: result.providerLabel };
     }));
 
     for (const marketResult of marketResults) {
-      if (marketResult.status !== "fulfilled") continue;
+      if (marketResult.status !== "fulfilled" || !marketResult.value) continue;
       for (const lead of marketResult.value.leads) {
         const key = normalize(`${lead.name}-${lead.latitude?.toFixed?.(4)}-${lead.longitude?.toFixed?.(4)}`);
         if (seen.has(key)) continue;
